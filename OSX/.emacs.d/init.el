@@ -1,0 +1,1 @@
+/Users/lighthall/SkyDrive/Documents/.apple_home/init.el
