@@ -3,6 +3,9 @@
 
 (setenv "CYGWIN" "nodosfilewarning")
 
+;; svn issues a warning ("cannot set LC_CTYPE locale") if LANG is not set.
+(setenv "LANG" "C")
+
 (dolist (hook '(text-mode-hook))
 (add-hook hook (lambda () (flyspell-mode 1))))
 (add-hook 'c++-mode-hook
@@ -48,4 +51,8 @@
 
 ;;(require 'diff)
 
-;; hello world 
+(defun remove-dos-eol ()
+  "Do not show ^M in files containing mixed UNIX and DOS line endings."
+  (interactive)
+  (setq buffer-display-table (make-display-table))
+  (aset buffer-display-table ?\^M []))
