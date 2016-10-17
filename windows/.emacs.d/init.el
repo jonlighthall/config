@@ -56,3 +56,9 @@
   (interactive)
   (setq buffer-display-table (make-display-table))
   (aset buffer-display-table ?\^M []))
+
+;; default to better frame titles
+(setq frame-title-format
+      (concat  "%b - emacs@" (system-name)))
+
+(global-set-key (kbd "C-x e") 'ediff-buffers) ; 
