@@ -29,7 +29,7 @@
        (setq font-lock-maximum-decoration t)))
 
 ;; Set frame size
-(set-frame-size (selected-frame) 99 40);; (columns,rows)
+(set-frame-size (selected-frame) 99 39);; (columns,rows)
 ;; "snap" width is 73 (for 1280 px wide display)
 ;; "pretty-print" width is 97 columns wide (+2 for line numbers)
 ;; max height with triple-hieght taskbar is 40 (1366 res.)
@@ -61,4 +61,8 @@
 (setq frame-title-format
       (concat  "%b - emacs@" (system-name)))
 
-(global-set-key (kbd "C-x e") 'ediff-buffers) ; 
+(global-set-key (kbd "C-x e") 'ediff-buffers) 
+(global-set-key (kbd "C-x w") 'ediff-revision)  
+
+(set-frame-parameter (selected-frame) 'alpha '(95 . 95))
+;(add-to-list 'default-frame-alist '(alpha . (95 . 95)))
