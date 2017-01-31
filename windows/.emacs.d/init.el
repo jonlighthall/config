@@ -38,8 +38,11 @@
 (setq initial-frame-alist '((top . 0) (left . 0)))
 ;; moves window to upper left corner
 
-;; Turn off welcome page
-(custom-set-variables '(inhibit-startup-screen t))
+(custom-set-variables
+ ;; Split ediff window vertically
+ '(ediff-split-window-function (quote split-window-horizontally))
+ ;; Turn off welcome page
+ '(inhibit-startup-screen t))
 
 ;; Turn on line numbering
 (require 'linum)
@@ -61,8 +64,10 @@
 (setq frame-title-format
       (concat  "%b - emacs@" (system-name)))
 
+;; Custom keyboard shortcuts
 (global-set-key (kbd "C-x e") 'ediff-buffers) 
 (global-set-key (kbd "C-x w") 'ediff-revision)  
 
+;; Window transparency
 (set-frame-parameter (selected-frame) 'alpha '(95 . 95))
 ;(add-to-list 'default-frame-alist '(alpha . (95 . 95)))
