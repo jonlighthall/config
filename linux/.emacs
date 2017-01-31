@@ -16,8 +16,11 @@
 ;; always end a file with a newline
 ;(setq require-final-newline 'query)
 
-;; Turn off welcome page
-(custom-set-variables '(inhibit-startup-screen t))
+(custom-set-variables
+ ;; Split ediff window vertically
+ '(ediff-split-window-function (quote split-window-horizontally))
+ ;; Turn off welcome page
+ '(inhibit-startup-screen t))
 
 ;; turn on font-lock mode
 (global-font-lock-mode t)
@@ -31,3 +34,10 @@
 
 ;; (load-file "~/.emacs.d/setnu.el")
 ;; (load-file "~/.emacs.d/psvn.el")
+
+;; Custom keyboard shortcuts
+(global-set-key (kbd "C-x e") 'ediff-buffers) 
+(global-set-key (kbd "C-x w") 'ediff-revision)  
+
+;; Window transparency, may not work in X-windows
+(set-frame-parameter (selected-frame) 'alpha '(95 . 95))
