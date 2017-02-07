@@ -12,5 +12,4 @@ PATH=$PATH:$HOME/bin
 export PATH
 echo "Welcome to" $HOSTNAME
 
-#cd ~/repository/analysis/ANASEN
-cd ~/code.git/trunk/analysis/ANASEN/
+cd ~/anasen
