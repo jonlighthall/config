@@ -1,0 +1,7 @@
+[user]
+	name = Jon Lighthall
+	email = lighthall@lsu.edu
+[core]
+	editor = ~/Downloads/emacs-24.5/src/emacs -nw
+[credential]
+	helper = cache --timeout 172800
