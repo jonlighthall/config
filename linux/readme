@@ -1,0 +1,5 @@
+copy these files to the appropriate folders
+
+.emacs is usually located in the home directory ~/
+
+vc-git.el is located in ~/Downloads/emacs-<verson>/lisp/vc/
