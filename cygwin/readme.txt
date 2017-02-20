@@ -1,0 +1,1 @@
+mklink /J .emacs.d C:\Users\jonli\OneDrive\Documents\.config\cygwin\.emacs.d
