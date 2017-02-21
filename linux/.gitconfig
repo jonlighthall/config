@@ -5,3 +5,5 @@
 	editor = ~/Downloads/emacs-24.5/src/emacs -nw
 [credential]
 	helper = cache --timeout 172800
+[color]
+	ui = true
