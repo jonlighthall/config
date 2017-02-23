@@ -1,7 +1,7 @@
 [user]
 	name = Jon Lighthall
 	email = jon.lighthall@gmail.com
-[core]
-	editor = C:\\Program Files (x86)\\emacs-25.1-i686-w64-mingw32\\bin\\emacs.exe
 [credential]
 	helper = cache --timeout 172800
+[core]
+	editor = /cygdrive/c/Program\\ Files\\ \\(x86\\)/emacs-25.1-i686-w64-mingw32/bin/emacs.exe `cygpath --windows ${1}` && set
