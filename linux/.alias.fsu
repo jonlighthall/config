@@ -1,3 +1,6 @@
+# .alias
+# Load site- or terminal-specific aliases and settings
+
 if [ $HOSTNAME = "elwood.physics.fsu.edu" ]; then
     :
     #source /usr/local/cern/root534/bin/thisroot.sh
@@ -12,3 +15,5 @@ alias jl='cd /home/lighthall/anasen/'
 alias emacs='~/Downloads/emacs-24.5/src/emacs'
 alias ray='ssh -Y lighthall@ray.physics.fsu.edu'
 alias elwood='ssh -Y lighthall@elwood.physics.fsu.edu'
+
+cd ~/anasen
