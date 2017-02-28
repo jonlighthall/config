@@ -12,4 +12,5 @@ PATH=$PATH:$HOME/bin
 export PATH
 echo "Welcome to" $HOSTNAME
 
+. ~/alias.fsu
 cd ~/anasen
