@@ -220,7 +220,7 @@ CYGWIN="${CYGWIN} nodosfilewarning"; export CYGWIN
 #alias gsview='/cygdrive/c/Program\ Files/Ghostgum/gsview/gsview64.exe'
 
 #Log on
-alias lson='ssh -Y lighthall@sonata.phy.anl.gov'
+alias lson='xwin & ssh -Y lighthall@sonata.phy.anl.gov'
 alias hson='ssh -Y -l helios@phy sonata.phy.anl.gov'
 alias bson='ssh -Y bavarians@sonata.phy.anl.gov'
 alias lcan='ssh -Y lighthall@cantata.phy.anl.gov'
