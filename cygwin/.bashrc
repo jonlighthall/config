@@ -197,21 +197,28 @@
 # 
 # alias cd=cd_func
 export DISPLAY=:0.0
+
+# Settings
+# Store 10000 commands in bash history
+export HISTFILESIZE=50000
+export HISTSIZE=40000
+# Don't put duplicate lines in the history
+export HISTCONTROL=ignoredups
+# Editors
+export SVN_EDITOR=emacs
+#export GIT_EDITOR=emacs
+# Cygwin
+#set CYGWIN=nodosfilewarning
+CYGWIN="${CYGWIN} nodosfilewarning"; export CYGWIN
+set HOME=/cygdrive/c/cygwin/home/lighthall/
+
+# Path replacements
 #export PATH=$PATH:/cygdrive/c/Program\ Files\ \(x86\)/emacs-25.1-bin-i686-mingw32/bin/
 #export PATH=$PATH:/cygdrive/c/Program\ Files/Hugin/bin
 #export PATH=$PATH:/cygdrive/c/root/bin
-#
-# ROOT
-#
 #export ROOTSYS='c:/root'   # must be in DOS format (change path!)
 #export PATH='cygpath -u $ROOTSYS'/bin:$PATH
-
 #export PATH=$PATH:/c/WINNT/system32:/c/WINNT:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/Tools/WinNT:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/MSDev98/Bin:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/Tools:/c/Program\ Files/Microsoft\ Visual\ Studio/VC98/bin:/c/Program\ Files/DevStudio/DF/bin:/c/Program\ Files/DevStudio/SharedIDE/bin
-
-#set CYGWIN=nodosfilewarning
-CYGWIN="${CYGWIN} nodosfilewarning"; export CYGWIN
-
-#Path replacements
 #alias emacs='/cygdrive/c/Program\ Files\ \(x86\)/emacs-23.4/bin/runemacs.exe'
 #alias emacs32='/cygdrive/c/Program\ Files/emacs-24.1/bin/runemacs.exe'
 #alias autooptimiser='/cygdrive/c/Program\ Files/Hugin/bin/autooptimiser.exe'
@@ -219,7 +226,7 @@ CYGWIN="${CYGWIN} nodosfilewarning"; export CYGWIN
 #alias firefox32='/cygdrive/c/Program\ Files/Mozilla\ Firefox/firefox.exe'
 #alias gsview='/cygdrive/c/Program\ Files/Ghostgum/gsview/gsview64.exe'
 
-#Log on
+# Log on (remote)
 alias lson='xwin & ssh -Y lighthall@sonata.phy.anl.gov'
 alias hson='ssh -Y -l helios@phy sonata.phy.anl.gov'
 alias bson='ssh -Y bavarians@sonata.phy.anl.gov'
@@ -248,17 +255,7 @@ alias xwin='run xwin -multiwindow -silent-dup-error'
 alias close='kill -9 `ps -a |grep xwin`; kill -9 `ps -a |grep ssh`;exit'
 #kill -9 `ps -a |grep defunct`
 
-# Store 10000 commands in bash history
-export HISTFILESIZE=50000
-export HISTSIZE=40000
-# Don't put duplicate lines in the history
-export HISTCONTROL=ignoredups
-
-set HOME=/cygdrive/c/cygwin/home/lighthall/
 #cd ~
 #xwin
 
 alias svni='svn info svn+ssh://lighthall@lighthall.triumf.ca/Users/lighthall/SkyDrive/Documents/repository/'
-
-export SVN_EDITOR=emacs
-#export GIT_EDITOR=emacs
