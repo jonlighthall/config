@@ -1,6 +1,7 @@
-# .alias
+# .bash_aliases
 # Load site- or terminal-specific aliases and settings
 
+# Load ROOT depending on which terminal is used
 if [ $HOSTNAME = "elwood.physics.fsu.edu" ]; then
     :
     #source /usr/local/cern/root534/bin/thisroot.sh
@@ -9,6 +10,7 @@ fi
 if [ $HOSTNAME = "ray.physics.fsu.edu" ]; then
     source /usr/local/cern/root5/bin/thisroot.sh
 fi
+echo ROOT path is `which root`
 
 alias anasen='ssh -Y anasen@dhcp111208.physics.fsu.edu'
 alias jl='cd /home/lighthall/anasen/'
