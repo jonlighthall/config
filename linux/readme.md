@@ -1,7 +1,7 @@
 copy these files to the appropriate folders
 
 ##Bash
-Use the following commands to create symbolic links from the home directory to the config directory
+Use the following commands to create symbolic links from the `/home/lighthall` directory to the `/home/lighthall/config` directory
 ```bash
 ln -s ~/config/linux/.bashrc .bashrc
 ln -s ~/config/linux/.bash_profile .bash_profile
