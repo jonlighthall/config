@@ -12,4 +12,6 @@ PATH=$PATH:$HOME/bin
 export PATH
 echo "Welcome to" $HOSTNAME
 
-. ~/.alias
+if [ -f ~/.bash_aliases ]; then
+    source ~/.bash_aliases
+fi
