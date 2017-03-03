@@ -10,6 +10,6 @@ ln -s ~/config/linux/.bash_aliases_<local> .bash_aliases
 
 ##Emacs
 
-.emacs is usually located in the home directory ~/
+.emacs is usually located in the home directory `~/`
 
-vc-git.el is located in ~/Downloads/emacs-<verson>/lisp/vc/
+`vc-git.el` is located in `~/Downloads/emacs-<verson>/lisp/vc/`
