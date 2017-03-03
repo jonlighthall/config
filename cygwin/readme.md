@@ -2,6 +2,11 @@
 All of the files in this directory are copied to the home directory in Cygwin.
 
 ##Bash
+Use the following commands to create symbolic links from the home directory to the config directory
+```bash
+ln -s ~/config/cygwin/.bashrc .bashrc
+ln -s ~/config/cygwin/.bash_profile .bash_profile
+```
 
 ##Git
 Use the following command to set properly set Emacs as the Git editor.
