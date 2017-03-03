@@ -15,7 +15,7 @@ export HISTSIZE=10000
 export HISTCONTROL=ignoredups
 # Editors
 export SVN_EDITOR=emacs
-export GIT_EDITOR=emacs
+#export GIT_EDITOR=emacs
 
 # Macros
 alias ls='ls --color'

@@ -14,7 +14,10 @@ echo ROOT path is `which root`
 
 alias anasen='ssh -Y anasen@dhcp111208.physics.fsu.edu'
 alias jl='cd /home/lighthall/anasen/'
-alias emacs='~/Downloads/emacs-24.5/src/emacs'
+#alias emacs='/home/lighthall/Downloads/emacs-24.5/src/emacs'
+alias emacs='~/bin/emacs'
+alias git='/home/lighthall/Downloads/git-2.8.4/bin/git'
+#alias git='~/bin/git'
 alias gnaut='gnome-terminal -e '"'"'nautilus ./  --no-desktop --browser'"'"' &'
 alias gmacs='gnome-terminal -e '"'"'/home/lighthall/Downloads/emacs-24.5/src/emacs'"'"' &'
 
