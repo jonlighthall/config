@@ -13,7 +13,7 @@ fi
 alias anasen='ssh -Y anasen@dhcp111208.physics.fsu.edu'
 alias jl='cd /home/lighthall/anasen/'
 alias emacs='~/Downloads/emacs-24.5/src/emacs'
-alias ray='ssh -Y lighthall@ray.physics.fsu.edu'
-alias elwood='ssh -Y lighthall@elwood.physics.fsu.edu'
+alias gnaut='gnome-terminal -e '"'"'nautilus ./  --no-desktop --browser'"'"' &'
+alias gmacs='gnome-terminal -e '"'"'/home/lighthall/Downloads/emacs-24.5/src/emacs'"'"' &'
 
 cd ~/anasen
