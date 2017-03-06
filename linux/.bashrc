@@ -15,7 +15,7 @@ export HISTSIZE=10000
 export HISTCONTROL=ignoredups
 # Editors
 export SVN_EDITOR=emacs
-export GIT_EDITOR=emacs
+#export GIT_EDITOR=emacs
 
 # Macros
 alias ls='ls --color'
@@ -36,5 +36,5 @@ alias ladd19='ssh  -Y emma@ladd19.triumf.ca'
 alias ladd20='ssh  -Y emma@ladd20.triumf.ca'
 alias ladd21='ssh  -Y emma@ladd21.triumf.ca'
 # FSU (physics.fsu.edu)
-alias elwood='xwin & ssh -Y lighthall@elwood.physics.fsu.edu'
-alias ray='xwin & ssh -Y lighthall@ray.physics.fsu.edu'
+alias elwood='ssh -Y lighthall@elwood.physics.fsu.edu'
+alias ray='ssh -Y lighthall@ray.physics.fsu.edu'
