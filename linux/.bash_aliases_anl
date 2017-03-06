@@ -4,12 +4,19 @@
 ssetup root_v5.32.03
 ssetup scarlet-2.1
 ssetup hupsort-1.x
-alias hson='ssh -X -l helios@phy sonata.phy.anl.gov'
-alias hcan='ssh -X -l helios@phy cantata.phy.anl.gov'
-alias hmal='ssh -Y -l helios@phy malaguena.onenet'
-alias himp='ssh -Y -l helios@phy impromptu.onenet'
 
-alias lson='ssh -X lighthall@sonata.phy.anl.gov'
+#phy.anl.gov
+alias hcan='ssh -Y -l helios@phy cantata.phy.anl.gov'
+alias hson='ssh -X -l helios@phy sonata.phy.anl.gov'
+
 alias lcan='ssh -X lighthall@cantata.phy.anl.gov'
+alias lson='ssh -X lighthall@sonata.phy.anl.gov'
+
+#onenet
+alias hbac='ssh -Y -l helios@phy bacchanale.onenet'
+alias himp='ssh -Y -l helios@phy impromptu.onenet'
+alias hmal='ssh -Y -l helios@phy malaguena.onenet'
+alias hnoc='ssh -Y -l helios@phy nocturne.onenet'
+
 alias lmal='ssh -Y -l lighthall malaguena.onenet'
 alias limp='ssh -Y -l lighthall impromptu.onenet'
