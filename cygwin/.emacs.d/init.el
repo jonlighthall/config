@@ -32,14 +32,14 @@
 ;;(add-hook 'flyspell-mode-hook 'flyspell-buffer) ;; slows downloading
 
 ;;; Frame appearance and behavior
+;; Set frame position
+(setq initial-frame-alist '((top . 0) (left . 0))) ; moves window to upper left corner
+
 ;; Set frame size
 (set-frame-size (selected-frame) 99 39);; (columns,rows)
 					; "snap" width is 73 (for 1280 px wide display)
 					; "pretty-print" width is 97 columns wide (+2 for line numbers)
 					; max height with triple-hieght taskbar is 40 (1366 res.)
-
-;; Set frame position
-(setq initial-frame-alist '((top . 0) (left . 0))) ; moves window to upper left corner
 
 ;; default to better frame titles
 (setq frame-title-format
