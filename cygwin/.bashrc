@@ -196,10 +196,9 @@
 # }
 # 
 # alias cd=cd_func
-export DISPLAY=:0.0
 
 # Settings
-# Store 10000 commands in bash history
+# Store 50000 commands in bash history
 export HISTFILESIZE=50000
 export HISTSIZE=40000
 # Don't put duplicate lines in the history
@@ -207,10 +206,44 @@ export HISTCONTROL=ignoredups
 # Editors
 export SVN_EDITOR=emacs
 #export GIT_EDITOR=emacs
+
+#Macros
+alias ls='ls --color=auto'
+# alias ls='ls -hF --color=tty'                 # classify files in colour
+alias svni='svn info svn+ssh://lighthall@lighthall.triumf.ca/Users/lighthall/SkyDrive/Documents/repository/'
+
+# Log on (remote)
+# Argonne (phy.anl.gov)
+alias bcan='ssh -Y bavarians@cantata.phy.anl.gov'
+alias bson='ssh -Y bavarians@sonata.phy.anl.gov'
+alias hcan='ssh -Y -l helios@phy cantata.phy.anl.gov'
+alias hson='ssh -Y -l helios@phy sonata.phy.anl.gov'
+alias lcan='ssh -Y lighthall@cantata.phy.anl.gov'
+alias lson='ssh -Y lighthall@sonata.phy.anl.gov'
+# TRIUMF (triumf.ca)
+alias lighthall='ssh -Y lighthall@lighthall.triumf.ca'
+alias ladd19='ssh  -Y emma@ladd19.triumf.ca'
+alias ladd20='ssh  -Y emma@ladd20.triumf.ca'
+alias ladd21='ssh  -Y emma@ladd21.triumf.ca'
+# FSU (physics.fsu.edu)
+alias elwood='ssh -Y lighthall@elwood.physics.fsu.edu'
+alias ray='ssh -Y lighthall@ray.physics.fsu.edu'
+
+#Port-forward
+alias bronco='ssh -v -ND 1584 j4lighth@bronco.wmich.edu'
+alias sonata='ssh -v -ND 1584 lighthall@sonata.phy.anl.gov'
+alias triumf='ssh -v -ND 1584 lighthall@lighthall.triumf.ca'
+
 # Cygwin
+export DISPLAY=:0.0
 #set CYGWIN=nodosfilewarning
 CYGWIN="${CYGWIN} nodosfilewarning"; export CYGWIN
 set HOME=/cygdrive/c/cygwin/home/lighthall/
+#alias xwin='startxwin; echo -e "\033c"'
+alias xwin='run xwin -multiwindow -silent-dup-error'
+alias close='kill -9 `ps -a |grep xwin`; kill -9 `ps -a |grep ssh`;exit'
+#kill -9 `ps -a |grep defunct`
+alias ssh='xwin & ssh'
 
 # Path replacements
 #export PATH=$PATH:/cygdrive/c/Program\ Files\ \(x86\)/emacs-25.1-bin-i686-mingw32/bin/
@@ -225,39 +258,3 @@ set HOME=/cygdrive/c/cygwin/home/lighthall/
 #alias firefox='/cygdrive/c/Program\ Files\ \(x86\)/Mozilla\ Firefox/firefox.exe'
 #alias firefox32='/cygdrive/c/Program\ Files/Mozilla\ Firefox/firefox.exe'
 #alias gsview='/cygdrive/c/Program\ Files/Ghostgum/gsview/gsview64.exe'
-
-# Log on (remote)
-alias lson='ssh -Y lighthall@sonata.phy.anl.gov'
-alias hson='ssh -Y -l helios@phy sonata.phy.anl.gov'
-alias bson='ssh -Y bavarians@sonata.phy.anl.gov'
-alias lcan='ssh -Y lighthall@cantata.phy.anl.gov'
-alias hcan='ssh -Y -l helios@phy cantata.phy.anl.gov'
-alias bcan='ssh -Y bavarians@cantata.phy.anl.gov'
-alias lighthall='ssh -Y lighthall@lighthall.triumf.ca'
-alias ladd19='ssh  -Y emma@ladd19.triumf.ca'
-alias ladd20='ssh  -Y emma@ladd20.triumf.ca'
-alias ladd21='ssh  -Y emma@ladd21.triumf.ca'
-#alias holly_local='ssh -v -Y lighthall@192.168.0.18'
-#alias holly_remote='ssh -v -Y -p 5903 lighthall@96.49.45.155'
-alias elwood='ssh -Y lighthall@elwood.physics.fsu.edu'
-alias ray='ssh -Y lighthall@ray.physics.fsu.edu'
-
-#Port-forward
-alias bronco='ssh -v -ND 1584 j4lighth@bronco.wmich.edu'
-alias sonata='ssh -v -ND 1584 lighthall@sonata.phy.anl.gov'
-alias triumf='ssh -v -ND 1584 lighthall@lighthall.triumf.ca'
-
-#Macros
-alias ls='ls --color=auto'
-#alias xwin='startxwin; echo -e "\033c"'
-alias xwin='run xwin -multiwindow -silent-dup-error'
-#alias triumf='xwin & ssh -Y lighthall@lighthall.triumf.ca'
-alias close='kill -9 `ps -a |grep xwin`; kill -9 `ps -a |grep ssh`;exit'
-#kill -9 `ps -a |grep defunct`
-
-#cd ~
-#xwin
-
-alias svni='svn info svn+ssh://lighthall@lighthall.triumf.ca/Users/lighthall/SkyDrive/Documents/repository/'
-# alias ls='ls -hF --color=tty'                 # classify files in colou
-alias ssh='xwin & ssh'
