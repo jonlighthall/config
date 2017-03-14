@@ -8,9 +8,9 @@ fi
 # User specific aliases and functions
 
 # Settings
-# Store 10000 commands in bash history
-export HISTFILESIZE=10000
-export HISTSIZE=10000
+# Store 50000 commands in bash history
+export HISTFILESIZE=50000
+export HISTSIZE=40000
 # Don't put duplicate lines in the history
 export HISTCONTROL=ignoredups
 # Editors
@@ -26,10 +26,10 @@ alias term='gnome-terminal &'
 # Argonne (phy.anl.gov)
 alias bcan='ssh -Y bavarians@cantata.phy.anl.gov'
 alias bson='ssh -Y bavarians@sonata.phy.anl.gov'
-alias lcan='ssh -Y lighthall@cantata.phy.anl.gov'
-alias lson='ssh -Y lighthall@sonata.phy.anl.gov'
 alias hcan='ssh -Y -l helios@phy cantata.phy.anl.gov'
 alias hson='ssh -Y -l helios@phy sonata.phy.anl.gov'
+alias lcan='ssh -Y lighthall@cantata.phy.anl.gov'
+alias lson='ssh -Y lighthall@sonata.phy.anl.gov'
 # TRIUMF (triumf.ca)
 alias lighthall='ssh -Y lighthall@lighthall.triumf.ca'
 alias ladd19='ssh  -Y emma@ladd19.triumf.ca'
