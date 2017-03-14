@@ -41,3 +41,6 @@
 
 ;; Window transparency, may not work in X-windows
 (set-frame-parameter (selected-frame) 'alpha '(95 . 95))
+
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'post-forward-angle-brackets)
