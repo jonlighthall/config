@@ -9,7 +9,10 @@
 ;; always end a file with a newline
 ;(setq require-final-newline 'query)
 
-;;; Frame appearance and behavior
+;; enable visual feedback on selections
+;(setq transient-mark-mode t)
+
+;;; ------Frame appearance and behavior---------------------
 ;; default to better frame titles
 (setq frame-title-format
       (concat  "%b - emacs@" (system-name)))
@@ -18,8 +21,11 @@
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
-;; Window transparency, may not work in X-windows
-(set-frame-parameter (selected-frame) 'alpha '(95 . 95))
+;; Set frame position
+(setq initial-frame-alist '((top . 0) (left . 0))) ; moves window to upper left corner
+
+;; Window transparency
+(set-frame-parameter (selected-frame) 'alpha '(95 . 95)) ;may not work in X-windows
 
 (custom-set-variables
  ;; Split ediff window vertically
@@ -27,7 +33,7 @@
  ;; Turn off welcome page
  '(inhibit-startup-screen t))
 
-;;; Highlighting and coding aides
+;;; ------Highlighting and coding aides---------------------
 ;; turn on font-lock mode
 (global-font-lock-mode t)
 
@@ -37,13 +43,9 @@
 ;; Turn on line numbering
 (require 'linum)
 (global-linum-mode 1)
-
-;; enable visual feedback on selections
-;(setq transient-mark-mode t)
-
 ;; (load-file "~/.emacs.d/setnu.el")
 ;; (load-file "~/.emacs.d/psvn.el")
 
-;; Custom keyboard shortcuts
+;;; ------Custom keyboard shortcuts-------------------------
 (global-set-key (kbd "C-x e") 'ediff-buffers) 
 (global-set-key (kbd "C-x w") 'ediff-revision)  
