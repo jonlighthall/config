@@ -227,7 +227,7 @@ set HOME=/cygdrive/c/cygwin/home/lighthall/
 #alias gsview='/cygdrive/c/Program\ Files/Ghostgum/gsview/gsview64.exe'
 
 # Log on (remote)
-alias lson='xwin & ssh -Y lighthall@sonata.phy.anl.gov'
+alias lson='ssh -Y lighthall@sonata.phy.anl.gov'
 alias hson='ssh -Y -l helios@phy sonata.phy.anl.gov'
 alias bson='ssh -Y bavarians@sonata.phy.anl.gov'
 alias lcan='ssh -Y lighthall@cantata.phy.anl.gov'
@@ -239,8 +239,8 @@ alias ladd20='ssh  -Y emma@ladd20.triumf.ca'
 alias ladd21='ssh  -Y emma@ladd21.triumf.ca'
 #alias holly_local='ssh -v -Y lighthall@192.168.0.18'
 #alias holly_remote='ssh -v -Y -p 5903 lighthall@96.49.45.155'
-alias elwood='xwin & ssh -Y lighthall@elwood.physics.fsu.edu'
-alias ray='xwin & ssh -Y lighthall@ray.physics.fsu.edu'
+alias elwood='ssh -Y lighthall@elwood.physics.fsu.edu'
+alias ray='ssh -Y lighthall@ray.physics.fsu.edu'
 
 #Port-forward
 alias bronco='ssh -v -ND 1584 j4lighth@bronco.wmich.edu'
@@ -259,3 +259,5 @@ alias close='kill -9 `ps -a |grep xwin`; kill -9 `ps -a |grep ssh`;exit'
 #xwin
 
 alias svni='svn info svn+ssh://lighthall@lighthall.triumf.ca/Users/lighthall/SkyDrive/Documents/repository/'
+# alias ls='ls -hF --color=tty'                 # classify files in colou
+alias ssh='xwin & ssh'
