@@ -1,6 +1,6 @@
 copy these files to the appropriate folders
 
-##Bash
+## Bash
 Use the following commands to create symbolic links from the `/home/lighthall` directory to the `/home/lighthall/config` directory
 ```bash
 ln -s ~/config/linux/.bashrc .bashrc
@@ -14,7 +14,7 @@ ln -s /home/lighthall/Downloads/emacs-24.5/src/emacs /home/lighthall/bin/emacs
 ln -s /home/Downloads/git-2.8.4/bin/git /home/lighthall/bin/git
 ```
 
-##Emacs
+## Emacs
 
 .emacs is usually located in the home directory `~/`
 
