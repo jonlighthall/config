@@ -62,7 +62,6 @@
 ;; Turn on line numbering
 (require 'linum)
 (global-linum-mode 1)
-;;(setq linum-format "%d ")
 
 ;; Custom keyboard shortcuts
 (global-set-key (kbd "C-x e") 'ediff-buffers) 
