@@ -1,4 +1,4 @@
-;;; Settings for DOS and Cygwin 
+;;; ------Settings for DOS and Cygwin-----------------------
 (setq exec-path '("C:/cygwin/bin/"))
 (setq-default ispell-program-name "aspell")
 
@@ -15,7 +15,7 @@
   (setq buffer-display-table (make-display-table))
   (aset buffer-display-table ?\^M []))
 
-;;; Spelling
+;;; ------Spelling------------------------------------------
 (dolist (hook '(text-mode-hook))
   (add-hook hook (lambda () (flyspell-mode 1))))
 (add-hook 'c++-mode-hook
@@ -31,7 +31,11 @@
 
 ;;(add-hook 'flyspell-mode-hook 'flyspell-buffer) ;; slows downloading
 
-;;; Frame appearance and behavior
+;;; ------Frame appearance and behavior---------------------
+;; default to better frame titles
+(setq frame-title-format
+      (concat  "%b - emacs@" (system-name)))
+
 ;; Set frame position
 (setq initial-frame-alist '((top . 0) (left . 0))) ; moves window to upper left corner
 
@@ -40,10 +44,6 @@
 					; "snap" width is 73 (for 1280 px wide display)
 					; "pretty-print" width is 97 columns wide (+2 for line numbers)
 					; max height with triple-hieght taskbar is 40 (1366 res.)
-
-;; default to better frame titles
-(setq frame-title-format
-      (concat  "%b - emacs@" (system-name)))
 
 ;; Window transparency
 (set-frame-parameter (selected-frame) 'alpha '(95 . 95))
@@ -55,7 +55,7 @@
  ;; Turn off welcome page
  '(inhibit-startup-screen t))
 
-;;; Highlighting and coding aides
+;;; ------Highlighting and coding aides---------------------
 ;; Syntax highlighting (font-lock-mode)
 (cond ((fboundp 'global-font-lock-mode)
        ;; Turn on font-lock in all modes that support it
@@ -70,6 +70,6 @@
 (require 'linum)
 (global-linum-mode 1)
 
-;;; Custom keyboard shortcuts
+;;; ------Custom keyboard shortcuts-------------------------
 (global-set-key (kbd "C-x e") 'ediff-buffers) 
 (global-set-key (kbd "C-x w") 'ediff-revision)  
