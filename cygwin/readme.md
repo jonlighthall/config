@@ -18,5 +18,6 @@ git config --global core.editor '/cygdrive/c/Program\ Files\ \(x86\)/emacs-25.1-
 Make a directory junction from the parent directory `C:\Users\jonli\AppData\Roaming\` using the following command
 
 ```bash
-mklink /J .emacs.d C:\Users\jonli\OneDrive\Documents\.config\cygwin\.emacs.d
+rm .emacs.d
+mklink /J .emacs.d C:\Users\jonli\OneDrive\Documents\.cygwin_home\config\cygwin\.emacs.d
 ```
