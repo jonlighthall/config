@@ -7,4 +7,8 @@ chere,^
 aspell,^
 aspell-en,^
 xinit,^
-gcc-g++,^gcc-fortran
+gcc-g++,^
+gcc-fortran,^
+xeyes,^
+xclock,^
+xlogo
