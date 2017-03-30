@@ -3,18 +3,29 @@
 ;;; uncomment this line to disable loading of "default.el" at startup
 ;; (setq inhibit-default-init t)
 
-;; enable visual feedback on selections
-;(setq transient-mark-mode t)
-
-;; default to better frame titles
-(setq frame-title-format
-      (concat  "%b - emacs@" (system-name)))
-
 ;; default to unified diffs
 ;(setq diff-switches "-u")
 
 ;; always end a file with a newline
 ;(setq require-final-newline 'query)
+
+;; enable visual feedback on selections
+;(setq transient-mark-mode t)
+
+;;; ------Frame appearance and behavior---------------------
+;; default to better frame titles
+(setq frame-title-format
+      (concat  "%b - emacs@" (system-name)))
+
+;; unique buffer names
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'post-forward-angle-brackets)
+
+;; Set frame position
+(setq initial-frame-alist '((top . 0) (left . 0))) ; moves window to upper left corner
+
+;; Window transparency
+(set-frame-parameter (selected-frame) 'alpha '(95 . 95)) ;may not work in X-windows
 
 (custom-set-variables
  ;; Split ediff window vertically
@@ -22,6 +33,7 @@
  ;; Turn off welcome page
  '(inhibit-startup-screen t))
 
+;;; ------Highlighting and coding aides---------------------
 ;; turn on font-lock mode
 (global-font-lock-mode t)
 
@@ -31,13 +43,9 @@
 ;; Turn on line numbering
 (require 'linum)
 (global-linum-mode 1)
-
 ;; (load-file "~/.emacs.d/setnu.el")
 ;; (load-file "~/.emacs.d/psvn.el")
 
-;; Custom keyboard shortcuts
+;;; ------Custom keyboard shortcuts-------------------------
 (global-set-key (kbd "C-x e") 'ediff-buffers) 
 (global-set-key (kbd "C-x w") 'ediff-revision)  
-
-;; Window transparency, may not work in X-windows
-(set-frame-parameter (selected-frame) 'alpha '(95 . 95))
