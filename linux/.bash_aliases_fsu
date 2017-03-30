@@ -12,11 +12,18 @@ if [ $HOSTNAME = "ray.physics.fsu.edu" ]; then
 fi
 echo ROOT path is `which root`
 
+# location of DAQ terminal
 alias anasen='ssh -Y anasen@dhcp111208.physics.fsu.edu'
-alias jl='cd /home/lighthall/anasen/'
+alias anasen='ssh -Y anasen@dhcp11195.physics.fsu.edu'
+
+# Set execution paths for manually-installed programs
 alias emacs='~/bin/emacs'
 alias git='~/bin/git'
-alias gnaut='gnome-terminal -e '"'"'nautilus ./  --no-desktop --browser'"'"' &'
-alias gmacs='gnome-terminal -e '"'"'/home/lighthall/Downloads/emacs-24.5/src/emacs'"'"' &'
+
+# Gtk and Glib version errors will fill terminal window for newer progrmas.
+# Use these commands to open modern programs in a new terminal.
+alias gnaut='gnome-terminal -e '"'"'nautilus ./  --no-desktop --browser'"'"''
+alias gmacs='gnome-terminal -x '"'"'/home/lighthall/Downloads/emacs-24.5/src/emacs'"'"''
+alias gfox='gnome-terminal -e '"'"'firefox'"'"' &'
 
 cd ~/anasen
