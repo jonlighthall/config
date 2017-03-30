@@ -21,6 +21,7 @@ export SVN_EDITOR=emacs
 alias ls='ls --color'
 alias naut='nautilus --no-desktop --browser ./ &'
 alias term='gnome-terminal &'
+alias ping='ping -c 5'
 
 # Log on (remote)
 # Argonne (phy.anl.gov)

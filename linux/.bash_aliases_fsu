@@ -22,10 +22,13 @@ alias git='~/bin/git'
 
 # Gtk and Glib version errors will fill terminal window for newer progrmas.
 # Use these commands to open modern programs in a new terminal.
-alias gnaut='gnome-terminal -e '"'"'nautilus ./  --no-desktop --browser'"'"''
-alias gmacs='gnome-terminal -x '"'"'/home/lighthall/Downloads/emacs-24.5/src/emacs'"'"''
+alias gnaut='gnome-terminal -e '"'"'nautilus ./  --no-desktop --browser'"'"' &'
+alias gmacs='gnome-terminal -x '"'"'/home/lighthall/Downloads/emacs-24.5/src/emacs'"'"' &'
 alias gfox='gnome-terminal -e '"'"'firefox'"'"' &'
 
 # location of working directory
 alias jl='cd /home/lighthall/anasen/'
 cd ~/anasen
+
+alias setnw='git config --global core.editor '"'"'/home/lighthall/Downloads/emacs-24.5/src/emacs -nw'"'"''
+alias setw='git config --global core.editor '"'"'/home/lighthall/Downloads/emacs-24.5/src/emacs'"'"''
