@@ -26,4 +26,6 @@ alias gnaut='gnome-terminal -e '"'"'nautilus ./  --no-desktop --browser'"'"''
 alias gmacs='gnome-terminal -x '"'"'/home/lighthall/Downloads/emacs-24.5/src/emacs'"'"''
 alias gfox='gnome-terminal -e '"'"'firefox'"'"' &'
 
+# location of working directory
+alias jl='cd /home/lighthall/anasen/'
 cd ~/anasen
