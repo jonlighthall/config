@@ -19,3 +19,10 @@ ln -s /home/Downloads/git-2.8.4/bin/git /home/lighthall/bin/git
 .emacs is usually located in the home directory `~/`
 
 `vc-git.el` is located in `~/Downloads/emacs-<verson>/lisp/vc/`
+
+## ROOT
+Use the following command to create symlink from the home directory to the location of the file. 
+```bash
+rm .rootrc
+ln -s ~/config/linux/.rootrc .rootrc
+```
