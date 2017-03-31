@@ -21,3 +21,9 @@ Make a directory junction from the parent directory `C:\Users\jonli\AppData\Roam
 rm .emacs.d
 mklink /J .emacs.d C:\Users\jonli\OneDrive\Documents\.cygwin_home\config\cygwin\.emacs.d
 ```
+Make a directory junction from the Cygwin home `C:\Users\jonli\OneDrive\Documents\.cygwin_home\` using the following command.
+
+```bash
+rm .emacs.d
+mklink /J .emacs.d config\cygwin\.emacs.d
+```
