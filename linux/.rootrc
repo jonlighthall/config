@@ -37,5 +37,3 @@ Rint.History:            $(HOME)/.root_hist
  Rint.HistSize:         50000
 # Set to -1 for sensible default (80% of HistSize), set to 0 to disable history.
  Rint.HistSave:         40000
-# Print a single line welcome message instead of the default verbose version
-# Rint.WelcomeLite:      no
