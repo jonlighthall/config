@@ -28,7 +28,8 @@ git config --global core.editor '/cygdrive/c/Program\ Files\ \(x86\)/emacs-25.1-
 ```
 
 ## ROOT
-Use the following command to create symlink from the user directory to the location of the file.
+Use the following command to create symlink from the user directory to the location of the file. This command should be used from both the Windows home directory (`C:\Users\jonli`) and the Cygwin home dicectory (`~`).
 ```bash
-mklink .rootrc C:\Users\jonli\OneDrive\Documents\.cygwin_home\root.git\settings\.rootrc
+rm .rootrc
+mklink .rootrc C:\Users\jonli\OneDrive\Documents\.cygwin_home\config\cygwin\.rootrc
 ```
