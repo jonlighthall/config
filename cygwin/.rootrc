@@ -4,6 +4,7 @@
 # Path used to find macros.
 # Paths are different for Unix and Windows. The example shows the defaults
 # for all ROOT applications for either Unix or Windows.
+#Unix.*.Root.MacroPath:      .:$(ROOTSYS)/macros:
 #WinNT.*.Root.MacroPath:     .;C:\Users\jonli\OneDrive\Documents\.root_macros\scripts;
 WinNT.*.Root.MacroPath:     .;C:\Users\jonli\OneDrive\Documents\.cygwin_home\root.git\scripts;
 
@@ -22,9 +23,9 @@ Hist.Binning.3D.Profy:      100
 
 # Rint (interactive ROOT executable) specific alias, logon and logoff macros.
 #Rint.Load:               rootalias.C
+# If rootlogon.C is locatedin MacroPath, no futher setting is needed.
 #Rint.Logon:              C:\Users\jonli\OneDrive\Documents\.root_macros\scripts\rootlogon.C
 #Rint.Logon:              C:\Users\jonli\OneDrive\Documents\.cygwin_home\root.git\scripts\rootlogon.C
-# If rootlogon.C is locatedin MacroPath, no futher setting is needed.
 #Rint.Logoff:             rootlogoff.C
 
 ### History
@@ -37,4 +38,3 @@ Rint.History: C:\Users\jonli\OneDrive\Documents\.cygwin_home\.root_hist
  Rint.HistSize:         50000
 # Set to -1 for sensible default (80% of HistSize), set to 0 to disable history.
  Rint.HistSave:         40000
-
