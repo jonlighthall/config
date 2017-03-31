@@ -8,12 +8,6 @@ ln -s ~/config/cygwin/.bashrc .bashrc
 ln -s ~/config/cygwin/.bash_profile .bash_profile
 ```
 
-## Git
-Use the following command to properly set Emacs as the Git editor under Cygwin. Without this setting, Emacs cannot be used as the default Git editor: the conflict between the DOS file path and the cygpath will prevent commit messages to be saved.
-```bash
-git config --global core.editor '/cygdrive/c/Program\ Files\ \(x86\)/emacs-25.1-i686-w64-mingw32/bin/emacs.exe `cygpath --windows ${1}` && set'
-```
-
 ## Emacs
 Make a directory junction from the parent directory `C:\Users\jonli\AppData\Roaming\` using the following command.
 
@@ -26,4 +20,15 @@ Make a directory junction from the Cygwin home `C:\Users\jonli\OneDrive\Document
 ```bash
 rm .emacs.d
 mklink /J .emacs.d config\cygwin\.emacs.d
+```
+## Git
+Use the following command to properly set Emacs as the Git editor under Cygwin. Without this setting, Emacs cannot be used as the default Git editor: the conflict between the DOS file path and the cygpath will prevent commit messages to be saved.
+```bash
+git config --global core.editor '/cygdrive/c/Program\ Files\ \(x86\)/emacs-25.1-i686-w64-mingw32/bin/emacs.exe `cygpath --windows ${1}` && set'
+```
+
+## ROOT
+Use the following command to create symlink from the user directory to the location of the file.
+```bash
+mklink .rootrc C:\Users\jonli\OneDrive\Documents\.cygwin_home\root.git\settings\.rootrc
 ```
