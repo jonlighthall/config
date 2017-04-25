@@ -240,10 +240,11 @@ export DISPLAY=:0.0
 CYGWIN="${CYGWIN} nodosfilewarning"; export CYGWIN
 set HOME=/cygdrive/c/cygwin/home/lighthall/
 #alias xwin='startxwin; echo -e "\033c"'
-alias xwin='run xwin -multiwindow -silent-dup-error'
+alias xwin='run xwin -multiwindow -silent-dup-error -multiplemonitors'
 alias close='kill -9 `ps -a |grep xwin`; kill -9 `ps -a |grep ssh`;exit'
 #kill -9 `ps -a |grep defunct`
 alias ssh='xwin & ssh'
+alias vc='/cygdrive/c/Program\ Files\ \(x86\)/Microsoft\ Visual\ Studio/2017/Community/VC/Auxiliary/Build/vcvarsall.bat x86'
 
 # Path replacements
 #export PATH=$PATH:/cygdrive/c/Program\ Files\ \(x86\)/emacs-25.1-bin-i686-mingw32/bin/
