@@ -9,13 +9,13 @@ ln -s ~/config/cygwin/.bash_profile .bash_profile
 ```
 
 ## Emacs
-Make a directory junction from the parent directory `C:\Users\jonli\AppData\Roaming\` using the following command.
+Make a directory junction from the parent directory `C:\Users\jonli\AppData\Roaming\` using the following command. Open a command prompt as Administrator.
 
 ```bash
 rm .emacs.d
 mklink /J .emacs.d C:\Users\jonli\OneDrive\Documents\.cygwin_home\config\cygwin\.emacs.d
 ```
-Make a directory junction from the Cygwin home `C:\Users\jonli\OneDrive\Documents\.cygwin_home\` using the following command.
+Make a directory junction from the Cygwin home `C:\Users\jonli\OneDrive\Documents\.cygwin_home\` using the following command. Open a command prompt as Administrator.
 
 ```bash
 rm .emacs.d
@@ -28,7 +28,11 @@ git config --global core.editor '/cygdrive/c/Program\ Files\ \(x86\)/emacs-25.1-
 ```
 
 ## ROOT
-Use the following command to create symlink from the user directory to the location of the file. This command should be used from both the Windows home directory (`C:\Users\jonli`) and the Cygwin home dicectory (`~`).
+Use the following command to create symlink from the user directory to the location of the file. This command should be used from both
+* the Windows home directory (`C:\Users\jonli`) and 
+* the Cygwin home dicectory (`C:\Users\jonli\OneDrive\Documents\.cygwin_home`).
+
+Open a command prompt as Administrator.
 ```bash
 rm .rootrc
 mklink .rootrc C:\Users\jonli\OneDrive\Documents\.cygwin_home\config\cygwin\.rootrc
