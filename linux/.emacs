@@ -22,7 +22,7 @@
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
 ;; Set frame position
-(setq initial-frame-alist '((top . 0) (left . 0))) ; moves window to upper left corner
+(setq initial-frame-alist '((top . 70) (left . 0))) ; moves window to upper left corner
 
 ;; Window transparency
 (set-frame-parameter (selected-frame) 'alpha '(95 . 95)) ;may not work in X-windows
@@ -48,4 +48,5 @@
 
 ;;; ------Custom keyboard shortcuts-------------------------
 (global-set-key (kbd "C-x e") 'ediff-buffers) 
-(global-set-key (kbd "C-x w") 'ediff-revision)  
+(global-set-key (kbd "C-x w") 'ediff-revision)
+(global-set-key (kbd "C-x d") 'ediff-current-file)
