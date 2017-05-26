@@ -15,8 +15,10 @@ ln -s /home/Downloads/git-2.8.4/bin/git /home/lighthall/bin/git
 ```
 
 ## Emacs
-
 .emacs is usually located in the home directory `~/`
+```bash
+ln -s ~/config/linux/.emacs .emacs
+```
 
 `vc-git.el` is located in `~/Downloads/emacs-<verson>/lisp/vc/`
 
