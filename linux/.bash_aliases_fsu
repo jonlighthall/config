@@ -1,3 +1,4 @@
+#!/bin/bash
 # .bash_aliases
 # Load site- or terminal-specific aliases and settings
 
@@ -28,7 +29,26 @@ alias gfox='gnome-terminal -e '"'"'firefox'"'"' &'
 
 # location of working directory
 alias jl='cd /home/lighthall/anasen/'
-cd ~/anasen
+alias si='cd /home/lighthall/anasen/SiCal/'
+cd /home/lighthall/anasen
 
 alias setnw='git config --global core.editor '"'"'/home/lighthall/Downloads/emacs-24.5/src/emacs -nw'"'"''
 alias setw='git config --global core.editor '"'"'/home/lighthall/Downloads/emacs-24.5/src/emacs'"'"''
+
+function duf {	       
+    du -k "$@" | sort -n |
+	while read size fname; do
+     	    for unit in k M G T P E Z Y;
+	    do
+		if [ $size -lt 1024 ]; then
+		    echo -e "${size}${unit}B${fname}";
+		    break;
+		fi;
+		size=$((size/1024));
+	    done;
+	done
+}
+
+alias du1='duf --max-depth=1'
+alias du2='duf --max-depth=2'
+alias du0='duf --max-depth=0'
