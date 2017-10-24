@@ -22,6 +22,10 @@ rm .emacs.d
 mklink /J .emacs.d config\cygwin\.emacs.d
 ```
 ## Git
+Use the following commands to create symbolic links from the home directory to the config directory
+```bash
+ln -s ~/config/cygwin/.gitconfig .gitconfig
+```
 Use the following command to properly set Emacs as the Git editor under Cygwin. Without this setting, Emacs cannot be used as the default Git editor: the conflict between the DOS file path and the cygpath will prevent commit messages to be saved.
 ```bash
 git config --global core.editor '/cygdrive/c/Program\ Files\ \(x86\)/emacs-25.1-i686-w64-mingw32/bin/emacs.exe `cygpath --windows ${1}` && set'
