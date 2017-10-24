@@ -1,6 +1,6 @@
 from <https://help.github.com/articles/changing-author-info/>
 
-```bash
+````bash
 ./change.sh
 git push --force --tags origin 'refs/heads/*'
-```
+````

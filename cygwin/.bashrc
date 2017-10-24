@@ -222,12 +222,13 @@ alias lcan='ssh -Y lighthall@cantata.phy.anl.gov'
 alias lson='ssh -Y lighthall@sonata.phy.anl.gov'
 # TRIUMF (triumf.ca)
 alias lighthall='ssh -Y lighthall@lighthall.triumf.ca'
-alias ladd19='ssh  -Y emma@ladd19.triumf.ca'
-alias ladd20='ssh  -Y emma@ladd20.triumf.ca'
-alias ladd21='ssh  -Y emma@ladd21.triumf.ca'
+alias ladd19='ssh -Y emma@ladd19.triumf.ca'
+alias ladd20='ssh -Y emma@ladd20.triumf.ca'
+alias ladd21='ssh -Y emma@ladd21.triumf.ca'
 # FSU (physics.fsu.edu)
 alias elwood='ssh -Y lighthall@elwood.physics.fsu.edu'
 alias ray='ssh -Y lighthall@ray.physics.fsu.edu'
+alias killelwood="ssh lighthall@elwood.physics.fsu.edu 'pkill root'"
 
 #Port-forward
 alias bronco='ssh -v -ND 1584 j4lighth@bronco.wmich.edu'
@@ -243,8 +244,9 @@ set HOME=/cygdrive/c/cygwin/home/lighthall/
 alias xwin='run xwin -multiwindow -silent-dup-error -multiplemonitors'
 alias close='kill -9 `ps -a |grep xwin`; kill -9 `ps -a |grep ssh`;exit'
 #kill -9 `ps -a |grep defunct`
-alias ssh='xwin & ssh'
+#alias ssh='xwin & ssh' #this interferes with ssh-only commands
 alias vc='/cygdrive/c/Program\ Files\ \(x86\)/Microsoft\ Visual\ Studio/2017/Community/VC/Auxiliary/Build/vcvarsall.bat x86'
+xwin #start xwin on startup
 
 # Path replacements
 #export PATH=$PATH:/cygdrive/c/Program\ Files\ \(x86\)/emacs-25.1-bin-i686-mingw32/bin/
@@ -255,7 +257,4 @@ alias vc='/cygdrive/c/Program\ Files\ \(x86\)/Microsoft\ Visual\ Studio/2017/Com
 #export PATH=$PATH:/c/WINNT/system32:/c/WINNT:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/Tools/WinNT:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/MSDev98/Bin:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/Tools:/c/Program\ Files/Microsoft\ Visual\ Studio/VC98/bin:/c/Program\ Files/DevStudio/DF/bin:/c/Program\ Files/DevStudio/SharedIDE/bin
 #alias emacs='/cygdrive/c/Program\ Files\ \(x86\)/emacs-23.4/bin/runemacs.exe'
 #alias emacs32='/cygdrive/c/Program\ Files/emacs-24.1/bin/runemacs.exe'
-#alias autooptimiser='/cygdrive/c/Program\ Files/Hugin/bin/autooptimiser.exe'
-#alias firefox='/cygdrive/c/Program\ Files\ \(x86\)/Mozilla\ Firefox/firefox.exe'
-#alias firefox32='/cygdrive/c/Program\ Files/Mozilla\ Firefox/firefox.exe'
 #alias gsview='/cygdrive/c/Program\ Files/Ghostgum/gsview/gsview64.exe'
