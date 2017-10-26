@@ -4,15 +4,14 @@
 # Path used to find macros.
 # Paths are different for Unix and Windows. The example shows the defaults
 # for all ROOT applications for either Unix or Windows.
-#Unix.*.Root.MacroPath:      .:$(ROOTSYS)/macros:
 #WinNT.*.Root.MacroPath:     .;C:\Users\jonli\OneDrive\Documents\.root_macros\scripts;
 WinNT.*.Root.MacroPath:     .;C:\Users\jonli\OneDrive\Documents\.cygwin_home\root.git\scripts;
 
 # Default histogram binnings for TTree::Draw().
 Hist.Binning.1D.x:          2048
 
-Hist.Binning.2D.x:           80
-Hist.Binning.2D.y:           80
+Hist.Binning.2D.x:          512	
+Hist.Binning.2D.y:          512
 Hist.Binning.2D.Prof:       100
 
 Hist.Binning.3D.x:           20
