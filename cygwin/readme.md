@@ -11,13 +11,13 @@ mklink .bash_profile C:\Users\jonli\OneDrive\Documents\.cygwin_home\config\cygwi
 Make a directory junction from the parent directory `C:\Users\jonli\AppData\Roaming\` using the following command. Open a command prompt as Administrator.
 
 ```bash
-rm .emacs.d
+rm -r .emacs.d
 mklink /J .emacs.d C:\Users\jonli\OneDrive\Documents\.cygwin_home\config\cygwin\.emacs.d
 ```
 Make a directory junction from the Cygwin home `C:\Users\jonli\OneDrive\Documents\.cygwin_home\` using the following command. Open a command prompt as Administrator.
 
 ```bash
-rm .emacs.d
+rm -r .emacs.d
 mklink /J .emacs.d config\cygwin\.emacs.d
 ```
 ## Git
