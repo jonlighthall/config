@@ -4,7 +4,6 @@ All of the files in this directory are copied to the home directory in Cygwin.
 ## Bash
 Use the following commands to create symbolic links from the home directory to the config directory
 ```bash
-ln -s ~/config/cygwin/.bashrc .bashrc
 ln -s ~/config/cygwin/.bash_profile .bash_profile
 ```
 
@@ -22,9 +21,9 @@ rm .emacs.d
 mklink /J .emacs.d config\cygwin\.emacs.d
 ```
 ## Git
-Use the following commands to create symbolic links from the home directory to the config directory
+Use the following command to create a symbolic link from the home directory to the config directory. Open a command prompt as Administrator.
 ```bash
-ln -s ~/config/cygwin/.gitconfig .gitconfig
+mklink .gitconfig C:\Users\jonli\OneDrive\Documents\.cygwin_home\config\cygwin\.gitconfig
 ```
 Use the following command to properly set Emacs as the Git editor under Cygwin. Without this setting, Emacs cannot be used as the default Git editor: the conflict between the DOS file path and the cygpath will prevent commit messages to be saved.
 ```bash
