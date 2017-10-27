@@ -5,4 +5,4 @@
 	helper = cache --timeout 172800
 	helper = store --file ~/.git-credentials
 [core]
-	editor = /cygdrive/c/Program\\ Files\\ \\(x86\\)/emacs-25.1-i686-w64-mingw32/bin/emacs.exe -nw `cygpath -w ${1}` && set
+	editor = /cygdrive/c/Program\\ Files/emacs-25.2-i686/bin/emacs.exe `cygpath -w ${1}` && set

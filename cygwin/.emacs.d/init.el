@@ -72,4 +72,5 @@
 
 ;;; ------Custom keyboard shortcuts-------------------------
 (global-set-key (kbd "C-x e") 'ediff-buffers) 
-(global-set-key (kbd "C-x w") 'ediff-revision)  
+(global-set-key (kbd "C-x w") 'ediff-revision)
+(global-set-key (kbd "C-x d") 'ediff-current-file)
