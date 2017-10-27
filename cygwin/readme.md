@@ -1,10 +1,10 @@
 # dotfiles for Cygwin on Windows
-All of the files in this directory are copied to the home directory in Cygwin.
+One way to utilize the files in this directory is to copy them  the Cygwin home directory. However, changes in the files will not be tracked by Git. Under previous versions of Windows and Cygwin, Linux-like symbolic links could be made using the `ln -s` command. This approach will allow the files to be read by Cygwin, but they cannot be opened in programs like emacs. As of this writing, links must be created in an elevated Command Prompt using the `mklink` command. Creating symlinks in this way allows one copy of the file to be accessed from multiple locations and OneDrive will only sync on copy of the file.
 
 ## Bash
-Use the following commands to create symbolic links from the home directory to the config directory
+Use the following commands to create a symbolic link from the home directory to the `config\cygwin` directory
 ```bash
-ln -s ~/config/cygwin/.bash_profile .bash_profile
+mklink .bash_profile C:\Users\jonli\OneDrive\Documents\.cygwin_home\config\cygwin\.bash_profile
 ```
 
 ## Emacs
@@ -21,7 +21,7 @@ rm .emacs.d
 mklink /J .emacs.d config\cygwin\.emacs.d
 ```
 ## Git
-Use the following command to create a symbolic link from the home directory to the config directory. Open a command prompt as Administrator.
+Use the following command to create a symbolic link from the home directory to the `config\cygwin` directory. Open a command prompt as Administrator.
 ```bash
 mklink .gitconfig C:\Users\jonli\OneDrive\Documents\.cygwin_home\config\cygwin\.gitconfig
 ```
