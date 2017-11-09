@@ -40,3 +40,8 @@ Open a command prompt as Administrator.
 rm .rootrc
 mklink .rootrc C:\Users\jonli\OneDrive\Documents\.cygwin_home\config\cygwin\.rootrc
 ```
+
+```bash
+rm .rootrc
+rsync -v config/cygwin/.rootrc ./
+```
