@@ -16,6 +16,9 @@ echo ROOT path is `which root`
 # location of DAQ terminal
 alias anasen='ssh -Y anasen@dhcp111208.physics.fsu.edu'
 alias anasen='ssh -Y anasen@dhcp11195.physics.fsu.edu'
+alias anasen='ssh -Y anasen@nucx7'
+alias lsudaq2='ssh -Y splitpole@dhcp111208.physics.fsu.edu'
+alias splitpole='ssh -Y splitpole@dhcp11103.physics.fsu.edu'
 
 # Set execution paths for manually-installed programs
 alias emacs='~/bin/emacs'
