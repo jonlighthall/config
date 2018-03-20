@@ -23,6 +23,8 @@ alias splitpole='ssh -Y splitpole@dhcp11108.physics.fsu.edu'
 # Set execution paths for manually-installed programs
 alias emacs='~/bin/emacs'
 alias git='~/bin/git'
+alias openssl='~/bin/openssl'
+alias curl='~/bin/curl'
 
 # Gtk and Glib version errors will fill terminal window for newer progrmas.
 # Use these commands to open modern programs in a new terminal.
