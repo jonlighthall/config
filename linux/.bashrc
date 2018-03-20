@@ -1,4 +1,5 @@
 # .bashrc
+echo Using GitHub version of .bashrc
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
@@ -15,7 +16,7 @@ export HISTSIZE=40000
 export HISTCONTROL=ignoredups
 # Editors
 export SVN_EDITOR=emacs
-#export GIT_EDITOR=emacs
+export GIT_EDITOR=emacs
 
 # Macros
 alias ls='ls --color'
