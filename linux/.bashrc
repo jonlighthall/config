@@ -1,5 +1,4 @@
 # .bashrc
-echo Using GitHub version of .bashrc
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
