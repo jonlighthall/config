@@ -228,7 +228,10 @@ alias ladd20='ssh -Y emma@ladd20.triumf.ca'
 alias ladd21='ssh -Y emma@ladd21.triumf.ca'
 # FSU (physics.fsu.edu)
 alias elwood='ssh -Y lighthall@elwood.physics.fsu.edu'
+alias lsudaq2='ssh -Y splitpole@dhcp111201.physics.fsu.edu'
+alias murph='ssh -Y lighthall@murph.physics.fsu.edu'
 alias ray='ssh -Y lighthall@ray.physics.fsu.edu'
+alias splitpole='ssh -Y splitpole@dhcp11108.physics.fsu.edu'
 alias killelwood="ssh lighthall@elwood.physics.fsu.edu 'pkill root'"
 
 #Port-forward
