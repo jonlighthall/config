@@ -1,0 +1,39 @@
+# ROOT Environment settings are handled via the class TEnv. To see
+# which values are active do: gEnv->Print().
+
+# Path used to find macros.
+# Paths are different for Unix and Windows. The example shows the defaults
+# for all ROOT applications for either Unix or Windows.
+#WinNT.*.Root.MacroPath:     .;C:\Users\jonli\OneDrive\Documents\.root_macros\scripts;
+WinNT.*.Root.MacroPath:     .;C:\Users\jonli\OneDrive\Documents\.cygwin_home\root.git\scripts;
+
+# Default histogram binnings for TTree::Draw().
+Hist.Binning.1D.x:          2048
+
+Hist.Binning.2D.x:          512	
+Hist.Binning.2D.y:          512
+Hist.Binning.2D.Prof:       100
+
+Hist.Binning.3D.x:           20
+Hist.Binning.3D.y:           20
+Hist.Binning.3D.z:           20
+Hist.Binning.3D.Profx:      100
+Hist.Binning.3D.Profy:      100
+
+# Rint (interactive ROOT executable) specific alias, logon and logoff macros.
+#Rint.Load:               rootalias.C
+# If rootlogon.C is locatedin MacroPath, no futher setting is needed.
+#Rint.Logon:              C:\Users\jonli\OneDrive\Documents\.root_macros\scripts\rootlogon.C
+#Rint.Logon:              C:\Users\jonli\OneDrive\Documents\.cygwin_home\root.git\scripts\rootlogon.C
+#Rint.Logoff:             rootlogoff.C
+
+### History
+# Record session commands, set to "-" to turn off command recording.
+Rint.History: C:\Users\jonli\OneDrive\Documents\.cygwin_home\.root_hist
+# History file size, once HistSize is reached remove all but HistSave entries,
+# set to 0 to turn off command recording.
+# Can be overridden by environment variable ROOT_HIST=size[:save],
+# the ":save" part is optional.
+ Rint.HistSize:         50000
+# Set to -1 for sensible default (80% of HistSize), set to 0 to disable history.
+ Rint.HistSave:         40000
