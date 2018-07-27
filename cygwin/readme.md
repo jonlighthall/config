@@ -4,7 +4,7 @@ One way to utilize the files in this directory is to copy them  the Cygwin home 
 ## Bash
 Use the following commands to create a symbolic link from the home directory to the `config\cygwin` directory
 ```bash
-ln -s ~/config/cygwin/.bash_profile .bash_profile
+ln -s ~/config/cygwin/.bash_profile ~/.bash_profile
 ```
 
 ## Emacs
