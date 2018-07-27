@@ -153,4 +153,5 @@ alias triumf='ssh -v -ND 1584 lighthall@lighthall.triumf.ca'
 
 # X Window
 export DISPLAY=:0.0
-
+alias xwin='/mnt/c/Program\ Files\ \(x86\)/Xming/Xming.exe :0 -clipboard -multiwindow -logverbose 0 &'
+xwin
