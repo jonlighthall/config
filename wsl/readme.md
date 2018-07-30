@@ -1,6 +1,17 @@
 # dotfiles for Windows Subsystem for Linux
 One way to utilize the files in this directory is to copy them to the WSL home directory. However, changes in the files will not be tracked by Git. Linux-like symbolic links can be made using the `ln -s` command.
 
+Xming is needed
+
+https://sourceforge.net/projects/xming/files/latest/download
+
+````
+cd config/wsl
+./make_links.sh
+./install_packages.sh
+````
+
+
 ## Bash
 Use the following commands to create a symbolic link from the home directory to the `config\cygwin` directory
 ```bash
