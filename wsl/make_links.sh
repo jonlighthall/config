@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Link from config repo
+## Link from config repo
 if [ -f ~/.bash_aliases ]; then
     echo Backing up .bash_profile
     mv ~/.bash_profile ~/.bash_profile_old 
@@ -20,7 +20,11 @@ if [ -f ~/.gitconfig ]; then
     mv ~/.gitconfig ~/.gitconfig_old
 fi
 ln -s ~/config/wsl/.gitconfig ~/.gitconfig
+ln -s /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/.git-credentials ~/.git-credentials
 
+ln -s ~/config/wsl/.rootrc ~/.rootrc
+
+## Copy and link from OneDrive
 # Bash history
 cat ~/.bash_history >> /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/.bash_history
 rm ~/.bash_history 
