@@ -1,8 +1,6 @@
 #!/bin/sh
 
-# Clone and link config repo
-git clone https://github.com/jonlighthall/config.git
-
+# Link from config repo
 if [ -f ~/.bash_aliases ]; then
     echo Backing up .bash_profile
     mv ~/.bash_profile ~/.bash_profile_old 
@@ -31,7 +29,7 @@ if [ -d ~/.ssh ]; then
 fi
 #cp -rv /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/.ssh/ ./
 ln -s /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/.ssh/ ~/.ssh
-#chmod 600 ~/.ssh/config 
-#chmod 600 ~/.ssh/id_rsa
+chmod 600 ~/.ssh/config 
+chmod 600 ~/.ssh/id_rsa
 
 ln -s /mnt/c/Users/jonli/OneDrive/ ~/onedrive
