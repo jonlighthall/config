@@ -6,3 +6,5 @@
 	helper = store --file ~/.git-credentials
 [push]
 	default = simple
+[core]
+	fileMode = false
