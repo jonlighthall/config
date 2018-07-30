@@ -1,3 +1,11 @@
+# Clone repo
+
+````bash
+git clone https://github.com/jonlighthall/config.git
+````bash
+
+
+
 from <https://help.github.com/articles/changing-author-info/>
 
 ````bash
