@@ -1,36 +1,51 @@
 # dotfiles for Windows Subsystem for Linux
 One way to utilize the files in this directory is to copy them to the WSL home directory. However, changes in the files will not be tracked by Git. Linux-like symbolic links can be made using the `ln -s` command.
 
-Xming is needed
+## Prerequisites 
+An X windows server is needed use the following link to download Xming.
 
 https://sourceforge.net/projects/xming/files/latest/download
 
+
+## Scripts
 ````
 cd config/wsl
 ./make_links.sh
 ./install_packages.sh
 ````
 
-
-## Bash
-Use the following commands to create a symbolic link from the home directory to the `config\cygwin` directory
+The following commands are executed by the script.
+### Bash
+Use the following commands to create a symbolic link from the home directory to the `config\wsl` directory
 ```bash
-ln -s ~/config/cygwin/.bash_profile ~/.bash_profile
+ln -s ~/config/wsl/.bash_profile ~/.bash_profile
 ```
 
-## Emacs
+### Emacs
 
 ```bash
 rm -r .emacs.d
-rsync -vr config/cygwin/.emacs.d/ ./.emacs.d/	
+ln -s ~/config/wsl/.emacs.d/ ~/.emacs.d
+
 ```
-## Git
+### Git
 Use the following command to create a symbolic link from the home directory to the `config\cygwin` directory.
 ```bash
-ln -s ~/config/cygwin/.gitconfig .gitconfig
+ln -s ~/config/wsl/.gitconfig ~/.gitconfig
+ln -s /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/.git-credentials ~/.git-credentials
+cp /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/.git-credentials ~/
+
 ```
 
-## ROOT
+### SSH
+WSL does not allow chmod changes to Windows files. SSH files require certain permissions. A copy of the ssh files is required.
+```bash
+rsync -vr /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/.ssh ~/.ssh
+chmod 600 ~/.ssh/config 
+chmod 600 ~/.ssh/id_rsa
+```
+
+### ROOT
 Use the following command to create symlink from the user directory to the location of the file. This command should be used from 
 
 * the Cygwin home dicectory (`C:\Users\jonli\OneDrive\Documents\.cygwin_home`).
