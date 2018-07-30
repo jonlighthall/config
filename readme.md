@@ -2,7 +2,7 @@
 
 ````bash
 git clone https://github.com/jonlighthall/config.git
-````bash
+````
 
 
 
