@@ -35,9 +35,7 @@ if [ -d ~/.ssh ]; then
     echo Backing up .ssh
     mv -rv ~/.ssh/ ~/.ssh_old
 fi
-#cp -rv /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/.ssh/ ./
-rsync -vr /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/.ssh ~/.ssh
-#ln -s /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/.ssh/ ~/.ssh
+git clone https://jonlighthall@bitbucket.org/jonlighthall/.ssh.git ~/.ssh
 chmod 600 ~/.ssh/config 
 chmod 600 ~/.ssh/id_rsa
 
