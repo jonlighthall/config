@@ -26,8 +26,10 @@ ln -s ~/config/wsl/.rootrc ~/.rootrc
 
 ## Copy and link from OneDrive
 # Bash history
+if [ -f ~/.bash_history ]; then
 cat ~/.bash_history >> /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/.bash_history
-rm ~/.bash_history 
+rm ~/.bash_history
+fi
 ln -s /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/.bash_history ~/.bash_history
 
 # Copy .ssh
