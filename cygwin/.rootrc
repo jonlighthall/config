@@ -5,7 +5,7 @@
 # Paths are different for Unix and Windows. The example shows the defaults
 # for all ROOT applications for either Unix or Windows.
 #WinNT.*.Root.MacroPath:     .;C:\Users\jonli\OneDrive\Documents\.root_macros\scripts;
-WinNT.*.Root.MacroPath:     .;C:\Users\jonli\OneDrive\Documents\.cygwin_home\root.git\scripts;
+WinNT.*.Root.MacroPath:     .;C:\Users\jonli\OneDrive\Documents\.cygwin_home\root;
 
 # Default histogram binnings for TTree::Draw().
 Hist.Binning.1D.x:          2048
@@ -24,7 +24,7 @@ Hist.Binning.3D.Profy:      100
 #Rint.Load:               rootalias.C
 # If rootlogon.C is locatedin MacroPath, no futher setting is needed.
 #Rint.Logon:              C:\Users\jonli\OneDrive\Documents\.root_macros\scripts\rootlogon.C
-#Rint.Logon:              C:\Users\jonli\OneDrive\Documents\.cygwin_home\root.git\scripts\rootlogon.C
+#Rint.Logon:              C:\Users\jonli\OneDrive\Documents\.cygwin_home\root\rootlogon.C
 #Rint.Logoff:             rootlogoff.C
 
 ### History
