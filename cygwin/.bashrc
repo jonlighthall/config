@@ -203,7 +203,6 @@ export HISTFILESIZE=50000
 export HISTSIZE=40000
 # Don't put duplicate lines in the history
 export HISTCONTROL=ignoredups
-
 # Editors
 export SVN_EDITOR=emacs
 #export GIT_EDITOR=emacs
@@ -235,25 +234,23 @@ alias ray='ssh -Y lighthall@ray.physics.fsu.edu'
 alias splitpole='ssh -Y splitpole@dhcp11108.physics.fsu.edu'
 alias killelwood="ssh lighthall@elwood.physics.fsu.edu 'pkill root'"
 
-#Port-forwarding
+#Port-forward
 alias bronco='ssh -v -ND 1584 j4lighth@bronco.wmich.edu'
 alias sonata='ssh -v -ND 1584 lighthall@sonata.phy.anl.gov'
 alias triumf='ssh -v -ND 1584 lighthall@lighthall.triumf.ca'
 
-# X Window
-export DISPLAY=:0.0
-#alias xwin='startxwin; echo -e "\033c"'
-alias xwin='run xwin -multiwindow -silent-dup-error -multiplemonitors'
-alias close='kill -9 `ps -a |grep xwin`; kill -9 `ps -a |grep ssh`;exit'
-xwin #start xwin on startup
-
 # Cygwin
+export DISPLAY=:0.0
 #set CYGWIN=nodosfilewarning
 CYGWIN="${CYGWIN} nodosfilewarning"; export CYGWIN
 set HOME=/cygdrive/c/cygwin/home/lighthall/
+#alias xwin='startxwin; echo -e "\033c"'
+alias xwin='run xwin -multiwindow -silent-dup-error -multiplemonitors'
+alias close='kill -9 `ps -a |grep xwin`; kill -9 `ps -a |grep ssh`;exit'
 #kill -9 `ps -a |grep defunct`
 #alias ssh='xwin & ssh' #this interferes with ssh-only commands
 alias vc='/cygdrive/c/Program\ Files\ \(x86\)/Microsoft\ Visual\ Studio/2017/Community/VC/Auxiliary/Build/vcvarsall.bat x86'
+xwin #start xwin on startup
 
 # Path replacements
 #export PATH=$PATH:/cygdrive/c/Program\ Files\ \(x86\)/emacs-25.1-bin-i686-mingw32/bin/
