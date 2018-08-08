@@ -4,7 +4,7 @@
 # Path used to find macros.
 # Paths are different for Unix and Windows. The example shows the defaults
 # for all ROOT applications for either Unix or Windows.
-Unix.*.Root.MacroPath:      .:~/root/scripts
+Unix.*.Root.MacroPath:      .:/home/lighthall/root
 
 # Default histogram binnings for TTree::Draw().
 Hist.Binning.1D.x:          2048
