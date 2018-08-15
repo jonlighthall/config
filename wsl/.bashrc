@@ -120,7 +120,7 @@ fi
 export SVN_EDITOR=emacs
 export GIT_EDITOR=emacs
 
-#Macros
+# Macros
 #alias ls='ls --color=auto'
 # alias ls='ls -hF --color=tty'                 # classify files in colour
 alias getfigs='rsync -vrt --ignore-existing lighthall@elwood.physics.fsu.edu:/home/lighthall/figures /home/lighthall/anasen/'
@@ -146,12 +146,25 @@ alias ray='ssh -Y lighthall@ray.physics.fsu.edu'
 alias splitpole='ssh -Y splitpole@dhcp11108.physics.fsu.edu'
 alias killelwood="ssh lighthall@elwood.physics.fsu.edu 'pkill root'"
 
-#Port-forwarding
+# Port-forwarding
 alias bronco='ssh -v -ND 1584 j4lighth@bronco.wmich.edu'
 alias sonata='ssh -v -ND 1584 lighthall@sonata.phy.anl.gov'
 alias triumf='ssh -v -ND 1584 lighthall@lighthall.triumf.ca'
 
 # X Window
 export DISPLAY=localhost:0.0 
-alias xwin='/mnt/c/Program\ Files\ \(x86\)/Xming/Xming.exe :0 -clipboard -multiwindow -silent-dup-error -logverbose 0 &'
-xwin
+alias xming='/mnt/c/Program\ Files\ \(x86\)/Xming/Xming.exe :0 -clipboard -multiwindow -silent-dup-error -logverbose 0 &'
+alias vcx='/mnt/c/Program\ Files/VcXsrv/vcxsrv.exe :0 -clipboard -multiwindow &'
+
+# Check if xwin is running
+# -x flag only match processes whose name (or command line if -f is
+# specified) exactly match the pattern. 
+
+if pgrep -x "vcxsrv.exe" > /dev/null
+then
+    echo "VcXsrv is already running"
+else
+    echo "launching VcXsrv..."
+    #xming
+    vcx
+fi
