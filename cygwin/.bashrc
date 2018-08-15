@@ -211,7 +211,9 @@ export SVN_EDITOR=emacs
 alias ls='ls --color=auto'
 # alias ls='ls -hF --color=tty'                 # classify files in colour
 alias svni='svn info svn+ssh://lighthall@lighthall.triumf.ca/Users/lighthall/SkyDrive/Documents/repository/'
-alias getfigs='rsync -vrt --ignore-existing lighthall@elwood.physics.fsu.edu:/home/lighthall/figures /home/lighthall/anasen/'
+alias getfigs='rsync -vrt --ignore-existing --progress lighthall@elwood.physics.fsu.edu:/home/lighthall/figures /home/lighthall/anasen/'
+alias getfigsr='rsync -vrt --ignore-existing --progress lighthall@ray.physics.fsu.edu:/home/lighthall/figures /home/lighthall/anasen/'
+alias getroot='rsync -vrt --ignore-existing --progress lighthall@ray.physics.fsu.edu:/data0/lighthall/ /home/lighthall/downloads/ANASEN/root/'
 
 # Log on (remote)
 # Argonne (phy.anl.gov)
