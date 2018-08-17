@@ -11,7 +11,7 @@ ln -s ~/config/cygwin/.bash_profile ~/.bash_profile
 Make a directory junction from the parent directory `C:\Users\jonli\AppData\Roaming\` using the following command. Open a command prompt as Administrator. Since the location of the link is outisde of OneDrive, this will not cause a OneDrive synchronization problem.
 
 ```bash
-rm -r .emacs.d
+rmdir .emacs.d
 mklink /J .emacs.d C:\Users\jonli\OneDrive\Documents\.cygwin_home\config\cygwin\.emacs.d
 ```
 Symbolic directory junctions cannot be made using the `ln` command. Creating a link using the `mklink` command will cause OneDrive errors. In the meantime, use `rsync` from the Cygwin home `C:\Users\jonli\OneDrive\Documents\.cygwin_home\` using the following command. 
