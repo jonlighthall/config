@@ -1,0 +1,2 @@
+#Macros
+alias svni='svn info svn+ssh://lighthall@lighthall.triumf.ca/Users/lighthall/SkyDrive/Documents/repository/'
