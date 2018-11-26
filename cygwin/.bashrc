@@ -205,15 +205,11 @@ export HISTSIZE=40000
 export HISTCONTROL=ignoredups
 # Editors
 export SVN_EDITOR=emacs
-#export GIT_EDITOR=emacs
+export GIT_EDITOR=emacs
 
 #Macros
 alias ls='ls --color=auto'
 # alias ls='ls -hF --color=tty'                 # classify files in colour
-alias svni='svn info svn+ssh://lighthall@lighthall.triumf.ca/Users/lighthall/SkyDrive/Documents/repository/'
-alias getfigs='rsync -vrt --ignore-existing --progress lighthall@elwood.physics.fsu.edu:/home/lighthall/figures /home/lighthall/anasen/'
-alias getfigsr='rsync -vrt --ignore-existing --progress lighthall@ray.physics.fsu.edu:/home/lighthall/figures /home/lighthall/anasen/'
-alias getroot='rsync -vrt --ignore-existing --progress lighthall@ray.physics.fsu.edu:/data0/lighthall/ /home/lighthall/downloads/ANASEN/root/'
 
 # Log on (remote)
 # Argonne (phy.anl.gov)
@@ -234,7 +230,8 @@ alias lsudaq2='ssh -Y splitpole@dhcp111201.physics.fsu.edu'
 alias murph='ssh -Y lighthall@murph.physics.fsu.edu'
 alias ray='ssh -Y lighthall@ray.physics.fsu.edu'
 alias splitpole='ssh -Y splitpole@dhcp11108.physics.fsu.edu'
-alias killelwood="ssh lighthall@elwood.physics.fsu.edu 'pkill root'"
+# NRL (nrlssc.navy.mil)
+alias snuffy='ssh -Y jlighthall@snuffy.nrlssc.navy.mil'
 
 #Port-forward
 alias bronco='ssh -v -ND 1584 j4lighth@bronco.wmich.edu'
