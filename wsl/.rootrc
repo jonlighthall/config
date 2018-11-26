@@ -4,8 +4,7 @@
 # Path used to find macros.
 # Paths are different for Unix and Windows. The example shows the defaults
 # for all ROOT applications for either Unix or Windows.
-#WinNT.*.Root.MacroPath:     .;C:\Users\jonli\OneDrive\Documents\.root_macros\scripts;
-WinNT.*.Root.MacroPath:     .;C:\Users\jonli\OneDrive\Documents\.cygwin_home\root.git\scripts;
+Unix.*.Root.MacroPath:      .:/home/lighthall/root_macros
 
 # Default histogram binnings for TTree::Draw().
 Hist.Binning.1D.x:          2048
@@ -29,7 +28,7 @@ Hist.Binning.3D.Profy:      100
 
 ### History
 # Record session commands, set to "-" to turn off command recording.
-Rint.History: C:\Users\jonli\OneDrive\Documents\.cygwin_home\.root_hist
+Rint.History: /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/.root_hist
 # History file size, once HistSize is reached remove all but HistSave entries,
 # set to 0 to turn off command recording.
 # Can be overridden by environment variable ROOT_HIST=size[:save],
