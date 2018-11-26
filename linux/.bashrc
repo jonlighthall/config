@@ -1,5 +1,10 @@
 # .bashrc
 
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+#	. /etc/bashrc # --> Read /etc/bashrc, if present.
+fi
+
 # User specific aliases and functions
 
 # Settings
