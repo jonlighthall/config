@@ -139,6 +139,7 @@ alias ladd19='ssh -Y emma@ladd19.triumf.ca'
 alias ladd20='ssh -Y emma@ladd20.triumf.ca'
 alias ladd21='ssh -Y emma@ladd21.triumf.ca'
 # FSU (physics.fsu.edu)
+alias anasen='ssh -Y anasen@nucx7'
 alias elwood='ssh -Y lighthall@elwood.physics.fsu.edu'
 alias lsudaq2='ssh -Y splitpole@dhcp111201.physics.fsu.edu'
 alias murph='ssh -Y lighthall@murph.physics.fsu.edu'
@@ -168,3 +169,7 @@ else
     #xming
     vcx
 fi
+
+echo "sourcing root..."
+. root_v5.34.36/bin/thisroot.sh
+which root
