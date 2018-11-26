@@ -63,8 +63,3 @@
       (goto-char (point-min))
       (re-search-forward "^<<<<<<< " nil t))
     (smerge-start-session)))
-
-(require 'package)
-(add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/"))
-(package-initialize)
