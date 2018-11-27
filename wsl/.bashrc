@@ -105,6 +105,11 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
+# Source remote aliases
+if [ -f ~/config/bash_remotes ]; then
+	. /config/bash_remotes 
+fi
+
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
@@ -124,35 +129,7 @@ export GIT_EDITOR=emacs
 #alias ls='ls --color=auto'
 # alias ls='ls -hF --color=tty'                 # classify files in colour
 alias getfigs='rsync -vrt --ignore-existing lighthall@elwood.physics.fsu.edu:/home/lighthall/figures /home/lighthall/anasen/'
-
-# Log on (remote)
-# Argonne (phy.anl.gov)
-alias bcan='ssh -Y bavarians@cantata.phy.anl.gov'
-alias bson='ssh -Y bavarians@sonata.phy.anl.gov'
-alias hcan='ssh -Y -l helios@phy cantata.phy.anl.gov'
-alias hson='ssh -Y -l helios@phy sonata.phy.anl.gov'
-alias lcan='ssh -Y lighthall@cantata.phy.anl.gov'
-alias lson='ssh -Y lighthall@sonata.phy.anl.gov'
-# TRIUMF (triumf.ca)
-alias lighthall='ssh -Y lighthall@lighthall.triumf.ca'
-alias ladd19='ssh -Y emma@ladd19.triumf.ca'
-alias ladd20='ssh -Y emma@ladd20.triumf.ca'
-alias ladd21='ssh -Y emma@ladd21.triumf.ca'
-# FSU (physics.fsu.edu)
-alias anasen='ssh -Y anasen@nucx7'
-alias elwood='ssh -Y lighthall@elwood.physics.fsu.edu'
-alias lsudaq2='ssh -Y splitpole@dhcp111201.physics.fsu.edu'
-alias murph='ssh -Y lighthall@murph.physics.fsu.edu'
-alias ray='ssh -Y lighthall@ray.physics.fsu.edu'
-alias splitpole='ssh -Y splitpole@dhcp11108.physics.fsu.edu'
 alias killelwood="ssh lighthall@elwood.physics.fsu.edu 'pkill root'"
-# NRL (nrlssc.navy.mil)
-alias snuffy='ssh -Y jlighthall@snuffy.nrlssc.navy.mil'
-
-# Port-forwarding
-alias bronco='ssh -v -ND 1584 j4lighth@bronco.wmich.edu'
-alias sonata='ssh -v -ND 1584 lighthall@sonata.phy.anl.gov'
-alias triumf='ssh -v -ND 1584 lighthall@lighthall.triumf.ca'
 
 # X Window
 export DISPLAY=localhost:0.0 
