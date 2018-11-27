@@ -1,6 +1,6 @@
 [user]
 	name = Jon Lighthall
-	email = lighthall@lsu.edu
+	email = jon.lighthall@gmail.com
 [core]
 	editor = ~/Downloads/emacs-24.5/src/emacs -nw
 [credential]
