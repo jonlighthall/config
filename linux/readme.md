@@ -7,6 +7,8 @@ ln -s ~/config/linux/.bashrc .bashrc
 ln -s ~/config/linux/.bash_profile .bash_profile
 ln -s ~/config/linux/.bash_aliases_<local> .bash_aliases
 ```
+The file `.bashrc` is loaded directly by `.bash_profile` but may still need to be linked to the home directory for system use. 
+The `.bash_aliases` files are used for site-specific settings.
 
 Use the following commands to create symbolic links in the `/home/lighthall/bin` directory
 ```bash
