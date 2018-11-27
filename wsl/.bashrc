@@ -146,6 +146,8 @@ alias murph='ssh -Y lighthall@murph.physics.fsu.edu'
 alias ray='ssh -Y lighthall@ray.physics.fsu.edu'
 alias splitpole='ssh -Y splitpole@dhcp11108.physics.fsu.edu'
 alias killelwood="ssh lighthall@elwood.physics.fsu.edu 'pkill root'"
+# NRL (nrlssc.navy.mil)
+alias snuffy='ssh -Y jlighthall@snuffy.nrlssc.navy.mil'
 
 # Port-forwarding
 alias bronco='ssh -v -ND 1584 j4lighth@bronco.wmich.edu'

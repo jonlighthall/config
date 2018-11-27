@@ -207,7 +207,7 @@ export HISTCONTROL=ignoredups
 export SVN_EDITOR=emacs
 export GIT_EDITOR=emacs
 
-#Macros
+# Macros
 alias ls='ls --color=auto'
 # alias ls='ls -hF --color=tty'                 # classify files in colour
 
@@ -225,6 +225,7 @@ alias ladd19='ssh -Y emma@ladd19.triumf.ca'
 alias ladd20='ssh -Y emma@ladd20.triumf.ca'
 alias ladd21='ssh -Y emma@ladd21.triumf.ca'
 # FSU (physics.fsu.edu)
+alias anasen='ssh -Y anasen@nucx7'
 alias elwood='ssh -Y lighthall@elwood.physics.fsu.edu'
 alias lsudaq2='ssh -Y splitpole@dhcp111201.physics.fsu.edu'
 alias murph='ssh -Y lighthall@murph.physics.fsu.edu'
@@ -233,23 +234,30 @@ alias splitpole='ssh -Y splitpole@dhcp11108.physics.fsu.edu'
 # NRL (nrlssc.navy.mil)
 alias snuffy='ssh -Y jlighthall@snuffy.nrlssc.navy.mil'
 
-#Port-forward
+# Port-forwarding
 alias bronco='ssh -v -ND 1584 j4lighth@bronco.wmich.edu'
 alias sonata='ssh -v -ND 1584 lighthall@sonata.phy.anl.gov'
 alias triumf='ssh -v -ND 1584 lighthall@lighthall.triumf.ca'
 
-# Cygwin
+# X Window
 export DISPLAY=:0.0
-#set CYGWIN=nodosfilewarning
-CYGWIN="${CYGWIN} nodosfilewarning"; export CYGWIN
-set HOME=/cygdrive/c/cygwin/home/lighthall/
 #alias xwin='startxwin; echo -e "\033c"'
 alias xwin='run xwin -multiwindow -silent-dup-error -multiplemonitors'
 alias close='kill -9 `ps -a |grep xwin`; kill -9 `ps -a |grep ssh`;exit'
 #kill -9 `ps -a |grep defunct`
 #alias ssh='xwin & ssh' #this interferes with ssh-only commands
+#xwin #start xwin on startup
+
+# Cygwin
+#set CYGWIN=nodosfilewarning
+CYGWIN="${CYGWIN} nodosfilewarning"; export CYGWIN
+set HOME=/cygdrive/c/cygwin/home/lighthall/
+
+# Shortcuts
 alias vc='/cygdrive/c/Program\ Files\ \(x86\)/Microsoft\ Visual\ Studio/2017/Community/VC/Auxiliary/Build/vcvarsall.bat x86'
-xwin #start xwin on startup
+#alias emacs='/cygdrive/c/Program\ Files\ \(x86\)/emacs-23.4/bin/runemacs.exe'
+#alias emacs32='/cygdrive/c/Program\ Files/emacs-24.1/bin/runemacs.exe'
+#alias gsview='/cygdrive/c/Program\ Files/Ghostgum/gsview/gsview64.exe'
 
 # Path replacements
 #export PATH=$PATH:/cygdrive/c/Program\ Files\ \(x86\)/emacs-25.1-bin-i686-mingw32/bin/
@@ -258,6 +266,3 @@ xwin #start xwin on startup
 #export ROOTSYS='c:/root'   # must be in DOS format (change path!)
 #export PATH='cygpath -u $ROOTSYS'/bin:$PATH
 #export PATH=$PATH:/c/WINNT/system32:/c/WINNT:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/Tools/WinNT:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/MSDev98/Bin:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/Tools:/c/Program\ Files/Microsoft\ Visual\ Studio/VC98/bin:/c/Program\ Files/DevStudio/DF/bin:/c/Program\ Files/DevStudio/SharedIDE/bin
-#alias emacs='/cygdrive/c/Program\ Files\ \(x86\)/emacs-23.4/bin/runemacs.exe'
-#alias emacs32='/cygdrive/c/Program\ Files/emacs-24.1/bin/runemacs.exe'
-#alias gsview='/cygdrive/c/Program\ Files/Ghostgum/gsview/gsview64.exe'
