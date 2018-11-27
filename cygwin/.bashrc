@@ -85,8 +85,8 @@
 # fi
 
 # Source remote aliases
-if [ -f ~/config/bash_remotes ]; then
-	. /config/bash_remotes 
+if [ -f ~/config/.bash_remotes ]; then
+	. ~/config/.bash_remotes 
 fi
 
 #
