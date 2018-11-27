@@ -1,3 +1,5 @@
+#!/bin/sh
+
 ## Copy and link from OneDrive
 # PowerShell history
 if [ -f ~/.bash_history ];
