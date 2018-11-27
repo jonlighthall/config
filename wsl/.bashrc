@@ -106,8 +106,8 @@ if [ -f ~/.bash_aliases ]; then
 fi
 
 # Source remote aliases
-if [ -f ~/config/bash_remotes ]; then
-	. /config/bash_remotes 
+if [ -f ~/config/.bash_remotes ]; then
+	. ~/config/.bash_remotes 
 fi
 
 # enable programmable completion features (you don't need to enable
