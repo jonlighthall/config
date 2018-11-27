@@ -1,20 +1,30 @@
 # dotfiles for Cygwin on Windows
-One way to utilize the files in this directory is to copy them  the Cygwin home directory. However, changes in the files will not be tracked by Git. Linux-like symbolic links can be made using the `ln -s` command. This approach will allow the files to be read by Cygwin, but they cannot be opened in programs like emacs. As of this writing, links created from within OneDrive using the `mklink` command will cause OneDrive to synchronize indefinitely.
+One way to utilize the files in this directory is to copy them  the Cygwin home directory. However, changes in the files will not be tracked by Git.
+5Linux-like symbolic links can be made using the `ln -s` command.
+This approach will allow the files to be read by Cygwin, but they cannot be opened in programs like emacs.
+As of this writing, links created from within OneDrive using the `mklink` command will cause OneDrive to synchronize indefinitely.
 
 ## Bash
 Use the following commands to create a symbolic link from the home directory to the `config\cygwin` directory
 ```bash
+ln -s ~/config/linux/.bashrc .bashrc
 ln -s ~/config/cygwin/.bash_profile ~/.bash_profile
+ln -s ~/config/linux/.bash_aliases_<local> .bash_aliases
 ```
+The file `.bashrc` is loaded directly by `.bash_profile` but may still need to be linked to the home directory for system use. 
+The `.bash_aliases` files are used for site-specific settings.
 
 ## Emacs
-Make a directory junction from the parent directory `C:\Users\jonli\AppData\Roaming\` using the following command. Open a command prompt as Administrator. Since the location of the link is outisde of OneDrive, this will not cause a OneDrive synchronization problem.
+Make a directory junction from the parent directory `C:\Users\jonli\AppData\Roaming\` using the following command. 
+Open a command prompt as Administrator. Since the location of the link is outisde of OneDrive, this will not cause a OneDrive synchronization problem.
 
 ```bash
 rmdir .emacs.d
 mklink /J .emacs.d C:\Users\jonli\OneDrive\Documents\.cygwin_home\config\cygwin\.emacs.d
 ```
-Symbolic directory junctions cannot be made using the `ln` command. Creating a link using the `mklink` command will cause OneDrive errors. In the meantime, use `rsync` from the Cygwin home `C:\Users\jonli\OneDrive\Documents\.cygwin_home\` using the following command. 
+Symbolic directory junctions cannot be made using the `ln` command.
+Creating a link using the `mklink` command will cause OneDrive errors.
+In the meantime, use `rsync` from the Cygwin home `C:\Users\jonli\OneDrive\Documents\.cygwin_home\` using the following command. 
 
 ```bash
 rm -r .emacs.d
@@ -31,7 +41,8 @@ git config --global core.editor '/cygdrive/c/Program\ Files\ \(x86\)/emacs-25.1-
 ```
 
 ## ROOT
-Use the following command to create symlink from the user directory to the location of the file. This command should be used from both
+Use the following command to create symlink from the user directory to the location of the file.
+This command should be used from both
 * the Windows home directory (`C:\Users\jonli`) and 
 * the Cygwin home dicectory (`C:\Users\jonli\OneDrive\Documents\.cygwin_home`).
 
