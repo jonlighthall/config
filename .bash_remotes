@@ -21,7 +21,7 @@ alias murph='ssh -Y lighthall@murph.physics.fsu.edu'
 alias ray='ssh -Y lighthall@ray.physics.fsu.edu'
 alias splitpole='ssh -Y splitpole@dhcp11108.physics.fsu.edu'
 # NRL (nrlssc.navy.mil)
-alias snuffy='ssh -Y jlighthall@snuffy.nrlssc.navy.mil'
+alias snuffy='ssh -Yq jlighthall@snuffy.nrlssc.navy.mil'
 
 # Port-forwarding
 alias sonata='ssh -v -ND 1584 lighthall@sonata.phy.anl.gov'
