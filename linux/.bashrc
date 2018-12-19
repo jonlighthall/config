@@ -16,6 +16,8 @@ export HISTCONTROL=ignoredups
 # Editors
 export SVN_EDITOR=emacs
 export GIT_EDITOR=emacs
+# Prompt
+export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]]$\[\e[0m\] '
 
 # Macros
 alias ls='ls --color'
