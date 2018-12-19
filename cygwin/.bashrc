@@ -212,18 +212,21 @@ export HISTCONTROL=ignoredups
 # Editors
 export SVN_EDITOR=emacs
 export GIT_EDITOR=emacs
+# Prompt
+export PS1='[\u@\h \W]\[\e[1;32m\]\$\[\e[0m\] '
+export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]]$\[\e[0m\] '
 
 # Macros
 alias ls='ls --color=auto'
 # alias ls='ls -hF --color=tty'                 # classify files in colour
 
 # X Window
-export DISPLAY=:0.0
+export DISPLAY=localhost:0
 #alias xwin='startxwin; echo -e "\033c"'
-alias xwin='run xwin -multiwindow -silent-dup-error -multiplemonitors'
-alias close='kill -9 `ps -a |grep xwin`; kill -9 `ps -a |grep ssh`;exit'
+alias xwin='/c/Program\ Files\ \(x86\)/Xming/Xming.exe -multiwindow -silent-dup-error -multiplemonitors &'
+alias close='kill -9 `ps -a |grep Xming`; kill -9 `ps -a |grep ssh`;exit'
 #kill -9 `ps -a |grep defunct`
-#alias ssh='xwin & ssh' #this interferes with ssh-only commands
+alias ssh='xwin ssh'
 #xwin #start xwin on startup
 
 # Cygwin
