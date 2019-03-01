@@ -70,6 +70,16 @@
 (require 'linum)
 (global-linum-mode 1)
 
+;; FORTRAN column highlighting
+(custom-set-variables '(fortran-line-length 72))
+
+(require 'whitespace)
+(setq whitespace-style '(lines-tail))
+;;(setq whitespace-line-column 50)
+(add-hook 'fortran-mode-hook (lambda () (whitespace-line-column 72)))
+(add-hook 'fortran-mode-hook (lambda () (global-whitespace-mode 1)))
+(add-hook 'fortran-mode-hook 'turn-on-auto-fill)
+
 ;;; ------Custom keyboard shortcuts-------------------------
 (global-set-key (kbd "C-x e") 'ediff-buffers) 
 (global-set-key (kbd "C-x w") 'ediff-revision)
