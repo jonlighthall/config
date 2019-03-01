@@ -128,8 +128,6 @@ export GIT_EDITOR=emacs
 # Macros
 #alias ls='ls --color=auto'
 # alias ls='ls -hF --color=tty'                 # classify files in colour
-alias getfigs='rsync -vrt --ignore-existing lighthall@elwood.physics.fsu.edu:/home/lighthall/figures /home/lighthall/anasen/'
-alias killelwood="ssh lighthall@elwood.physics.fsu.edu 'pkill root'"
 
 # X Window
 export DISPLAY=localhost:0.0 
