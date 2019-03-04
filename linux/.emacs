@@ -47,7 +47,9 @@
 ;; (load-file "~/.emacs.d/psvn.el")
 
 ;; FORTRAN column highlighting
-(custom-set-variables '(fortran-line-length 72))
+(custom-set-variables
+ '(fortran-line-length 72)
+ '(fortran-continuation-string "&"))
 
 (require 'whitespace)
 (setq whitespace-style '(lines-tail))
