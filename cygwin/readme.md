@@ -19,7 +19,7 @@ Make a directory junction from the parent directory `C:\Users\jonli\AppData\Roam
 Open a command prompt as Administrator. Since the location of the link is outisde of OneDrive, this will not cause a OneDrive synchronization problem.
 
 ```bash
-rmdir .emacs.d
+rmdir /s .emacs.d
 mklink /J .emacs.d C:\Users\jonli\OneDrive\Documents\.cygwin_home\config\cygwin\.emacs.d
 ```
 Symbolic directory junctions cannot be made using the `ln` command.
