@@ -53,9 +53,10 @@
 
 (require 'whitespace)
 (setq whitespace-style '(lines-tail))
-;;(setq whitespace-line-column 50)
-(add-hook 'fortran-mode-hook (lambda () (whitespace-line-column 72)))
+(setq whitespace-line-column 80)
+
 (add-hook 'fortran-mode-hook (lambda () (global-whitespace-mode 1)))
+(add-hook 'fortran-mode-hook (lambda () (setq whitespace-line-column 72)))
 (add-hook 'fortran-mode-hook 'turn-on-auto-fill)
 
 ;;(add-hook 'prog-mode-hook 'whitespace-mode)
@@ -77,3 +78,6 @@
       (goto-char (point-min))
       (re-search-forward "^<<<<<<< " nil t))
     (smerge-start-session)))
+
+;; setup files ending in “.m” to open in octave-mode
+(add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
