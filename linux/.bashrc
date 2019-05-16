@@ -13,6 +13,7 @@ export HISTFILESIZE=50000
 export HISTSIZE=40000
 # Don't put duplicate lines in the history
 export HISTCONTROL=ignoredups
+export HISTIGNORE=$'bg:exit:ls:pwd'
 # Editors
 export SVN_EDITOR=emacs
 export GIT_EDITOR=emacs
@@ -46,3 +47,5 @@ alias du0='duf --max-depth=0'
 if [ -f ~/config/.bash_remotes ]; then
 	. ~/config/.bash_remotes 
 fi
+
+export PATH=$PATH:~/bin
