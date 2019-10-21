@@ -10,8 +10,8 @@ fi
 # User-specific environment and startup programs
 
 echo "Welcome to" $HOSTNAME
-if [ -f ~/temp.txt ]; then
-    echo "LOGIN $(date)" >> ~/temp.txt
+if [ -f ~/.bash_history ]; then
+    echo "LOGIN $(date)" >> ~/.bash_history
 fi
 
 # Get the site-specific aliases and functions
