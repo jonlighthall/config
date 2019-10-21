@@ -4,6 +4,6 @@
 # User-specific environment and logout programs
 
 echo "goodbye"
-if [ -f ~/temp.txt ]; then
-    echo "LOGOUT $(date)" >> ~/temp.txt
+if [ -f ~/.bash_history ]; then
+    echo "LOGOUT $(date)" >> ~/.bash_history
 fi
