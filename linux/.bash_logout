@@ -4,4 +4,6 @@
 # User-specific environment and logout programs
 
 echo "goodbye"
-echo "LOGOUT $(date)" >> ~/temp.txt
+if [ -f ~/temp.txt ]; then
+    echo "LOGOUT $(date)" >> ~/temp.txt
+fi
