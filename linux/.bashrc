@@ -19,7 +19,10 @@ export SVN_EDITOR=emacs
 export GIT_EDITOR=emacs
 # Prompt
 git_branch() {
-     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+    git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+# 2>/dev/null redirects stderr to null
+# sed -e '/^[^*]/d' deletes any lines not containing *
+# sed -e 's/* \(.*\)/ (\1)/' replaces the first instance of '* '
 }
 export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]\e[35m\]$(git_branch)\e[32m\]]$\[\e[0m\] '
 
