@@ -2,7 +2,7 @@
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
-	. /etc/bashrc # --> Read /etc/bashrc, if present.
+    . /etc/bashrc # --> Read /etc/bashrc, if present.
 fi
 
 # User specific aliases and functions
@@ -34,16 +34,16 @@ alias term='gnome-terminal &'
 alias ping='ping -c 5'
 function duf {	       
     du -k "$@" | sort -n |
-	while read size fname; do
-     	    for unit in k M G T P E Z Y;
-	    do
-		if [ $size -lt 1024 ]; then
-		    echo -e "${size}${unit}B${fname}";
-		    break;
-		fi;
-		size=$((size/1024));
-	    done;
-	done
+    while read size fname; do
+     	for unit in k M G T P E Z Y;
+	do
+	    if [ $size -lt 1024 ]; then
+		echo -e "${size}${unit}B${fname}";
+		break;
+	    fi;
+	    size=$((size/1024));
+	done;
+    done
 }
 
 alias du1='duf --max-depth=1'
@@ -52,7 +52,7 @@ alias du0='duf --max-depth=0'
 
 # Source remote aliases
 if [ -f ~/config/.bash_remotes ]; then
-	. ~/config/.bash_remotes 
+    . ~/config/.bash_remotes 
 fi
 
 export PATH=$PATH:~/bin
