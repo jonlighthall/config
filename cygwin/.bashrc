@@ -213,8 +213,10 @@ export HISTCONTROL=ignoredups
 export SVN_EDITOR=emacs
 export GIT_EDITOR=emacs
 # Prompt
-export PS1='[\u@\h \W]\[\e[1;32m\]\$\[\e[0m\] '
-export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]]$\[\e[0m\] '
+export PS1='[\u@\h \W]\[\e[1;32m\]\$\[\e[0m\] ' #[user@host dir]
+export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]]$\[\e[0m\] ' #[user@host dir] in color
+export PS1='PGI \[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]]$\[\e[0m\] ' #text [user@host dir] in color
+export PS1='\[\e[1;37;42m\]PGI\[\e[0m\]\[\e[1;32m\] [\u@\h \[\e[34m\]\W\[\e[32m\]]$\[\e[0m\] ' #color text [user@host dir] in color
 
 # Macros
 alias ls='ls --color=auto'
