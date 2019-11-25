@@ -18,7 +18,11 @@ export HISTIGNORE=$'bg:exit:ls:pwd'
 export SVN_EDITOR=emacs
 export GIT_EDITOR=emacs
 # Prompt
-export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]]$\[\e[0m\] '
+git_branch() {
+     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]\e[35m\]$(git_branch)\e[32m\]]$\[\e[0m\] '
+
 
 # Macros
 alias ls='ls --color'
