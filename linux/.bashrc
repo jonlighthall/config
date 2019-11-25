@@ -14,6 +14,9 @@ export HISTSIZE=40000
 # Don't put duplicate lines in the history
 export HISTCONTROL=ignoredups
 export HISTIGNORE=$'bg:exit:ls:pwd'
+# Realtime history
+#shopt -s histappend
+PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 # Editors
 export SVN_EDITOR=emacs
 export GIT_EDITOR=emacs
