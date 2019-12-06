@@ -18,6 +18,7 @@ export HISTIGNORE=$'bg:exit:ls:pwd'
 #shopt -s histappend
 PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 # Editors
+exprot EDITOR=emacs
 export SVN_EDITOR=emacs
 export GIT_EDITOR=emacs
 # Prompt
@@ -60,6 +61,7 @@ if [ -f ~/config/.bash_remotes ]; then
     . ~/config/.bash_remotes 
 fi
 
+# Add to path
 if [[ ":$PATH" != *":/home/jlighthall/bin"*  ]]; then 
     export PATH=$PATH:~/bin
 fi
