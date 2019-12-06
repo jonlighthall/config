@@ -1,0 +1,1 @@
+0 0 * * * echo "Today is $(date +'%a %b %d %Y')" >> ~/.bash_history
