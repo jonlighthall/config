@@ -11,7 +11,7 @@ fi
 
 echo "Welcome to" $HOSTNAME
 if [ -f ~/.bash_history ]; then
-    echo "LOGIN  $(date +'%a %b %d %Y %H:%M %Z')" >> ~/.bash_history
+    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z')" >> ~/.bash_history
 fi
 
 # Get the site-specific aliases and functions

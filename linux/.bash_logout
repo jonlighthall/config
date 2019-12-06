@@ -5,5 +5,5 @@
 
 echo "goodbye"
 if [ -f ~/.bash_history ]; then
-    echo "LOGOUT $(date +'%a %b %d %Y %H:%M %Z')" >> ~/.bash_history
+    echo "#$(date +'%s') LOGOUT $(date +'%a %b %d %Y %R:%S %Z')" >> ~/.bash_history
 fi
