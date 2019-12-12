@@ -44,3 +44,6 @@ fi
 # fi
 
 echo "Welcome to" $HOSTNAME
+if [ -f ~/.bash_history ]; then
+    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z')" >> ~/.bash_history
+fi
