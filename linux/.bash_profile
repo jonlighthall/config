@@ -9,9 +9,9 @@ fi
 
 # User-specific environment and startup programs
 
-echo "Welcome to" $HOSTNAME
+echo "Welcome to" $(hostname -f)
 if [ -f ~/.bash_history ]; then
-    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z')" >> ~/.bash_history
+    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $(hostname -s)" >> ~/.bash_history
 fi
 
 # Get the site-specific aliases and functions
