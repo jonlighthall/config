@@ -33,9 +33,11 @@ export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]\e[35m\]$(git_branch)\e[32m
 export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\w\[\e[32m\]\e[35m\]$(git_branch)\e[32m\]]\n$\[\e[0m\] ' # full dir, new line
 export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\w\[\e[32m\]\e[35m\]$(git_branch)\e[32m\]]\n\e[0;37m\]\A\e[1;32m\] $\[\e[0m\] ' # post time
 export PS1='\e[0;37m\]\A\[\e[1;32m\][\u@\h \[\e[34m\]\w\[\e[32m\]\e[35m\]$(git_branch)\e[32m\]]$\[\e[0m\] ' # pre time
+export PS1='\e[0;37m\]\A\[\e[1;32m\] \u@\h \[\e[34m\]\w\[\e[32m\]\e[35m\]$(git_branch)\e[32m\]\n$\[\e[0m\] ' # pre time, new line, no brackets
 
 # Macros
 alias ls='ls --color'
+alias pwd='pwd -L;pwd -P'
 alias naut='nautilus --no-desktop --browser ./ &'
 alias term='gnome-terminal &'
 alias ping='ping -c 5'
