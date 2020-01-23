@@ -6,6 +6,15 @@ An X windows server is needed use the following link to download Xming.
 
 https://sourceforge.net/projects/xming/files/latest/download
 
+On a fresh install of WSL, Git will first need to be installed.
+```bash
+sudo apt -y install git
+```
+
+If the preceeding command fails, the following should allow the command to run
+```bash
+sudo apt update && sudo apt -y upgrade
+```
 
 ## Scripts
 ````
