@@ -12,7 +12,7 @@ if [ -d ~/.emacs.d ]; then
     echo Backing up .emacs.d
     mv ~/.emacs.d/ ~/.emacs.d_old/
 fi
-ln -s ~/config/wsl/.emacs.d/ .emacs.d
+ln -s ~/config/wsl/.emacs.d/ ~/.emacs.d
 
 if [ -f ~/.gitconfig ]; then
     echo Backing up .gitconfig
