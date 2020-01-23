@@ -20,10 +20,11 @@ sudo apt update && sudo apt -y upgrade
 ````
 cd config/wsl
 ./make_links.sh
+./make_links_personal.sh
 ./install_packages.sh
 ````
 
-The following commands are executed by the script.
+The following commands are executed by the scripts.
 ### Bash
 Use the following commands to create a symbolic link from the home directory to the `config\wsl` directory
 ```bash
