@@ -27,9 +27,9 @@ export GIT_EDITOR=emacs
 # Prompt
 git_branch() {
     git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
-# 2>/dev/null redirects stderr to null
-# sed -e '/^[^*]/d' deletes any lines not containing *
-# sed -e 's/* \(.*\)/ (\1)/' replaces the first instance of '* '
+    # 2>/dev/null redirects stderr to null
+    # sed -e '/^[^*]/d' deletes any lines not containing *
+    # sed -e 's/* \(.*\)/ (\1)/' replaces the first instance of '* '
 }
 export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]\e[35m\]$(git_branch)\e[32m\]]$\[\e[0m\] '
 export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\w\[\e[32m\]\e[35m\]$(git_branch)\e[32m\]]\n$\[\e[0m\] ' # full dir, new line
@@ -65,14 +65,14 @@ alias du0='duf --max-depth=0'
 
 # Source remote aliases
 if [ -f ~/.bash_remotes ]; then
-    . ~/.bash_remotes 
+    . ~/.bash_remotes
 fi
 
 if [ -f ~/config/.bash_remotes ]; then
     . ~/config/.bash_remotes 
 fi
 
-# Add to path
+# Path additions
 if [[ ":$PATH" != *":/home/jlighthall/bin"*  ]]; then 
     export PATH=$PATH:~/bin
 fi
