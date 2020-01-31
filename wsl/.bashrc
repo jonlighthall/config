@@ -6,6 +6,15 @@ if [ -f ~/.bashrc ]; then
     . ~/.bashrc
 fi
 
+# Source remote aliases
+if [ -f ~/.bash_local ]; then
+    . ~/.bash_local
+fi
+
+if [ -f ~/config/.bash_remotes ]; then
+    . ~/config/.bash_remotes 
+fi
+
 # User specific aliases and functions
 
 # Settings
@@ -45,36 +54,6 @@ alias pwd='pwd -L;pwd -P'
 export DISPLAY=localhost:0.0 
 alias xming='/mnt/c/Program\ Files\ \(x86\)/Xming/Xming.exe :0 -clipboard -multiwindow -silent-dup-error -logverbose 0 &'
 alias vcx='/mnt/c/Program\ Files/VcXsrv/vcxsrv.exe :0 -clipboard -multiwindow &'
-
-# Check if xwin is running
-# -x flag only match processes whose name (or command line if -f is
-# specified) exactly match the pattern. 
-
-if pgrep -x "vcxsrv.exe" > /dev/null
-then
-    echo "VcXsrv is already running"
-else
-    echo "launching VcXsrv..."
-    vcx
-fi
-
-if pgrep -x "Xming.exe" > /dev/null
-then
-    echo "Xming is already running"
-else
-    echo "launching Xming..."
-    xming
-fi
-
-
-# Source remote aliases
-if [ -f ~/.bash_remotes ]; then
-    . ~/.bash_remotes
-fi
-
-if [ -f ~/config/.bash_remotes ]; then
-    . ~/config/.bash_remotes 
-fi
 
 # Path additions
 # ROOT

@@ -5,6 +5,10 @@
 [[ "$-" != *i* ]] && return
 
 # Source remote aliases
+if [ -f ~/.bash_local ]; then
+    . ~/.bash_local
+fi
+
 if [ -f ~/config/.bash_remotes ]; then
 	. ~/config/.bash_remotes 
 fi
