@@ -1,14 +1,15 @@
-# .bashrc
+# ~/config/linux/.bashrc
+# Interactive shell settings for Linux
 
-# Source global definitions
+# Source system settings
 if [ -f /etc/bashrc ]; then
-    . /etc/bashrc # --> Read /etc/bashrc, if present.
+    . /etc/bashrc
 fi
 
 # User specific aliases and functions
 
 # Settings
-# Store 50000 commands in bash history
+# Commands to save
 export HISTFILESIZE=50000
 export HISTSIZE=40000
 # Don't put duplicate lines in the history
@@ -17,6 +18,7 @@ export HISTIGNORE=$'bg:exit:ls:pwd:history'
 # Realtime history
 #shopt -s histappend
 PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+# Timestamp history
 HISTTIMEFORMAT="%F %T "
 # Editors
 export EDITOR=emacs
