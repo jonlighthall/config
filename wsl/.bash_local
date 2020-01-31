@@ -1,0 +1,19 @@
+# Check if xwin is running
+# -x flag only match processes whose name (or command line if -f is
+# specified) exactly match the pattern. 
+
+if pgrep -x "vcxsrv.exe" > /dev/null
+then
+    echo "VcXsrv is already running"
+else
+    echo "launching VcXsrv..."
+    vcx
+fi
+
+if pgrep -x "Xming.exe" > /dev/null
+then
+    echo "Xming is already running"
+else
+    echo "launching Xming..."
+    xming
+fi
