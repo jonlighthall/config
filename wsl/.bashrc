@@ -63,9 +63,11 @@ else
     xming
 fi
 
+if [ -f root_v5.34.36/bin/thisroot.sh ]; then
 echo "sourcing root..."
 . root_v5.34.36/bin/thisroot.sh
 which root
+fi
 
 # Source remote aliases
 if [ -f ~/config/.bash_remotes ]; then
