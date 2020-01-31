@@ -27,6 +27,8 @@ export HISTIGNORE=$'bg:exit:ls:pwd:history'
 # Realtime history
 #shopt -s histappend
 PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+# Timestamp history
+HISTTIMEFORMAT="%F %T "
 # Editors
 export EDITOR=emacs
 export SVN_EDITOR=emacs
@@ -48,6 +50,26 @@ export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[
 # Macros
 alias ls='ls --color'
 alias pwd='pwd -L;pwd -P'
+alias naut='nautilus --no-desktop --browser ./ &'
+alias term='gnome-terminal &'
+alias ping='ping -c 5'
+function duf {	       
+    du -k "$@" | sort -n |
+    while read size fname; do
+     	for unit in k M G T P E Z Y;
+	do
+	    if [ $size -lt 1024 ]; then
+		echo -e "${size}${unit}B${fname}";
+		break;
+	    fi;
+	    size=$((size/1024));
+	done;
+    done
+}
+
+alias du1='duf --max-depth=1'
+alias du2='duf --max-depth=2'
+alias du0='duf --max-depth=0'
 
 # X Window
 export DISPLAY=localhost:0.0 
