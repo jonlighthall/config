@@ -35,6 +35,19 @@ export PS1='[\u@\h \W]\[\e[1;32m\]\$\[\e[0m\] ' #[user@host dir]
 export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]]$\[\e[0m\] ' #[user@host dir] in color
 export PS1='PGI \[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]]$\[\e[0m\] ' #text [user@host dir] in color
 export PS1='\[\e[1;37;42m\]PGI\[\e[0m\]\[\e[1;32m\] [\u@\h \[\e[34m\]\W\[\e[32m\]]$\[\e[0m\] ' #color text [user@host dir] in color
+git_branch() {
+    git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+    # 2>/dev/null redirects stderr to null
+    # sed -e '/^[^*]/d' deletes any lines not containing *
+    # sed -e 's/* \(.*\)/ (\1)/' replaces the first instance of '* '
+}
+export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]\e[35m$(git_branch)\e[32m]$\[\e[0m\] ' #[user@host dir (git)]
+export PS1='\[\e[1;37;42m\]PGI\[\e[0m\]\[\e[1;32m\] [\u@\h \[\e[34m\]\W\[\e[32m\]\e[35m$(git_branch)\e[32m]$\[\e[0m\] ' # text [user@host dir (git)]
+export PS1='\[\e[1;37;42m\]PGI\[\e[0m\]\[\e[1;32m\] [\u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m]\n$\[\e[0m\] ' # text [user@host dir (git)]
+export PS1='\[\e[1;37;42m\]PGI\[\e[0m\]\[\e[1;32m\] [\u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m]\n\e[0;37m\A\e[1;32m $\[\e[0m\] ' # post time
+export PS1='\[\e[1;37;42m\]PGI\[\e[0m\] \e[0;37m\A\[\e[1;32m\] \u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m\n$\[\e[0m\] ' # pre time, new line, no brackets
+export PS1='\[\e[1;37;42m\]PGI\[\e[0m\] \e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m$(git_branch)\e[32m\n$\[\e[0m\] ' # pre time, new line, no brackets, highlight host
+export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m$(git_branch)\n\[\e[1;37;42m\]PGI\[\e[0m\] \e[1;32m$\[\e[0m\] ' # pre time, new line with text, no brackets, highlight host
 
 # Macros
 alias ls='ls --color'
