@@ -77,6 +77,12 @@ alias xming='/mnt/c/Program\ Files\ \(x86\)/Xming/Xming.exe :0 -clipboard -multi
 alias vcx='/mnt/c/Program\ Files/VcXsrv/vcxsrv.exe :0 -clipboard -multiwindow &'
 
 # Path additions
+if [[ ":$PATH" != *":${HOME}/bin"*  ]]; then
+    if [ -d "${HOME}/bin" ] ; then
+	export PATH=$PATH:${HOME}/bin
+    fi
+fi
+
 # ROOT
 if [ -f root_v5.34.36/bin/thisroot.sh ]; then
     echo "sourcing root..."

@@ -72,8 +72,10 @@ alias du2='duf --max-depth=2'
 alias du0='duf --max-depth=0'
 
 # Path additions
-if [[ ":$PATH" != *":/home/jlighthall/bin"*  ]]; then 
-    export PATH=$PATH:~/bin
+if [[ ":$PATH" != *":${HOME}/bin"*  ]]; then
+    if [ -d "${HOME}/bin" ] ; then
+	export PATH=$PATH:${HOME}/bin
+    fi
 fi
 
 # PGI
