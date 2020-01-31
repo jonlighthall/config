@@ -80,3 +80,11 @@ alias vc='/cygdrive/c/Program\ Files\ \(x86\)/Microsoft\ Visual\ Studio/2017/Com
 #export ROOTSYS='c:/root'   # must be in DOS format (change path!)
 #export PATH='cygpath -u $ROOTSYS'/bin:$PATH
 #export PATH=$PATH:/c/WINNT/system32:/c/WINNT:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/Tools/WinNT:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/MSDev98/Bin:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/Tools:/c/Program\ Files/Microsoft\ Visual\ Studio/VC98/bin:/c/Program\ Files/DevStudio/DF/bin:/c/Program\ Files/DevStudio/SharedIDE/bin
+
+# Set PATH so it includes user's private bin if it exists
+if [[ ":$PATH" != *":${HOME}/bin"*  ]]; then
+    if [ -d "${HOME}/bin" ] ; then
+	export PATH=$PATH:${HOME}/bin
+#   PATH="${HOME}/bin:${PATH}"
+    fi
+fi
