@@ -64,6 +64,10 @@ alias du2='duf --max-depth=2'
 alias du0='duf --max-depth=0'
 
 # Source remote aliases
+if [ -f ~/.bash_remotes ]; then
+    . ~/.bash_remotes 
+fi
+
 if [ -f ~/config/.bash_remotes ]; then
     . ~/config/.bash_remotes 
 fi
