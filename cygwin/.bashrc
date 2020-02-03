@@ -10,7 +10,7 @@ if [ -f ~/.bash_local ]; then
 fi
 
 if [ -f ~/config/.bash_remotes ]; then
-	. ~/config/.bash_remotes 
+    . ~/config/.bash_remotes 
 fi
 
 # User specific aliases and functions
@@ -25,6 +25,7 @@ export HISTIGNORE=$'bg:exit:ls:pwd:history'
 # Realtime history
 #shopt -s histappend
 PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+# Timestamp history
 HISTTIMEFORMAT="%F %T "
 # Editors
 export EDITOR=emacs
@@ -85,6 +86,5 @@ alias vc='/cygdrive/c/Program\ Files\ \(x86\)/Microsoft\ Visual\ Studio/2017/Com
 if [[ ":$PATH" != *":${HOME}/bin"*  ]]; then
     if [ -d "${HOME}/bin" ] ; then
 	export PATH=$PATH:${HOME}/bin
-#   PATH="${HOME}/bin:${PATH}"
     fi
 fi
