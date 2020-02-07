@@ -76,8 +76,12 @@
 (require 'whitespace)
 (setq whitespace-style '(lines-tail))
 ;;(setq whitespace-line-column 50)
-(add-hook 'fortran-mode-hook (lambda () (whitespace-line-column 72)))
-(add-hook 'fortran-mode-hook (lambda () (global-whitespace-mode 1)))
+(add-hook 'fortran-mode-hook
+	  (lambda ()
+	    (setq-local whitespace-line-column 72)))
+(add-hook 'fortran-mode-hook
+	  (lambda ()
+	    (setq-local global-whitespace-mode 1)))
 (add-hook 'fortran-mode-hook 'turn-on-auto-fill)
 
 ;;; ------Custom keyboard shortcuts-------------------------
