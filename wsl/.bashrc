@@ -93,7 +93,7 @@ fi
 # PGI
 export PGI=/opt/pgi
 if [ -d $PGI ]; then
-    echo "adding PGI to path..."
+#   echo "adding PGI to path..."
     export PATH=$PGI/linux86-64/19.10/bin:$PATH
     export MANPATH=$MANPATH:$PGI/linux86-64/19.10/man
     export LM_LICENSE_FILE=$LM_LICENSE_FILE:$PGI/license.dat;
