@@ -49,6 +49,9 @@ export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[
 
 # Macros
 alias ls='ls --color'
+alias la='ls --color -la'
+alias lt='ls --color -ltr'
+alias lS='ls --color -ltS'
 alias pwd='pwd -L;pwd -P'
 alias naut='nautilus --no-desktop --browser ./ &'
 alias term='gnome-terminal &'
