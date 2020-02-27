@@ -54,9 +54,12 @@
 (require 'whitespace)
 (setq whitespace-style '(lines-tail))
 (setq whitespace-line-column 80)
-
-(add-hook 'fortran-mode-hook (lambda () (global-whitespace-mode 1)))
-(add-hook 'fortran-mode-hook (lambda () (setq whitespace-line-column 72)))
+(add-hook 'fortran-mode-hook
+	  (lambda ()
+	    (setq whitespace-line-column 72)))
+(add-hook 'fortran-mode-hook
+	  (lambda ()
+	    (global-whitespace-mode 1)))
 (add-hook 'fortran-mode-hook 'turn-on-auto-fill)
 
 ;;(add-hook 'prog-mode-hook 'whitespace-mode)
@@ -64,7 +67,14 @@
 ;;; ------Custom keyboard shortcuts-------------------------
 (global-set-key (kbd "C-x e") 'ediff-buffers) 
 (global-set-key (kbd "C-x w") 'ediff-revision)
-(global-set-key (kbd "C-x d") 'ediff-current-file)  
+(global-set-key (kbd "C-x d") 'ediff-current-file)
+(global-set-key (kbd "C-8")
+                (lambda () (interactive)
+                  (load-theme 'misterioso t)))
+(global-set-key (kbd "C-9")
+		(lambda () (interactive)
+                  (disable-theme 'misterioso)))
+
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
