@@ -56,6 +56,24 @@ alias la='ls -la'
 alias lt='ls -ltr'
 alias lS='ls -ltS'
 alias pwd='pwd -L;pwd -P'
+alias ping='ping -c 5'
+function duf {	       
+    du -k "$@" | sort -n |
+    while read size fname; do
+     	for unit in k M G T P E Z Y;
+	do
+	    if [ $size -lt 1024 ]; then
+		echo -e "${size}${unit}B${fname}";
+		break;
+	    fi;
+	    size=$((size/1024));
+	done;
+    done
+}
+
+alias du1='duf --max-depth=1'
+alias du2='duf --max-depth=2'
+alias du0='duf --max-depth=0'
 
 # X Window
 export DISPLAY=localhost:0
