@@ -49,6 +49,9 @@ export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[
 
 # Macros
 alias ls='ls --color'
+alias la='ls -la'
+alias lt='ls -ltr'
+alias lS='ls -ltS'
 alias pwd='pwd -L;pwd -P'
 alias naut='nautilus --no-desktop --browser ./ &'
 alias term='gnome-terminal &'
@@ -81,7 +84,7 @@ fi
 # PGI
 export PGI=/opt/pgi
 if [ -d $PGI ]; then
-    echo "adding PGI to path..."
+#   echo "adding PGI to path..."
     export PATH=$PGI/linux86-64/19.10/bin:$PATH
     export MANPATH=$MANPATH:$PGI/linux86-64/19.10/man
     export LM_LICENSE_FILE=$LM_LICENSE_FILE:$PGI/license.dat;
