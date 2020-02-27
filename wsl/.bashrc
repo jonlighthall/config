@@ -76,8 +76,6 @@ alias du0='duf --max-depth=0'
 
 # X Window
 export DISPLAY=localhost:0.0 
-alias xming='/mnt/c/Program\ Files\ \(x86\)/Xming/Xming.exe :0 -clipboard -multiwindow -silent-dup-error -logverbose 0 &'
-alias vcx='/mnt/c/Program\ Files/VcXsrv/vcxsrv.exe :0 -clipboard -multiwindow &'
 
 # Path additions
 if [[ ":$PATH" != *":${HOME}/bin"*  ]]; then
