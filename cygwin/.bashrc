@@ -52,6 +52,9 @@ export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[
 
 # Macros
 alias ls='ls --color'
+alias la='ls -la'
+alias lt='ls -ltr'
+alias lS='ls -ltS'
 alias pwd='pwd -L;pwd -P'
 
 # X Window
