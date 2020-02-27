@@ -71,7 +71,9 @@
 (global-linum-mode 1)
 
 ;; FORTRAN column highlighting
-(custom-set-variables '(fortran-line-length 72))
+(custom-set-variables
+ '(fortran-line-length 72)
+ '(fortran-continuation-string "&"))
 
 (require 'whitespace)
 (setq whitespace-style '(lines-tail))
@@ -88,14 +90,27 @@
 (global-set-key (kbd "C-x e") 'ediff-buffers) 
 (global-set-key (kbd "C-x w") 'ediff-revision)
 (global-set-key (kbd "C-x d") 'ediff-current-file)
+(global-set-key (kbd "C-8")
+                (lambda () (interactive)
+                  (load-theme 'misterioso t)))
+(global-set-key (kbd "C-9")
+		(lambda () (interactive)
+                  (disable-theme 'misterioso)))
 
 ;; Fonts
-(custom-set-variables
- '(inhibit-startup-screen t))
-
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "DejaVu Sans Mono" :foundry "PfEd" :slant normal :weight normal :height 110 :width normal)))))
+
+
+(defun vc-git-find-file-hook ()
+  (when (save-excursion
+      (goto-char (point-min))
+      (re-search-forward "^<<<<<<< " nil t))
+    (smerge-start-session)))
+
+;; setup files ending in “.m” to open in octave-mode
+(add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
