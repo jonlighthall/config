@@ -36,8 +36,8 @@ export PS1='[\u@\h \W]\[\e[1;32m\]\$\[\e[0m\] ' #[user@host dir]
 export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]]$\[\e[0m\] ' #[user@host dir] in color
 export PS1='PGI \[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]]$\[\e[0m\] ' #text [user@host dir] in color
 export PS1='\[\e[1;37;42m\]PGI\[\e[0m\]\[\e[1;32m\] [\u@\h \[\e[34m\]\W\[\e[32m\]]$\[\e[0m\] ' #color text [user@host dir] in color
-if command -v __git_ps1; then
-#   echo "creating Git prompt..." 
+if [ ! -z "$(command -v __git_ps1)" ]; then
+    #echo "creating Git prompt..." 
     export PS1='\[\033]0;$TITLEPREFIX:$PWD\007\]\n\[\033[32m\]\u@\h \[\033[35m\]$MSYSTEM \[\033[33m\]\w\[\033[36m\]`__git_ps1`\[\033[0m\]\n$'
     export PS1='\[\033]0;$TITLEPREFIX:$PWD\007\]\[\033[32m\]\e[0;37m\A\[\e[0;32m\] \u@\h \[\033[35m\]$MSYSTEM \[\033[33m\]\w\[\033[36m\]`__git_ps1`\[\033[0m\]\n$ ' #remove new line, add time, add space
     export PS1='\[\033]0;$TITLEPREFIX:$PWD\007\]\[\033[32m\]\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h \[\033[0;35m\]$MSYSTEM \[\033[33m\]\w\[\033[36m\]`__git_ps1`\[\033[0m\]\n$ ' #remove new line, add time, add space
@@ -49,7 +49,7 @@ else
 	# sed -e 's/* \(.*\)/ (\1)/' replaces the first instance of '* '
     }
     if [ -z "$MSYSTEM" ]; then
-#	echo "creating Cygwin prompt..." 
+	#echo "creating Cygwin prompt..." 
 	export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]\e[35m$(git_branch)\e[32m]$\[\e[0m\] ' #[user@host dir (git)]
 	TEXT='PGI'
 	export PS1='\[\e[1;37;42m\]$TEXT\[\e[0m\]\[\e[1;32m\] [\u@\h \[\e[34m\]\W\[\e[32m\]\e[35m$(git_branch)\e[32m]$\[\e[0m\] ' # text [user@host dir (git)]
@@ -60,8 +60,8 @@ else
 	export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m$(git_branch)\n\[\e[1;37;42m\]$TEXT\[\e[0m\] \e[1;32m$\[\e[0m\] ' # pre time, new line with text, no brackets, highlight host
 	export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m$(git_branch)\n\e[1;32m$\[\e[0m\] ' # pre time, new line with text, no brackets, highlight host
     else
-#	echo "creating MSYS prompt..."
-	echo "\"$MSYSTEM\""
+	#echo "creating MSYS prompt..."
+	#echo "\"$MSYSTEM\""
 	export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m`git_branch`\n\e[1;32m$\[\e[0m\] '
 	export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] $MSYSTEM \w\[\e[32m\]\e[35m`git_branch`\n\e[1;32m$\[\e[0m\] '
 	export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;35m\]\h\[\e[0;34m\] \e[0;33m\]$MSYSTEM\[\e[1;34m\] \w\[\e[32m\]\e[35m`git_branch`\n\e[1;32m$\[\e[0m\] '
@@ -114,7 +114,7 @@ FILE='/cygdrive/c/Program\ Files\ \(x86\)/emacs-23.4/bin/runemacs.exe'
 FILE='/cygdrive/c/Program\ Files/emacs-24.1/bin/runemacs.exe'
 FILE='/c/Users/jlighthall/Downloads/emacs-26.1-x86_64/bin/runemacs.exe'
 if [ -f $FILE ]; then
-alias emacs=$FILE    
+    alias emacs=$FILE    
 fi
 #alias gsview='/cygdrive/c/Program\ Files/Ghostgum/gsview/gsview64.exe'
 
