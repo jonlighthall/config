@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ## Link from config repo
-if [ -f ~/.bash_aliases ]; then
+if [ -f ~/.bash_profile ]; then
     echo Backing up .bash_profile
     mv ~/.bash_profile ~/.bash_profile_old 
 fi
