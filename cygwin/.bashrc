@@ -110,8 +110,12 @@ set HOME=/cygdrive/c/cygwin/home/lighthall/
 
 # Shortcuts
 alias vc='/cygdrive/c/Program\ Files\ \(x86\)/Microsoft\ Visual\ Studio/2017/Community/VC/Auxiliary/Build/vcvarsall.bat x86'
-#alias emacs='/cygdrive/c/Program\ Files\ \(x86\)/emacs-23.4/bin/runemacs.exe'
-#alias emacs32='/cygdrive/c/Program\ Files/emacs-24.1/bin/runemacs.exe'
+FILE='/cygdrive/c/Program\ Files\ \(x86\)/emacs-23.4/bin/runemacs.exe'
+FILE='/cygdrive/c/Program\ Files/emacs-24.1/bin/runemacs.exe'
+FILE='/c/Users/jlighthall/Downloads/emacs-26.1-x86_64/bin/runemacs.exe'
+if [ -f $FILE ]; then
+alias emacs=$FILE    
+fi
 #alias gsview='/cygdrive/c/Program\ Files/Ghostgum/gsview/gsview64.exe'
 
 # Path additions
