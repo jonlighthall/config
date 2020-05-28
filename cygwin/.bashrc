@@ -32,7 +32,7 @@ export EDITOR=emacs
 export SVN_EDITOR=emacs
 export GIT_EDITOR=emacs
 # Prompt
-export PS1='[\u@\h \W]\[\e[1;32m\]\$\[\e[0m\] ' #[user@host dir]
+export PS1='[\u@\h \W]\[\e[0;32m\]\$\[\e[0m\] ' #[user@host dir]
 export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]]$\[\e[0m\] ' #[user@host dir] in color
 export PS1='PGI \[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]]$\[\e[0m\] ' #text [user@host dir] in color
 export PS1='\[\e[1;37;42m\]PGI\[\e[0m\]\[\e[1;32m\] [\u@\h \[\e[34m\]\W\[\e[32m\]]$\[\e[0m\] ' #color text [user@host dir] in color
@@ -41,6 +41,7 @@ if [ ! -z "$(command -v __git_ps1)" ]; then
     export PS1='\[\033]0;$TITLEPREFIX:$PWD\007\]\n\[\033[32m\]\u@\h \[\033[35m\]$MSYSTEM \[\033[33m\]\w\[\033[36m\]`__git_ps1`\[\033[0m\]\n$'
     export PS1='\[\033]0;$TITLEPREFIX:$PWD\007\]\[\033[32m\]\e[0;37m\A\[\e[0;32m\] \u@\h \[\033[35m\]$MSYSTEM \[\033[33m\]\w\[\033[36m\]`__git_ps1`\[\033[0m\]\n$ ' #remove new line, add time, add space
     export PS1='\[\033]0;$TITLEPREFIX:$PWD\007\]\[\033[32m\]\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h \[\033[0;35m\]$MSYSTEM \[\033[33m\]\w\[\033[36m\]`__git_ps1`\[\033[0m\]\n$ ' #remove new line, add time, add space
+    export PS1='\[\033]0;$TITLEPREFIX:$PWD\007\]\[\033[32m\]\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h \[\033[0;35m\]$MSYSTEM \[\033[33m\]\w\[\033[36m\]`__git_ps1`\n\e[0;32m$\[\e[0m\] ' #remove new line, add time, add space
 else
     git_branch() {
 	git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
@@ -52,8 +53,8 @@ else
 	if [ -z "$PGI" ]; then
 	    #echo "creating Cygwin prompt..." 
 	    export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]\e[35m$(git_branch)\e[32m]$\[\e[0m\] ' #[user@host dir (git)]
-	    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[0;32m\]\e[36m$(git_branch)\n\e[1;32m$\[\e[0m\] ' # pre time, new line, no brackets, highlight host
-	    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[36m$(git_branch)\n\e[1;32m$\[\e[0m\] ' # pre time, new line, no brackets, highlight host, git bash color
+	    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[0;32m\]\e[36m$(git_branch)\n\e[0;32m$\[\e[0m\] ' # pre time, new line, no brackets, highlight host
+	    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[36m$(git_branch)\n\e[0;32m$\[\e[0m\] ' # pre time, new line, no brackets, highlight host, git bash color
 	else
 	    echo "creating PGI prompt..."
 	    TEXT='PGI'
@@ -63,7 +64,7 @@ else
 	    export PS1='\[\e[1;37;42m\]$TEXT\[\e[0m\] \e[0;37m\A\[\e[1;32m\] \u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m\n$\[\e[0m\] ' # text, pre time, new line, no brackets
 	    export PS1='\[\e[1;37;42m\]$TEXT\[\e[0m\] \e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m$(git_branch)\e[32m\n$\[\e[0m\] ' # text, pre time, new line, no brackets, highlight host
 	    export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m$(git_branch)\n\[\e[1;37;42m\]$TEXT\[\e[0m\] \e[1;32m$\[\e[0m\] ' # pre time, new line with text, no brackets, highlight host
-	    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;34m\] \e[0;35m\]$TEXT\[\e[0;33m\] \w\[\e[0;32m\]\e[36m$(git_branch)\n\e[1;32m$\[\e[0m\] ' # pre time, new line with text, no brackets, highlight host, git bash color
+	    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;34m\] \e[0;35m\]$TEXT\[\e[0;33m\] \w\[\e[0;32m\]\e[36m$(git_branch)\n\e[0;32m$\[\e[0m\] ' # pre time, new line with text, no brackets, highlight host, git bash color
 	fi
     else
 	#echo "creating MSYS prompt..."
