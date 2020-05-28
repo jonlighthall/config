@@ -46,8 +46,7 @@ export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m]\
 export PS1='\e[0;37m\A\[\e[1;32m\][\u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m]$\[\e[0m\] ' # pre time
 export PS1='\e[0;37m\A\[\e[1;32m\] \u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m\n$\[\e[0m\] ' # pre time, new line, no brackets
 export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m$(git_branch)\e[32m\n$\[\e[0m\] ' # pre time, new line, no brackets, highlight host
-export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m$(git_branch)\n\e[1;32m$\[\e[0m\] ' # pre time, new line, no brackets, highlight host
-export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[0;32m\]\e[36m$(git_branch)\n\e[1;32m$\[\e[0m\] ' # pre time, new line, no brackets, highlight host
+export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[36m$(git_branch)\e[1;32m\n$\[\e[0m\] ' # pre time, new line, no brackets, highlight host, git bash color
 
 # Macros
 alias ls='ls --color'
@@ -60,16 +59,16 @@ alias term='gnome-terminal &'
 alias ping='ping -c 5'
 function duf {	       
     du -k "$@" | sort -n |
-	while read size fname; do
-     	    for unit in k M G T P E Z Y;
-	    do
-		if [ $size -lt 1024 ]; then
-		    echo -e "${size}${unit}B${fname}";
-		    break;
-		fi;
-		size=$((size/1024));
-	    done;
-	done
+    while read size fname; do
+     	for unit in k M G T P E Z Y;
+	do
+	    if [ $size -lt 1024 ]; then
+		echo -e "${size}${unit}B${fname}";
+		break;
+	    fi;
+	    size=$((size/1024));
+	done;
+    done
 }
 
 alias du1='duf --max-depth=1'
