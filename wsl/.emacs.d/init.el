@@ -36,18 +36,30 @@
 (setq frame-title-format
       (concat  "%b - emacs@" (system-name)))
 
-;; Set frame position
-(setq initial-frame-alist '((top . 40) (left . 0))) ; moves window to upper left corner
+(when window-system-version
+  ;; setup for graphic environment
+  
+  ;; Set frame position
+  (setq initial-frame-alist '((top . 40) (left . 0))) ; moves window to upper left corner
 
-;; Set frame size
-(set-frame-size (selected-frame) 101 93);; (columns,rows)
+  ;; Set frame size
+  (set-frame-size (selected-frame) 101 93);; (columns,rows)
 					; "snap" width is 73 (for 1280 px wide display)
 					; "pretty-print" width is 97 columns wide (+2 for line no)
 					; max height with triple-hieght taskbar is 40 (1366 res.)
 
-;; Window transparency
-(set-frame-parameter (selected-frame) 'alpha '(95 . 95))
-;;(add-to-list 'default-frame-alist '(alpha . (95 . 95)))
+  ;; Window transparency
+  (set-frame-parameter (selected-frame) 'alpha '(95 . 95))
+  ;;(add-to-list 'default-frame-alist '(alpha . (95 . 95)))
+
+  ;; Fonts
+  (custom-set-faces
+   ;; custom-set-faces was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(default ((t (:family "DejaVu Sans Mono" :foundry "PfEd" :slant normal :weight normal :height 110 :width normal)))))
+  )
 
 (custom-set-variables
  ;; Split ediff window vertically
@@ -96,15 +108,6 @@
 (global-set-key (kbd "C-9")
 		(lambda () (interactive)
                   (disable-theme 'misterioso)))
-
-;; Fonts
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:family "DejaVu Sans Mono" :foundry "PfEd" :slant normal :weight normal :height 110 :width normal)))))
-
 
 (defun vc-git-find-file-hook ()
   (when (save-excursion
