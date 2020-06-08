@@ -81,6 +81,7 @@ alias ls='ls --color'
 alias la='ls -la'
 alias lt='ls -ltr'
 alias lS='ls -ltS'
+alias grep='grep --color=auto'
 alias pwd='pwd -L;pwd -P'
 alias ping='ping -c 5'
 function duf {	       
