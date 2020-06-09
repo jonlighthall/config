@@ -26,3 +26,4 @@
 (global-linum-mode 1)
 (setq linum-format "  %d")
 
+(load "~/config/emacs_all.el")
