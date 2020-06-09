@@ -15,9 +15,6 @@
 (setq initial-frame-alist '((top . 0) (left . 0)))
 ;; moves window to upper left corner
 
-;; Turn off welcome page
-(custom-set-variables '(inhibit-startup-screen t))
-
 ;; Turn on highlight matching parentheses
 (show-paren-mode 1)
 

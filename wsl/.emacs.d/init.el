@@ -61,12 +61,6 @@
    '(default ((t (:family "DejaVu Sans Mono" :foundry "PfEd" :slant normal :weight normal :height 110 :width normal)))))
   )
 
-(custom-set-variables
- ;; Split ediff window vertically
- '(ediff-split-window-function (quote split-window-horizontally))
- ;; Turn off welcome page
- '(inhibit-startup-screen t))
-
 ;;; ------Highlighting and coding aides---------------------
 ;; Syntax highlighting (font-lock-mode)
 (cond ((fboundp 'global-font-lock-mode)
