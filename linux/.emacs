@@ -43,9 +43,6 @@
 ;; turn on font-lock mode
 (global-font-lock-mode t)
 
-;; Turn on highlight matching parentheses
-(show-paren-mode 1)
-
 ;; Turn on line numbering
 (require 'linum)
 (global-linum-mode 1)

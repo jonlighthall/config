@@ -15,9 +15,6 @@
 (setq initial-frame-alist '((top . 0) (left . 0)))
 ;; moves window to upper left corner
 
-;; Turn on highlight matching parentheses
-(show-paren-mode 1)
-
 ;; Turn on line numbering
 (require 'linum)
 (global-linum-mode 1)
