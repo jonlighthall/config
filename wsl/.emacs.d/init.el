@@ -69,9 +69,6 @@
        ;; Maximum colors
        (setq font-lock-maximum-decoration t)))
 
-;; Turn on highlight matching parentheses
-(show-paren-mode 1)
-
 ;; Turn on line numbering
 (require 'linum)
 (global-linum-mode 1)

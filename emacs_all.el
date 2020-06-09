@@ -4,6 +4,8 @@
  ;; Turn off welcome page
  '(inhibit-startup-screen t))
 
+;; Turn on highlight matching parentheses
+(show-paren-mode 1)
 
 ;;; ------Custom keyboard shortcuts-------------------------
 (global-set-key (kbd "C-x e") 'ediff-buffers) 
