@@ -13,10 +13,6 @@
 ;(setq transient-mark-mode t)
 
 ;;; ------Frame appearance and behavior---------------------
-;; default to better frame titles
-(setq frame-title-format
-      (concat  "%b - emacs@" (system-name)))
-
 ;; unique buffer names
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)

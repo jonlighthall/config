@@ -32,10 +32,6 @@
 ;;(add-hook 'flyspell-mode-hook 'flyspell-buffer) ;; slows downloading
 
 ;;; ------Frame appearance and behavior---------------------
-;; default to better frame titles
-(setq frame-title-format
-      (concat  "%b - emacs@" (system-name)))
-
 ;; Set frame position
 (setq initial-frame-alist '((top . 0) (left . 0))) ; moves window to upper left corner
 
