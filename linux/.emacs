@@ -43,9 +43,6 @@
 ;; turn on font-lock mode
 (global-font-lock-mode t)
 
-;; Turn on line numbering
-(require 'linum)
-(global-linum-mode 1)
 ;; (load-file "~/.emacs.d/setnu.el")
 ;; (load-file "~/.emacs.d/psvn.el")
 

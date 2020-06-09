@@ -57,10 +57,6 @@
        ;; Maximum colors
        (setq font-lock-maximum-decoration t)))
 
-;; Turn on line numbering
-(require 'linum)
-(global-linum-mode 1)
-
 ;; FORTRAN column highlighting
 (custom-set-variables
  '(fortran-line-length 72)

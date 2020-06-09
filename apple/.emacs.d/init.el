@@ -15,9 +15,6 @@
 (setq initial-frame-alist '((top . 0) (left . 0)))
 ;; moves window to upper left corner
 
-;; Turn on line numbering
-(require 'linum)
-(global-linum-mode 1)
-(setq linum-format "  %d")
-
 (load "~/config/emacs_all.el")
+
+(setq linum-format "  %d")
