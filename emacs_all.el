@@ -7,6 +7,10 @@
 ;; Turn on highlight matching parentheses
 (show-paren-mode 1)
 
+;; Turn on line numbering
+(require 'linum)
+(global-linum-mode 1)
+
 ;;; ------Custom keyboard shortcuts-------------------------
 (global-set-key (kbd "C-x e") 'ediff-buffers) 
 (global-set-key (kbd "C-x w") 'ediff-revision)
