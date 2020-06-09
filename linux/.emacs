@@ -39,12 +39,6 @@
    )
   )
 
-(custom-set-variables
- ;; Split ediff window vertically
- '(ediff-split-window-function (quote split-window-horizontally))
- ;; Turn off welcome page
- '(inhibit-startup-screen t))
-
 ;;; ------Highlighting and coding aides---------------------
 ;; turn on font-lock mode
 (global-font-lock-mode t)

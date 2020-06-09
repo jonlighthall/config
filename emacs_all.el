@@ -1,3 +1,10 @@
+(custom-set-variables
+ ;; Split ediff window vertically
+ '(ediff-split-window-function (quote split-window-horizontally))
+ ;; Turn off welcome page
+ '(inhibit-startup-screen t))
+
+
 ;;; ------Custom keyboard shortcuts-------------------------
 (global-set-key (kbd "C-x e") 'ediff-buffers) 
 (global-set-key (kbd "C-x w") 'ediff-revision)

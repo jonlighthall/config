@@ -49,12 +49,6 @@
 (set-frame-parameter (selected-frame) 'alpha '(95 . 95))
 ;;(add-to-list 'default-frame-alist '(alpha . (95 . 95)))
 
-(custom-set-variables
- ;; Split ediff window vertically
- '(ediff-split-window-function (quote split-window-horizontally))
- ;; Turn off welcome page
- '(inhibit-startup-screen t))
-
 ;;; ------Highlighting and coding aides---------------------
 ;; Syntax highlighting (font-lock-mode)
 (cond ((fboundp 'global-font-lock-mode)
