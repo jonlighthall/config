@@ -1,6 +1,15 @@
 ;;; ------Settings for DOS and Cygwin-----------------------
-(setq exec-path '("C:/cygwin/bin/"))
-(setq-default ispell-program-name "aspell")
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
+(setq exec-path '(
+		  "C:/cygwin/bin/"
+		  "C:/Users/jlighthall/AppData/Local/Programs/Git/cmd/"
+		  "C:/Users/jlighthall/AppData/Local/Programs/Git/bin/"
+		  ))
 
 (setenv "CYGWIN" "nodosfilewarning")
 
@@ -16,6 +25,7 @@
   (aset buffer-display-table ?\^M []))
 
 ;;; ------Spelling------------------------------------------
+;(setq-default ispell-program-name "aspell")
 (dolist (hook '(text-mode-hook))
   (add-hook hook (lambda () (flyspell-mode 1))))
 (add-hook 'c++-mode-hook
@@ -33,7 +43,7 @@
 
 ;;; ------Frame appearance and behavior---------------------
 ;; Set frame position
-(setq initial-frame-alist '((top . 0) (left . 0))) ; moves window to upper left corner
+(setq initial-frame-alist '((top . 10) (left . 0))) ; moves window to upper left corner
 
 ;; Set frame size
 (set-frame-size (selected-frame) 101 38);; (columns,rows)
@@ -69,4 +79,8 @@
 	    (setq-local global-whitespace-mode 1)))
 (add-hook 'fortran-mode-hook 'turn-on-auto-fill)
 
-(load "~/config/emacs_all.el")
+;(setq whitespace-style '(lines))
+;(setq whitespace-line-column 72)
+;(global-whitespace-mode 1)
+
+(load "c:/Users/jlighthall/config/emacs_all.el")
