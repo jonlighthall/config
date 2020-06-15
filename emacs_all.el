@@ -26,11 +26,12 @@
 		(lambda () (interactive)
                   (disable-theme 'misterioso)))
 
+;; start Git merge conflicts in smerge ediff
 (defun vc-git-find-file-hook ()
   (when (save-excursion
       (goto-char (point-min))
       (re-search-forward "^<<<<<<< " nil t))
-    (smerge-start-session)))
+    (smerge-ediff)))
 
 ;; setup files ending in “.m” to open in octave-mode
 (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
