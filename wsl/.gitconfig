@@ -8,3 +8,4 @@
 	default = simple
 [core]
 	fileMode = false
+	autocrlf = input
