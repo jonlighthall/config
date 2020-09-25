@@ -3,9 +3,9 @@ copy these files to the appropriate folders
 ## Bash
 Use the following commands to create symbolic links from the `/home/lighthall` directory to the `/home/lighthall/config` directory
 ```bash
-ln -s ~/config/linux/.bashrc .bashrc
-ln -s ~/config/linux/.bash_profile .bash_profile
-ln -s ~/config/linux/.bash_aliases_<local> .bash_aliases
+ln -s ~/config/linux/.bashrc ~/.bashrc
+ln -s ~/config/linux/.bash_profile ~/.bash_profile
+ln -s ~/config/linux/.bash_aliases_<local> ~/.bash_aliases
 ```
 The file `.bashrc` is loaded directly by `.bash_profile` but may still need to be linked to the home directory for system use. 
 The `.bash_aliases` files are used for site-specific settings.
