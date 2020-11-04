@@ -40,13 +40,13 @@ git_branch() {
     # sed -e '/^[^*]/d' deletes any lines not containing *
     # sed -e 's/* \(.*\)/ (\1)/' replaces the first instance of '* '
 }
-export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]\e[35m$(git_branch)\e[32m]$\[\e[0m\] '
-export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m]\n$\[\e[0m\] ' # full dir, new line
-export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m]\n\e[0;37m\A\e[0;32m $\[\e[0m\] ' # post time
-export PS1='\e[0;37m\A\[\e[1;32m\][\u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m]$\[\e[0m\] ' # pre time
-export PS1='\e[0;37m\A\[\e[1;32m\] \u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m\n$\[\e[0m\] ' # pre time, new line, no brackets
-export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m$(git_branch)\e[32m\n$\[\e[0m\] ' # pre time, new line, no brackets, highlight host
-export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[36m$(git_branch)\e[0;32m\n$\[\e[0m\] ' # pre time, new line, no brackets, highlight host, git bash color
+export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]\e[35m$(git_branch)\e[32m]$\[\e[0m\] ' # user, host, base dir, branch
+export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m]\n$\[\e[0m\] ' # full dir, prompt on new line
+export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m]\n\e[0;37m\A\e[0;32m $\[\e[0m\] ' # time, prompt on new line
+export PS1='\e[0;37m\A\[\e[1;32m\][\u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m]$\[\e[0m\] ' # time, prompt on same line
+export PS1='\e[0;37m\A\[\e[1;32m\] \u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets
+export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host
+export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[36m$(git_branch)\e[0;32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
 
 # Macros
 alias ls='ls --color'
