@@ -4,7 +4,7 @@
 # Get the general aliases and functions
 #echo Loading .bashrc...
 if [ -f ~/config/linux/.bashrc ]; then
-	. ~/config/linux/.bashrc
+    source ~/config/linux/.bashrc
 fi
 
 # User-specific environment and startup programs
