@@ -47,6 +47,7 @@ export PS1='\e[0;37m\A\[\e[1;32m\][\u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branc
 export PS1='\e[0;37m\A\[\e[1;32m\] \u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets
 export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host
 export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[36m$(git_branch)\e[0;32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
+export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[0;32m\n$\[\e[0m\] ' # no git
 
 # Macros
 alias ls='ls --color'
@@ -58,6 +59,9 @@ alias pwd='pwd -L;pwd -P'
 alias naut='nautilus --no-desktop --browser ./ &'
 alias term='gnome-terminal &'
 alias ping='ping -c 5'
+alias ffind='find ./ -not -path "./.git/*" -type f'
+alias e='emacs'
+alias ne='emacs -nw'
 function duf {	       
     du -k "$@" | sort -n |
     while read size fname; do

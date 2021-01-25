@@ -58,6 +58,9 @@ alias pwd='pwd -L;pwd -P'
 alias naut='nautilus --no-desktop --browser ./ &'
 alias term='gnome-terminal &'
 alias ping='ping -c 5'
+alias ffind='find ./ -not -path "./.git/*" -type f'
+alias e='emacs'
+alias ne='emacs -nw'
 function duf {	       
     du -k "$@" | sort -n |
     while read size fname; do
