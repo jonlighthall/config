@@ -61,7 +61,7 @@ alias term='gnome-terminal &'
 alias ping='ping -c 5'
 alias ffind='find ./ -not -path "./.git/*" -type f'
 alias e='emacs'
-alias ne='emacs -nw'
+alias en='emacs -nw'
 function duf {	       
     du -k "$@" | sort -n |
     while read size fname; do
