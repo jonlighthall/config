@@ -21,7 +21,7 @@ export HISTFILESIZE=50000
 export HISTSIZE=40000
 # Don't put duplicate lines in the history
 export HISTCONTROL=ignoredups
-export HISTIGNORE=$'bg:exit:ls:pwd:history:snuffy'
+export HISTIGNORE=$'bg:exit:ls:pwd:history'
 # Realtime history
 #shopt -s histappend
 PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
@@ -84,6 +84,9 @@ alias lS='ls -ltS'
 alias grep='grep --color=auto'
 alias pwd='pwd -L;pwd -P'
 alias ping='ping -c 5'
+alias ffind='find ./ -not -path "./.git/*" -type f'
+alias e='emacs'
+alias en='emacs -nw'
 function duf {	       
     du -k "$@" | sort -n |
     while read size fname; do
