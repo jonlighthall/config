@@ -4,33 +4,13 @@
 # If not running interactively, don't do anything
 [[ "$-" != *i* ]] && return
 
-# Source remote aliases
-if [ -f ~/.bash_local ]; then
-    . ~/.bash_local
+# Source common user settings
+if [ -f ~/config/.bashrc_common ]; then
+    . ~/config/.bashrc_common 
 fi
 
-if [ -f ~/config/.bash_remotes ]; then
-    . ~/config/.bash_remotes 
-fi
+# System-specific aliases and functions
 
-# User specific aliases and functions
-
-# Settings
-# Commands to save
-export HISTFILESIZE=50000
-export HISTSIZE=40000
-# Don't put duplicate lines in the history
-export HISTCONTROL=ignoredups
-export HISTIGNORE=$'bg:exit:ls:pwd:history'
-# Realtime history
-#shopt -s histappend
-PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
-# Timestamp history
-HISTTIMEFORMAT="%F %T "
-# Editors
-export EDITOR=emacs
-export SVN_EDITOR=emacs
-export GIT_EDITOR=emacs
 # Prompt
 export PS1='[\u@\h \W]\[\e[0;32m\]\$\[\e[0m\] ' #[user@host dir]
 export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]]$\[\e[0m\] ' #[user@host dir] in color
@@ -76,35 +56,6 @@ else
     fi
 fi
 
-# Macros
-alias ls='ls --color'
-alias la='ls -la'
-alias lt='ls -ltr'
-alias lS='ls -ltS'
-alias grep='grep --color=auto'
-alias pwd='pwd -L;pwd -P'
-alias ping='ping -c 5'
-alias ffind='find ./ -not -path "./.git/*" -type f'
-alias e='emacs'
-alias en='emacs -nw'
-function duf {	       
-    du -k "$@" | sort -n |
-    while read size fname; do
-     	for unit in k M G T P E Z Y;
-	do
-	    if [ $size -lt 1024 ]; then
-		echo -e "${size}${unit}B${fname}";
-		break;
-	    fi;
-	    size=$((size/1024));
-	done;
-    done
-}
-
-alias du1='duf --max-depth=1'
-alias du2='duf --max-depth=2'
-alias du0='duf --max-depth=0'
-
 # X Window
 export DISPLAY=localhost:0
 #alias xwin='startxwin; echo -e "\033c"'
@@ -137,9 +88,3 @@ fi
 #export PATH='cygpath -u $ROOTSYS'/bin:$PATH
 #export PATH=$PATH:/c/WINNT/system32:/c/WINNT:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/Tools/WinNT:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/MSDev98/Bin:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/Tools:/c/Program\ Files/Microsoft\ Visual\ Studio/VC98/bin:/c/Program\ Files/DevStudio/DF/bin:/c/Program\ Files/DevStudio/SharedIDE/bin
 
-# Set PATH so it includes user's private bin if it exists
-if [[ ":$PATH" != *":${HOME}/bin"*  ]]; then
-    if [ -d "${HOME}/bin" ] ; then
-	export PATH=$PATH:${HOME}/bin
-    fi
-fi
