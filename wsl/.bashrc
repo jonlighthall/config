@@ -6,33 +6,13 @@ if [ -f ~/.bashrc ]; then
     . ~/.bashrc
 fi
 
-# Source remote aliases
-if [ -f ~/.bash_local ]; then
-    . ~/.bash_local
+# Source common user settings
+if [ -f ~/config/.bashrc_common ]; then
+    . ~/config/.bashrc_common 
 fi
 
-if [ -f ~/config/.bash_remotes ]; then
-    . ~/config/.bash_remotes 
-fi
+# System-specific aliases and functions
 
-# User specific aliases and functions
-
-# Settings
-# Commands to save
-export HISTFILESIZE=50000
-export HISTSIZE=40000
-# Don't put duplicate lines in the history
-export HISTCONTROL=ignoredups
-export HISTIGNORE=$'bg:exit:ls:pwd:history'
-# Realtime history
-#shopt -s histappend
-PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
-# Timestamp history
-HISTTIMEFORMAT="%F %T "
-# Editors
-export EDITOR=emacs
-export SVN_EDITOR=emacs
-export GIT_EDITOR=emacs
 # Prompt
 git_branch() {
     git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
@@ -49,45 +29,11 @@ export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[
 export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[36m$(git_branch)\e[0;32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
 
 # Macros
-alias ls='ls --color'
-alias la='ls -la'
-alias lt='ls -ltr'
-alias lS='ls -ltS'
-alias grep='grep --color=auto'
-alias pwd='pwd -L;pwd -P'
 alias naut='nautilus --no-desktop --browser ./ &'
 alias term='gnome-terminal &'
-alias ping='ping -c 5'
-alias ffind='find ./ -not -path "./.git/*" -type f'
-alias e='emacs'
-alias en='emacs -nw'
-function duf {	       
-    du -k "$@" | sort -n |
-    while read size fname; do
-     	for unit in k M G T P E Z Y;
-	do
-	    if [ $size -lt 1024 ]; then
-		echo -e "${size}${unit}B${fname}";
-		break;
-	    fi;
-	    size=$((size/1024));
-	done;
-    done
-}
-
-alias du1='duf --max-depth=1'
-alias du2='duf --max-depth=2'
-alias du0='duf --max-depth=0'
 
 # X Window
 export DISPLAY=localhost:0.0 
-
-# Path additions
-if [[ ":$PATH" != *":${HOME}/bin"*  ]]; then
-    if [ -d "${HOME}/bin" ] ; then
-	export PATH=$PATH:${HOME}/bin
-    fi
-fi
 
 # ROOT
 if [ -f root_v5.34.36/bin/thisroot.sh ]; then
