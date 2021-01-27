@@ -9,7 +9,7 @@ Clone the reposity with one of the following commands.
 `git clone git@github.com:jonlighthall/config.git` (Git SSH)
 
 ## Configuration
-Author names can be rewritten witht he folloing code
+Author names can be rewritten with the folloing code
 
 from <https://help.github.com/articles/changing-author-info/>
 
