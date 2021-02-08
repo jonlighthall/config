@@ -22,7 +22,7 @@ timeout 1s git branch
 RETVAL=$?
 if [ $RETVAL = 124 ]; then
    echo "git branch timed out" 
-   echo "git branch removed from prompt 
+   echo "git branch removed from prompt"
    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[0;32m\n$\[\e[0m\] ' # no git
 fi
 
