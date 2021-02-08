@@ -1,17 +1,13 @@
 # ~/config/linux/.bashrc
 # Interactive shell settings for Linux
 
-# Source system settings
-if [ -f /etc/bashrc ]; then
-    . /etc/bashrc
-fi
+LIST="/etc/bashrc $HOME/config/.bashrc_common $HOME/config/linux/.bashrc_unix"
 
-# Source common user settings
-if [ -f ~/config/.bashrc_common ]; then
-    . ~/config/.bashrc_common 
-fi
-
-# Source common user settings
-if [ -f ~/config/linux/.bashrc_unix ]; then
-    . ~/config/linux/.bashrc_unix
-fi
+for FILE in $LIST
+do
+    if [ -f $FILE ]; then
+	source $FILE
+    else
+	echo "$FILE not found"
+    fi
+done
