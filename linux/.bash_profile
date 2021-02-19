@@ -1,8 +1,9 @@
 # .bash_profile
-#echo Using GitHub version .bash_profile
+#echo "Loading settings for interactive shell..."
+#echo "Using GitHub version .bash_profile"
 
 # Get the general aliases and functions
-#echo Loading .bashrc...
+#echo "Loading .bashrc..."
 if [ -f ~/config/linux/.bashrc ]; then
     source ~/config/linux/.bashrc
 fi
