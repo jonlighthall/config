@@ -1,4 +1,4 @@
-#alias xming='/mnt/c/Program\ Files\ \(x86\)/Xming/Xming.exe >/dev/null :0 -clipboard -multiwindow -silent-dup-error -logverbose 0 &'
+alias xming='/mnt/c/Program\ Files\ \(x86\)/Xming/Xming.exe >/dev/null :0 -clipboard -multiwindow -silent-dup-error -logverbose 0 &'
 alias vcx='/mnt/c/Program\ Files/VcXsrv/vcxsrv.exe >/dev/null :0 -clipboard -multiwindow &'
 
 # Check if xwin is running
@@ -13,10 +13,21 @@ else
     vcx
 fi
 
-if pgrep -x "Xming.exe" >/dev/null
+PROG="Xming.exe"
+if pgrep -x $PROG >/dev/null
 then
-    echo "Xming is already running"
-#else
-#    echo "launching Xming..."
-#    xming
+    echo "$PROG is already running"
+else
+    echo -e "launching $PROG...\c"
+    DIR='/mnt/c/Program\ Files\ \(x86\)/Xming'
+    if [ -d "$DIR" ]; then
+	echo "found $DIR"
+	if [ -f "$DIR/$PROG" ]; then
+	    xming
+	else	
+	    echo "$PROG not found"
+	fi
+    else	
+	echo "$DIR not found"
+    fi
 fi
