@@ -1,11 +1,11 @@
-alias xming='/mnt/c/Program\ Files\ \(x86\)/Xming/Xming.exe :0 -clipboard -multiwindow -silent-dup-error -logverbose 0 &'
-alias vcx='/mnt/c/Program\ Files/VcXsrv/vcxsrv.exe :0 -clipboard -multiwindow &'
+#alias xming='/mnt/c/Program\ Files\ \(x86\)/Xming/Xming.exe >/dev/null 2>&1 :0 -clipboard -multiwindow -silent-dup-error -logverbose 0 &'
+alias vcx='/mnt/c/Program\ Files/VcXsrv/vcxsrv.exe >/dev/null 2>&1 :0 -clipboard -multiwindow &'
 
 # Check if xwin is running
 # -x flag only match processes whose name (or command line if -f is
 # specified) exactly match the pattern. 
 
-if pgrep -x "vcxsrv.exe" > /dev/null
+if pgrep -x "vcxsrv.exe" >/dev/null
 then
     echo "VcXsrv is already running"
 else
@@ -13,12 +13,12 @@ else
     vcx
 fi
 
-if pgrep -x "Xming.exe" > /dev/null
+if pgrep -x "Xming.exe" >/dev/null
 then
     echo "Xming is already running"
 else
     echo "launching Xming..."
-    xming
+#    xming
 fi
 
 clear
