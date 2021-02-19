@@ -16,7 +16,7 @@ fi
 if pgrep -x "Xming.exe" >/dev/null
 then
     echo "Xming is already running"
-else
+#else
 #    echo "launching Xming..."
 #    xming
 fi
