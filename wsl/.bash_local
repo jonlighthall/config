@@ -11,13 +11,18 @@ then
     echo "$PROG is already running"
     return 0
 else
-    echo -e "launching $PROG...\c"
+    echo -e "Launching $PROG...\c"
     DIR=/mnt/c/Program\ Files/VcXsrv
     if [ -d "$DIR" ]; then
-	echo "found $DIR"
 	if [ -f "$DIR/$PROG" ]; then
 	    vcx
-	    echo "retval is $?"
+	    if [[ $? == 0 ]]; then
+		echo "OK"
+		return 0
+	    else
+		echo "failed"
+		unalias vcx
+	    fi
 	else	
 	    echo "$PROG not found"
 	fi
@@ -31,12 +36,17 @@ if pgrep -x $PROG >/dev/null
 then
     echo "$PROG is already running"
 else
-    echo -e "launching $PROG...\c"
+    echo -e "Launching $PROG...\c"
     DIR=/mnt/c/Program\ Files\ \(x86\)/Xming
     if [ -d "$DIR" ]; then
-	echo "found $DIR"
 	if [ -f "$DIR/$PROG" ]; then
 	    xming
+	    if [[ $? == 0 ]]; then
+		echo "OK"
+	    else
+		echo "failed"
+		unalias xming
+	    fi
 	else	
 	    echo "$PROG not found"
 	fi
