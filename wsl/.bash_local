@@ -25,9 +25,11 @@ else
 	    fi
 	else	
 	    echo "$PROG not found"
+	    unalias vcx
 	fi
     else	
 	echo "$DIR not found"
+	unalias vcx
     fi
 fi
 
@@ -35,6 +37,7 @@ PROG="Xming.exe"
 if pgrep -x $PROG >/dev/null
 then
     echo "$PROG is already running"
+    return 0   
 else
     echo -e "Launching $PROG...\c"
     DIR=/mnt/c/Program\ Files\ \(x86\)/Xming
@@ -43,14 +46,17 @@ else
 	    xming
 	    if [[ $? == 0 ]]; then
 		echo "OK"
+		return 0   
 	    else
 		echo "failed"
 		unalias xming
 	    fi
 	else	
 	    echo "$PROG not found"
+	    unalias xming
 	fi
     else	
 	echo "$DIR not found"
+	unalias xming
     fi
 fi
