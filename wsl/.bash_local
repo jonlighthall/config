@@ -1,5 +1,5 @@
 alias xming='/mnt/c/Program\ Files\ \(x86\)/Xming/Xming.exe >/dev/null 2>&1 :0 -clipboard -multiwindow -silent-dup-error -logverbose 0 &'
-alias vcx='/mnt/c/Program\ Files/VcXsrv/vcxsrv.exe >/dev/null 2>&1 :0 -clipboard -multiwindow &'
+alias vcx='/mnt/c/Program\ Files/VcXsrv/vcxsrv.exe >/dev/null 2>&1 :0 -clipboard -multiwindow -silent-dup-error &'
 
 # Check if xwin is running
 # -x flag only match processes whose name (or command line if -f is
@@ -9,13 +9,15 @@ PROG="vcxsrv.exe"
 if pgrep -x $PROG >/dev/null
 then
     echo "$PROG is already running"
+    return 0
 else
     echo -e "launching $PROG...\c"
-    DIR='/mnt/c/Program\ Files/VcXsrv'
+    DIR=/mnt/c/Program\ Files/VcXsrv
     if [ -d "$DIR" ]; then
 	echo "found $DIR"
 	if [ -f "$DIR/$PROG" ]; then
 	    vcx
+	    echo "retval is $?"
 	else	
 	    echo "$PROG not found"
 	fi
@@ -30,7 +32,7 @@ then
     echo "$PROG is already running"
 else
     echo -e "launching $PROG...\c"
-    DIR='/mnt/c/Program\ Files\ \(x86\)/Xming'
+    DIR=/mnt/c/Program\ Files\ \(x86\)/Xming
     if [ -d "$DIR" ]; then
 	echo "found $DIR"
 	if [ -f "$DIR/$PROG" ]; then
