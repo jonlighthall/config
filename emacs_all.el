@@ -36,5 +36,8 @@
 ;; setup files ending in “.m” to open in octave-mode
 (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
 
+;; open arduino as c++
+(add-to-list 'auto-mode-alist '("\\.ino\\'" . c++-mode))
+
 ;; setup files containing “makefile” to open in makefile-mode
 (add-to-list 'auto-mode-alist '("[Mm]akefile.+\\'" . makefile-mode))
