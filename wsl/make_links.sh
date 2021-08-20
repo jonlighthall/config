@@ -1,45 +1,58 @@
 #!/bin/sh
-SRCDIR=~/config/wsl
+SRCDIR=$HOME/config/wsl
+TGTDIR=$HOME
 
 ## Link from config repo
-my_link=~/.bash_profile
 
-if [ -L ${my_link} ] ; then
+for my_link in .bash_profile #.emacs.d .gitconfig .rootrc
+do
+
+if [ -L $TGTDIR/${my_link} ] ; then
     echo "is link"
-    if [ -e ${my_link} ] ; then
+    if [ -e $TGTDIR/${my_link} ] ; then
 	echo "Good link"
     else
 	echo "Broken link"
     fi
-elif [ -e ${my_link} ] ; then
+elif [ -e $TGTDIR/${my_link} ] ; then
     echo "Not a link"
 else
     echo "Missing"
     fi
 
-if [ -f ${my_link} ]; then
-    echo ${my_link} found
+if [ -f $TGTDIR/${my_link} ]; then
+    echo "$TGTDIR/${my_link} is a regular file"
 else
-    echo ${my_link} not found
+    echo "$TGTDIR/${my_link} is not a regular file"
 fi
 
 
-if [ -e ${my_link} ]; then
-    echo ${my_link} exists
+if [ -e $TGTDIR/${my_link} ]; then
+    echo "$TGTDIR/${my_link} exists"
 else
-    echo ${my_link} does not exist
+    echo "$TGTDIR/${my_link} does not exist"
 fi
 
-if [ -f ${my_link} ]; then
+if [ -d $TGTDIR/${my_link} ]; then
+    echo "$TGTDIR/${my_link} is a directory"
+else
+    echo "$TGTDIR/${my_link} is not a directory"
+fi
+
+# first, backup existing copy
+if [ -f $TGTDIR/${my_link} ] || [ -L $TGTDIR/${my_link} ] || [ -d $TGTDIR/${my_link} ]; then
     echo Backing up ${my_link}...
-    mv -v ${my_link} ${my_link}_$(date +'%Y-%m-%d-t%H%M')
+    mv -v $TGTDIR/${my_link} $TGTDIR/${my_link}_$(date +'%Y-%m-%d-t%H%M')
 fi
+# then link
+ln -vs ${SRCDIR}/${my_link} $TGTDIR/${my_link}
+    
+done
 
-if [ -f ${my_link} ]; then
-    echo Backing up .bash_profile...
-    mv -v ${my_link} ${my_link}_old 
-fi
-ln -vs ${SRCDIR}/.bash_profile ~/.bash_profile
+return
+
+my_link=~/.bash_profile
+
 
 if [ -d ~/.emacs.d ]; then
     echo Backing up .emacs.d
