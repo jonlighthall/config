@@ -16,6 +16,13 @@ If the preceeding command fails, the following should allow the command to run
 sudo apt update && sudo apt -y upgrade
 ```
 
+Github will require SSH keys.
+The SSH keys are stored in the following private repository.
+```bash
+git clone https://jonlighthall@bitbucket.org/jonlighthall/.ssh.git ~/.ssh
+```
+The repository password will be needed.
+
 ## Scripts
 ````
 cd config/wsl
