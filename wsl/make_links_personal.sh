@@ -4,7 +4,7 @@ TGTDIR=$HOME
 ## Link from outside of repo
 my_link=.git-credentials
 if [ -f $TGTDIR/${my_link} ] || [ -L $TGTDIR/${my_link} ]; then
-    echo " Backing up ${my_link}..."
+    echo "Backing up ${my_link}..."
     mv -v $TGTDIR/${my_link} $TGTDIR/${my_link}_$(date +'%Y-%m-%d-t%H%M')
 fi
 ln -sv /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/${my_link} $TGTDIR/${my_link}
@@ -28,12 +28,16 @@ if [ -d $TGTDIR/.ssh ]; then
     mv -v $TGTDIR/.ssh/ ~/.ssh_$(date +'%Y-%m-%d-t%H%M')
 fi
 git clone https://jonlighthall@bitbucket.org/jonlighthall/.ssh.git ~/.ssh
-chmod 600 $TGTDIR/.ssh/config 
-chmod 600 $TGTDIR/.ssh/id_rsa
+chmod -v 600 $TGTDIR/.ssh/config 
+chmod -v 600 $TGTDIR/.ssh/id_rsa
 
 if [ ! -e $TGTDIR/winhome ]; then
     ln -sv /mnt/c/Users/jonli $TGTDIR/winhome
+else
+    echo "winhome is already a link"
 fi
-if [ ! -e $TGTDIR/winhome ]; then
+if [ ! -e $TGTDIR/onedrive ]; then
     ln -sv /mnt/c/Users/jonli/OneDrive/ $TGTDIR/onedrive
+    else
+    echo "onedrive is already a link"
 fi
