@@ -18,7 +18,7 @@ if [ -f $TGTDIR/.bash_history ]; then
     else
 	echo "$TGTDIR/.bash_history is already a link"
     fi
-    mv $TGTDIR/.bash_history$TGTDIR/.bash_history_$(date +'%Y-%m-%d-t%H%M')
+    mv $TGTDIR/.bash_history $TGTDIR/.bash_history_$(date +'%Y-%m-%d-t%H%M')
 fi
 ln -sv /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/.bash_history $TGTDIR/.bash_history
 
