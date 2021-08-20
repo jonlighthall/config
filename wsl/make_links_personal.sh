@@ -31,9 +31,9 @@ git clone https://jonlighthall@bitbucket.org/jonlighthall/.ssh.git ~/.ssh
 chmod 600 $TGTDIR/.ssh/config 
 chmod 600 $TGTDIR/.ssh/id_rsa
 
-if [ ! -e $TGTDIR/winhome ]; the
-   ln -sv /mnt/c/Users/jonli $TGTDIR/winhome
+if [ ! -e $TGTDIR/winhome ]; then
+    ln -sv /mnt/c/Users/jonli $TGTDIR/winhome
 fi
-   if [ ! -e $TGTDIR/winhome ]; the
-      ln -sv /mnt/c/Users/jonli/OneDrive/ $TGTDIR/onedrive
-   fi
+if [ ! -e $TGTDIR/winhome ]; then
+    ln -sv /mnt/c/Users/jonli/OneDrive/ $TGTDIR/onedrive
+fi
