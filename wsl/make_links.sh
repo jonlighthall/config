@@ -7,51 +7,44 @@ TGTDIR=$HOME
 for my_link in .bash_profile #.emacs.d .gitconfig .rootrc
 do
 
-if [ -L $TGTDIR/${my_link} ] ; then
-    echo "is link"
-    if [ -e $TGTDIR/${my_link} ] ; then
-	echo "Good link"
+    if [ -L $TGTDIR/${my_link} ] ; then
+	echo "$TGTDIR/${my_link} is already a link"
+	echo -n " The link is... "
+	if [ -e $TGTDIR/${my_link} ] ; then
+	    echo "valid"
+	else
+	    echo "broken"
+	fi
+    elif [ -e $TGTDIR/${my_link} ] ; then
+	echo "$TGTDIR/${my_link} exists"
+	    echo -n " It is... "
+	if [ -f $TGTDIR/${my_link} ]; then
+	    echo "a regular file"
+	else
+	    echo -n "not a regular file, but... "
+	    if [ -d $TGTDIR/${my_link} ]; then
+		echo "a directory"
+	    else
+		echo "not a directory"
+	    fi
+	fi	
     else
-	echo "Broken link"
-    fi
-elif [ -e $TGTDIR/${my_link} ] ; then
-    echo "Not a link"
-else
-    echo "Missing"
+	echo "$TGTDIR/${my_link} does not exist"
     fi
 
-if [ -f $TGTDIR/${my_link} ]; then
-    echo "$TGTDIR/${my_link} is a regular file"
-else
-    echo "$TGTDIR/${my_link} is not a regular file"
-fi
+    # first, backup existing copy
+    if [ -f $TGTDIR/${my_link} ] || [ -L $TGTDIR/${my_link} ] || [ -d $TGTDIR/${my_link} ]; then
+	echo " Backing up ${my_link}..."
+	mv -v $TGTDIR/${my_link} $TGTDIR/${my_link}_$(date +'%Y-%m-%d-t%H%M')
+    fi
 
-
-if [ -e $TGTDIR/${my_link} ]; then
-    echo "$TGTDIR/${my_link} exists"
-else
-    echo "$TGTDIR/${my_link} does not exist"
-fi
-
-if [ -d $TGTDIR/${my_link} ]; then
-    echo "$TGTDIR/${my_link} is a directory"
-else
-    echo "$TGTDIR/${my_link} is not a directory"
-fi
-
-# first, backup existing copy
-if [ -f $TGTDIR/${my_link} ] || [ -L $TGTDIR/${my_link} ] || [ -d $TGTDIR/${my_link} ]; then
-    echo Backing up ${my_link}...
-    mv -v $TGTDIR/${my_link} $TGTDIR/${my_link}_$(date +'%Y-%m-%d-t%H%M')
-fi
-# then link
-ln -vs ${SRCDIR}/${my_link} $TGTDIR/${my_link}
+    # then link
+    echo "Making link..."
+    ln -vs ${SRCDIR}/${my_link} $TGTDIR/${my_link}
     
 done
 
 return
-
-my_link=~/.bash_profile
 
 
 if [ -d ~/.emacs.d ]; then
