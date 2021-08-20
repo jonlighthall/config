@@ -17,7 +17,7 @@ if [ -z ${DISPLAY} ]; then
     export DISPLAY=localhost:0.0
     echo "setting DISPLAY to $DISPLAY"
 else
-    echo "DISPLAY already set to $DISPLAY"
+    echo "DISPLAY set to $DISPLAY"
 fi
 
 # ROOT
