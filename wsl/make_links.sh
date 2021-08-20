@@ -2,8 +2,11 @@
 SRCDIR=$HOME/config/wsl
 TGTDIR=$HOME
 
-## Link from config repo
+echo "--------------------------------------"
+echo "--------- Start Making Links ---------"
+echo "--------------------------------------"
 
+## Links from config repo
 for my_link in .bash_profile .emacs.d .gitconfig .rootrc
 do
     echo
@@ -43,3 +46,6 @@ do
     echo "Making ${my_link} link..."
     ln -vs ${SRCDIR}/${my_link} $TGTDIR/${my_link}
 done
+echo "--------------------------------------"
+echo "--------- Done Making Links ----------"
+echo "--------------------------------------"
