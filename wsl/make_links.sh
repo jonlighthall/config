@@ -2,26 +2,59 @@
 SRCDIR=~/config/wsl
 
 ## Link from config repo
-if [ -f ~/.bash_profile ]; then
-    echo Backing up .bash_profile
-    mv ~/.bash_profile ~/.bash_profile_old 
+my_link=~/.bash_profile
+
+if [ -L ${my_link} ] ; then
+    echo "is link"
+    if [ -e ${my_link} ] ; then
+	echo "Good link"
+    else
+	echo "Broken link"
+    fi
+elif [ -e ${my_link} ] ; then
+    echo "Not a link"
+else
+    echo "Missing"
+    fi
+
+if [ -f ${my_link} ]; then
+    echo ${my_link} found
+else
+    echo ${my_link} not found
 fi
-ln -s ${SRCDIR}/.bash_profile ~/.bash_profile
+
+
+if [ -e ${my_link} ]; then
+    echo ${my_link} exists
+else
+    echo ${my_link} does not exist
+fi
+
+if [ -f ${my_link} ]; then
+    echo Backing up ${my_link}...
+    mv -v ${my_link} ${my_link}_$(date +'%Y-%m-%d-t%H%M')
+fi
+
+if [ -f ${my_link} ]; then
+    echo Backing up .bash_profile...
+    mv -v ${my_link} ${my_link}_old 
+fi
+ln -vs ${SRCDIR}/.bash_profile ~/.bash_profile
 
 if [ -d ~/.emacs.d ]; then
     echo Backing up .emacs.d
-    mv ~/.emacs.d/ ~/.emacs.d_old/
+    mv -v ~/.emacs.d/ ~/.emacs.d_old/
 fi
-ln -s ${SRCDIR}/.emacs.d/ ~/.emacs.d
+ln -vs ${SRCDIR}/.emacs.d/ ~/.emacs.d
 
 if [ -f ~/.gitconfig ]; then
     echo Backing up .gitconfig
-    mv ~/.gitconfig ~/.gitconfig_old
+    mv -v ~/.gitconfig ~/.gitconfig_old
 fi
-ln -s ${SRCDIR}/.gitconfig ~/.gitconfig
+ln -vs ${SRCDIR}/.gitconfig ~/.gitconfig
 
 if [ -f ~/.rootrc ]; then
     echo Backing up .rootrc
-    mv ~/.rootrc ~/.rootrc_old
+    mv -v ~/.rootrc ~/.rootrc_old
 fi
-ln -s ${SRCDIR}/.rootrc ~/.rootrc
+ln -vs ${SRCDIR}/.rootrc ~/.rootrc
