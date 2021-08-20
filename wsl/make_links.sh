@@ -3,7 +3,7 @@ SRCDIR=$HOME/config/wsl
 TGTDIR=$HOME
 
 echo "--------------------------------------"
-echo "--------- Start Making Links ---------"
+echo "------ Start Linking Repo Files-------"
 echo "--------------------------------------"
 
 ## Links from config repo

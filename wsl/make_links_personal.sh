@@ -1,6 +1,10 @@
 #!/bin/sh
 TGTDIR=$HOME
 
+echo "--------------------------------------"
+echo "-- Start Linking Files Outside Repo --"
+echo "--------------------------------------"
+
 ## Link from outside of repo
 my_link=.git-credentials
 if [ -f $TGTDIR/${my_link} ] || [ -L $TGTDIR/${my_link} ]; then
@@ -41,3 +45,6 @@ if [ ! -e $TGTDIR/onedrive ]; then
     else
     echo "onedrive is already a link"
 fi
+echo "--------------------------------------"
+echo "--------- Done Making Links ----------"
+echo "--------------------------------------"
