@@ -4,11 +4,12 @@ TGTDIR=$HOME
 
 ## Link from config repo
 
-for my_link in .bash_profile .gitconfig .rootrc #.emacs.d 
+for my_link in .bash_profile .emacs.d .gitconfig .rootrc
 do
     echo
+    echo -n "$TGTDIR/${my_link} "
     if [ -L $TGTDIR/${my_link} ] ; then
-	echo "$TGTDIR/${my_link} is already a link"
+	echo "is already a link"
 	echo -n " The link is... "
 	if [ -e $TGTDIR/${my_link} ] ; then
 	    echo "valid"
@@ -16,7 +17,7 @@ do
 	    echo "broken"
 	fi
     elif [ -e $TGTDIR/${my_link} ] ; then
-	echo "$TGTDIR/${my_link} exists"
+	echo "exists"
 	    echo -n " It is... "
 	if [ -f $TGTDIR/${my_link} ]; then
 	    echo "a regular file"
@@ -29,7 +30,7 @@ do
 	    fi
 	fi	
     else
-	echo "$TGTDIR/${my_link} does not exist"
+	echo "does not exist"
     fi
 
     # first, backup existing copy
@@ -42,13 +43,3 @@ do
     echo "Making ${my_link} link..."
     ln -vs ${SRCDIR}/${my_link} $TGTDIR/${my_link}
 done
-
-return
-
-
-if [ -d ~/.emacs.d ]; then
-    echo Backing up .emacs.d
-    mv -v ~/.emacs.d/ ~/.emacs.d_old/
-fi
-ln -vs ${SRCDIR}/.emacs.d/ ~/.emacs.d
-
