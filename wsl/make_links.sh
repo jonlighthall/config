@@ -4,9 +4,9 @@ TGTDIR=$HOME
 
 ## Link from config repo
 
-for my_link in .bash_profile #.emacs.d .gitconfig .rootrc
+for my_link in .bash_profile .gitconfig .rootrc #.emacs.d 
 do
-
+    echo
     if [ -L $TGTDIR/${my_link} ] ; then
 	echo "$TGTDIR/${my_link} is already a link"
 	echo -n " The link is... "
@@ -39,9 +39,8 @@ do
     fi
 
     # then link
-    echo "Making link..."
+    echo "Making ${my_link} link..."
     ln -vs ${SRCDIR}/${my_link} $TGTDIR/${my_link}
-    
 done
 
 return
@@ -53,14 +52,3 @@ if [ -d ~/.emacs.d ]; then
 fi
 ln -vs ${SRCDIR}/.emacs.d/ ~/.emacs.d
 
-if [ -f ~/.gitconfig ]; then
-    echo Backing up .gitconfig
-    mv -v ~/.gitconfig ~/.gitconfig_old
-fi
-ln -vs ${SRCDIR}/.gitconfig ~/.gitconfig
-
-if [ -f ~/.rootrc ]; then
-    echo Backing up .rootrc
-    mv -v ~/.rootrc ~/.rootrc_old
-fi
-ln -vs ${SRCDIR}/.rootrc ~/.rootrc
