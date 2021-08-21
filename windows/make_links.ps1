@@ -1,6 +1,8 @@
-# this is a powershell script..?
+# this is a PowerShell script
 
-# Must first run the command
+# Must run in elevated prompt to make link
+
+# Must first run the command before runningcd .. this script
 # Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process
 
 
@@ -18,14 +20,17 @@ if (Test-Path -Path $local) {
 	      echo "$cloud found"
 	      echo "proceeding with append, delete, and link..."
 	      
-	      #if
 	      echo "appending local copy with cloud copy..."
-	      #    type $local >> $cloud
+	      Add-Content -Path $cloud -Value $local
+
 	      echo "removing local copy"
-	      #    del $local
-	      #fi
+	      $dir=[io.path]::GetDirectoryName($local)
+	      $fname=[io.path]::GetFileNameWithoutExtension($local)
+	      $ext=[io.path]::GetExtension($local)
+	      mv -v $local $dir\${fname}_$(get-date -f yyyy-MM-dd-hhmm)$ext
+
 	      echo "creating symbolic link"
-	      #mklink $local $cloud
+	      cmd /c mklink $local $cloud
 	      
 	}    
 	else {
