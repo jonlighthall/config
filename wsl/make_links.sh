@@ -49,3 +49,5 @@ done
 echo "--------------------------------------"
 echo "--------- Done Making Links ----------"
 echo "--------------------------------------"
+
+echo "set bell-style none" | sudo tee -a /etc/inputrc
