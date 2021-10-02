@@ -9,7 +9,6 @@ if [ -f ~/config/linux/.bashrc ]; then
 fi
 
 # User-specific environment and startup programs
-
 echo "Welcome to" $(hostname -f)
 if [ -f ~/.bash_history ]; then
     echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $(hostname -s)" >> ~/.bash_history
@@ -18,6 +17,9 @@ echo
 NP=3
 echo "Top $NP processes on $(hostname -s):"
 ps aux --sort=-pcpu | head -n $((NP+1)) | sed 's_1111499164_jlight_'
+echo
+echo "Last $NP log-ins on $(hostname -s):"
+last -wFa | grep light | head -n $NP
 echo
 
 # Get the site-specific aliases and functions
