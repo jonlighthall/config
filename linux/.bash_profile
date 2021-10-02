@@ -27,3 +27,11 @@ if [ -f ~/.bash_aliases ]; then
 #echo Loading .bash_aliases...
     source ~/.bash_aliases
 fi
+echo -e ".bash_profile runtime...\c"
+if command -v sec2elap &>/dev/null
+then
+    echo "$(sec2elap $SECONDS)"
+else
+    echo "$SECONDS"
+fi
+echo $(date)
