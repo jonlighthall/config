@@ -1,27 +1,53 @@
 #!/bin/sh
-SRCDIR=~/config/wsl
+SRCDIR=$HOME/config/wsl
+TGTDIR=$HOME
 
-## Link from config repo
-if [ -f ~/.bash_profile ]; then
-    echo Backing up .bash_profile
-    mv ~/.bash_profile ~/.bash_profile_old 
-fi
-ln -s ${SRCDIR}/.bash_profile ~/.bash_profile
+echo "--------------------------------------"
+echo "------ Start Linking Repo Files-------"
+echo "--------------------------------------"
 
-if [ -d ~/.emacs.d ]; then
-    echo Backing up .emacs.d
-    mv ~/.emacs.d/ ~/.emacs.d_old/
-fi
-ln -s ${SRCDIR}/.emacs.d/ ~/.emacs.d
+## Links from config repo
+for my_link in .bash_profile .emacs.d .gitconfig .rootrc
+do
+    echo
+    echo -n "$TGTDIR/${my_link} "
+    if [ -L $TGTDIR/${my_link} ] ; then
+	echo "is already a link"
+	echo -n " The link is... "
+	if [ -e $TGTDIR/${my_link} ] ; then
+	    echo "valid"
+	else
+	    echo "broken"
+	fi
+    elif [ -e $TGTDIR/${my_link} ] ; then
+	echo "exists"
+	    echo -n " It is... "
+	if [ -f $TGTDIR/${my_link} ]; then
+	    echo "a regular file"
+	else
+	    echo -n "not a regular file, but... "
+	    if [ -d $TGTDIR/${my_link} ]; then
+		echo "a directory"
+	    else
+		echo "not a directory"
+	    fi
+	fi	
+    else
+	echo "does not exist"
+    fi
 
-if [ -f ~/.gitconfig ]; then
-    echo Backing up .gitconfig
-    mv ~/.gitconfig ~/.gitconfig_old
-fi
-ln -s ${SRCDIR}/.gitconfig ~/.gitconfig
+    # first, backup existing copy
+    if [ -f $TGTDIR/${my_link} ] || [ -L $TGTDIR/${my_link} ] || [ -d $TGTDIR/${my_link} ]; then
+	echo " Backing up ${my_link}..."
+	mv -v $TGTDIR/${my_link} $TGTDIR/${my_link}_$(date +'%Y-%m-%d-t%H%M')
+    fi
 
-if [ -f ~/.rootrc ]; then
-    echo Backing up .rootrc
-    mv ~/.rootrc ~/.rootrc_old
-fi
-ln -s ${SRCDIR}/.rootrc ~/.rootrc
+    # then link
+    echo "Making ${my_link} link..."
+    ln -vs ${SRCDIR}/${my_link} $TGTDIR/${my_link}
+done
+echo "--------------------------------------"
+echo "--------- Done Making Links ----------"
+echo "--------------------------------------"
+
+echo "set bell-style none" | sudo tee -a /etc/inputrc

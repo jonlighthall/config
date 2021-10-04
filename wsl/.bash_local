@@ -1,5 +1,9 @@
+# Set DISPLAY for WSL2
+export DISPLAY=$(grep nameserver /etc/resolv.conf | awk '{print $2}'):0.0
+#export DISPLAY=$(route.exe print | grep 0.0.0.0 | head -1 | awk '{print $4}'):0.0
+
 alias xming='/mnt/c/Program\ Files\ \(x86\)/Xming/Xming.exe >/dev/null 2>&1 :0 -clipboard -multiwindow -silent-dup-error -logverbose 0 &'
-alias vcx='/mnt/c/Program\ Files/VcXsrv/vcxsrv.exe >/dev/null 2>&1 :0 -clipboard -multiwindow -silent-dup-error &'
+alias vcx='/mnt/c/Program\ Files/VcXsrv/vcxsrv.exe >/dev/null 2>&1 :0 -ac -clipboard -multiwindow -silent-dup-error &'
 
 # Check if xwin is running
 # -x flag only match processes whose name (or command line if -f is
