@@ -13,7 +13,7 @@ do
 done
 
 # X Window
-if [ -z ${DISPLAY} ]; then
+if [ -z "${DISPLAY}" ]; then
     export DISPLAY=localhost:0.0
     echo "setting DISPLAY to $DISPLAY"
 else
