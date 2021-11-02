@@ -1,19 +1,10 @@
-;;; ------Settings for DOS and Cygwin-----------------------
-;;(setq exec-path '("C:/cygwin/bin/"))
-(setq-default ispell-program-name "aspell")
-
-;;(setenv "CYGWIN" "nodosfilewarning")
+;;; ------Settings for WSL----------------------------------
+;;(setq-default ispell-program-name "aspell")
 
 ;; svn issues a warning ("cannot set LC_CTYPE locale") if LANG is not set.
 ;;(setenv "LANG" "C")
 
 (require 'diff)
-
-;; (defun remove-dos-eol ()
-;;   "Do not show ^M in files containing mixed UNIX and DOS line endings."
-;;   (interactive)
-;;   (setq buffer-display-table (make-display-table))
-;;   (aset buffer-display-table ?\^M []))
 
 ;;; ------Spelling------------------------------------------
 (dolist (hook '(text-mode-hook))
