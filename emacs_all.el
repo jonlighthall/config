@@ -41,3 +41,6 @@
 
 ;; setup files containing “makefile” to open in makefile-mode
 (add-to-list 'auto-mode-alist '("[Mm]akefile.+\\'" . makefile-mode))
+
+(defun display-startup-echo-area-message ()
+  (message nil))
