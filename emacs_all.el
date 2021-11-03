@@ -42,5 +42,12 @@
 ;; setup files containing “makefile” to open in makefile-mode
 (add-to-list 'auto-mode-alist '("[Mm]akefile.+\\'" . makefile-mode))
 
+;; turn off starup message
 (defun display-startup-echo-area-message ()
   (message nil))
+
+;; set non-window (terminal) colors
+(when (not window-system)
+  (add-to-list 'default-frame-alist '(foreground-color . "#000")) ; white
+  (add-to-list 'default-frame-alist '(background-color . "#FFF")) ; black
+)
