@@ -1,3 +1,6 @@
+;;; ------Universal Emacs settings--------------------------
+;; The following settings are intended to be system independent OB
+
 (custom-set-variables
  ;; Split ediff window vertically
  '(ediff-split-window-function (quote split-window-horizontally))
@@ -29,8 +32,8 @@
 ;; start Git merge conflicts in smerge ediff
 (defun vc-git-find-file-hook ()
   (when (save-excursion
-      (goto-char (point-min))
-      (re-search-forward "^<<<<<<< " nil t))
+	  (goto-char (point-min))
+	  (re-search-forward "^<<<<<<< " nil t))
     (smerge-ediff)))
 
 ;; setup files ending in “.m” to open in octave-mode
@@ -46,8 +49,8 @@
 (defun display-startup-echo-area-message ()
   (message nil))
 
-;; set non-window (terminal) colors
+;; set no-window (terminal) colors
 (when (not window-system)
   (add-to-list 'default-frame-alist '(foreground-color . "#000")) ; white
   (add-to-list 'default-frame-alist '(background-color . "#FFF")) ; black
-)
+  )
