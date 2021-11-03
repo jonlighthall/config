@@ -1,5 +1,5 @@
-;;; ------Universal Emacs settings--------------------------
-;; The following settings are intended to be system independent OB
+;; ------Universal Emacs settings--------------------------
+;; The following settings are intended to be system independent
 
 (custom-set-variables
  ;; Split ediff window vertically
@@ -18,7 +18,7 @@
 (setq frame-title-format
       (concat  "%b - emacs@" (system-name)))
 
-;;; ------Custom keyboard shortcuts-------------------------
+;; ------Custom keyboard shortcuts-------------------------
 (global-set-key (kbd "C-x e") 'ediff-buffers) 
 (global-set-key (kbd "C-x w") 'ediff-revision)
 (global-set-key (kbd "C-x d") 'ediff-current-file)
