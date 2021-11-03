@@ -1,12 +1,14 @@
-;;; ------Settings for WSL----------------------------------
-;;(setq-default ispell-program-name "aspell")
+;; ------Settings for WSL----------------------------------
+(load "~/config/emacs_all.el")
 
 ;; svn issues a warning ("cannot set LC_CTYPE locale") if LANG is not set.
 ;;(setenv "LANG" "C")
 
 (require 'diff)
 
-;;; ------Spelling------------------------------------------
+;; ------Spelling------------------------------------------
+(setq-default ispell-program-name "aspell")
+
 (dolist (hook '(text-mode-hook))
   (add-hook hook (lambda () (flyspell-mode 1))))
 (add-hook 'c++-mode-hook
@@ -15,40 +17,29 @@
 	    ))
 (add-hook 'LaTeX-mode-hook 'flyspell-mode)
 
+;; The following settings may slow startup
+
 ;; Program-mode spell checking for most program languages
-(mapcar (lambda (mode-hook) (add-hook mode-hook 'flyspell-prog-mode))
-        '(c-mode-common-hook tcl-mode-hook emacs-lisp-mode-hook 
-			     ruby-mode-hook java-mode-hook))
+;; (mapcar (lambda (mode-hook) (add-hook mode-hook 'flyspell-prog-mode))
+;;         '(c-mode-common-hook tcl-mode-hook emacs-lisp-mode-hook 
+;; 			     ruby-mode-hook java-mode-hook))
 
-;;(add-hook 'flyspell-mode-hook 'flyspell-buffer) ;; slows downloading
+;;(add-hook 'flyspell-mode-hook 'flyspell-buffer)
 
-;;; ------Frame appearance and behavior---------------------
+;; ------Frame appearance and behavior---------------------
 (when window-system-version
-  ;; setup for graphic environment
-  
   ;; Set frame position
   (setq initial-frame-alist '((top . 40) (left . 0))) ; moves window to upper left corner
 
   ;; Set frame size
-  (set-frame-size (selected-frame) 178 91);; (columns,rows)
-					; "snap" width is 73 (for 1280 px wide display)
-					; "pretty-print" width is 97 columns wide (+2 for line no)
-					; max height with triple-hieght taskbar is 40 (1366 res.)
+  (set-frame-size (selected-frame) 178 49);; (columns,rows)
 
   ;; Window transparency
   (set-frame-parameter (selected-frame) 'alpha '(95 . 95))
   ;;(add-to-list 'default-frame-alist '(alpha . (95 . 95)))
-
-  ;; Fonts
-  (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(default ((t (:family "DejaVu Sans Mono" :foundry "PfEd" :slant normal :weight normal :height 110 :width normal)))))
   )
 
-;;; ------Highlighting and coding aides---------------------
+;; ------Highlighting and coding aides---------------------
 ;; Syntax highlighting (font-lock-mode)
 (cond ((fboundp 'global-font-lock-mode)
        ;; Turn on font-lock in all modes that support it
@@ -71,5 +62,3 @@
 	  (lambda ()
 	    (setq-local global-whitespace-mode 1)))
 (add-hook 'fortran-mode-hook 'turn-on-auto-fill)
-
-(load "~/config/emacs_all.el")
