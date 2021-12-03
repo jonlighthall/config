@@ -1,8 +1,8 @@
 # Set DISPLAY for WSL2
 # one of the following asignments should work
-#export DISPLAY=localhost:0.0
+#export DISPLAY=localhost:0.0 # works on count
 #export DISPLAY=$(grep nameserver /etc/resolv.conf | awk '{print $2}'):0.0
-export DISPLAY=$(route.exe print | grep 0.0.0.0 | head -1 | awk '{print $4}'):0.0
+export DISPLAY=$(route.exe print | grep 0.0.0.0 | head -1 | awk '{print $4}'):0.0 # works on lappy
 
 alias xming='/mnt/c/Program\ Files\ \(x86\)/Xming/Xming.exe >/dev/null 2>&1 :0 -clipboard -multiwindow -silent-dup-error -logverbose 0 &'
 alias vcx='/mnt/c/Program\ Files/VcXsrv/vcxsrv.exe >/dev/null 2>&1 :0 -ac -clipboard -multiwindow -silent-dup-error &'
