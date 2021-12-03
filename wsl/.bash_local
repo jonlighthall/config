@@ -29,7 +29,7 @@ else
     if [ -d "$DIR" ]; then
 	if [ -f "$DIR/$PROG" ]; then
 	    echo -e "Launching $PROG...\c"
-	    vcx
+	    (vcx)
 	    if [[ $? == 0 ]]; then
 		echo "OK"
 		return 0
@@ -57,7 +57,7 @@ else
     if [ -d "$DIR" ]; then
 	if [ -f "$DIR/$PROG" ]; then
 	    echo -e "Launching $PROG...\c"
-	    xming
+	    (xming)
 	    if [[ $? == 0 ]]; then
 		echo "OK"
 		return 0   
