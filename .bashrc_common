@@ -1,11 +1,6 @@
 # ~/config/.bashrc_common
 # Interactive shell settings for UNIX-like systems
 
-# Source user settings
-if [ -f ~/.bash_local ]; then
-    . ~/.bash_local
-fi
-
 if [ -f ~/config/.bash_remotes ]; then
     . ~/config/.bash_remotes 
 fi
