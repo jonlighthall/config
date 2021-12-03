@@ -12,14 +12,6 @@ do
     fi
 done
 
-# X Window
-if [ -z "${DISPLAY}" ]; then
-    export DISPLAY=localhost:0.0
-    echo "setting DISPLAY to $DISPLAY"
-else
-    echo "DISPLAY set to $DISPLAY"
-fi
-
 # ROOT
 if [ -f root_v5.34.36/bin/thisroot.sh ]; then
     echo "sourcing root..."

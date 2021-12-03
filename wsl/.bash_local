@@ -4,6 +4,14 @@
 #export DISPLAY=$(grep nameserver /etc/resolv.conf | awk '{print $2}'):0.0
 export DISPLAY=$(route.exe print | grep 0.0.0.0 | head -1 | awk '{print $4}'):0.0 # works on lappy
 
+# X Window
+if [ -z "${DISPLAY}" ]; then
+    export DISPLAY=localhost:0.0
+    echo "setting DISPLAY to $DISPLAY"
+else
+    echo "DISPLAY set to $DISPLAY"
+fi
+
 alias xming='/mnt/c/Program\ Files\ \(x86\)/Xming/Xming.exe >/dev/null 2>&1 :0 -clipboard -multiwindow -silent-dup-error -logverbose 0 &'
 alias vcx='/mnt/c/Program\ Files/VcXsrv/vcxsrv.exe >/dev/null 2>&1 :0 -ac -clipboard -multiwindow -silent-dup-error &'
 
