@@ -35,15 +35,15 @@ else
 		return 0
 	    else
 		echo "failed"
-		unalias vcx
+		unalias vcx 2>/dev/null
 	    fi
 	else	
 	    echo "$PROG not found"
-	    unalias vcx
+	    unalias vcx 2>/dev/null
 	fi
     else	
-#	echo "$DIR not found"
-	unalias vcx
+#    	echo "$DIR not found"
+	unalias vcx 2>/dev/null
     fi
 fi
 
@@ -63,14 +63,14 @@ else
 		return 0   
 	    else
 		echo "failed"
-		unalias xming
+		unalias xming 2>/dev/null
 	    fi
 	else	
 	    echo "$PROG not found"
-	    unalias xming
+	    unalias xming 2>/dev/null
 	fi
     else	
 #	echo "$DIR not found"
-	unalias xming
+	unalias xming 2>/dev/null
     fi
 fi
