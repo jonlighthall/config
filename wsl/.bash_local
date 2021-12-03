@@ -17,10 +17,10 @@ then
     echo "$PROG is already running"
     return 0
 else
-    echo -e "Launching $PROG...\c"
     DIR=/mnt/c/Program\ Files/VcXsrv
     if [ -d "$DIR" ]; then
 	if [ -f "$DIR/$PROG" ]; then
+	    echo -e "Launching $PROG...\c"
 	    vcx
 	    if [[ $? == 0 ]]; then
 		echo "OK"
@@ -45,10 +45,10 @@ then
     echo "$PROG is already running"
     return 0   
 else
-    echo -e "Launching $PROG...\c"
     DIR=/mnt/c/Program\ Files\ \(x86\)/Xming
     if [ -d "$DIR" ]; then
 	if [ -f "$DIR/$PROG" ]; then
+	    echo -e "Launching $PROG...\c"
 	    xming
 	    if [[ $? == 0 ]]; then
 		echo "OK"
