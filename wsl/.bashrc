@@ -5,7 +5,7 @@ if $VB; then
     echo "running $BASH_SOURCE..."
 fi
 
-LIST="$HOME/.bashrc $HOME/config/.bashrc_common $HOME/config/linux/.bashrc_unix $HOME/config/wsl/.bash_local"
+LIST="$HOME/.bashrc $HOME/config/.bashrc_common $HOME/config/linux/.bashrc_unix $HOME/config/wsl/.bash_local $HOME/.bash_local"
 
 for FILE in $LIST
 do
