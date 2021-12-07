@@ -1,5 +1,6 @@
 # ~/config/.bashrc_common
 # Interactive shell settings for UNIX-like systems
+echo running "$BASH_SOURCE"...
 
 if [ -f ~/config/.bash_remotes ]; then
     . ~/config/.bash_remotes 

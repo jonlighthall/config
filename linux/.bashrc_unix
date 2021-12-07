@@ -1,5 +1,6 @@
 # ~/config/linux/.bashrc
 # Interactive shell settings for linux kernel systems
+echo running "$BASH_SOURCE"...
 
 # System-specific aliases and functions
 

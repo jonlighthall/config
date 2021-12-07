@@ -1,5 +1,6 @@
 # ~/config/wsl/.bashrc
 # Interactive shell settings for Linux Subsystem for Windows
+echo running "$BASH_SOURCE"...
 
 LIST="$HOME/.bashrc $HOME/config/.bashrc_common $HOME/config/linux/.bashrc_unix $HOME/config/wsl/.bash_local"
 

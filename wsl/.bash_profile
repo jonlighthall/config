@@ -1,4 +1,5 @@
 # User dependent .bash_profile file
+echo running "$BASH_SOURCE"...
 
 # source the users bashrc if it exists
 if [ -f "${HOME}/config/wsl/.bashrc" ] ; then
