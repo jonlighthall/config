@@ -7,7 +7,7 @@ fi
 
 LIST="$HOME/.bashrc $HOME/config/.bashrc_common
 $HOME/config/linux/.bashrc_unix $HOME/config/wsl/.bash_local
-$HOME/.bash_local"
+$HOME/.bash_local root_v5.34.36/bin/thisroot.sh"
 
 for FILE in $LIST
 do
@@ -29,21 +29,4 @@ do
 done
 
 # ROOT
-fname2=root_v5.34.36/bin/thisroot.sh
-if $VB; then
-    echo "loading $fname2..."
-fi
-if [ -f $fname2 ]; then
-    source $fname2
-    if [ $? -eq 0 ]; then
-	if $VB; then
-	    echo "$fname2 OK"
-	    echo "here"
-	fi
-	which root
-    else
-	echo "$fname2 FAIL"
-    fi
-else
-    echo "$fname2 not found"
-fi
+which root
