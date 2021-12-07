@@ -1,5 +1,8 @@
 # Set DISPLAY for WSL2
-echo running "$BASH_SOURCE"...
+# Note: this file must use unix line endings (CF)! 
+if $VB; then
+    echo "running $BASH_SOURCE..."
+fi
 # one of the following asignments should work
 #export DISPLAY=localhost:0.0 # works on count
 #export DISPLAY=$(grep nameserver /etc/resolv.conf | awk '{print $2}'):0.0

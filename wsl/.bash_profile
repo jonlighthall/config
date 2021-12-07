@@ -35,10 +35,10 @@ fi
 # source the users bashrc if it exists
 fname=${HOME}/config/wsl/.bashrc
 if $VB; then
-    echo "loading user .bashrc $fname..."
+    echo "loading $fname..."
 fi   
 if [ -f $fname ] ; then
-    source "${HOME}/config/wsl/.bashrc"
+    source $fname
     if [ $? -eq 0 ]; then
 	if $VB; then
 	    echo "$fname OK"
@@ -47,11 +47,7 @@ if [ -f $fname ] ; then
 	echo "$fname FAIL"
     fi
 else
-    if $VB; then
-	echo "NOT FOUND"
-    else
-	echo "$fname not found"
-    fi
+    echo "$fname not found"
 fi
 
 echo "Welcome to" $HOSTNAME
