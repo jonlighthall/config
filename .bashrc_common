@@ -24,7 +24,7 @@ fi
 
 # Settings
 # Commands to save
-export HISTFILESIZE=50000
+export HISTFILESIZE=100000
 export HISTSIZE=40000
 # Don't put duplicate lines in the history
 export HISTCONTROL=ignoredups
@@ -50,9 +50,10 @@ alias ping='ping -c 5'
 alias ff='find ./ -not -path "*/.git/*" -type f'
 alias fd='find ./ -not -path "*/.git/*" -type d'
 alias fb='ff | perl -lne "print if not -T"'
-
 alias e='emacs'
 alias en='emacs -nw'
+alias diffy='diff --suppress-common-lines -y'
+
 function duf {	       
     du -k "$@" | sort -n |
     while read size fname; do
