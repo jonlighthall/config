@@ -1,7 +1,7 @@
 # ~/config/linux/.bashrc
 # Interactive shell settings for linux kernel systems
 # Note: this file must use unix line endings (CF)! 
-if $VB; then
+if [ $VB ]; then
     echo "running $BASH_SOURCE..."
 fi
 
