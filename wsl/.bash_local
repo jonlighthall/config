@@ -2,6 +2,9 @@
 # Note: this file must use unix line endings (CF)! 
 if $VB; then
     echo "running $BASH_SOURCE..."
+    GOOD='\033[0;32m'
+    BAD='\033[0;31m'
+    NORMAL='\033[0m'
 fi
 # one of the following asignments should work
 #export DISPLAY=localhost:0.0 # works on count
@@ -35,10 +38,11 @@ else
 	    echo -e "Launching $PROG...\c"
 	    (vcx)
 	    if [[ $? == 0 ]]; then
-		echo "OK"
+		echo -e "${GOOD}OK${NORMAL}"
 		return 0
 	    else
 		echo "failed"
+		echo -e "${BAD}FAIL${NORMAL}"
 		unalias vcx 2>/dev/null
 	    fi
 	else	
@@ -46,7 +50,7 @@ else
 	    unalias vcx 2>/dev/null
 	fi
     else	
-#    	echo "$DIR not found"
+	#    	echo "$DIR not found"
 	unalias vcx 2>/dev/null
     fi
 fi
@@ -63,10 +67,10 @@ else
 	    echo -e "Launching $PROG...\c"
 	    (xming)
 	    if [[ $? == 0 ]]; then
-		echo "OK"
+		echo -e "${GOOD}OK${NORMAL}"
 		return 0   
 	    else
-		echo "failed"
+		echo -e "${BAD}FAIL${NORMAL}"
 		unalias xming 2>/dev/null
 	    fi
 	else	
@@ -74,7 +78,7 @@ else
 	    unalias xming 2>/dev/null
 	fi
     else	
-#	echo "$DIR not found"
+	#	echo "$DIR not found"
 	unalias xming 2>/dev/null
     fi
 fi

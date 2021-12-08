@@ -9,6 +9,10 @@ LIST="$HOME/.bashrc $HOME/config/.bashrc_common
 $HOME/config/linux/.bashrc_unix $HOME/config/wsl/.bash_local
 $HOME/.bash_local root_v5.34.36/bin/thisroot.sh"
 
+GOOD='\033[0;32m'
+BAD='\033[0;31m'
+NORMAL='\033[0m'
+
 for FILE in $LIST
 do
     if [ $VB = true ]; then
@@ -18,10 +22,10 @@ do
 	source $FILE
 	if [ $? -eq 0 ]; then
 	    if [ $VB = true ]; then
-		echo "$FILE OK"
+		echo -e "$FILE ${GOOD}OK${NORMAL}"
 	    fi
 	else
-	    echo "$FILE FAIL"
+	    echo -e "$FILE ${GOOD}FAIL${NORMAL}"
 	fi
     else
 	echo "$FILE not found"
