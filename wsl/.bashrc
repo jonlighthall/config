@@ -5,9 +5,22 @@ if [ $VB = true ]; then
     echo "running $BASH_SOURCE..."
 fi
 
+# required list
 LIST="$HOME/.bashrc $HOME/config/.bashrc_common
-$HOME/config/linux/.bashrc_unix $HOME/config/wsl/.bashrc_X11
-$HOME/.bash_local root_v5.34.36/bin/thisroot.sh"
+$HOME/config/linux/.bashrc_unix $HOME/config/wsl/.bashrc_X11"
+
+# optional list
+LIST_OPT="$HOME/.bash_local root_v5.34.36/bin/thisroot.sh"
+for FILE in $LIST_OPT
+do
+    if [ -f $FILE ]; then
+	LIST+=" $FILE"
+    else
+	if [ $VB = true ]; then
+	    echo "$FILE not found"
+	fi
+    fi
+done
 
 GOOD='\033[0;32m'
 BAD='\033[0;31m'
@@ -33,4 +46,6 @@ do
 done
 
 # ROOT
-which root
+if [[ "$LIST" == *"thisroot.sh"* ]]; then 
+    which root
+fi
