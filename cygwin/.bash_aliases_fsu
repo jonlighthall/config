@@ -1,6 +1,0 @@
-#Macros
-alias getfigs='rsync -vrt --ignore-existing --progress lighthall@elwood.physics.fsu.edu:/home/lighthall/figures /home/lighthall/anasen/'
-alias getfigsr='rsync -vrt --ignore-existing --progress lighthall@ray.physics.fsu.edu:/home/lighthall/figures /home/lighthall/anasen/'
-alias getroot='rsync -vrt --ignore-existing --progress lighthall@ray.physics.fsu.edu:/data0/lighthall/ /home/lighthall/downloads/ANASEN/root/'
-
-alias killelwood="ssh lighthall@elwood.physics.fsu.edu 'pkill root'"
