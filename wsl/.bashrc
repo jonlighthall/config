@@ -6,7 +6,7 @@ if [ $VB = true ]; then
 fi
 
 LIST="$HOME/.bashrc $HOME/config/.bashrc_common
-$HOME/config/linux/.bashrc_unix $HOME/config/wsl/.bash_local
+$HOME/config/linux/.bashrc_unix $HOME/config/wsl/.bashrc_X11
 $HOME/.bash_local root_v5.34.36/bin/thisroot.sh"
 
 GOOD='\033[0;32m'
