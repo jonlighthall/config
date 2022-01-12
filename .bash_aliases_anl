@@ -6,14 +6,18 @@ ssetup root_v5.32.03
 ssetup scarlet-2.1
 ssetup hupsort-1.x
 
-#phy.anl.gov
+# phy.anl.gov
+alias bcan='ssh -Yq bavarians@cantata.phy.anl.gov'
+alias bson='ssh -Yq bavarians@sonata.phy.anl.gov'
+
 alias hcan='ssh -Y -l helios@phy cantata.phy.anl.gov'
 alias hson='ssh -X -l helios@phy sonata.phy.anl.gov'
+alias hsond='ssh -Y -l helios@phy sonata.phy.anl.gov "'"cd \music\helios\Si28\offline\lighthall\extra\dwba"'"'
 
 alias lcan='ssh -X lighthall@cantata.phy.anl.gov'
 alias lson='ssh -X lighthall@sonata.phy.anl.gov'
 
-#onenet
+# onenet
 alias hbac='ssh -Y -l helios@phy bacchanale.onenet'
 alias himp='ssh -Y -l helios@phy impromptu.onenet'
 alias hmal='ssh -Y -l helios@phy malaguena.onenet'
@@ -21,3 +25,6 @@ alias hnoc='ssh -Y -l helios@phy nocturne.onenet'
 
 alias lmal='ssh -Y -l lighthall malaguena.onenet'
 alias limp='ssh -Y -l lighthall impromptu.onenet'
+
+# port-forwarding
+alias sonata='ssh -v -ND 1584 lighthall@sonata.phy.anl.gov'
