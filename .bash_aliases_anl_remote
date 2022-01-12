@@ -1,4 +1,4 @@
-# phy.anl.gov
+# Argonne (phy.anl.gov)
 alias bcan='ssh -Yq bavarians@cantata.phy.anl.gov'
 alias bson='ssh -Yq bavarians@sonata.phy.anl.gov'
 
