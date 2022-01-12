@@ -7,9 +7,12 @@ if $VB; then
     NORMAL='\033[0m'
 fi
 # one of the following asignments should work
-#export DISPLAY=localhost:0.0 # works on count
-#export DISPLAY=$(grep nameserver /etc/resolv.conf | awk '{print $2}'):0.0
-export DISPLAY=$(route.exe print | grep 0.0.0.0 | head -1 | awk '{print $4}'):0.0 # works on lappy
+if [ $HOSTNAME = "DTWUSC001" ]; then
+    export DISPLAY=localhost:0.0
+else
+    #export DISPLAY=$(grep nameserver /etc/resolv.conf | awk '{print $2}'):0.0
+    export DISPLAY=$(route.exe print | grep 0.0.0.0 | head -1 | awk '{print $4}'):0.0 # works on lappy   
+fi
 
 # X Window
 if [ -z "${DISPLAY}" ]; then
