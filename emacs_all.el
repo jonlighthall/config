@@ -50,6 +50,9 @@
 ;; setup files containing “makefile” to open in makefile-mode
 (add-to-list 'auto-mode-alist '("[Mm]akefile.+\\'" . makefile-mode))
 
+;; files containing “bash” to open in shell-script-mode
+(add-to-list 'auto-mode-alist '(".bash.+\\'" . shell-script-mode))
+
 ;; turn off starup message
 (defun display-startup-echo-area-message ()
   (message nil))
