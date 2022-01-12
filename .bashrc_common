@@ -5,23 +5,6 @@ if [ $VB = true ]; then
     echo "running $BASH_SOURCE..."
 fi
 
-fname3=$HOME/config/.bash_remotes
-if [ $VB = true ]; then
-    echo "loading $fname3..."
-fi
-if [ -f $fname3 ]; then
-    source $fname3
-    if [ $? -eq 0 ]; then
-	if [ $VB = true ]; then
-	    echo "$fname3 OK"
-	fi
-    else
-	echo "$fname3 FAIL"
-    fi
-else
-    echo "$fname3 not found"
-fi
-
 # Settings
 # Commands to save
 export HISTFILESIZE=100000
