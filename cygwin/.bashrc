@@ -4,11 +4,15 @@
 # If not running interactively, don't do anything
 [[ "$-" != *i* ]] && return
 
-if [ $VB = true ]; then
-    echo "running $BASH_SOURCE..."
-    GOOD='\033[0;32m'
-    BAD='\033[0;31m'
-    NORMAL='\033[0m'
+if [ -z $VB ]; then
+    export VB=false
+else
+    if [ $VB = true ]; then
+	echo "running $BASH_SOURCE..."
+	GOOD='\033[0;32m'
+	BAD='\033[0;31m'
+	NORMAL='\033[0m'
+    fi
 fi
 
 # required list

@@ -1,6 +1,40 @@
 # .bash_profile
+# Verbose bash prints?
+export VB=true
+if [ $VB = true ]; then
+    echo "Verbose Bash printing is...$VB"
 #echo "Loading settings for interactive shell..."
 #echo "Using GitHub version .bash_profile"
+    echo "running $BASH_SOURCE..."
+    GOOD='\033[0;32m'
+    BAD='\033[0;31m'
+    NORMAL='\033[0m'
+fi
+# save login timestamp to history
+fname=~/.bash_history
+if [ $VB = true ]; then
+    echo -n "appending login timestamp to $fname..."
+fi   
+if [ -f $fname ]; then
+    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $(hostname -s)" >> $fname
+    if [ $? ]; then
+	if [ $VB = true ]; then
+	    echo -e "${GOOD}OK${NORMAL}"
+	fi
+    else
+	if [ $VB = true ]; then
+	    echo -e "${BAD}FAIL${NORMAL}"
+	else
+	    echo "echo to $fname failed"
+	fi
+    fi
+else
+    if [ $VB = true ]; then
+	echo "NOT FOUND"
+    else
+	echo "$fname not found"
+    fi
+fi
 
 # Get the general aliases and functions
 #echo "Loading .bashrc..."
@@ -10,9 +44,7 @@ fi
 
 # User-specific environment and startup programs
 echo "Welcome to" $(hostname -f)
-if [ -f ~/.bash_history ]; then
-    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $(hostname -s)" >> ~/.bash_history
-fi
+
 echo
 NP=3
 echo "Top $NP processes on $(hostname -s):"
