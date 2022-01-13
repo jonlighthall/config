@@ -1,5 +1,5 @@
 # Set DISPLAY for WSL2
-# Note: this file must use unix line endings (CF)! 
+# Note: this file must use unix line endings (LF)! 
 if $VB; then
     echo "running $BASH_SOURCE..."
     GOOD='\033[0;32m'

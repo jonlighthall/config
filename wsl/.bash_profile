@@ -1,5 +1,5 @@
 # User-dependent .bash_profile
-# Note: this file must use unix line endings (CF)! 
+# Note: this file must use unix line endings (LF)! 
 # Verbose bash prints?
 export VB=true
 if [ $VB = true ]; then

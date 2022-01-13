@@ -1,6 +1,6 @@
 # ~/config/wsl/.bashrc
 # Interactive shell settings for Linux Subsystem for Windows
-# Note: this file must use unix line endings (CF)! 
+# Note: this file must use unix line endings (LF)! 
 if [ $VB = true ]; then
     echo "running $BASH_SOURCE..."
     GOOD='\033[0;32m'
