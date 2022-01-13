@@ -37,7 +37,7 @@ do
 		echo -e "$FILE ${GOOD}OK${NORMAL}"
 	    fi
 	else
-	    echo -e "$FILE ${GOOD}FAIL${NORMAL}"
+	    echo -e "$FILE ${BAD}FAIL${NORMAL}"
 	fi
     else
 	echo "$FILE not found"
