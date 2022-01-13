@@ -3,6 +3,9 @@
 # Note: this file must use unix line endings (CF)! 
 if [ $VB = true ]; then
     echo "running $BASH_SOURCE..."
+    GOOD='\033[0;32m'
+    BAD='\033[0;31m'
+    NORMAL='\033[0m'
 fi
 
 # required list
@@ -21,10 +24,6 @@ do
 	fi
     fi
 done
-
-GOOD='\033[0;32m'
-BAD='\033[0;31m'
-NORMAL='\033[0m'
 
 for FILE in $LIST
 do
