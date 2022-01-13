@@ -1,8 +1,12 @@
 # ~/config/.bashrc_common
 # Interactive shell settings for UNIX-like systems
 # Note: this file must use unix line endings (CF)! 
-if [ $VB = true ]; then
-    echo "running $BASH_SOURCE..."
+if [ -z $VB ]; then
+    export VB=false
+else
+    if [ $VB = true ]; then
+	echo "running $BASH_SOURCE..."
+    fi
 fi
 
 # Settings
