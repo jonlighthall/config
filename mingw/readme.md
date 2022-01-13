@@ -1,0 +1,1 @@
+add C:\msys64\mingw64\bin to path for executables
