@@ -1,6 +1,6 @@
 # dotfiles for Cygwin on Windows
 One way to utilize the files in this directory is to copy them  the Cygwin home directory. However, changes in the files will not be tracked by Git.
-5Linux-like symbolic links can be made using the `ln -s` command.
+Linux-like symbolic links can be made using the `ln -s` command.
 This approach will allow the files to be read by Cygwin, but they cannot be opened in programs like emacs.
 As of this writing, links created from within OneDrive using the `mklink` command will cause OneDrive to synchronize indefinitely.
 
