@@ -16,7 +16,7 @@ else
 fi
 
 # required list
-LIST="$HOME/config/.bashrc_common"
+LIST="$HOME/config/.bashrc_common $HOME/config/cygwin/.bashrc_X11"
 
 # optional list
 LIST_OPT="$HOME/.bash_local"
@@ -97,14 +97,7 @@ else
     fi
 fi
 
-# X Window
-export DISPLAY=localhost:0
-#alias xwin='startxwin; echo -e "\033c"'
-alias xwin='/c/Program\ Files\ \(x86\)/Xming/Xming.exe -multiwindow -silent-dup-error -multiplemonitors &'
-alias close='kill -9 `ps -a |grep Xming`; kill -9 `ps -a |grep ssh`;exit'
 #kill -9 `ps -a |grep defunct`
-#alias ssh='xwin ssh'
-#xwin #start xwin on startup
 
 # Cygwin
 #set CYGWIN=nodosfilewarning

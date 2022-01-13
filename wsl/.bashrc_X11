@@ -23,9 +23,13 @@ fi
 # X Window
 if [ -z "${DISPLAY}" ]; then
     export DISPLAY=localhost:0.0
-    echo "setting DISPLAY to $DISPLAY"
+    if [ $VB = true ]; then
+	echo "setting DISPLAY to $DISPLAY"
+    fi
 else
-    echo "DISPLAY set to $DISPLAY"
+    if [ $VB = true ]; then
+	echo "DISPLAY set to $DISPLAY"
+    fi
 fi
 
 alias xming='/mnt/c/Program\ Files\ \(x86\)/Xming/Xming.exe >/dev/null 2>&1 :0 -clipboard -multiwindow -silent-dup-error -logverbose 0 &'
