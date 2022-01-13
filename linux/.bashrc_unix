@@ -1,11 +1,15 @@
 # ~/config/linux/.bashrc
 # Interactive shell settings for linux kernel systems
 # Note: this file must use unix line endings (CF)! 
-if [ $VB = true ]; then
-    echo "running $BASH_SOURCE..."
-    GOOD='\033[0;32m'
-    BAD='\033[0;31m'
-    NORMAL='\033[0m'
+if [ -z $VB ]; then
+    export VB=false
+else
+    if [ $VB = true ]; then
+	echo "running $BASH_SOURCE..."
+	GOOD='\033[0;32m'
+	BAD='\033[0;31m'
+	NORMAL='\033[0m'
+    fi
 fi
 
 # System-specific aliases and functions
@@ -29,10 +33,10 @@ echo -e "Testing Git prompt...\c"
 timeout -s 9 1s git branch >/dev/null 2>&1
 RETVAL=$?
 if [[ $RETVAL -eq 137 ]]; then
-   echo -e "\n RETVAL = $RETVAL"
-   echo " git branch timed out" 
-   echo -e " git branch removed from prompt\n"
-   export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[0;32m\n$\[\e[0m\] ' # no git
+    echo -e "\n RETVAL = $RETVAL"
+    echo " git branch timed out" 
+    echo -e " git branch removed from prompt\n"
+    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[0;32m\n$\[\e[0m\] ' # no git
 else
     echo -e "${GOOD}OK${NORMAL}"
 fi
@@ -44,7 +48,9 @@ alias term='gnome-terminal &'
 # PGI
 export PGI=/opt/pgi
 if [ -d $PGI ]; then
-#   echo "adding PGI to path..."
+    if [ $VB = true ]; then
+	echo "adding PGI to path..."
+    fi
     export PATH=$PGI/linux86-64/19.10/bin:$PATH
     export MANPATH=$MANPATH:$PGI/linux86-64/19.10/man
     export LM_LICENSE_FILE=$LM_LICENSE_FILE:$PGI/license.dat;
