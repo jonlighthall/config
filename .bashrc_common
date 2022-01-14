@@ -4,7 +4,7 @@
 if [ -z $VB ]; then
     export VB=false
 else
-    if [ $VB = true ]; then
+    if $VB; then
 	echo "running $BASH_SOURCE..."
     fi
 fi

@@ -4,7 +4,7 @@
 if [ -z $VB ]; then
     export VB=false
 else
-    if [ $VB = true ]; then
+    if $VB; then
 	echo "running $BASH_SOURCE..."
 	GOOD='\033[0;32m'
 	BAD='\033[0;31m'
@@ -48,7 +48,7 @@ alias term='gnome-terminal &'
 # PGI
 export PGI=/opt/pgi
 if [ -d $PGI ]; then
-    if [ $VB = true ]; then
+    if $VB; then
 	echo "adding PGI to path..."
     fi
     export PATH=$PGI/linux86-64/19.10/bin:$PATH

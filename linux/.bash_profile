@@ -1,7 +1,7 @@
 # .bash_profile
 # Verbose bash prints?
 export VB=true
-if [ $VB = true ]; then
+if $VB; then
     echo "Verbose Bash printing is...$VB"
 #echo "Loading settings for interactive shell..."
 #echo "Using GitHub version .bash_profile"
@@ -12,24 +12,24 @@ if [ $VB = true ]; then
 fi
 # save login timestamp to history
 fname=~/.bash_history
-if [ $VB = true ]; then
+if $VB; then
     echo -n "appending login timestamp to $fname..."
 fi   
 if [ -f $fname ]; then
     echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $(hostname -s)" >> $fname
     if [ $? ]; then
-	if [ $VB = true ]; then
+	if $VB; then
 	    echo -e "${GOOD}OK${NORMAL}"
 	fi
     else
-	if [ $VB = true ]; then
+	if $VB; then
 	    echo -e "${BAD}FAIL${NORMAL}"
 	else
 	    echo "echo to $fname failed"
 	fi
     fi
 else
-    if [ $VB = true ]; then
+    if $VB; then
 	echo "NOT FOUND"
     else
 	echo "$fname not found"

@@ -16,11 +16,11 @@ export DISPLAY=localhost:0
 # X Window
 if [ -z "${DISPLAY}" ]; then
     export DISPLAY=localhost:0.0
-    if [ $VB = true ]; then
+    if $VB; then
 	echo "setting DISPLAY to $DISPLAY"
     fi
 else
-    if [ $VB = true ]; then
+    if $VB; then
 	echo "DISPLAY set to $DISPLAY"
     fi
 fi

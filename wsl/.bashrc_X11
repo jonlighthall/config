@@ -8,8 +8,6 @@ else
 	GOOD='\033[0;32m'
 	BAD='\033[0;31m'
 	NORMAL='\033[0m'
-    else
-	echo "VB = $VB"
     fi
 fi
 # one of the following asignments should work
@@ -23,11 +21,11 @@ fi
 # X Window
 if [ -z "${DISPLAY}" ]; then
     export DISPLAY=localhost:0.0
-    if [ $VB = true ]; then
+    if $VB; then
 	echo "setting DISPLAY to $DISPLAY"
     fi
 else
-    if [ $VB = true ]; then
+    if $VB; then
 	echo "DISPLAY set to $DISPLAY"
     fi
 fi

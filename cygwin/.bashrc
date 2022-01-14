@@ -7,7 +7,7 @@
 if [ -z $VB ]; then
     export VB=false
 else
-    if [ $VB = true ]; then
+    if $VB; then
 	echo "running $BASH_SOURCE..."
 	GOOD='\033[0;32m'
 	BAD='\033[0;31m'
@@ -25,7 +25,7 @@ do
     if [ -f $FILE ]; then
 	LIST+=" $FILE"
     else
-	if [ $VB = true ]; then
+	if $VB; then
 	    echo "$FILE not found"
 	fi
     fi
@@ -33,13 +33,13 @@ done
 
 for FILE in $LIST
 do
-    if [ $VB = true ]; then
+    if $VB; then
 	echo "loading $FILE..."
     fi
     if [ -f $FILE ]; then
 	source $FILE
 	if [ $? -eq 0 ]; then
-	    if [ $VB = true ]; then
+	    if $VB; then
 		echo -e "$FILE ${GOOD}OK${NORMAL}"
 	    fi
 	else
