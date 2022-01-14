@@ -40,7 +40,7 @@ alias vcx='/mnt/c/Program\ Files/VcXsrv/vcxsrv.exe >/dev/null 2>&1 :0 -ac -clipb
 PROG="vcxsrv.exe"
 if pgrep -x $PROG >/dev/null
 then
-    if [ -z $VB ]; then
+    if $VB; then
 	echo "$PROG is already running"
     fi
     return 0
@@ -48,30 +48,30 @@ else
     DIR=/mnt/c/Program\ Files/VcXsrv
     if [ -d "$DIR" ]; then
 	if [ -f "$DIR/$PROG" ]; then
-	    if [ -z $VB ]; then
+	    if $VB; then
 		echo -e "Launching $PROG...\c"
 	    fi
 	    (vcx)
 	    if [[ $? == 0 ]]; then
-		if [ -z $VB ]; then
+		if $VB; then
 		    echo -e "${GOOD}OK${NORMAL}"
 		fi
 		return 0
 	    else
-		if [ -z $VB ]; then
+		if $VB; then
 		    echo "failed"
 		    echo -e "${BAD}FAIL${NORMAL}"
 		fi
 		unalias vcx 2>/dev/null
 	    fi
 	else
-	    if [ -z $VB ]; then
+	    if $VB; then
 		echo "$PROG not found"
 	    fi
 	    unalias vcx 2>/dev/null
 	fi
     else	
-	if [ -z $VB ]; then
+	if $VB; then
 	    echo "$DIR not found"
 	fi
 	unalias vcx 2>/dev/null
@@ -81,7 +81,7 @@ fi
 PROG="Xming.exe"
 if pgrep -x $PROG >/dev/null
 then
-    if [ -z $VB ]; then
+    if $VB; then
 	echo "$PROG is already running"
     fi
     return 0   
@@ -89,29 +89,29 @@ else
     DIR=/mnt/c/Program\ Files\ \(x86\)/Xming
     if [ -d "$DIR" ]; then
 	if [ -f "$DIR/$PROG" ]; then
-	    if [ -z $VB ]; then
+	    if $VB; then
 		echo -e "Launching $PROG...\c"
 	    fi
 	    (xming)
 	    if [[ $? == 0 ]]; then
-		if [ -z $VB ]; then
+		if $VB; then
 		    echo -e "${GOOD}OK${NORMAL}"
 		fi
 		return 0   
 	    else
-		if [ -z $VB ]; then
+		if $VB; then
 		    echo -e "${BAD}FAIL${NORMAL}"
 		fi
 		unalias xming 2>/dev/null
 	    fi
 	else
-	    if [ -z $VB ]; then
+	    if $VB; then
 		echo "$PROG not found"
 	    fi
 	    unalias xming 2>/dev/null
 	fi
     else
-	if [ -z $VB ]; then
+	if $VB; then
 	    echo "$DIR not found"
 	fi
 	unalias xming 2>/dev/null
