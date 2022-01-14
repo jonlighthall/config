@@ -40,28 +40,40 @@ alias vcx='/mnt/c/Program\ Files/VcXsrv/vcxsrv.exe >/dev/null 2>&1 :0 -ac -clipb
 PROG="vcxsrv.exe"
 if pgrep -x $PROG >/dev/null
 then
-    echo "$PROG is already running"
+    if [ -z $VB ]; then
+	echo "$PROG is already running"
+    fi
     return 0
 else
     DIR=/mnt/c/Program\ Files/VcXsrv
     if [ -d "$DIR" ]; then
 	if [ -f "$DIR/$PROG" ]; then
-	    echo -e "Launching $PROG...\c"
+	    if [ -z $VB ]; then
+		echo -e "Launching $PROG...\c"
+	    fi
 	    (vcx)
 	    if [[ $? == 0 ]]; then
-		echo -e "${GOOD}OK${NORMAL}"
+		if [ -z $VB ]; then
+		    echo -e "${GOOD}OK${NORMAL}"
+		fi
 		return 0
 	    else
-		echo "failed"
-		echo -e "${BAD}FAIL${NORMAL}"
+		if [ -z $VB ]; then
+		    echo "failed"
+		    echo -e "${BAD}FAIL${NORMAL}"
+		fi
 		unalias vcx 2>/dev/null
 	    fi
-	else	
-	    echo "$PROG not found"
+	else
+	    if [ -z $VB ]; then
+		echo "$PROG not found"
+	    fi
 	    unalias vcx 2>/dev/null
 	fi
     else	
-	#    	echo "$DIR not found"
+	if [ -z $VB ]; then
+	    echo "$DIR not found"
+	fi
 	unalias vcx 2>/dev/null
     fi
 fi
@@ -69,27 +81,39 @@ fi
 PROG="Xming.exe"
 if pgrep -x $PROG >/dev/null
 then
-    echo "$PROG is already running"
+    if [ -z $VB ]; then
+	echo "$PROG is already running"
+    fi
     return 0   
 else
     DIR=/mnt/c/Program\ Files\ \(x86\)/Xming
     if [ -d "$DIR" ]; then
 	if [ -f "$DIR/$PROG" ]; then
-	    echo -e "Launching $PROG...\c"
+	    if [ -z $VB ]; then
+		echo -e "Launching $PROG...\c"
+	    fi
 	    (xming)
 	    if [[ $? == 0 ]]; then
-		echo -e "${GOOD}OK${NORMAL}"
+		if [ -z $VB ]; then
+		    echo -e "${GOOD}OK${NORMAL}"
+		fi
 		return 0   
 	    else
-		echo -e "${BAD}FAIL${NORMAL}"
+		if [ -z $VB ]; then
+		    echo -e "${BAD}FAIL${NORMAL}"
+		fi
 		unalias xming 2>/dev/null
 	    fi
-	else	
-	    echo "$PROG not found"
+	else
+	    if [ -z $VB ]; then
+		echo "$PROG not found"
+	    fi
 	    unalias xming 2>/dev/null
 	fi
-    else	
-	#	echo "$DIR not found"
+    else
+	if [ -z $VB ]; then
+	    echo "$DIR not found"
+	fi
 	unalias xming 2>/dev/null
     fi
 fi
