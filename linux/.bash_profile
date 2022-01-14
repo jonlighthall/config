@@ -56,11 +56,9 @@ if [ -f $fname ] ; then
 else
     echo "${TAB}$fname not found"
 fi
-
 TAB=${TAB::${#TAB}-${#profTAB}}
-# Get the general aliases and functions
 
-# User-specific environment and startup programs
+# print welcome message
 if $VB; then
     echo
 fi
@@ -75,8 +73,9 @@ echo "Last $NP log-ins on $(hostname -s):"
 last -wFa | grep light | head -n $NP
 echo
 
+# print runtime duration
 if $VB; then
-    echo -e "${TAB}${BASH_SOURCE} runtime...\c"
+    echo -e "${TAB}$(basename $BASH_SOURCE) runtime...\c"
     if command -v sec2elap &>/dev/null
     then
 	echo "$(sec2elap $SECONDS)"

@@ -55,5 +55,22 @@ if [ -f $fname ] ; then
 else
     echo "${TAB}$fname not found"
 fi
-TAB=${TAB::-${#profTAB}}
-echo "Welcome to" $HOSTNAME
+TAB=${TAB::${#TAB}-${#profTAB}}
+
+# print welcome message
+if $VB; then
+    echo
+fi
+echo "${TAB}Welcome to" $HOSTNAME
+
+# print runtime duration
+if $VB; then
+    echo -e "${TAB}$(basename $BASH_SOURCE) runtime...\c"
+    if command -v sec2elap &>/dev/null
+    then
+	echo "$(sec2elap $SECONDS)"
+    else
+	echo "$SECONDS"
+    fi
+    echo "${TAB}$(date)"
+fi
