@@ -1,12 +1,12 @@
 # .bash_profile
 # Verbose bash prints?
-export VB=true
+export VB=false
 if $VB; then
     TAB=""
     profTAB=""
     TAB+=$profTAB
     echo "${TAB}running $BASH_SOURCE..."
-    echo "${TAB}Verbose Bash printing is...$VB"
+    echo "${TAB}verbose bash printing is...$VB"
 #echo "${TAB}Loading settings for interactive shell..."
 #echo "${TAB}Using GitHub version .bash_profile"
     GOOD='\033[0;32m'
@@ -38,6 +38,8 @@ else
 	echo "$fname not found"
     fi
 fi
+
+# source users bashrc if it exists
 fname=${HOME}/config/linux/.bashrc
 if $VB; then
     echo "${TAB}loading $fname..."
@@ -59,7 +61,10 @@ TAB=${TAB::${#TAB}-${#profTAB}}
 # Get the general aliases and functions
 
 # User-specific environment and startup programs
-echo -e "\nWelcome to $(hostname -f)"
+if $VB; then
+    echo
+fi
+echo -e "Welcome to $(hostname -f)"
 
 echo
 NP=3
@@ -70,11 +75,13 @@ echo "Last $NP log-ins on $(hostname -s):"
 last -wFa | grep light | head -n $NP
 echo
 
-echo -e ".bash_profile runtime...\c"
-if command -v sec2elap &>/dev/null
-then
-    echo "$(sec2elap $SECONDS)"
-else
-    echo "$SECONDS"
+if $VB; then
+    echo -e "${TAB}${BASH_SOURCE} runtime...\c"
+    if command -v sec2elap &>/dev/null
+    then
+	echo "$(sec2elap $SECONDS)"
+    else
+	echo "$SECONDS"
+    fi
+    echo "${TAB}$(date)"
 fi
-echo $(date)

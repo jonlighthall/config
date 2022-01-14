@@ -7,7 +7,7 @@ if $VB; then
     profTAB=""
     TAB+=$profTAB
     echo "${TAB}running $BASH_SOURCE..."
-    echo "${TAB}Verbose Bash printing is...$VB"
+    echo "${TAB}verbose bash printing is...$VB"
     GOOD='\033[0;32m'
     BAD='\033[0;31m'
     NORMAL='\033[0m'
@@ -38,7 +38,7 @@ else
     fi
 fi
 
-# source the users bashrc if it exists
+# source users bashrc if it exists
 fname=${HOME}/config/wsl/.bashrc
 if $VB; then
     echo "${TAB}loading $fname..."
