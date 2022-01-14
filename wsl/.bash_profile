@@ -1,7 +1,7 @@
 # User-dependent .bash_profile
 # Note: this file must use unix line endings (LF)! 
 # Verbose bash prints?
-export VB=true
+export VB=false
 if $VB; then
     TAB=""
     profTAB=""

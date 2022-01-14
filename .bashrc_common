@@ -25,11 +25,14 @@ PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 HISTTIMEFORMAT="%F %T "
 # Editors
 export EDITOR=emacs
-export SVN_EDITOR=emacs
 export GIT_EDITOR=emacs
+export SVN_EDITOR=emacs
 
-# Macros
+# Aliases 
 alias diffy='diff --suppress-common-lines -y'
+alias du0='duf --max-depth=0'
+alias du1='duf --max-depth=1'
+alias du2='duf --max-depth=2'
 alias e='emacs'
 alias en='emacs -nw'
 alias fb='ff | perl -lne "print if not -T"' # find binary
@@ -45,6 +48,7 @@ alias lt='ls -ltr' # sort by time
 alias ping='ping -c 5'
 alias pwd='pwd -L;pwd -P'
 
+# Fucntions
 function duf {	       
     du -k "$@" | sort -n |
 	while read size fname; do
@@ -58,10 +62,6 @@ function duf {
 	    done;
 	done
 }
-
-alias du1='duf --max-depth=1'
-alias du2='duf --max-depth=2'
-alias du0='duf --max-depth=0'
 
 # Path additions
 if [[ ":$PATH" != *":${HOME}/bin"*  ]]; then
