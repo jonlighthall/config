@@ -29,20 +29,20 @@ export SVN_EDITOR=emacs
 export GIT_EDITOR=emacs
 
 # Macros
-alias ls='ls --color'
-alias la='ls -la'
-alias lt='ls -ltr'
-alias lS='ls -ltS'
-alias grep='grep --color=auto'
-alias pwd='pwd -L;pwd -P'
-alias ping='ping -c 5'
-alias ff='find ./ -not -path "*/.git/*" -type f'
-alias fd='find ./ -not -path "*/.git/*" -type d'
-alias fb='ff | perl -lne "print if not -T"'
-alias fl='find ./ -maxdepth 1 -type l -exec ls --color -l {} \;'
+alias diffy='diff --suppress-common-lines -y'
 alias e='emacs'
 alias en='emacs -nw'
-alias diffy='diff --suppress-common-lines -y'
+alias fb='ff | perl -lne "print if not -T"'
+alias fd='find ./ -not -path "*/.git/*" -type d'
+alias ff='find ./ -not -path "*/.git/*" -type f'
+alias fl='find ./ -maxdepth 1 -type l -exec ls --color -l {} \;'
+alias grep='grep --color=auto'
+alias lS='ls -ltS'
+alias la='ls -la'
+alias ls='ls --color'
+alias lt='ls -ltr'
+alias ping='ping -c 5'
+alias pwd='pwd -L;pwd -P'
 
 function duf {	       
     du -k "$@" | sort -n |
