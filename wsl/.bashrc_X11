@@ -4,7 +4,9 @@ if [ -z $VB ]; then
     export VB=false
 else
     if $VB; then
-	echo "running $BASH_SOURCE..."
+	fTAB="   "
+	TAB+=$fTAB
+	echo "${TAB}running $BASH_SOURCE..."
 	GOOD='\033[0;32m'
 	BAD='\033[0;31m'
 	NORMAL='\033[0m'
@@ -22,11 +24,11 @@ fi
 if [ -z "${DISPLAY}" ]; then
     export DISPLAY=localhost:0.0
     if $VB; then
-	echo "setting DISPLAY to $DISPLAY"
+	echo "${TAB}setting DISPLAY to $DISPLAY"
     fi
 else
     if $VB; then
-	echo "DISPLAY set to $DISPLAY"
+	echo "${TAB}DISPLAY set to $DISPLAY"
     fi
 fi
 
@@ -41,38 +43,45 @@ PROG="vcxsrv.exe"
 if pgrep -x $PROG >/dev/null
 then
     if $VB; then
-	echo "$PROG is already running"
+	echo "${TAB}$PROG is already running"
     fi
+    TAB=${TAB::-${#fTAB}}
     return 0
 else
     DIR=/mnt/c/Program\ Files/VcXsrv
     if [ -d "$DIR" ]; then
+	if $VB; then
+	    echo -e "${TAB}found $DIR"
+	fi
 	if [ -f "$DIR/$PROG" ]; then
 	    if $VB; then
-		echo -e "Launching $PROG...\c"
+		echo -e "${TAB}Launching $PROG...\c"
 	    fi
 	    (vcx)
 	    if [[ $? == 0 ]]; then
 		if $VB; then
 		    echo -e "${GOOD}OK${NORMAL}"
 		fi
+		TAB=${TAB::-${#fTAB}}
 		return 0
 	    else
 		if $VB; then
-		    echo "failed"
 		    echo -e "${BAD}FAIL${NORMAL}"
+		    echo "${TAB}unaliasing $PROG..."
 		fi
 		unalias vcx 2>/dev/null
 	    fi
 	else
 	    if $VB; then
-		echo "$PROG not found"
+		echo "${TAB}$PROG not found"
+		echo "${TAB}unaliasing $PROG..."
 	    fi
 	    unalias vcx 2>/dev/null
 	fi
     else	
 	if $VB; then
-	    echo "$DIR not found"
+	    echo "${TAB}$DIR not found"
+	    echo "${TAB}unaliasing $PROG..."
 	fi
 	unalias vcx 2>/dev/null
     fi
@@ -82,38 +91,47 @@ PROG="Xming.exe"
 if pgrep -x $PROG >/dev/null
 then
     if $VB; then
-	echo "$PROG is already running"
+	echo "${TAB}$PROG is already running"
     fi
+    TAB=${TAB::-${#fTAB}}
     return 0   
 else
     DIR=/mnt/c/Program\ Files\ \(x86\)/Xming
     if [ -d "$DIR" ]; then
+	if $VB; then
+	    echo -e "${TAB}found $DIR"
+	fi
 	if [ -f "$DIR/$PROG" ]; then
 	    if $VB; then
-		echo -e "Launching $PROG...\c"
+		echo -e "${TAB}Launching $PROG...\c"
 	    fi
 	    (xming)
 	    if [[ $? == 0 ]]; then
 		if $VB; then
 		    echo -e "${GOOD}OK${NORMAL}"
 		fi
+		TAB=${TAB::-${#fTAB}}
 		return 0   
 	    else
 		if $VB; then
 		    echo -e "${BAD}FAIL${NORMAL}"
+		    echo "${TAB}unaliasing $PROG..."
 		fi
 		unalias xming 2>/dev/null
 	    fi
 	else
 	    if $VB; then
-		echo "$PROG not found"
+		echo "${TAB}$PROG not found"
+		echo "${TAB}unaliasing $PROG..."
 	    fi
 	    unalias xming 2>/dev/null
 	fi
     else
 	if $VB; then
-	    echo "$DIR not found"
+	    echo "${TAB}$DIR not found"
+	    echo "${TAB}unaliasing $PROG..."
 	fi
 	unalias xming 2>/dev/null
     fi
 fi
+TAB=${TAB::-${#fTAB}}

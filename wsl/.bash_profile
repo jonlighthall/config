@@ -3,8 +3,11 @@
 # Verbose bash prints?
 export VB=true
 if $VB; then
-    echo "Verbose Bash printing is...$VB"
-    echo "running $BASH_SOURCE..."
+    TAB=""
+    profTAB=""
+    TAB+=$profTAB
+    echo "${TAB}running $BASH_SOURCE..."
+    echo "${TAB}Verbose Bash printing is...$VB"
     GOOD='\033[0;32m'
     BAD='\033[0;31m'
     NORMAL='\033[0m'
@@ -12,7 +15,7 @@ fi
 # save login timestamp to history
 fname=~/.bash_history
 if $VB; then
-    echo -n "appending login timestamp to $fname..."
+    echo -n "${TAB}appending login timestamp to $fname..."
 fi   
 if [ -f $fname ]; then
     echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $(hostname -s)" >> $fname
@@ -38,19 +41,19 @@ fi
 # source the users bashrc if it exists
 fname=${HOME}/config/wsl/.bashrc
 if $VB; then
-    echo "loading $fname..."
+    echo "${TAB}loading $fname..."
 fi   
 if [ -f $fname ] ; then
     source $fname
     if [ $? -eq 0 ]; then
 	if $VB; then
-	    echo -e "$fname ${GOOD}OK${NORMAL}"
+	    echo -e "${TAB}$fname ${GOOD}OK${NORMAL}"
 	fi
     else
-	echo -e "$fname ${BAD}FAIL${NORMAL}"
+	echo -e "${TAB}$fname ${BAD}FAIL${NORMAL}"
     fi
 else
-    echo "$fname not found"
+    echo "${TAB}$fname not found"
 fi
-
+TAB=${TAB::-${#profTAB}}
 echo "Welcome to" $HOSTNAME
