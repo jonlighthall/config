@@ -18,7 +18,7 @@ fi
 LIST="/etc/bashrc $HOME/config/.bashrc_common $HOME/config/linux/.bashrc_unix"
 
 # optional list
-LIST_OPT="$HOME/.bash_local $HOME/.bash_aliases"
+LIST_OPT="$HOME/.bash_local $HOME/.bash_aliases $HOME/config/linux/.bashrc_libgfortran"
 for FILE in $LIST_OPT
 do
     if [ -f $FILE ]; then

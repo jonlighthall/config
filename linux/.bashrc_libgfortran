@@ -1,0 +1,35 @@
+# ~/config/linux/.bashrc_libgfortran
+# Make sure fortran libraries are in the library path
+# Note: this file must use unix line endings (LF)! 
+if [ -z $VB ]; then
+    export VB=false
+else
+    if $VB; then
+	libTAB="   "
+	TAB+=$libTAB
+	echo "${TAB}running $BASH_SOURCE..."
+    fi
+fi
+
+# Find path
+LIBPATH=$(locate libgfortran.so.5 | head -1 | sed 's|\(.*\)/.*|\1|')
+echo ${TAB}$LIBPATH
+
+# Path addition
+ADDPATH=${LIBPATH}
+if [[ ":$LD_LIBRARY_PATH" != *":${ADDPATH}"*  ]]; then
+    if [ -d "${ADDPATH}" ] ; then
+	if $VB; then
+	    echo "${TAB}${ADDPATH} not found in $LD_LIBRARY_PATH"
+	fi
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ADDPATH
+    else
+	echo "${TAB}${ADDPATH} not found"
+    fi
+else
+    if $VB; then
+	echo "${TAB}${ADDPATH} already in $LD_LIBRARY_PATH"
+    fi
+fi
+
+TAB=${TAB::${#TAB}-${#libTAB}}
