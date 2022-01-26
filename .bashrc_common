@@ -64,9 +64,19 @@ function duf {
 }
 
 # Path additions
-if [[ ":$PATH" != *":${HOME}/bin"*  ]]; then
-    if [ -d "${HOME}/bin" ] ; then
-	export PATH=$PATH:${HOME}/bin
+ADDPATH=${HOME}/bin
+if [[ ":$PATH" != *":${ADDPATH}"*  ]]; then
+    if [ -d "${ADDPATH}" ] ; then
+	if $VB; then
+	    echo "${TAB}${ADDPATH} not found in $PATH"
+	fi
+	export PATH=$PATH:$ADDPATH
+    else
+	echo "${TAB}${ADDPATH} not found"
+    fi
+else
+    if $VB; then
+	echo "${TAB}${ADDPATH} already in $PATH"
     fi
 fi
 TAB=${TAB::${#TAB}-${#comTAB}}
