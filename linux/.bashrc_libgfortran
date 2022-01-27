@@ -14,24 +14,31 @@ fi
 # Find path
 FINDLIB=libgfortran.so.5
 echo -n "${TAB}locating $FINDLIB..."
-LIBPATH=$(locate $FINDLIB | head -1 | sed 's|\(.*\)/.*|\1|')
-echo "$LIBPATH"
-
+LIBPATH=$(locate $FINDLIB -l 1)
+if [[ $? == 0 ]]; then
+    echo "found"
+    LIBPATH=$(echo $LIBPATH | sed 's|\(.*\)/.*|\1|')
+    echo "${TAB}$LIBPATH"
 # Path addition
-ADDPATH=${LIBPATH}
-if [[ ":$LD_LIBRARY_PATH" != *":${ADDPATH}"*  ]]; then
-    if [ -d "${ADDPATH}" ] ; then
-	if $VB; then
-	    echo "${TAB}${ADDPATH} not found in LD_LIBRARY_PATH"
+    ADDPATH=${LIBPATH}
+    if [[ ":$LD_LIBRARY_PATH" != *":${ADDPATH}"*  ]]; then
+	if [ -d "${ADDPATH}" ] ; then
+	    if $VB; then
+		echo "${TAB}${ADDPATH} not found in LD_LIBRARY_PATH"
+	    fi
+	    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ADDPATH
+	else
+	    echo "${TAB}${ADDPATH} not found"
 	fi
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ADDPATH
     else
-	echo "${TAB}${ADDPATH} not found"
+	if $VB; then
+	    echo "${TAB}${ADDPATH} already in LD_LIBRARY_PATH"
+	fi
     fi
+
 else
-    if $VB; then
-	echo "${TAB}${ADDPATH} already in LD_LIBRARY_PATH"
-    fi
+    echo "not found"
 fi
+
 
 TAB=${TAB::${#TAB}-${#libTAB}}
