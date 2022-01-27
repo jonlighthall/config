@@ -20,7 +20,7 @@ ADDPATH=${LIBPATH}
 if [[ ":$LD_LIBRARY_PATH" != *":${ADDPATH}"*  ]]; then
     if [ -d "${ADDPATH}" ] ; then
 	if $VB; then
-	    echo "${TAB}${ADDPATH} not found in $LD_LIBRARY_PATH"
+	    echo "${TAB}${ADDPATH} not found in LD_LIBRARY_PATH"
 	fi
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ADDPATH
     else
@@ -28,7 +28,7 @@ if [[ ":$LD_LIBRARY_PATH" != *":${ADDPATH}"*  ]]; then
     fi
 else
     if $VB; then
-	echo "${TAB}${ADDPATH} already in $LD_LIBRARY_PATH"
+	echo "${TAB}${ADDPATH} already in LD_LIBRARY_PATH"
     fi
 fi
 
