@@ -13,7 +13,7 @@ fi
 
 # Find path
 LIBPATH=$(locate libgfortran.so.5 | head -1 | sed 's|\(.*\)/.*|\1|')
-echo ${TAB}$LIBPATH
+echo "${TAB}$LIBPATH"
 
 # Path addition
 ADDPATH=${LIBPATH}
