@@ -12,8 +12,9 @@ else
 fi
 
 # Find path
-echo -n "${TAB}locating libgfortran..."
-LIBPATH=$(locate libgfortran.so.5 | head -1 | sed 's|\(.*\)/.*|\1|')
+FINDLIB=libgfortran.so.5
+echo -n "${TAB}locating $FINDLIB..."
+LIBPATH=$(locate $FINDLIB | head -1 | sed 's|\(.*\)/.*|\1|')
 echo "$LIBPATH"
 
 # Path addition
