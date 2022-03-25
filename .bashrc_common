@@ -29,7 +29,7 @@ export GIT_EDITOR=emacs
 export SVN_EDITOR=emacs
 
 # Aliases 
-alias diffy='diff --suppress-common-lines -y'
+alias diffy='diff --suppress-common-lines -ByZ'
 alias du0='duf --max-depth=0'
 alias du1='duf --max-depth=1'
 alias du2='duf --max-depth=2'
