@@ -52,7 +52,6 @@
  '(fortran-line-length 72)
  '(fortran-continuation-string "&"))
 
-(require 'whitespace)
 (setq whitespace-style '(lines-tail))
 ;;(setq whitespace-line-column 50)
 (add-hook 'fortran-mode-hook

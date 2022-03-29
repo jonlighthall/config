@@ -64,3 +64,5 @@
   (add-to-list 'default-frame-alist '(foreground-color . "#000")) ; white
   (add-to-list 'default-frame-alist '(background-color . "#FFF")) ; black
   )
+
+(require 'whitespace)
