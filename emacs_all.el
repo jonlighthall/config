@@ -67,8 +67,7 @@
 
 ;; whitespace-mode settings
 (require 'whitespace)
-(setq whitespace-style '(lines))
-;;(setq whitespace-style '(lines-tail))
+(setq whitespace-style '(face lines-tail))
 (setq whitespace-line-column 97)
 (global-whitespace-mode 1)
 ;;(add-hook 'prog-mode-hook 'whitespace-mode)
