@@ -1,7 +1,5 @@
-;; .emacs
-
-;;; uncomment this line to disable loading of "default.el" at startup
-;; (setq inhibit-default-init t)
+;; ------Settings for Linux -------------------------------
+(load "~/config/emacs_all.el")
 
 ;; default to unified diffs
 ;(setq diff-switches "-u")
@@ -41,22 +39,3 @@
 
 ;; (load-file "~/.emacs.d/setnu.el")
 ;; (load-file "~/.emacs.d/psvn.el")
-
-;; FORTRAN column highlighting
-(custom-set-variables
- '(fortran-line-length 72)
- '(fortran-continuation-string "&"))
-
-(setq whitespace-style '(lines-tail))
-(setq whitespace-line-column 80)
-(add-hook 'fortran-mode-hook
-	  (lambda ()
-	    (setq whitespace-line-column 72)))
-(add-hook 'fortran-mode-hook
-	  (lambda ()
-	    (global-whitespace-mode 1)))
-(add-hook 'fortran-mode-hook 'turn-on-auto-fill)
-
-;;(add-hook 'prog-mode-hook 'whitespace-mode)
-
-(load "~/config/emacs_all.el")

@@ -1,9 +1,6 @@
 ;; ------Settings for WSL----------------------------------
 (load "~/config/emacs_all.el")
 
-;; svn issues a warning ("cannot set LC_CTYPE locale") if LANG is not set.
-;;(setenv "LANG" "C")
-
 (require 'diff)
 
 ;; ------Spelling------------------------------------------
@@ -46,18 +43,3 @@
        (global-font-lock-mode t)
        ;; Maximum colors
        (setq font-lock-maximum-decoration t)))
-
-;; FORTRAN column highlighting
-(custom-set-variables
- '(fortran-line-length 72)
- '(fortran-continuation-string "&"))
-
-(setq whitespace-style '(lines-tail))
-;;(setq whitespace-line-column 50)
-(add-hook 'fortran-mode-hook
-	  (lambda ()
-	    (setq-local whitespace-line-column 72)))
-(add-hook 'fortran-mode-hook
-	  (lambda ()
-	    (setq-local global-whitespace-mode 1)))
-(add-hook 'fortran-mode-hook 'turn-on-auto-fill)

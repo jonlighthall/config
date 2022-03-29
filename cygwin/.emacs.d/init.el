@@ -1,9 +1,11 @@
-;;; ------Settings for DOS and Cygwin-----------------------
+;; ------Settings for DOS and Cygwin-----------------------
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
 (package-initialize)
+
+(load "c:/Users/jlighthall/config/emacs_all.el")
 
 (setq exec-path '(
 		  "C:/cygwin/bin/"
@@ -62,24 +64,3 @@
        (global-font-lock-mode t)
        ;; Maximum colors
        (setq font-lock-maximum-decoration t)))
-
-;; FORTRAN column highlighting
-(custom-set-variables
- '(fortran-line-length 72)
- '(fortran-continuation-string "&"))
-
-(setq whitespace-style '(lines-tail))
-;;(setq whitespace-line-column 50)
-(add-hook 'fortran-mode-hook
-	  (lambda ()
-	    (setq-local whitespace-line-column 72)))
-(add-hook 'fortran-mode-hook
-	  (lambda ()
-	    (setq-local global-whitespace-mode 1)))
-(add-hook 'fortran-mode-hook 'turn-on-auto-fill)
-
-;(setq whitespace-style '(lines))
-;(setq whitespace-line-column 72)
-;(global-whitespace-mode 1)
-
-(load "c:/Users/jlighthall/config/emacs_all.el")

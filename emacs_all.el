@@ -65,4 +65,22 @@
   (add-to-list 'default-frame-alist '(background-color . "#FFF")) ; black
   )
 
+;; whitespace-mode settings
 (require 'whitespace)
+(setq whitespace-style '(lines))
+;;(setq whitespace-style '(lines-tail))
+(setq whitespace-line-column 97)
+(global-whitespace-mode 1)
+;;(add-hook 'prog-mode-hook 'whitespace-mode)
+
+;; FORTRAN column highlighting
+(custom-set-variables
+ '(fortran-line-length 72)
+ '(fortran-continuation-string "&"))
+(add-hook 'fortran-mode-hook 'turn-on-auto-fill)
+(add-hook 'fortran-mode-hook
+	  (lambda ()
+	    (setq-local whitespace-line-column 72)))
+(add-hook 'fortran-mode-hook
+	  (lambda ()
+	    (setq-local global-whitespace-mode 1)))
