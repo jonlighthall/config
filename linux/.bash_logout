@@ -17,7 +17,7 @@ do
 	if $VB; then 
 	    echo "found"
 	else
-	    echo -n "$prog still running"
+	    echo "$prog is running"
 	fi
 	for proc in $pid
 	do
