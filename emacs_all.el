@@ -80,7 +80,7 @@
 (add-hook 'fortran-mode-hook 'turn-on-auto-fill)
 (add-hook 'fortran-mode-hook
 	  (lambda ()
-	    (setq-local whitespace-line-column 72)))
+	    (setq-local whitespace-line-column 80)))
 (add-hook 'fortran-mode-hook
 	  (lambda ()
 	    (setq-local global-whitespace-mode 1)))
