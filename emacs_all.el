@@ -55,6 +55,7 @@
 
 (add-to-list 'auto-mode-alist '("\\.inc\\'" . fortran-mode))
 (add-to-list 'auto-mode-alist '("\\.cmn\\'" . fortran-mode))
+(add-to-list 'auto-mode-alist '("\\.inc\\'" . fortran-mode))
 
 ;; turn off starup message
 (defun display-startup-echo-area-message ()
