@@ -31,7 +31,8 @@
 (defun select-all-and-indent ()
   "mark whole buffer and indent region"
   (interactive)
-  (indent-region (point-min) (point-max)))
+  (indent-region (point-min) (point-max))
+  (delete-trailing-whitespace))
 (global-set-key (kbd "C-x j") 'select-all-and-indent)
 
 ;; start Git merge conflicts in smerge ediff
