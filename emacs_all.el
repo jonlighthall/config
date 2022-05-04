@@ -5,7 +5,9 @@
  ;; Split ediff window vertically
  '(ediff-split-window-function (quote split-window-horizontally))
  ;; Turn off welcome page
- '(inhibit-startup-screen t))
+ '(inhibit-startup-screen t)
+ '(fortran-line-length 72)
+ '(fortran-continuation-string "&"))
 
 ;; Turn on highlight matching parentheses
 (show-paren-mode 1)
@@ -66,6 +68,13 @@
 (when (not window-system)
   (add-to-list 'default-frame-alist '(foreground-color . "#000")) ; white
   (add-to-list 'default-frame-alist '(background-color . "#FFF")) ; black
+
+  (custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(minibuffer-prompt ((t (:background "#FFF"  :foreground "medium blue")))))
   )
 
 ;; whitespace-mode settings
@@ -76,9 +85,6 @@
 ;;(add-hook 'prog-mode-hook 'whitespace-mode)
 
 ;; FORTRAN column highlighting
-(custom-set-variables
- '(fortran-line-length 72)
- '(fortran-continuation-string "&"))
 (add-hook 'fortran-mode-hook 'turn-on-auto-fill)
 (add-hook 'fortran-mode-hook
 	  (lambda ()
