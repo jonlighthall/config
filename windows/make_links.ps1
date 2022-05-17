@@ -9,8 +9,8 @@
 ## Copy and link from OneDrive
 # PowerShell history
 
-$local = 'C:\Users\jonli\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt'
-$cloud = 'C:\Users\jonli\OneDrive\Documents\ConsoleHost_history.txt'
+$local = $("${env:AppData}\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt")
+$cloud = $("${env:OneDrive}\Documents\ConsoleHost_history.txt")
 
 echo "test local history..."
 if (Test-Path -Path $local) {
