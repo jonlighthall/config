@@ -19,7 +19,7 @@ export HISTSIZE=40000
 export HISTCONTROL=ignoredups
 export HISTIGNORE=$'bg:exit:ls:pwd:history'
 # Realtime history
-#shopt -s histappend
+shopt -s histappend
 PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 # Timestamp history
 HISTTIMEFORMAT="%F %T "
@@ -27,6 +27,7 @@ HISTTIMEFORMAT="%F %T "
 export EDITOR=emacs
 export GIT_EDITOR=emacs
 export SVN_EDITOR=emacs
+set -o emacs
 
 # Aliases 
 alias diffy='diff --suppress-common-lines -ByZ'
