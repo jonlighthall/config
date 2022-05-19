@@ -57,12 +57,6 @@ else
 fi
 TAB=${TAB::${#TAB}-${#profTAB}}
 
-# print welcome message
-if $VB; then
-    echo
-fi
-echo "${TAB}Welcome to" $HOSTNAME
-
 # print runtime duration
 if $VB; then
     echo -e "${TAB}$(basename $BASH_SOURCE) runtime...\c"
@@ -74,3 +68,9 @@ if $VB; then
     fi
     echo "${TAB}$(date)"
 fi
+
+# print welcome message
+if $VB; then
+    echo
+fi
+echo "${TAB}Welcome to" $HOSTNAME
