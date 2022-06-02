@@ -16,8 +16,9 @@ fi
 if [ $HOSTNAME = "DTWUSC001" ]; then
     export DISPLAY=localhost:0.0
 else
-    #export DISPLAY=$(grep nameserver /etc/resolv.conf | awk '{print $2}'):0.0
-    export DISPLAY=$(route.exe print | grep 0.0.0.0 | head -1 | awk '{print $4}'):0.0 # works on lappy   
+    IDX=1
+    #export DISPLAY=$(\grep nameserver /etc/resolv.conf | sed -n ''"${IDX}"' p' | awk '{print $2}'):0.0
+    export DISPLAY=$(route.exe print | \grep 0.0.0.0 | sed -n ''"${IDX}"' p' | awk '{print $4}'):0.0 # works on lappy   
 fi
 
 # X Window
