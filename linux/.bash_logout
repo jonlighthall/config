@@ -10,7 +10,7 @@ list="collatz_loop.exe \
 for prog in $list
 do
     if $VB; then echo -n "checking $prog... ";fi
-    pid=`ps ux | grep $prog | grep -v grep | awk '{print $2}'`
+    pid=`ps ux | \grep $prog | \grep -v grep | awk '{print $2}'`
     if [[ -z $pid ]]; then
 	if $VB; then echo "not found";fi
     else

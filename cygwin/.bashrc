@@ -97,7 +97,7 @@ else
     fi
 fi
 
-#kill -9 `ps -a |grep defunct`
+#kill -9 `ps -a | \grep defunct`
 
 # Cygwin
 #set CYGWIN=nodosfilewarning

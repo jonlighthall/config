@@ -70,7 +70,7 @@ echo "Top $NP processes on $(hostname -s):"
 ps aux --sort=-pcpu | head -n $((NP+1)) | sed 's_1111499164_jlight  _'
 echo
 echo "Last $NP log-ins on $(hostname -s):"
-last -wFa | grep light | head -n $NP
+last -wFa | \grep light | head -n $NP
 echo
 
 # print runtime duration
