@@ -2,10 +2,9 @@
 ;; The following settings are intended to be system independent
 
 (custom-set-variables
- ;; Split ediff window vertically
  '(ediff-split-window-function (quote split-window-horizontally))
- ;; Turn off welcome page
  '(inhibit-startup-screen t)
+ '(visible-bell t)
  '(fortran-line-length 72)
  '(fortran-continuation-string "&"))
 
@@ -21,7 +20,7 @@
       (concat  "%b - emacs@" (system-name)))
 
 ;; ------Custom keyboard shortcuts-------------------------
-(global-set-key (kbd "C-x e") 'ediff-buffers) 
+(global-set-key (kbd "C-x e") 'ediff-buffers)
 (global-set-key (kbd "C-x w") 'ediff-revision)
 (global-set-key (kbd "C-x d") 'ediff-current-file)
 (global-set-key (kbd "C-8")
@@ -71,11 +70,11 @@
   (add-to-list 'default-frame-alist '(background-color . "#FFF")) ; white
 
   (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(minibuffer-prompt ((t (:background "#FFF"  :foreground "medium blue")))))
+   ;; custom-set-faces was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(minibuffer-prompt ((t (:background "#FFF"  :foreground "medium blue")))))
   )
 
 ;; whitespace-mode settings
