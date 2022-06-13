@@ -7,8 +7,6 @@ if $VB; then
     TAB+=$profTAB
     echo "${TAB}running $BASH_SOURCE..."
     echo "${TAB}verbose bash printing is...$VB"
-#echo "${TAB}Loading settings for interactive shell..."
-#echo "${TAB}Using GitHub version .bash_profile"
     GOOD='\033[0;32m'
     BAD='\033[0;31m'
     NORMAL='\033[0m'
@@ -58,12 +56,6 @@ else
 fi
 TAB=${TAB::${#TAB}-${#profTAB}}
 
-# print welcome message
-if $VB; then
-    echo
-fi
-echo -e "Welcome to $(hostname -f)"
-
 echo
 NP=3
 echo "Top $NP processes on $(hostname -s):"
@@ -84,3 +76,9 @@ if $VB; then
     fi
     echo "${TAB}$(date)"
 fi
+
+# print welcome message
+if $VB; then
+    echo
+fi
+echo -e "Welcome to $(hostname -f)"
