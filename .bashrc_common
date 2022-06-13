@@ -30,6 +30,7 @@ export SVN_EDITOR=emacs
 set -o emacs
 
 # Aliases 
+alias close='source ~/.bash_logout;killall -v -u $USER$USERNAME; exit'
 alias diffy='diff --suppress-common-lines -ByZ'
 alias du0='duf --max-depth=0'
 alias du1='duf --max-depth=1'
