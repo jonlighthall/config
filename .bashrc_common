@@ -50,6 +50,7 @@ alias ls='ls --color'
 alias lt='ls -ltr' # sort by time
 alias ping='ping -c 5'
 alias pwd='pwd -L;pwd -P'
+alias pkill='pkill -9 -u ${USER}'
 
 # Fucntions
 function duf {	       
