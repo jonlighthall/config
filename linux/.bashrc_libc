@@ -1,0 +1,38 @@
+# .bashrc_libgc
+# Make sure fortran libraries are in the library path
+# Note: this file must use unix line endings (LF)!
+
+echo "running $BASH_SOURCE..."
+if [ $HOSTNAME = "snuffleupagus.nrlssc.navy.mil" ]; then
+# Find path
+    echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
+    FINDLIB=libc.so.6
+    echo -n "locating $FINDLIB..."
+    LIBPATH=$(locate $FINDLIB -l 1)
+    if [[ $? == 0 ]]; then
+	echo "found"
+	LIBPATH=$(echo $LIBPATH | sed 's|\(.*\)/.*|\1|')
+	echo "$FINDLIB path is $LIBPATH"
+# Path addition
+	ADDPATH=${LIBPATH}
+	if [[ ":$LD_LIBRARY_PATH" != *":${ADDPATH}"*  ]]; then
+	    if [ -d "${ADDPATH}" ] ; then
+		echo "${ADDPATH} not found in LD_LIBRARY_PATH"
+		echo -n "adding ${ADDPATH} to LD_LIBRARY_PATH..."
+		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ADDPATH
+		if [[ $? == 0 ]]; then
+		    echo "OK"
+		else
+		    echo "FAILED"
+		fi
+		echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
+	    else
+		echo "${ADDPATH} not found"
+	    fi
+	else
+	    echo "${ADDPATH} already in LD_LIBRARY_PATH"
+	fi
+    else
+	echo "not found"
+    fi
+fi
