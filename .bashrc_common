@@ -41,7 +41,8 @@ alias fb='ff | perl -lne "print if not -T"' # find binary
 alias fd='find ./ -not -path "*/.git/*" -type d' # find directory
 alias ff='find ./ -not -path "*/.git*/*" -type f' # find file
 alias fl='find ./ -maxdepth 1 -type l -exec ls --color -l {} \;' # find link
-alias grep='grep --color=auto -iIr --exclude-dir=".git"'
+alias grep='grep --color=auto'
+alias gr='grep --color=auto -iIr --exclude-dir=".git"'
 alias lS='ls -ltS'
 alias la='ls -la'
 alias lh='ls -ld .?*' # list hidden only
