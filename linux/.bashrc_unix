@@ -41,8 +41,24 @@ RETVAL=$?
 if [[ $RETVAL -eq 137 ]]; then
     echo -e "\n RETVAL = $RETVAL"
     echo " git branch timed out" 
-    echo -e " git branch removed from prompt\n"
     export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[0;32m\n$\[\e[0m\] ' # no git
+    echo -e " git branch removed from prompt\n"
+else
+    if $VB; then
+	echo -e "${GOOD}OK${NORMAL}"
+    fi
+fi
+
+if $VB; then
+    echo -e "${TAB}Testing color ls prompt...\c"
+fi
+timeout -s 9 1s find . -maxdepth 1 -type l -exec \ls -l --color=auto {} \; >/dev/null 2>&1
+RETVAL=$?
+if [[ $RETVAL -eq 137 ]]; then
+    echo -e "\n RETVAL = $RETVAL"
+    echo " ls --color=auto ${BAD}timed out${NORMAL}" 
+    unalias ls
+    echo -e " --color=auto removed from ls alias\n"
 else
     if $VB; then
 	echo -e "${GOOD}OK${NORMAL}"
