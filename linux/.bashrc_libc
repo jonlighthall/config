@@ -1,38 +1,58 @@
-# .bashrc_libgc
+# ~/config/linux/.bashrc_libgc
 # Make sure fortran libraries are in the library path
 # Note: this file must use unix line endings (LF)!
+if [ -z $VB ]; then
+    export VB=false
+else
+    if $VB; then
+	libTAB="   "
+	TAB+=$libTAB
+	echo "${TAB}running $BASH_SOURCE..."
+    fi
+fi
 
-echo "running $BASH_SOURCE..."
-if [ $HOSTNAME = "snuffleupagus.nrlssc.navy.mil" ]; then
+if [ $HOSTNAME = "" ]; then
 # Find path
-    echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
+    if $VB; then
+	echo "${TAB}LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
+    fi
     FINDLIB=libc.so.6
-    echo -n "locating $FINDLIB..."
+    echo -n "${TAB}locating $FINDLIB..."
     LIBPATH=$(locate $FINDLIB -l 1)
     if [[ $? == 0 ]]; then
 	echo "found"
 	LIBPATH=$(echo $LIBPATH | sed 's|\(.*\)/.*|\1|')
-	echo "$FINDLIB path is $LIBPATH"
+	echo "${TAB}$FINDLIB path is $LIBPATH"
 # Path addition
 	ADDPATH=${LIBPATH}
 	if [[ ":$LD_LIBRARY_PATH" != *":${ADDPATH}"*  ]]; then
 	    if [ -d "${ADDPATH}" ] ; then
-		echo "${ADDPATH} not found in LD_LIBRARY_PATH"
-		echo -n "adding ${ADDPATH} to LD_LIBRARY_PATH..."
-		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ADDPATH
-		if [[ $? == 0 ]]; then
-		    echo "OK"
-		else
-		    echo "FAILED"
+		if $VB; then
+		    echo "${TAB}${ADDPATH} not found in LD_LIBRARY_PATH"
+		    echo -n "${TAB}adding ${ADDPATH} to LD_LIBRARY_PATH..."
 		fi
-		echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
+		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ADDPATH
+		if $VB; then
+		    if [[ $? == 0 ]]; then
+			echo "OK"
+		    else
+			echo "FAILED"
+		    fi
+		    echo "${TAB}LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
+		fi
 	    else
-		echo "${ADDPATH} not found"
+		echo "${TAB}${ADDPATH} not found"
 	    fi
 	else
-	    echo "${ADDPATH} already in LD_LIBRARY_PATH"
+	    if $VB; then
+		echo "${TAB}${ADDPATH} already in LD_LIBRARY_PATH"
+	    fi
 	fi
     else
 	echo "not found"
     fi
+fi
+
+if $VB; then
+    TAB=${TAB::${#TAB}-${#libTAB}}
 fi
