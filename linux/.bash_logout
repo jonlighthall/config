@@ -31,7 +31,10 @@ do
 	done
     fi
 done
-
+echo
+echo "Top processes by ${USER}:"
+ps ux --sort=-pcpu | sed 's_1111499164_jlight  _'
+echo
 # say goodbye
 echo "goodbye, $(hostname -s)"
 
