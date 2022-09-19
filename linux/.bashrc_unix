@@ -1,6 +1,6 @@
 # ~/config/linux/.bashrc
 # Interactive shell settings for linux kernel systems
-# Note: this file must use unix line endings (LF)! 
+# Note: this file must use unix line endings (LF)!
 if [ -z $VB ]; then
     export VB=false
 else
@@ -40,7 +40,7 @@ timeout -s 9 1s git branch >/dev/null 2>&1
 RETVAL=$?
 if [[ $RETVAL -eq 137 ]]; then
     echo -e "\n RETVAL = $RETVAL"
-    echo " git branch timed out" 
+    echo " git branch timed out"
     export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[0;32m\n$\[\e[0m\] ' # no git
     echo -e " git branch removed from prompt\n"
 else
@@ -49,34 +49,68 @@ else
     fi
 fi
 
-if $VB; then
-    echo -e "${TAB}Testing color ls prompt...\c"
-fi
-timeout -s 9 1s find . -maxdepth 1 -type l -exec \ls -l --color=auto {} \; >/dev/null 2>&1
-RETVAL=$?
-if [[ $RETVAL -eq 137 ]]; then
-    echo -e "\n RETVAL = $RETVAL"
-    echo " ls --color=auto ${BAD}timed out${NORMAL}" 
-    unalias ls
-    echo -e " --color=auto removed from ls alias\n"
-else
-    if $VB; then
-	echo -e "${GOOD}OK${NORMAL}"
-    fi
-fi
+# if $VB; then
+#     echo -e "${TAB}Testing color ls prompt...\c"
+# fi
+# timeout -s 9 1s find . -maxdepth 1 -type l -exec \ls -l --color=auto {} \; >/dev/null 2>&1
+# RETVAL=$?
+# if [[ $RETVAL -eq 137 ]]; then
+#     echo -e "\n RETVAL = $RETVAL"
+#     echo " ls --color=auto ${BAD}timed out${NORMAL}"
+#     unalias ls
+#     echo -e " --color=auto removed from ls alias\n"
+# else
+#     if $VB; then
+# 	echo -e "${GOOD}OK${NORMAL}"
+#     fi
+# fi
 
 # Macros
 alias naut='nautilus --no-desktop --browser ./ &'
 alias term='gnome-terminal &'
 
 # PGI
-export PGI=/opt/pgi
-if [ -d $PGI ]; then
+export PGI_DIR=/opt/pgi
+if [ -d $PGI_DIR ]; then
     if $VB; then
 	echo "${TAB}adding PGI to path..."
     fi
-    export PATH=$PGI/linux86-64/19.10/bin:$PATH
-    export MANPATH=$MANPATH:$PGI/linux86-64/19.10/man
-    export LM_LICENSE_FILE=$LM_LICENSE_FILE:$PGI/license.dat;
+    if [[ ":$PATH" != *":${PGI_DIR}"*  ]]; then
+	export PATH=$PGI_DIR/linux86-64/19.10/bin:$PATH
+    else
+	if $VB; then
+	    echo "${TAB}${PGI_DIR} already in PATH"
+	fi
+    fi
+
+    if [[ ":$MANPATH" != *":${PGI_DIR}"*  ]]; then
+	export MANPATH=$MANPATH:$PGI_DIR/linux86-64/19.10/man
+    else
+	if $VB; then
+	    echo "${TAB}${PGI_DIR} already in MANPATH"
+	fi
+    fi
+    export LM_LICENSE_FILE=$LM_LICENSE_FILE:$PGI_DIR/license.dat;
+else
+    echo "${TAB}${PGI_DIR} not found"
 fi
+
+# NVIDIA HPC SDK
+export NV_DIR=/opt/nvidia/hpc_sdk/Linux_x86_64/22.3/compilers
+if [ -d $NV_DIR ]; then
+    echo "${TAB}adding NVIDIA to path..."
+    if [[ ":$MANPATH" != *":${NV_DIR}"*  ]]; then
+	MANPATH=$MANPATH:$NV_DIR/man; export MANPATH
+    else
+	echo "${TAB}${NV_DIR} already in MANPATH"
+    fi
+    if [[ ":$PATH" != *":${NV_DIR}"*  ]]; then
+	PATH=$NV_DIR/bin:$PATH; export PATH
+    else
+	echo "${TAB}${NV_DIR} already in PATH"
+    fi
+else
+    echo "${TAB}${NV_DIR} not found"
+fi
+
 TAB=${TAB::${#TAB}-${#fTAB}}
