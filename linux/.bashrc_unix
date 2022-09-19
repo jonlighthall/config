@@ -33,84 +33,100 @@ export PS1='\e[0;37m\A\[\e[1;32m\] \u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branc
 export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host
 export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[36m$(git_branch)\e[0;32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
 
-if $VB; then
-    echo -e "${TAB}Testing Git prompt...\c"
-fi
-timeout -s 9 1s git branch >/dev/null 2>&1
-RETVAL=$?
-if [[ $RETVAL -eq 137 ]]; then
-    echo -e "\n RETVAL = $RETVAL"
-    echo " git branch timed out"
-    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[0;32m\n$\[\e[0m\] ' # no git
-    echo -e " git branch removed from prompt\n"
-else
-    if $VB; then
-	echo -e "${GOOD}OK${NORMAL}"
-    fi
-fi
-
-# if $VB; then
-#     echo -e "${TAB}Testing color ls prompt...\c"
-# fi
-# timeout -s 9 1s find . -maxdepth 1 -type l -exec \ls -l --color=auto {} \; >/dev/null 2>&1
-# RETVAL=$?
-# if [[ $RETVAL -eq 137 ]]; then
-#     echo -e "\n RETVAL = $RETVAL"
-#     echo " ls --color=auto ${BAD}timed out${NORMAL}"
-#     unalias ls
-#     echo -e " --color=auto removed from ls alias\n"
-# else
-#     if $VB; then
-# 	echo -e "${GOOD}OK${NORMAL}"
-#     fi
-# fi
-
 # Macros
 alias naut='nautilus --no-desktop --browser ./ &'
 alias term='gnome-terminal &'
 
-# PGI
-export PGI_DIR=/opt/pgi
-if [ -d $PGI_DIR ]; then
-    if $VB; then
-	echo "${TAB}adding PGI to path..."
-    fi
-    if [[ ":$PATH" != *":${PGI_DIR}"*  ]]; then
-	export PATH=$PGI_DIR/linux86-64/19.10/bin:$PATH
-    else
-	if $VB; then
-	    echo "${TAB}${PGI_DIR} already in PATH"
-	fi
-    fi
+## option switches
+do_test_git=true
+do_test_color=false
+do_load_pgi=true
+do_load_nvidia=false
 
-    if [[ ":$MANPATH" != *":${PGI_DIR}"*  ]]; then
-	export MANPATH=$MANPATH:$PGI_DIR/linux86-64/19.10/man
+# Test Git
+if $do_test_git; then
+    if $VB; then
+	echo -e "${TAB}Testing Git prompt...\c"
+    fi
+    timeout -s 9 1s git branch >/dev/null 2>&1
+    RETVAL=$?
+    if [[ $RETVAL -eq 137 ]]; then
+	echo -e "\n RETVAL = $RETVAL"
+	echo " git branch timed out"
+	export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[0;32m\n$\[\e[0m\] ' # no git
+	echo -e " git branch removed from prompt\n"
     else
 	if $VB; then
-	    echo "${TAB}${PGI_DIR} already in MANPATH"
+	    echo -e "${GOOD}OK${NORMAL}"
 	fi
     fi
-    export LM_LICENSE_FILE=$LM_LICENSE_FILE:$PGI_DIR/license.dat;
-else
-    echo "${TAB}${PGI_DIR} not found"
+fi
+
+# Test ls color
+if $do_test_color; then
+    if $VB; then
+	echo -e "${TAB}Testing color ls prompt...\c"
+    fi
+    timeout -s 9 1s find . -maxdepth 1 -type l -exec \ls -l --color=auto {} \; >/dev/null 2>&1
+    RETVAL=$?
+    if [[ $RETVAL -eq 137 ]]; then
+	echo -e "\n RETVAL = $RETVAL"
+	echo " ls --color=auto ${BAD}timed out${NORMAL}"
+	unalias ls
+	echo -e " --color=auto removed from ls alias\n"
+    else
+	if $VB; then
+	    echo -e "${GOOD}OK${NORMAL}"
+	fi
+    fi
+fi
+
+# PGI
+if $do_load_pgi; then
+    export PGI_DIR=/opt/pgi
+    if [ -d $PGI_DIR ]; then
+	if $VB; then
+	    echo "${TAB}adding PGI to path..."
+	fi
+	if [[ ":$PATH" != *":${PGI_DIR}"*  ]]; then
+	    export PATH=$PGI_DIR/linux86-64/19.10/bin:$PATH
+	else
+	    if $VB; then
+		echo "${TAB}${PGI_DIR} already in PATH"
+	    fi
+	fi
+
+	if [[ ":$MANPATH" != *":${PGI_DIR}"*  ]]; then
+	    export MANPATH=$MANPATH:$PGI_DIR/linux86-64/19.10/man
+	else
+	    if $VB; then
+		echo "${TAB}${PGI_DIR} already in MANPATH"
+	    fi
+	fi
+	export LM_LICENSE_FILE=$LM_LICENSE_FILE:$PGI_DIR/license.dat;
+    else
+	echo "${TAB}${PGI_DIR} not found"
+    fi
 fi
 
 # NVIDIA HPC SDK
-export NV_DIR=/opt/nvidia/hpc_sdk/Linux_x86_64/22.3/compilers
-if [ -d $NV_DIR ]; then
-    echo "${TAB}adding NVIDIA to path..."
-    if [[ ":$MANPATH" != *":${NV_DIR}"*  ]]; then
-	MANPATH=$MANPATH:$NV_DIR/man; export MANPATH
+if $do_load_nvidia; then
+    export NV_DIR=/opt/nvidia/hpc_sdk/Linux_x86_64/22.3/compilers
+    if [ -d $NV_DIR ]; then
+	echo "${TAB}adding NVIDIA to path..."
+	if [[ ":$MANPATH" != *":${NV_DIR}"*  ]]; then
+	    MANPATH=$MANPATH:$NV_DIR/man; export MANPATH
+	else
+	    echo "${TAB}${NV_DIR} already in MANPATH"
+	fi
+	if [[ ":$PATH" != *":${NV_DIR}"*  ]]; then
+	    PATH=$NV_DIR/bin:$PATH; export PATH
+	else
+	    echo "${TAB}${NV_DIR} already in PATH"
+	fi
     else
-	echo "${TAB}${NV_DIR} already in MANPATH"
+	echo "${TAB}${NV_DIR} not found"
     fi
-    if [[ ":$PATH" != *":${NV_DIR}"*  ]]; then
-	PATH=$NV_DIR/bin:$PATH; export PATH
-    else
-	echo "${TAB}${NV_DIR} already in PATH"
-    fi
-else
-    echo "${TAB}${NV_DIR} not found"
 fi
 
 TAB=${TAB::${#TAB}-${#fTAB}}
