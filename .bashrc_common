@@ -31,6 +31,7 @@ set -o emacs
 
 # Aliases 
 alias close='source ~/.bash_logout;killall -v -u $USER$USERNAME; exit'
+alias d='diff --color=auto --suppress-common-lines -yiEZbwBs'
 alias diffy='diff --color=auto --suppress-common-lines -yiEZbwB'
 alias du0='duf --max-depth=0'
 alias du1='duf --max-depth=1'
@@ -40,17 +41,22 @@ alias en='emacs -nw'
 alias fb='ff | perl -lne "print if not -T"' # find binary
 alias fd='find ./ -not -path "*/.git/*" -type d' # find directory
 alias ff='find ./ -not -path "*/.git*/*" -type f' # find file
+alias ffi='ff -iname'
 alias fl='find ./ -maxdepth 1 -type l -exec ls --color -l {} \;' # find link
+alias g='grep -iIr --exclude-dir=".git"'
+alias gitd='git diff'
+alias gits='git status'
+alias gr='grep -iIr --exclude-dir=".git"'
 alias grep='grep --color=auto'
-alias gr='grep --color=auto -iIr --exclude-dir=".git"'
+alias hg='history | grep'
 alias lS='ls -ltS'
 alias la='ls -la'
 alias lh='ls -ld .?*' # list hidden only
 alias ls='ls --color'
 alias lt='ls -ltr' # sort by time
 alias ping='ping -c 5'
-alias pwd='pwd -L;pwd -P'
 alias pkill='pkill -9 -u ${USER}'
+alias pwd='pwd -L;pwd -P'
 
 # Fucntions
 function duf {	       
