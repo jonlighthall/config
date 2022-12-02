@@ -44,7 +44,9 @@ alias ff='find ./ -not -path "*/.git*/*" -type f' # find file
 alias ffi='ff -iname'
 alias fl='find ./ -maxdepth 1 -type l -exec ls --color -l {} \;' # find link
 alias g='grep -iIr --exclude-dir=".git"'
+alias gitb='git branch -va'
 alias gitd='git diff'
+alias gitr='git remote -v'
 alias gits='git status'
 alias gr='grep -iIr --exclude-dir=".git"'
 alias grep='grep --color=auto'
