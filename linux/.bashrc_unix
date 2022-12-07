@@ -39,7 +39,7 @@ alias term='gnome-terminal &'
 
 ## option switches
 do_test_git=true
-do_test_color=false
+do_test_color=true
 do_load_pgi=true
 do_load_nvidia=false
 
@@ -66,14 +66,14 @@ fi
 if $do_test_color; then
     if $VB; then
 	echo -e "${TAB}Testing color ls prompt...\c"
-    fi
-    timeout -s 9 1s find . -maxdepth 1 -type l -exec \ls -l --color=auto {} \; >/dev/null 2>&1
+    fi 
+    timeout -s 9 1s \ls -ld --color=auto ./*
     RETVAL=$?
     if [[ $RETVAL -eq 137 ]]; then
-	echo -e "\n RETVAL = $RETVAL"
-	echo -e " ls --color=auto ${BAD}timed out${NORMAL}"
+	echo -e "\n${TAB}RETVAL = $RETVAL"
+	echo -e "${TAB}ls --color=auto ${BAD}timed out${NORMAL}"
 	unalias ls
-	echo -e " --color=auto removed from ls alias\n"
+	echo -e "${TAB}--color=auto removed from ls alias"
     else
 	if $VB; then
 	    echo -e "${GOOD}OK${NORMAL}"
