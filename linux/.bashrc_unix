@@ -71,7 +71,7 @@ if $do_test_color; then
     RETVAL=$?
     if [[ $RETVAL -eq 137 ]]; then
 	echo -e "\n RETVAL = $RETVAL"
-	echo " ls --color=auto ${BAD}timed out${NORMAL}"
+	echo -e " ls --color=auto ${BAD}timed out${NORMAL}"
 	unalias ls
 	echo -e " --color=auto removed from ls alias\n"
     else
