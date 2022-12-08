@@ -40,7 +40,7 @@ alias term='gnome-terminal &'
 ## option switches
 do_test_git=true
 do_test_color=true
-do_load_pgi=true
+do_load_pgi=false
 do_load_nvidia=false
 
 # Test Git
