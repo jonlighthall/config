@@ -67,7 +67,7 @@ if $do_test_color; then
     if $VB; then
 	echo -e "${TAB}Testing color ls prompt...\c"
     fi 
-    timeout -s 9 1s \ls -ld --color=auto ./*
+    timeout -s 9 1s \ls -ld --color=auto ./* >/dev/null 2>&1
     RETVAL=$?
     if [[ $RETVAL -eq 137 ]]; then
 	echo -e "\n${TAB}RETVAL = $RETVAL"
