@@ -10,6 +10,7 @@ else
 	GOOD='\033[0;32m'
 	BAD='\033[0;31m'
 	NORMAL='\033[0m'
+	BOLD='\033[4;31m'
     fi
 fi
 # one of the following asignments should work
@@ -74,14 +75,14 @@ else
 	    fi
 	else
 	    if $VB; then
-		echo "${TAB}$PROG not found"
+		echo -e "${TAB}$PROG ${BOLD}not found${NORMAL}"
 		echo "${TAB}unaliasing $PROG..."
 	    fi
 	    unalias vcx 2>/dev/null
 	fi
     else	
 	if $VB; then
-	    echo "${TAB}$DIR not found"
+	    echo -e "${TAB}$DIR ${BOLD}not found${NORMAL}"
 	    echo "${TAB}unaliasing $PROG..."
 	fi
 	unalias vcx 2>/dev/null
@@ -122,14 +123,14 @@ else
 	    fi
 	else
 	    if $VB; then
-		echo "${TAB}$PROG not found"
+		echo -e "${TAB}$PROG ${BOLD}not found${NORMAL}"
 		echo "${TAB}unaliasing $PROG..."
 	    fi
 	    unalias xming 2>/dev/null
 	fi
     else
 	if $VB; then
-	    echo "${TAB}$DIR not found"
+	    echo -e "${TAB}$DIR ${BOLD}not found${NORMAL}"
 	    echo "${TAB}unaliasing $PROG..."
 	fi
 	unalias xming 2>/dev/null

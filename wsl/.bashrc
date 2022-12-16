@@ -11,6 +11,7 @@ else
 	GOOD='\033[0;32m'
 	BAD='\033[0;31m'
 	NORMAL='\033[0m'
+	BOLD='\033[4;31m'
     fi
 fi
 
@@ -27,7 +28,7 @@ do
 	LIST+=" $FILE"
     else
 	if $VB; then
-	    echo "${TAB}$FILE not found"
+	    echo -e "${TAB}$FILE ${BOLD}not found${NORMAL}"
 	fi
     fi
 done
@@ -47,7 +48,7 @@ do
 	    echo -e "${TAB}$FILE ${BAD}FAIL${NORMAL}"
 	fi
     else
-	echo "${TAB}$FILE not found"
+	echo -e "${TAB}$FILE ${BOLD}not found${NORMAL}"
     fi
 done
 
