@@ -26,7 +26,8 @@
 ;; ------Frame appearance and behavior---------------------
 (when window-system-version
   ;; Set frame position
-  (setq initial-frame-alist '((top . 40) (left . 0))) ; moves window to upper left corner
+  ; intended to move window to upper left corner
+  (setq initial-frame-alist '((top . 197) (left . 1))) ;; Windows 11 WSLg
 
   ;; Set frame size
   (set-frame-size (selected-frame) 178 49);; (columns,rows)
