@@ -66,7 +66,7 @@
 ;; set no-window (terminal) colors
 (when (not window-system)
   ;;(setq frame-background-mode 'light)
-  (add-to-list 'default-frame-alist '(foreground-color . "black"))
+  (add-to-list 'default-frame-alist '(foreground-color . "#000")) ; black
   (add-to-list 'default-frame-alist '(background-color . "#FFF")) ; white
 
   (custom-set-faces
