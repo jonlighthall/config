@@ -5,7 +5,7 @@
  '(ediff-split-window-function (quote split-window-horizontally))
  '(inhibit-startup-screen t)
  '(visible-bell t)
- '(fortran-line-length 72)
+ '(fortran-line-length 80)
  '(fortran-continuation-string "&"))
 
 ;; Turn on highlight matching parentheses
@@ -35,6 +35,13 @@
   (indent-region (point-min) (point-max))
   (delete-trailing-whitespace))
 (global-set-key (kbd "C-x j") 'select-all-and-indent)
+
+(defun select-all-and-untabify ()
+  "mark whole buffer and untabify"
+  (interactive)
+  (untabify (point-min) (point-max))
+  (delete-trailing-whitespace))
+(global-set-key (kbd "C-x t") 'select-all-and-untabify)
 
 ;; start Git merge conflicts in smerge ediff
 (defun vc-git-find-file-hook ()
@@ -80,9 +87,13 @@
 ;; whitespace-mode settings
 (require 'whitespace)
 (setq whitespace-style '(face lines-tail))
-(setq whitespace-line-column 97)
+(setq whitespace-line-column 80)
+(setq-default fill-column 80)
 (global-whitespace-mode 1)
 ;;(add-hook 'prog-mode-hook 'whitespace-mode)
+
+;; add bullets to fill
+(setq paragraph-start "\f\\|[ \t]*$\\|[ \t]*[-+*] ")
 
 ;; FORTRAN column highlighting
 (add-hook 'fortran-mode-hook 'turn-on-auto-fill)
