@@ -8,10 +8,10 @@ else
 	fTAB="   "
 	TAB+=$fTAB
 	echo "${TAB}running $BASH_SOURCE..."
-	GOOD='\033[0;32m'
-	BAD='\033[0;31m'
-	NORMAL='\033[0m'
-	BOLD='\033[4;31m'
+	  GOOD='\033[0;32m' # green	
+	   BAD='\033[0;31m' # red
+	NORMAL='\033[0m'    # reset
+	    UL='\033[4m'    # underline
     fi
 fi
 
@@ -28,7 +28,7 @@ do
 	LIST+=" $FILE"
     else
 	if $VB; then
-	    echo -e "${TAB}$FILE ${BOLD}not found${NORMAL}"
+	    echo -e "${TAB}$FILE ${UL}not found${NORMAL}"
 	fi
     fi
 done
@@ -48,7 +48,7 @@ do
 	    echo -e "${TAB}$FILE ${BAD}FAIL${NORMAL}"
 	fi
     else
-	echo -e "${TAB}$FILE ${BOLD}not found${NORMAL}"
+	echo -e "${TAB}$FILE ${UL}not found${NORMAL}"
     fi
 done
 

@@ -1,15 +1,15 @@
 # User-dependent .bash_profile
 # Note: this file must use unix line endings (LF)! 
 # Verbose bash prints?
-export VB=false
+export VB=true
 if $VB; then
     TAB=""
     profTAB=""
     TAB+=$profTAB
     echo "${TAB}running $BASH_SOURCE..."
     echo "${TAB}verbose bash printing is...$VB"
-    GOOD='\033[0;32m'
-    BAD='\033[0;31m'
+      GOOD='\033[0;32m'
+       BAD='\033[0;31m'
     NORMAL='\033[0m'
 fi
 # save login timestamp to history

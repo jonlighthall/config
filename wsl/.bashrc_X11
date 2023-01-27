@@ -7,10 +7,10 @@ else
 	fTAB="   "
 	TAB+=$fTAB
 	echo "${TAB}running $BASH_SOURCE..."
-	GOOD='\033[0;32m'
-	BAD='\033[0;31m'
-	NORMAL='\033[0m'
-	BOLD='\033[4;31m'
+	  GOOD='\033[0;32m' # green	
+	   BAD='\033[0;31m' # red
+	NORMAL='\033[0m'    # reset
+	    UL='\033[4m'    # underline
     fi
 fi
 # one of the following asignments should work
@@ -75,14 +75,14 @@ else
 	    fi
 	else
 	    if $VB; then
-		echo -e "${TAB}$PROG ${BOLD}not found${NORMAL}"
+		echo -e "${TAB}$PROG ${UL}not found${NORMAL}"
 		echo "${TAB}unaliasing $PROG..."
 	    fi
 	    unalias vcx 2>/dev/null
 	fi
     else	
 	if $VB; then
-	    echo -e "${TAB}$DIR ${BOLD}not found${NORMAL}"
+	    echo -e "${TAB}$DIR ${UL}not found${NORMAL}"
 	    echo "${TAB}unaliasing $PROG..."
 	fi
 	unalias vcx 2>/dev/null
@@ -123,14 +123,14 @@ else
 	    fi
 	else
 	    if $VB; then
-		echo -e "${TAB}$PROG ${BOLD}not found${NORMAL}"
+		echo -e "${TAB}$PROG ${UL}not found${NORMAL}"
 		echo "${TAB}unaliasing $PROG..."
 	    fi
 	    unalias xming 2>/dev/null
 	fi
     else
 	if $VB; then
-	    echo -e "${TAB}$DIR ${BOLD}not found${NORMAL}"
+	    echo -e "${TAB}$DIR ${UL}not found${NORMAL}"
 	    echo "${TAB}unaliasing $PROG..."
 	fi
 	unalias xming 2>/dev/null
