@@ -1,11 +1,15 @@
 ;; ------Universal Emacs settings--------------------------
 ;; The following settings are intended to be system independent
 
+;; Set line width for fortran and other
+(set 'fcols 72)
+(set 'ncols 97)
+
 (custom-set-variables
  '(ediff-split-window-function (quote split-window-horizontally))
  '(inhibit-startup-screen t)
  '(visible-bell t)
- '(fortran-line-length 80)
+ '(fortran-line-length fcols)
  '(fortran-continuation-string "&"))
 
 ;; Turn on highlight matching parentheses
@@ -87,8 +91,8 @@
 ;; whitespace-mode settings
 (require 'whitespace)
 (setq whitespace-style '(face lines-tail))
-(setq whitespace-line-column 80)
-(setq-default fill-column 80)
+(setq whitespace-line-column ncols)
+(setq-default fill-column ncols)
 (global-whitespace-mode 1)
 ;;(add-hook 'prog-mode-hook 'whitespace-mode)
 
@@ -99,7 +103,7 @@
 (add-hook 'fortran-mode-hook 'turn-on-auto-fill)
 (add-hook 'fortran-mode-hook
 	  (lambda ()
-	    (setq-local whitespace-line-column 80)))
+	    (setq-local whitespace-line-column fcols)))
 (add-hook 'fortran-mode-hook
 	  (lambda ()
 	    (setq-local global-whitespace-mode 1)))
