@@ -47,18 +47,16 @@
   (delete-trailing-whitespace))
 (global-set-key (kbd "C-x t") 'select-all-and-untabify)
 
+;; sort .bash_history file by time stamp
 (defun sort-bash-history ()
   "sort bash history"
   (interactive)
-  (goto-char 1)
   (delete-trailing-whitespace)
-  (goto-char 1)
-  (flush-lines "^ *$" (point-min) (point-max))
+  (flush-lines "^$" (point-min) (point-max))
   (goto-char 1)
   (replace-regexp "#+[0-9]\\{10\\}.*" "\\&$$$")
   (goto-char 1)
   (replace-string "$$$\n" "$$$")
-  (goto-char 1)
   (sort-lines nil (point-min) (point-max))
   (goto-char 1)
   (replace-string "$$$" "\n")
