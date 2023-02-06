@@ -47,6 +47,23 @@
   (delete-trailing-whitespace))
 (global-set-key (kbd "C-x t") 'select-all-and-untabify)
 
+(defun sort-bash-history ()
+  "sort bash history"
+  (interactive)
+  (goto-char 1)
+  (delete-trailing-whitespace)
+  (goto-char 1)
+  (flush-lines "^ *$" (point-min) (point-max))
+  (goto-char 1)
+;  (mark-whole-buffer)
+  (replace-regexp "#+[0-9]\\{10\\}.*" "\\&$$$")
+  (goto-char 1)
+  (replace-string "$$$\n" "$$$")
+  (deactivate-mark)
+  (goto-char 1)
+  )
+(global-set-key (kbd "C-x y") 'sort-bash-history)
+
 ;; start Git merge conflicts in smerge ediff
 (defun vc-git-find-file-hook ()
   (when (save-excursion
