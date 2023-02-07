@@ -82,7 +82,13 @@
 
   ;; clean up quotes
   (goto-char 1)
-  (replace-regexp "^[^'\n]*'+[^'\n]*$" "\\&;' # unmatched apostrophe") 
+  (replace-regexp "^[^\"\n]*\"+[^\"\n]*$" "\\&;\" # unmatched quote") 
+
+  (goto-char 1)
+  (replace-regexp "^[^'\n\"\\]*'+[^'\n\"]*$" "\\&;' # unmatched apostrophe") 
+
+  (goto-char 1)
+  (replace-regexp "^[^`\n]*`+[^`\n]*$" "\\&;` # unmatched grave") 
 
 
   (deactivate-mark)
