@@ -54,15 +54,37 @@
 (defun sort-bash-history ()
   "sort bash history"
   (interactive)
+  ;; clean up white space
   (delete-trailing-whitespace)
-  (flush-lines "^$" (point-min) (point-max))
+  (flush-lines "^$" (point-min) (point-max)) ; delete all empty lines
+
+  ;; collapse all lines to their corresponding timestamps
   (goto-char 1)
-  (replace-regexp "#+[0-9]\\{10\\}.*" "\\&$$$")
+  (replace-regexp "^#+[0-9]\\{10\\}.*$" "\\&$$$") ; find time stamp lines
   (goto-char 1)
-  (replace-string "$$$\n" "$$$")
+  (replace-string "$$$\n" "$$$") ; merge commands with time stamps
+  (goto-char 1)
+  (replace-regexp "\n[^#].*$" "@@@\\&") ; find all orphaned lines
+  (goto-char 1)
+  (replace-string "@@@\n" ";") ; merge orphaned lines
+  (goto-char 1)
+  (replace-regexp "^#+[^0-9].*$" "@@@\\&")
+  (goto-char 1)
+  (replace-string "\n@@@" ";")
   (sort-lines nil (point-min) (point-max))
+
+  (if (boundp 'delete-duplicate-lines)
+  delete-duplicate-lines
+  (print "delete-duplicate-lines not found"))
+
   (goto-char 1)
   (replace-string "$$$" "\n")
+
+  ;; clean up quotes
+  (goto-char 1)
+  (replace-regexp "^[^'\n]*'+[^'\n]*$" "\\&;' # unmatched apostrophe") 
+
+
   (deactivate-mark)
   (goto-char 1)
   )
