@@ -74,8 +74,8 @@
   (sort-lines nil (point-min) (point-max))
 
   (if (boundp 'delete-duplicate-lines)
-  delete-duplicate-lines
-  (print "delete-duplicate-lines not found"))
+      delete-duplicate-lines
+    (print "delete-duplicate-lines not found"))
 
   (goto-char 1)
   (replace-string "$$$" "\n") ; unmerge commands with time stamps
@@ -85,18 +85,16 @@
   (replace-regexp "^[^\n\"]*\"[^\n\"]*$" "\\&;\" # unmatched quote")
 
   (goto-char 1)
-  (replace-regexp "^[^\n`]*`+[^\n`]*$" "\\&;` # unmatched grave") 
+  (replace-regexp "^[^\n`]*`[^\n`]*$" "\\&;` # unmatched grave")
 
   (goto-char 1)
-;;(replace-regexp "^[^\n'\"\\]*'+[^\n'\"]*$" "\\&;' # unmatched apostrophe")
-;;(replace-regexp "^[^\n'\"`]*'+[^\n'\"`]*$" "\\&;' # unmatched apostrophe")
-;;(replace-regexp "^[^']*'?[^']*$" "\\&;' # unmatched apostrophe")
+;;(replace-regexp "^[^\n'\"\\]*'[^\n'\"]*$" "\\&;' # unmatched apostrophe")
+  (replace-regexp "^[^\n'\"`]*'[^\n'\"`]*$" "\\&;' # unmatched apostrophe")
 ;;(replace-regexp "(?!^.*\".*'+.*\".*$)(?!^.*`.*'+.*`.*$)^[^\n']*(?<!\\)'[^\n']*$" "\\&;' # unmatched apostrophe")
-  (replace-regexp "^[^\n'\"`]*'[^\n'\"`]*$" "\\&;' # unmatched apostrophe") ; working
 
   (deactivate-mark)
   (goto-char 1)
-  (prin1 "done sorting history") 
+  (prin1 "done sorting history")
   )
 (global-set-key (kbd "C-x y") 'sort-bash-history)
 
