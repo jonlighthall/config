@@ -5,6 +5,12 @@
 	helper = cache --timeout 172800
 	helper = store --file ~/.git-credentials	
 [core]
-	editor = ~/Downloads/emacs-24.5/src/emacs -nw
+	autocrlf = input
+	fileMode = false
+	editor = emacs -nw
 [color]
 	ui = true
+[push]
+	default = matching
+[pull]
+	rebase = true
