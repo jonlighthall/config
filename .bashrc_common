@@ -24,7 +24,7 @@ PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 # Timestamp history
 HISTTIMEFORMAT="%F %T "
 # Editors
-export EDITOR=emacs
+export EDITOR='emacs -nw'
 export GIT_EDITOR=emacs
 export SVN_EDITOR=emacs
 set -o emacs
