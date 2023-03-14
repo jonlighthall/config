@@ -85,11 +85,11 @@
   (replace-regexp "^[^\n\"]*\"[^\n\"]*$" "\\&;\" # unmatched quote")
 
   (goto-char 1)
-  (replace-regexp "^[^`\n]*`+[^`\n]*$" "\\&;` # unmatched grave") 
+  (replace-regexp "^[^\n`]*`+[^\n`]*$" "\\&;` # unmatched grave") 
 
   (goto-char 1)
-;;(replace-regexp "^[^'\n\"\\]*'+[^'\n\"]*$" "\\&;' # unmatched apostrophe")
-;;(replace-regexp "^[^'\n\"`]*'+[^'\n\"`]*$" "\\&;' # unmatched apostrophe")
+;;(replace-regexp "^[^\n'\"\\]*'+[^\n'\"]*$" "\\&;' # unmatched apostrophe")
+;;(replace-regexp "^[^\n'\"`]*'+[^\n'\"`]*$" "\\&;' # unmatched apostrophe")
 ;;(replace-regexp "^[^']*'?[^']*$" "\\&;' # unmatched apostrophe")
 ;;(replace-regexp "(?!^.*\".*'+.*\".*$)(?!^.*`.*'+.*`.*$)^[^\n']*(?<!\\)'[^\n']*$" "\\&;' # unmatched apostrophe")
   (replace-regexp "^[^\n'\"`]*'[^\n'\"`]*$" "\\&;' # unmatched apostrophe") ; working
