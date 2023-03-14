@@ -13,8 +13,8 @@ fi
 
 # Settings
 # Commands to save
-export HISTFILESIZE=100000
-export HISTSIZE=40000
+export HISTFILESIZE=
+export HISTSIZE=
 # Don't put duplicate lines in the history
 export HISTCONTROL=ignoredups
 export HISTIGNORE=$'bg:exit:ls:pwd:history'
