@@ -71,14 +71,14 @@
   (replace-regexp "^#+[^0-9].*$" "@@@\\&")
   (goto-char 1)
   (replace-string "\n@@@" ";")
+
+  ;; uniquify and sort
+  (delete-duplicate-lines (point-min) (point-max))
   (sort-lines nil (point-min) (point-max))
 
-  (if (boundp 'delete-duplicate-lines)
-      delete-duplicate-lines
-    (print "delete-duplicate-lines not found"))
-
+  ;; unmerge commands with time stamps
   (goto-char 1)
-  (replace-string "$$$" "\n") ; unmerge commands with time stamps
+  (replace-string "$$$" "\n")
 
   ;; clean up quotes
   (goto-char 1)
