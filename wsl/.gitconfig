@@ -4,10 +4,10 @@
 [credential]
 	helper = cache --timeout 172800
 	helper = store --file ~/.git-credentials	
-[push]
-	default = simple
 [core]
-	fileMode = false
 	autocrlf = input
+	fileMode = false
 [color]
 	ui = true
+[push]
+	default = simple
