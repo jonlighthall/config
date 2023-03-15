@@ -50,7 +50,7 @@
   (delete-trailing-whitespace))
 (global-set-key (kbd "C-x t") 'select-all-and-untabify)
 
-;; sort .bash_history file by time stamp
+;; sort .bash_history file by timestamp
 (defun sort-bash-history ()
   "sort bash history"
   (interactive)
@@ -60,11 +60,11 @@
 
   ;; collapse all lines to their corresponding timestamps
   (goto-char 1)
-  (replace-regexp "^#+[0-9]\\{10\\}.*$" "\\&$$$") ; find time stamp lines
+  (replace-regexp "^#+[0-9]\\{10\\}.*$" "\\&$$$") ; find timestamp lines
   (goto-char 1)
-  (replace-regexp "\\$\\$\\$\n#" "\n#") ; ignore repeated time stamps
+  (replace-regexp "\\$\\$\\$\n#" "\n#") ; ignore repeated timestamps
   (goto-char 1)
-  (replace-regexp "\\$\\$\\$\n" "$$$") ; merge commands with time stamps
+  (replace-regexp "\\$\\$\\$\n" "$$$") ; merge commands with timestamps
   (goto-char 1)
   (replace-regexp "\n[^#].*$" "@@@\\&") ; find all orphaned lines
   (goto-char 1)
@@ -78,7 +78,7 @@
   (delete-duplicate-lines (point-min) (point-max))
   (sort-lines nil (point-min) (point-max))
 
-  ;; unmerge commands with time stamps
+  ;; unmerge commands with timestamps
   (goto-char 1)
   (replace-regexp "\\$\\$\\$" "\n")
 
