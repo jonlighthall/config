@@ -62,6 +62,8 @@
   (goto-char 1)
   (replace-regexp "^#+[0-9]\\{10\\}.*$" "\\&$$$") ; find time stamp lines
   (goto-char 1)
+  (replace-regexp "\\$\\$\\$\n#" "\n#") ; ignore repeated time stamps
+  (goto-char 1)
   (replace-regexp "\\$\\$\\$\n" "$$$") ; merge commands with time stamps
   (goto-char 1)
   (replace-regexp "\n[^#].*$" "@@@\\&") ; find all orphaned lines
