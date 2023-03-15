@@ -10,7 +10,7 @@ echo "------ Start Linking Repo Files-------"
 echo "--------------------------------------"
 
 # list of files to be linked
-for my_link in .bash_profile .emacs.d .gitconfig .rootrc
+for my_link in .bash_profile .emacs.d .gitconfig .rootrc .inputrc
 do
     echo -n "source file $SRCDIR/${my_link}... "
     if [ -e $SRCDIR/${my_link} ]; then
@@ -39,5 +39,3 @@ done
 echo "--------------------------------------"
 echo "--------- Done Making Links ----------"
 echo "--------------------------------------"
-
-echo "set bell-style none" | sudo tee -a /etc/inputrc

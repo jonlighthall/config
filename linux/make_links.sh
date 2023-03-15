@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+TAB="   "
+
+# set source and target directories
 SRCDIR=$HOME/config/linux
 TGTDIR=$HOME
 
@@ -6,45 +9,32 @@ echo "--------------------------------------"
 echo "------ Start Linking Repo Files-------"
 echo "--------------------------------------"
 
-## Links from config repo
-for my_link in .bash_profile .bash_logout .emacs .gitconfig
+# list of files to be linked
+for my_link in .bash_profile .bash_logout .emacs .gitconfig .inputrc
 do
-    echo
-    echo -n "$TGTDIR/${my_link} "
-    if [ -L $TGTDIR/${my_link} ] ; then
-	echo "is already a link"
-	echo -n " The link is... "
+    echo -n "source file $SRCDIR/${my_link}... "
+    if [ -e $SRCDIR/${my_link} ]; then
+	echo "exists "
+	echo -n "${TAB}link $TGTDIR/${my_link}... "
 	if [ -e $TGTDIR/${my_link} ] ; then
-	    echo "valid"
-	else
-	    echo "broken"
-	fi
-    elif [ -e $TGTDIR/${my_link} ] ; then
-	echo "exists"
-	    echo -n " It is... "
-	if [ -f $TGTDIR/${my_link} ]; then
-	    echo "a regular file"
-	else
-	    echo -n "not a regular file, but... "
-	    if [ -d $TGTDIR/${my_link} ]; then
-		echo "a directory"
+	    echo -n "exists and "
+	    if [[ $SRCDIR/${my_link} -ef $TGTDIR/${my_link} ]]; then
+		echo "already points to ${my_link}"
+		echo "${TAB}skipping..."
+		continue
 	    else
-		echo "not a directory"
+		echo -n "will be backed up..."
+		mv -v $TGTDIR/${my_link} $TGTDIR/${my_link}_$(date +'%Y-%m-%d-t%H%M')
 	    fi
-	fi	
+	else
+	    echo "does not exist"
+	fi
+	echo -n "${TAB}making link... "
+	ln -sv $SRCDIR/${my_link} $TGTDIR/$my_link
     else
 	echo "does not exist"
     fi
-
-    # first, backup existing copy
-    if [ -f $TGTDIR/${my_link} ] || [ -L $TGTDIR/${my_link} ] || [ -d $TGTDIR/${my_link} ]; then
-	echo " Backing up ${my_link}..."
-	mv -v $TGTDIR/${my_link} $TGTDIR/${my_link}_$(date +'%Y-%m-%d-t%H%M')
-    fi
-
-    # then link
-    echo "Making ${my_link} link..."
-    ln -vs ${SRCDIR}/${my_link} $TGTDIR/${my_link}
+    echo
 done
 echo "--------------------------------------"
 echo "--------- Done Making Links ----------"
