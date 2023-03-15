@@ -39,7 +39,7 @@
   (indent-region (point-min) (point-max))
   (delete-trailing-whitespace)
   (goto-char 1)
-  (delete-blank lines) ;; should only delete repeated blanks
+  (delete-blank-lines) ;; should only delete repeated blanks
   )
 (global-set-key (kbd "C-x j") 'select-all-and-indent)
 
