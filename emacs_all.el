@@ -62,15 +62,15 @@
   (goto-char 1)
   (replace-regexp "^#+[0-9]\\{10\\}.*$" "\\&$$$") ; find time stamp lines
   (goto-char 1)
-  (replace-string "$$$\n" "$$$") ; merge commands with time stamps
+  (replace-regexp "\\$\\$\\$\n" "$$$") ; merge commands with time stamps
   (goto-char 1)
   (replace-regexp "\n[^#].*$" "@@@\\&") ; find all orphaned lines
   (goto-char 1)
-  (replace-string "@@@\n" ";") ; merge orphaned lines
+  (replace-regexp "@@@\n" ";") ; merge orphaned lines
   (goto-char 1)
   (replace-regexp "^#+[^0-9].*$" "@@@\\&")
   (goto-char 1)
-  (replace-string "\n@@@" ";")
+  (replace-regexp "\n@@@" ";")
 
   ;; uniquify and sort
   (delete-duplicate-lines (point-min) (point-max))
@@ -78,7 +78,7 @@
 
   ;; unmerge commands with time stamps
   (goto-char 1)
-  (replace-string "$$$" "\n")
+  (replace-regexp "\\$\\$\\$" "\n")
 
   ;; clean up quotes
   (goto-char 1)
