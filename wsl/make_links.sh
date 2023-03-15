@@ -10,7 +10,7 @@ echo "------ Start Linking Repo Files-------"
 echo "--------------------------------------"
 
 # list of files to be linked
-for my_link in .bash_profile .emacs.d .gitconfig .rootrc .inputrc
+for my_link in .bash_profile .emacs.d .gitconfig .rootrc .inputrc .bash_logout
 do
     echo -n "source file $SRCDIR/${my_link}... "
     if [ -e $SRCDIR/${my_link} ]; then

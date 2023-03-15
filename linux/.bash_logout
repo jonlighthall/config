@@ -1,8 +1,6 @@
 # .bash_logout
 #echo Using GitHub version .bash_logout
 
-# User-specific environment and logout programs
-
 # kill programs
 list="collatz_loop.exe \
 	interrupt.exe \
@@ -32,9 +30,12 @@ do
     fi
 done
 echo
+
+# show top processes
 echo "Top processes by ${USER}:"
 ps ux --sort=-pcpu | sed 's_1111499164_jlight  _'
 echo
+
 # say goodbye
 echo "goodbye, $(hostname -s)"
 
