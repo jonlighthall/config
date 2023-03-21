@@ -65,31 +65,38 @@
   (replace-regexp "\\$\\$\\$\n#" "\n#") ; ignore repeated timestamps
   (goto-char 1)
   (replace-regexp "\\$\\$\\$\n" "$$$") ; merge commands with timestamps
+
+  ;; find first timestamp
   (goto-char 1)
+  (search-forward-regexp "^#[0-9]\\{10\\}" nil t)
+  (move-beginning-of-line 1)
+  (push-mark)
+
+  (goto-char (mark-marker))
   (replace-regexp "\n[^#].*$" "@@@\\&") ; find all orphaned lines
-  (goto-char 1)
+  (goto-char (mark-marker))
   (replace-regexp "@@@\n" ";") ; merge orphaned lines
-  (goto-char 1)
+  (goto-char (mark-marker))
   (replace-regexp "^#+[^0-9].*$" "@@@\\&")
-  (goto-char 1)
+  (goto-char (mark-marker))
   (replace-regexp "\n@@@" ";")
 
   ;; uniquify and sort
-  (delete-duplicate-lines (point-min) (point-max))
-  (sort-lines nil (point-min) (point-max))
+  (delete-duplicate-lines (mark-marker) (point-max))
+  (sort-lines nil (mark-marker) (point-max))
 
   ;; unmerge commands with timestamps
-  (goto-char 1)
+  (goto-char (mark-marker))
   (replace-regexp "\\$\\$\\$" "\n")
 
   ;; clean up quotes
-  (goto-char 1)
+  (goto-char (mark-marker))
   (replace-regexp "^[^\n\"]*\"[^\n\"]*$" "\\&;\" # unmatched quote")
 
-  (goto-char 1)
+  (goto-char (mark-marker))
   (replace-regexp "^[^\n`]*`[^\n`]*$" "\\&;` # unmatched grave")
 
-  (goto-char 1)
+  (goto-char (mark-marker))
 ;;(replace-regexp "^[^\n'\"\\]*'[^\n'\"]*$" "\\&;' # unmatched apostrophe")
   (replace-regexp "^[^\n'\"`]*'[^\n'\"`]*$" "\\&;' # unmatched apostrophe")
 ;;(replace-regexp "(?!^.*\".*'+.*\".*$)(?!^.*`.*'+.*`.*$)^[^\n']*(?<!\\)'[^\n']*$" "\\&;' # unmatched apostrophe")
