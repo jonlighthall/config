@@ -77,9 +77,9 @@
   (goto-char (mark-marker))
   (replace-regexp "@@@\n" ";") ; merge orphaned lines
   (goto-char (mark-marker))
-  (replace-regexp "^#+[^0-9].*$" "@@@\\&")
+  (replace-regexp "^#+[^0-9].*$" "@&@&\\&") ; find all remaining non-timestamp lines
   (goto-char (mark-marker))
-  (replace-regexp "\n@@@" ";")
+  (replace-regexp "\n@&@&" ";") ;; merge non-timestamp lines
 
   ;; uniquify and sort
   (delete-duplicate-lines (mark-marker) (point-max))
