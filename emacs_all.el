@@ -109,7 +109,7 @@
 
     See `sort-regexp-fields'."
   (interactive "*r")
-  (sort-regexp-fields nil "\\w+" "\\&" beg end))
+  (sort-regexp-fields nil "\\(\\sw_\\.\\|\\s_\\|\\w\\)+" "\\&" beg end))
 
 ;; start Git merge conflicts in smerge ediff
 (defun vc-git-find-file-hook ()
