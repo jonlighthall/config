@@ -35,7 +35,7 @@
                   (disable-theme 'misterioso)))
 (defun select-all-and-indent ()
   "mark whole buffer and indent region"
-  (interactive)
+  (interactive "*")
   (indent-region (point-min) (point-max))
   (delete-trailing-whitespace)
   (goto-char 1)
@@ -45,7 +45,7 @@
 
 (defun select-all-and-untabify ()
   "mark whole buffer and untabify"
-  (interactive)
+  (interactive "*")
   (untabify (point-min) (point-max))
   (delete-trailing-whitespace))
 (global-set-key (kbd "C-x t") 'select-all-and-untabify)
@@ -53,7 +53,7 @@
 ;; sort .bash_history file by timestamp
 (defun sort-bash-history ()
   "sort bash history"
-  (interactive)
+  (interactive "*")
   ;; clean up white space
   (delete-trailing-whitespace)
   (flush-lines "^$" (point-min) (point-max)) ; delete all empty lines
