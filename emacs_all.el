@@ -108,7 +108,7 @@
     affects the sort order.
 
     See `sort-regexp-fields'."
-  (interactive "r")
+  (interactive "*r")
   (sort-regexp-fields nil "\\w+" "\\&" beg end))
 
 ;; start Git merge conflicts in smerge ediff
