@@ -101,16 +101,15 @@
 (global-set-key (kbd "C-x y") 'sort-bash-history)
 
 ;; sort words in region
-(defun sort-words (reverse beg end)
-  "Sort words in region alphabetically, in REVERSE if negative.
-    Prefixed with negative \\[universal-argument], sorts in reverse.
+(defun sort-words (beg end)
+  "Sort words in region alphabetically.
 
     The variable `sort-fold-case' determines whether alphabetic case
     affects the sort order.
 
     See `sort-regexp-fields'."
-  (interactive "*P\nr")
-  (sort-regexp-fields reverse "\\w+" "\\&" beg end))
+  (interactive "r")
+  (sort-regexp-fields nil "\\w+" "\\&" beg end))
 
 ;; start Git merge conflicts in smerge ediff
 (defun vc-git-find-file-hook ()
