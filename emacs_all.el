@@ -97,9 +97,8 @@
   (replace-regexp "^[^\n`]*`[^\n`]*$" "\\&;` # unmatched grave")
 
   (goto-char (mark-marker))
-;;(replace-regexp "^[^\n'\"\\]*'[^\n'\"]*$" "\\&;' # unmatched apostrophe")
+  (replace-regexp "^[^\n'\"`]*\'[^\n'\"`]*$" "\\& # escaped apostrophe '")
   (replace-regexp "^[^\n'\"`]*'[^\n'\"`]*$" "\\&;' # unmatched apostrophe")
-;;(replace-regexp "(?!^.*\".*'+.*\".*$)(?!^.*`.*'+.*`.*$)^[^\n']*(?<!\\)'[^\n']*$" "\\&;' # unmatched apostrophe")
 
   (deactivate-mark)
   (goto-char 1)
