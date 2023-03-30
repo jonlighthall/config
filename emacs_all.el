@@ -48,8 +48,11 @@
 (defun select-all-and-untabify ()
   "mark whole buffer and untabify"
   (interactive)
+  (push-mark)
   (untabify (point-min) (point-max))
-  (delete-trailing-whitespace))
+  (delete-trailing-whitespace)
+  (goto-char (mark-marker))
+  )
 (global-set-key (kbd "C-x t") 'select-all-and-untabify)
 
 ;; sort .bash_history file by timestamp
