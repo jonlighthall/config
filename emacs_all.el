@@ -36,10 +36,12 @@
 (defun select-all-and-indent ()
   "mark whole buffer and indent region"
   (interactive)
+  (push-mark)
   (indent-region (point-min) (point-max))
   (delete-trailing-whitespace)
   (goto-char 1)
   (delete-blank-lines) ;; should only delete repeated blanks
+  (goto-char (mark-marker))
   )
 (global-set-key (kbd "C-x j") 'select-all-and-indent)
 
