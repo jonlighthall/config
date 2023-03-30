@@ -31,7 +31,7 @@
                 (lambda () (interactive)
                   (load-theme 'misterioso t)))
 (global-set-key (kbd "C-9")
-		(lambda () (interactive)
+                (lambda () (interactive)
                   (disable-theme 'misterioso)))
 (defun select-all-and-indent ()
   "mark whole buffer and indent region"
@@ -116,8 +116,8 @@
 ;; start Git merge conflicts in smerge ediff
 (defun vc-git-find-file-hook ()
   (when (save-excursion
-	  (goto-char (point-min))
-	  (re-search-forward "^<<<<<<< " nil t))
+          (goto-char (point-min))
+          (re-search-forward "^<<<<<<< " nil t))
     (smerge-ediff)))
 
 ;; setup files ending in “.m” to open in octave-mode
@@ -168,8 +168,8 @@
 ;; FORTRAN column highlighting
 (add-hook 'fortran-mode-hook 'turn-on-auto-fill)
 (add-hook 'fortran-mode-hook
-	  (lambda ()
-	    (setq-local whitespace-line-column fcols)))
+          (lambda ()
+            (setq-local whitespace-line-column fcols)))
 (add-hook 'fortran-mode-hook
-	  (lambda ()
-	    (setq-local global-whitespace-mode 1)))
+          (lambda ()
+            (setq-local global-whitespace-mode 1)))
