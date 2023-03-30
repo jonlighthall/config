@@ -42,6 +42,7 @@
   (goto-char 1)
   (delete-blank-lines) ;; should only delete repeated blanks
   (goto-char (mark-marker))
+  (prin1 "done indenting")
   )
 (global-set-key (kbd "C-x j") 'select-all-and-indent)
 
@@ -52,6 +53,7 @@
   (untabify (point-min) (point-max))
   (delete-trailing-whitespace)
   (goto-char (mark-marker))
+  (prin1 "done untabifying")
   )
 (global-set-key (kbd "C-x t") 'select-all-and-untabify)
 
