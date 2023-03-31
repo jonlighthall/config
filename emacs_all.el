@@ -35,7 +35,7 @@
                   (disable-theme 'misterioso)))
 (defun select-all-and-indent ()
   "mark whole buffer and indent region"
-  (interactive)
+  (interactive "*")
   (push-mark)
   (indent-region (point-min) (point-max))
   (delete-trailing-whitespace)
@@ -48,8 +48,8 @@
 
 (defun select-all-and-untabify ()
   "mark whole buffer and untabify"
-  (interactive)
-  (push-mark)
+  (interactive "*")
+    (push-mark)
   (untabify (point-min) (point-max))
   (delete-trailing-whitespace)
   (goto-char (mark-marker))
@@ -60,7 +60,7 @@
 ;; sort .bash_history file by timestamp
 (defun sort-bash-history ()
   "sort bash history"
-  (interactive)
+  (interactive "*")
   ;; clean up white space
   (delete-trailing-whitespace)
   (flush-lines "^$" (point-min) (point-max)) ; delete all empty lines
@@ -112,6 +112,17 @@
   (prin1 "done sorting history")
   )
 (global-set-key (kbd "C-x y") 'sort-bash-history)
+
+;; sort words in region
+(defun sort-words (beg end)
+  "Sort words in region alphabetically.
+
+    The variable `sort-fold-case' determines whether alphabetic case
+    affects the sort order.
+
+    See `sort-regexp-fields'."
+  (interactive "*r")
+  (sort-regexp-fields nil "\\(\\sw_\\.\\|\\s_\\|\\w\\)+" "\\&" beg end))
 
 ;; start Git merge conflicts in smerge ediff
 (defun vc-git-find-file-hook ()
