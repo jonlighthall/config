@@ -34,7 +34,6 @@ do
     else
 	echo "does not exist"
     fi
-    echo
 done
 echo "--------------------------------------"
 echo "--------- Done Making Links ----------"
