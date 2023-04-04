@@ -49,7 +49,7 @@
 (defun select-all-and-untabify ()
   "mark whole buffer and untabify"
   (interactive "*")
-    (push-mark)
+  (push-mark)
   (untabify (point-min) (point-max))
   (delete-trailing-whitespace)
   (goto-char (mark-marker))
