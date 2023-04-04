@@ -1,4 +1,4 @@
-# User-dependent .bash_profile
+# User-dependent .bash_profile for WSL
 # Note: this file must use unix line endings (LF)! 
 # Verbose bash prints?
 export VB=true
