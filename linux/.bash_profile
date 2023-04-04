@@ -1,4 +1,4 @@
-# .bash_profile
+# User-dependent .bash_profile for Linux
 # Verbose bash prints?
 export VB=false
 if $VB; then
@@ -7,8 +7,8 @@ if $VB; then
     TAB+=$profTAB
     echo "${TAB}running $BASH_SOURCE..."
     echo "${TAB}verbose bash printing is...$VB"
-    GOOD='\033[0;32m'
-    BAD='\033[0;31m'
+      GOOD='\033[0;32m'
+       BAD='\033[0;31m'
     NORMAL='\033[0m'
 fi
 # save login timestamp to history
