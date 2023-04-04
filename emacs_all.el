@@ -107,6 +107,13 @@
   (replace-regexp "^[^\n'\"`]*\'[^\n'\"`]*$" "\\& # escaped apostrophe '")
   (replace-regexp "^[^\n'\"`]*'[^\n'\"`]*$" "\\&;' # unmatched apostrophe")
 
+  (goto-char (mark-marker))
+  (replace-regexp "^[^\n]*<<[^\n<<]*$" "\\& <<-EOF\nEOF\ # unmatched redirect")
+
+  (goto-char (mark-marker))
+  (replace-regexp ";EOF" "\nEOF")
+  return
+
   (deactivate-mark)
   (goto-char 1)
   (prin1 "done sorting history")
