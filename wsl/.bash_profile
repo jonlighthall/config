@@ -7,7 +7,7 @@ if $VB; then
     profTAB=""
     TAB+=$profTAB
     echo "${TAB}running $BASH_SOURCE..."
-    echo "${TAB}verbose bash printing is...$VB"
+    echo "${TAB}verbose bash printing is... $VB"
       GOOD='\033[0;32m'
        BAD='\033[0;31m'
     NORMAL='\033[0m'
@@ -15,7 +15,7 @@ fi
 # save login timestamp to history
 fname=~/.bash_history
 if $VB; then
-    echo -n "${TAB}appending login timestamp to $fname..."
+    echo -n "${TAB}appending login timestamp to $fname... "
 fi   
 if [ -f $fname ]; then
     echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $(hostname -s)" >> $fname
@@ -41,7 +41,7 @@ fi
 # source users bashrc if it exists
 fname=${HOME}/config/wsl/.bashrc
 if $VB; then
-    echo "${TAB}loading $fname..."
+    echo "${TAB}loading $fname... "
 fi   
 if [ -f $fname ] ; then
     source $fname
@@ -59,7 +59,7 @@ TAB=${TAB::${#TAB}-${#profTAB}}
 
 # print runtime duration
 if $VB; then
-    echo -e "${TAB}$(basename $BASH_SOURCE) runtime...\c"
+    echo -e "${TAB}$(basename $BASH_SOURCE) runtime... \c"
     if command -v sec2elap &>/dev/null
     then
 	echo "$(sec2elap $SECONDS)"
