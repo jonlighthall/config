@@ -54,7 +54,7 @@ if [[ $HOSTNAME =~ ${host_list} ]]; then
     fi
 else
     if $VB; then
-	echo "hostname $HOSTNAME not recognized"
+	echo "${TAB}hostname $HOSTNAME not recognized"
     fi
 fi
 
