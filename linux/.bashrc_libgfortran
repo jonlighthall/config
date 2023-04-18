@@ -12,7 +12,7 @@ else
 fi
 
 host_list="hybrid1"
-if [ $HOSTNAME =~ ${host_list} ]; then
+if [[ $HOSTNAME =~ ${host_list} ]]; then
 # Find path
     if $VB; then
 	echo "${TAB}LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
