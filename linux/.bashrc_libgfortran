@@ -11,7 +11,8 @@ else
     fi
 fi
 
-if [ $HOSTNAME = "hybrid1" ]; then
+host_list="hybrid1"
+if [ $HOSTNAME =~ ${host_list} ]; then
 # Find path
     if $VB; then
 	echo "${TAB}LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
@@ -52,7 +53,9 @@ if [ $HOSTNAME = "hybrid1" ]; then
 	echo "not found"
     fi
 else
-    echo "hostname $HOSTNAME not recognized"
+    if $VB; then
+	echo "hostname $HOSTNAME not recognized"
+    fi
 fi
 
 if $VB; then
