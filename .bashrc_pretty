@@ -15,3 +15,14 @@ BROKEN='\033[1;31m' # bold red    : broken link
 # define 'grep' colors		  
    GRH='\033[1;31m' # bold red    : pattern match
    GRF='\033[0;35m' # magenta     : file match 
+
+# deinfe horizontal line
+hline() {
+    if [ "$#" -ne 1 ]; then
+	N=38
+    else
+	N=$1
+    fi
+    for (( i=1;i<=$N; i++ )); do echo -n "-"; done
+    echo
+}
