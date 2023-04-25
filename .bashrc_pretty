@@ -1,0 +1,11 @@
+# define highligt colors
+  GOOD='\033[0;32m' # green
+   BAD='\033[0;31m' # red
+NORMAL='\033[0m'    # reset
+    UL='\033[4m'    # underline
+# define 'ls' colors
+ VALID='\033[1;36m' # bold cyan: valid link
+BROKEN='\033[1;31m' # bold red : broken link
+   DIR='\033[1;34m' # bold blue: directory
+#
+ BGOOD='\033[1;32m' # bold green
