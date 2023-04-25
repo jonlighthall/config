@@ -16,7 +16,7 @@ BROKEN='\033[1;31m' # bold red    : broken link
    GRH='\033[1;31m' # bold red    : pattern match
    GRF='\033[0;35m' # magenta     : file match 
 
-# deinfe horizontal line
+# define horizontal line
 hline() {
     if [ "$#" -ne 1 ]; then
 	N=38
@@ -25,4 +25,19 @@ hline() {
     fi
     for (( i=1;i<=$N; i++ )); do echo -n "-"; done
     echo
+}
+
+# define bar
+bar() {
+    if [ "$#" -lt 2 ]; then
+	N=69
+	TXT=$1
+    else
+	N=$1
+	TXT=$2
+    fi
+    echo
+    hline $N
+    echo "$TXT"
+    hline $N
 }
