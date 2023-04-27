@@ -36,7 +36,6 @@ bar() {
 	N=$1
 	TXT=$2
     fi
-    echo
     hline $N
     echo "$TXT"
     hline $N
