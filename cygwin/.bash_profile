@@ -1,4 +1,4 @@
-# User dependent .bash_profile file
+# User-dependent .bash_profile file
 # Verbose bash prints?
 export VB=true
 if $VB; then
