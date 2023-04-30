@@ -1,13 +1,12 @@
-# Set DISPLAY for WSL2
+# Set DISPLAY for Cygwin
 # Note: this file must use unix line endings (LF)! 
 if [ -z $VB ]; then
     export VB=false
 else
     if $VB; then
-	echo "running $BASH_SOURCE..."
-	GOOD='\033[0;32m'
-	BAD='\033[0;31m'
-	NORMAL='\033[0m'
+	fTAB="   "
+	TAB+=$fTAB
+	echo "${TAB}running $BASH_SOURCE..."
     fi
 fi
 
@@ -17,11 +16,11 @@ export DISPLAY=localhost:0
 if [ -z "${DISPLAY}" ]; then
     export DISPLAY=localhost:0.0
     if $VB; then
-	echo "setting DISPLAY to $DISPLAY"
+	echo "${TAB}setting DISPLAY to $DISPLAY"
     fi
 else
     if $VB; then
-	echo "DISPLAY set to $DISPLAY"
+	echo "${TAB}DISPLAY set to $DISPLAY"
     fi
 fi
 
