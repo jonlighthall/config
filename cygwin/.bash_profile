@@ -2,16 +2,19 @@
 # Verbose bash prints?
 export VB=true
 if $VB; then
-    echo "Verbose Bash printing is...$VB"
-    echo "running $BASH_SOURCE..."
-    GOOD='\033[0;32m'
-    BAD='\033[0;31m'
+    TAB=""
+    profTAB=""
+    TAB+=$profTAB
+    echo "${TAB}running $BASH_SOURCE..."
+    echo "${TAB}verbose bash printing is... $VB"
+      GOOD='\033[0;32m'
+       BAD='\033[0;31m'
     NORMAL='\033[0m'
 fi
 # save login timestamp to history
 fname=~/.bash_history
 if $VB; then
-    echo -n "appending login timestamp to $fname..."
+    echo -n "${TAB}appending login timestamp to $fname... "
 fi   
 if [ -f $fname ]; then
     echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $HOSTNAME" >> $fname
@@ -34,23 +37,24 @@ else
     fi
 fi
 
-# source the users bashrc if it exists
+# source the user's .bashrc if it exists
 fname=${HOME}/config/cygwin/.bashrc
 if $VB; then
-    echo "loading $fname..."
+    echo "${TAB}loading $fname... "
 fi   
 if [ -f $fname ] ; then
     source $fname
     if [ $? -eq 0 ]; then
 	if $VB; then
-	    echo -e "$fname ${GOOD}OK${NORMAL}"
+	    echo -e "${TAB}$fname ${GOOD}OK${NORMAL}"
 	fi
     else
-	echo -e "$fname ${BAD}FAIL${NORMAL}"
+	echo -e "${TAB}$fname ${BAD}FAIL${NORMAL}"
     fi
 else
-    echo "$fname not found"
+    echo "${TAB}$fname not found"
 fi
+TAB=${TAB##$fTAB}
 
 # Set MANPATH so it includes users' private man if it exists
 # if [ -d "${HOME}/man" ]; then
@@ -62,4 +66,20 @@ fi
 #   INFOPATH="${HOME}/info:${INFOPATH}"
 # fi
 
-echo "Welcome to" $HOSTNAME
+# print runtime duration
+if $VB; then
+    echo -e "${TAB}$(basename $BASH_SOURCE) runtime... \c"
+    if command -v sec2elap &>/dev/null
+    then
+	echo "$(sec2elap $SECONDS)"
+    else
+	echo "$SECONDS"
+    fi
+    echo "${TAB}$(date)"
+fi
+
+# print welcome message
+if $VB; then
+    echo
+fi
+echo "${TAB}Welcome to" $HOSTNAME
