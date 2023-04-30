@@ -57,21 +57,4 @@ if [[ "$LIST" == *"thisroot.sh"* ]]; then
     which root
 fi
 
-# Path additions
-ADDPATH=${HOME}/.local/bin
-if [[ ":$PATH" != *":${ADDPATH}"*  ]]; then
-    if [ -d "${ADDPATH}" ] ; then
-	if $VB; then
-	    echo "${TAB}${ADDPATH} not found in PATH"
-	fi
-	export PATH=$PATH:$ADDPATH
-    else
-	echo "${TAB}${ADDPATH} not found"
-    fi
-else
-    if $VB; then
-	echo "${TAB}${ADDPATH} already in PATH"
-    fi
-fi
-
 TAB=${TAB::-${#fTAB}}

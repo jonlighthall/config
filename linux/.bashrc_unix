@@ -156,4 +156,22 @@ if $do_load_nvidia; then
     fi
 fi
 
+# Path additions
+ADDPATH=${HOME}/.local/bin
+if [[ ":$PATH" != *":${ADDPATH}"*  ]]; then
+    if [ -d "${ADDPATH}" ] ; then
+	if $VB; then
+	    echo -n "${TAB}adding ${ADDPATH} to PATH... "
+	fi
+	export PATH=$PATH:$ADDPATH
+	echo "done"
+    else
+	echo "${TAB}${ADDPATH} not found"
+    fi
+else
+    if $VB; then
+	echo "${TAB}${ADDPATH} already in PATH"
+    fi
+fi
+
 TAB=${TAB::${#TAB}-${#fTAB}}
