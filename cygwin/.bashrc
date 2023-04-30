@@ -111,8 +111,6 @@ fi
 #kill -9 `ps -a | \grep defunct`
 
 # Cygwin
-#set CYGWIN=nodosfilewarning
-CYGWIN="${CYGWIN} nodosfilewarning"
 CYGWIN="${CYGWIN} winsymlinks:nativestrict"
 export CYGWIN
 set HOME=/cygdrive/c/cygwin/home/lighthall/
