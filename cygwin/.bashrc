@@ -1,4 +1,4 @@
-# ~/config/cygwin/.bashrc
+y# ~/config/cygwin/.bashrc
 # Interactive shell settings for Cygwin
 
 # If not running interactively, don't do anything
@@ -102,6 +102,7 @@ fi
 # Cygwin
 #set CYGWIN=nodosfilewarning
 CYGWIN="${CYGWIN} nodosfilewarning"
+CYGWIN="${CYGWIN} winsymlinks:nativestrict"
 export CYGWIN
 set HOME=/cygdrive/c/cygwin/home/lighthall/
 
