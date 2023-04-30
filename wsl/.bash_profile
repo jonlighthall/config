@@ -38,7 +38,7 @@ else
     fi
 fi
 
-# source users bashrc if it exists
+# source the user's .bashrc if it exists
 fname=${HOME}/config/wsl/.bashrc
 if $VB; then
     echo "${TAB}loading $fname... "
@@ -55,7 +55,7 @@ if [ -f $fname ] ; then
 else
     echo "${TAB}$fname not found"
 fi
-TAB=${TAB::${#TAB}-${#profTAB}}
+TAB=${TAB##$fTAB}
 
 # print runtime duration
 if $VB; then
