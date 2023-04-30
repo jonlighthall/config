@@ -8,10 +8,13 @@ if [ -z $VB ]; then
     export VB=false
 else
     if $VB; then
-	echo "running $BASH_SOURCE..."
-	GOOD='\033[0;32m'
-	BAD='\033[0;31m'
-	NORMAL='\033[0m'
+	fTAB="   "
+	TAB+=$fTAB
+	echo "${TAB}running $BASH_SOURCE..."
+	  GOOD='\033[0;32m' # green	
+	   BAD='\033[0;31m' # red
+	NORMAL='\033[0m'    # reset
+	    UL='\033[4m'    # underline
     fi
 fi
 
@@ -26,7 +29,7 @@ do
 	LIST+=" $FILE"
     else
 	if $VB; then
-	    echo "$FILE not found"
+	    echo -e "${TAB}$FILE ${UL}not found${NORMAL}"
 	fi
     fi
 done
@@ -34,19 +37,19 @@ done
 for FILE in $LIST
 do
     if $VB; then
-	echo "loading $FILE..."
+	echo "${TAB}loading $FILE..."
     fi
     if [ -f $FILE ]; then
 	source $FILE
 	if [ $? -eq 0 ]; then
 	    if $VB; then
-		echo -e "$FILE ${GOOD}OK${NORMAL}"
+		echo -e "${TAB}$FILE ${GOOD}OK${NORMAL}"
 	    fi
 	else
-	    echo -e "$FILE ${BAD}FAIL${NORMAL}"
+	    echo -e "${TAB}$FILE ${BAD}FAIL${NORMAL}"
 	fi
     else
-	echo "$FILE not found"
+	echo -e "${TAB}$FILE ${UL}not found${NORMAL}"
     fi
 done
 
@@ -59,7 +62,7 @@ export PS1='PGI \[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]]$\[\e[0m\] ' #text [us
 export PS1='\[\e[1;37;42m\]PGI\[\e[0m\]\[\e[1;32m\] [\u@\h \[\e[34m\]\W\[\e[32m\]]$\[\e[0m\] ' #color text [user@host dir] in color
 if [ ! -z "$(command -v __git_ps1)" ]; then
     if $VB; then
-	echo "creating Git prompt..."
+	echo "${TAB} "creating Git prompt..."
     fi
     export PS1='\[\033]0;$TITLEPREFIX:$PWD\007\]\n\[\033[32m\]\u@\h \[\033[35m\]$MSYSTEM \[\033[33m\]\w\[\033[36m\]`__git_ps1`\[\033[0m\]\n$'
     export PS1='\[\033]0;$TITLEPREFIX:$PWD\007\]\[\033[32m\]\e[0;37m\A\[\e[0;32m\] \u@\h \[\033[35m\]$MSYSTEM \[\033[33m\]\w\[\033[36m\]`__git_ps1`\[\033[0m\]\n$ ' #remove new line, add time, add space
@@ -75,7 +78,7 @@ else
     if [ -z "$MSYSTEM" ]; then
 	if [ -z "$PGI" ]; then
 	    if $VB; then
-		echo "creating Cygwin prompt..."
+		echo "${TAB} "creating Cygwin prompt..."
 	    fi
 	    export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]\e[35m$(git_branch)\e[32m]$\[\e[0m\] ' #[user@host dir (git)]
 	    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[0;32m\]\e[36m$(git_branch)\n\e[0;32m$\[\e[0m\] ' # pre time, new line, no brackets, highlight host
@@ -83,7 +86,7 @@ else
 	else
 	    TEXT='PGI'
 	    if $VB; then
-		echo "creating $TEXT prompt..."
+		echo "${TAB} "creating $TEXT prompt..."
 	    fi
 	    export PS1='\[\e[1;37;42m\]$TEXT\[\e[0m\]\[\e[1;32m\] [\u@\h \[\e[34m\]\W\[\e[32m\]\e[35m$(git_branch)\e[32m]$\[\e[0m\] ' # text [user@host dir (git)]
 	    export PS1='\[\e[1;37;42m\]$TEXT\[\e[0m\]\[\e[1;32m\] [\u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m]\n$\[\e[0m\] ' # text [user@host dir (git)]
@@ -95,8 +98,8 @@ else
 	fi
     else
 	if $VB; then
-	    echo "creating MSYS prompt..."
-	    echo "\"$MSYSTEM\""
+	    echo "${TAB} "creating MSYS prompt..."
+	    echo "${TAB} "\"$MSYSTEM\""
 	fi
 	export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m`git_branch`\n\e[0;32m$\[\e[0m\] '
 	export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] $MSYSTEM \w\[\e[32m\]\e[35m`git_branch`\n\e[0;32m$\[\e[0m\] '
@@ -131,3 +134,5 @@ fi
 #export ROOTSYS='c:/root'   # must be in DOS format (change path!)
 #export PATH='cygpath -u $ROOTSYS'/bin:$PATH
 #export PATH=$PATH:/c/WINNT/system32:/c/WINNT:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/Tools/WinNT:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/MSDev98/Bin:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/Tools:/c/Program\ Files/Microsoft\ Visual\ Studio/VC98/bin:/c/Program\ Files/DevStudio/DF/bin:/c/Program\ Files/DevStudio/SharedIDE/bin
+
+TAB=${TAB::-${#fTAB}}
