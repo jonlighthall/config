@@ -43,4 +43,4 @@ bar() {
 
 if [ -z $TAB ]; then
     export TAB="   "
-else
+fi
