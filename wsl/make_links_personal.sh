@@ -1,5 +1,13 @@
-#!/bin/sh
-echo $BASH_SOURCE
+#!/bin/bash
+# print source name at start
+echo -n "source: $BASH_SOURCE"
+src_name=$(readlink -f $BASH_SOURCE)
+if [ $BASH_SOURCE = $src_name ]; then
+    echo
+else
+    echo " -> $src_name"
+fi
+
 TAB="   "
 
 # set source and target directories
@@ -35,10 +43,14 @@ echo "--------------------------------------"
 for my_link in .bash_history .git-credentials
 do
     target=${source_dir}/${my_link}
+    sub_dir=$(dirname "$my_link")
+    if [ ! $sub_dir = "." ]; then
+	my_link=$(basename "$my_link")
+    fi
     link=${target_dir}/${my_link}
 
     echo -n "source file ${target}... "
-    if [ -e ${target} ]; then
+    if [ -e $target ]; then
 	echo "exists "
 	echo -n "${TAB}link $link... "
 	# first, backup existing copy
@@ -57,10 +69,9 @@ do
 	else
 	    echo "does not exist"
 	fi
-	    # then link
-	    echo -n "${TAB}making link... "
-	    ln -sv $target $link
-
+        # then link
+	echo -n "${TAB}making link... "
+	ln -sv $target $link
     else
 	echo "does not exist"
     fi
@@ -73,7 +84,7 @@ if [ -d $target_dir/.ssh ]; then
     mv -v $target_dir/.ssh/ ~/.ssh_$(date +'%Y-%m-%d-t%H%M')
 fi
 git clone https://jonlighthall@bitbucket.org/jonlighthall/.ssh.git ~/.ssh
-chmod -v 600 $target_dir/.ssh/config 
+chmod -v 600 $target_dir/.ssh/config
 chmod -v 600 $target_dir/.ssh/id_rsa
 
 if [ ! -e $target_dir/winhome ]; then
@@ -83,9 +94,11 @@ else
 fi
 if [ ! -e $target_dir/onedrive ]; then
     ln -sv /mnt/c/Users/jonli/OneDrive/ $target_dir/onedrive
-    else
+else
     echo "onedrive is already a link"
 fi
 echo "--------------------------------------"
 echo "--------- Done Making Links ----------"
 echo "--------------------------------------"
+# print time at exit
+echo -e "\n$(date +"%R") ${BASH_SOURCE##*/} $(sec2elap $SECONDS)"

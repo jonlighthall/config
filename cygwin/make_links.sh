@@ -1,9 +1,17 @@
-#!/bin/sh
-echo $BASH_SOURCE
+#!/bin/bash
+# print source name at start
+echo -n "source: $BASH_SOURCE"
+src_name=$(readlink -f $BASH_SOURCE)
+if [ $BASH_SOURCE = $src_name ]; then
+    echo
+else
+    echo " -> $src_name"
+fi
+
 TAB="   "
 
 # set source and target directories
-source_dir=$HOME/config/cygwin
+source_dir=$(dirname $src_name)
 target_dir=$HOME
 
 # check directories
@@ -36,10 +44,14 @@ echo "--------------------------------------"
 for my_link in .bash_logout .bash_profile .emacs.d .gitconfig 
 do
     target=${source_dir}/${my_link}
+    sub_dir=$(dirname "$my_link")
+    if [ ! $sub_dir = "." ]; then
+	my_link=$(basename "$my_link")
+    fi
     link=${target_dir}/${my_link}
 
     echo -n "source file ${target}... "
-    if [ -e ${target} ]; then
+    if [ -e $target ]; then
 	echo "exists "
 	echo -n "${TAB}link $link... "
 	# first, backup existing copy
@@ -71,3 +83,6 @@ echo "--------- Done Making Links ----------"
 echo "--------------------------------------"
 
 echo "set bell-style none" | sudo tee -a /etc/inputrc
+
+# print time at exit
+echo -e "\n$(date +"%R") ${BASH_SOURCE##*/} $(sec2elap $SECONDS)"
