@@ -1,50 +1,70 @@
 #!/bin/sh
-SRCDIR=$HOME/config/cygwin
-TGTDIR=$HOME
+echo $BASH_SOURCE
+TAB="   "
+
+# set source and target directories
+source_dir=$HOME/config/cygwin
+target_dir=$HOME
+
+# check directories
+echo -n "source directory ${source_dir}... "
+if [ -d $source_dir ]; then
+    echo "exists"
+else
+    echo "does not exist"
+    return 1
+fi
+
+echo -n "target directory ${target_dir}... "
+if [ -d $target_dir ]; then
+    echo "exists"
+else
+    echo "does not exist"
+    mkdir -pv $target_dir
+    if [ $target_dir = $HOME ]; then
+	echo "this should never be true! $target_dir is HOME"
+    else
+	echo "$target_dir != $HOME"
+    fi
+fi
 
 echo "--------------------------------------"
 echo "------ Start Linking Repo Files-------"
 echo "--------------------------------------"
 
-## Links from config repo
+# list of files to be linked
 for my_link in .bash_logout .bash_profile .emacs.d .gitconfig 
 do
-    echo
-    echo -n "$TGTDIR/${my_link} "
-    if [ -L $TGTDIR/${my_link} ] ; then
-	echo "is already a link"
-	echo -n " The link is... "
-	if [ -e $TGTDIR/${my_link} ] ; then
-	    echo "valid"
-	else
-	    echo "broken"
-	fi
-    elif [ -e $TGTDIR/${my_link} ] ; then
-	echo "exists"
-	    echo -n " It is... "
-	if [ -f $TGTDIR/${my_link} ]; then
-	    echo "a regular file"
-	else
-	    echo -n "not a regular file, but... "
-	    if [ -d $TGTDIR/${my_link} ]; then
-		echo "a directory"
+    target=${source_dir}/${my_link}
+    link=${target_dir}/${my_link}
+
+    echo -n "source file ${target}... "
+    if [ -e ${target} ]; then
+	echo "exists "
+	echo -n "${TAB}link $link... "
+	# first, backup existing copy
+	if [ -L $link ] || [ -f $link ] || [ -d $link ]; then
+	    echo -n "exists and "
+	    if [[ $target -ef $link ]]; then
+		echo "already points to ${my_link}"
+		echo -n "${TAB}"
+		ls -lhG --color=auto $link
+		echo "${TAB}skipping..."
+		continue
 	    else
-		echo "not a directory"
+		echo -n "will be backed up..."
+		mv -v $link ${link}_$(date +'%Y-%m-%d-t%H%M')
 	    fi
-	fi	
+	else
+	    echo "does not exist"
+	fi
+        # then link
+	echo -n "${TAB}making link... "
+	ln -sv $target $link
     else
 	echo "does not exist"
     fi
-
-    # first, backup existing copy
-    if [ -f $TGTDIR/${my_link} ] || [ -L $TGTDIR/${my_link} ] || [ -d $TGTDIR/${my_link} ]; then
-	echo " Backing up ${my_link}..."
-	mv -v $TGTDIR/${my_link} $TGTDIR/${my_link}_$(date +'%Y-%m-%d-t%H%M')
-    fi
-
-    # then link
-    echo "Making ${my_link} link..."
-    ln -vs ${SRCDIR}/${my_link} $TGTDIR/${my_link}
+    echo
 done
 echo "--------------------------------------"
 echo "--------- Done Making Links ----------"

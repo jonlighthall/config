@@ -4,10 +4,10 @@ TAB="   "
 
 # set source and target directories
 source_dir=$HOME/config/wsl
-TGTDIR=$HOME
+target_dir=$HOME
 
 # check directories
-echo "source directory $source_dir..."
+echo -n "source directory ${source_dir}... "
 if [ -d $source_dir ]; then
     echo "exists"
 else
@@ -15,12 +15,17 @@ else
     return 1
 fi
 
-echo -n "target directory $TGTDIR... "
-if [ -d $TGTDIR ]; then
+echo -n "target directory ${target_dir}... "
+if [ -d $target_dir ]; then
     echo "exists"
 else
     echo "does not exist"
-    mkdir -pv $TGTDIR
+    mkdir -pv $target_dir
+    if [ $target_dir = $HOME ]; then
+	echo "this should never be true! $target_dir is HOME"
+    else
+	echo "$target_dir != $HOME"
+    fi
 fi
 
 echo "--------------------------------------"
@@ -31,13 +36,13 @@ echo "--------------------------------------"
 for my_link in .bash_profile .emacs.d .gitconfig .rootrc .inputrc .bash_logout
 do
     target=${source_dir}/${my_link}
-    link=$TGTDIR/${my_link}
+    link=${target_dir}/${my_link}
 
-    echo -n "source file $target... "
-    if [ -e $target ]; then
+    echo -n "source file ${target}... "
+    if [ -e ${target} ]; then
 	echo "exists "
 	echo -n "${TAB}link $link... "
-	    # first, backup existing copy
+	# first, backup existing copy
 	if [ -L $link ] || [ -f $link ] || [ -d $link ]; then
 	    echo -n "exists and "
 	    if [[ $target -ef $link ]]; then
