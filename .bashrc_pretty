@@ -10,7 +10,7 @@ BROKEN='\033[1;31m' # bold red    : broken link
  VALID='\033[1;36m' # bold cyan   : valid link
 # define PS1 colors		  
  PSUSR='\033[0;32m' # green       : user name
- PSDIR='\033[1;33m' # bold yellow : directory, host
+ PSDIR='\033[0;33m' # bold yellow : directory, host
   PSBR='\033[1;34m' # bold blue   : branch
 # define 'grep' colors		  
    GRH='\033[1;31m' # bold red    : pattern match
