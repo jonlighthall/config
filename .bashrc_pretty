@@ -40,3 +40,7 @@ bar() {
     echo "$TXT"
     hline $N
 }
+
+if [ -z $TAB ]; then
+    export TAB="   "
+else
