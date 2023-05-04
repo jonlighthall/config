@@ -8,13 +8,21 @@ BROKEN='\033[1;31m' # bold red    : broken link
    TGT='\033[1;32m' # bold green  : target
    DIR='\033[1;34m' # bold blue   : directory
  VALID='\033[1;36m' # bold cyan   : valid link
-# define PS1 colors		  
+# define PS1 colors
  PSUSR='\033[0;32m' # green       : user name
- PSDIR='\033[0;33m' # bold yellow : directory, host
+ PSDIR='\033[0;33m' # yellow      : directory, host
   PSBR='\033[1;34m' # bold blue   : branch
-# define 'grep' colors		  
+# define 'grep' colors
    GRH='\033[1;31m' # bold red    : pattern match
-   GRF='\033[0;35m' # magenta     : file match 
+   GRF='\033[0;35m' # magenta     : file match
+# define primary colors	(foreground)
+   red='\033[31m'
+ green='\033[32m'
+  blue='\033[34m'
+# define secondary colors (foreground)
+ yellow='\033[33m'
+   cyan='\033[36m'
+magenta='\033[35m'
 
 # define horizontal line
 hline() {
