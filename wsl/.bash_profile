@@ -1,5 +1,5 @@
 # User-dependent .bash_profile for WSL
-# Note: this file must use unix line endings (LF)! 
+# Note: this file must use unix line endings (LF)!
 # Verbose bash prints?
 export VB=true
 if $VB; then
@@ -8,17 +8,19 @@ if $VB; then
     TAB+=$profTAB
     echo "${TAB}running $BASH_SOURCE..."
     echo "${TAB}verbose bash printing is... $VB"
-      GOOD='\033[0;32m'
-       BAD='\033[0;31m'
-    NORMAL='\033[0m'
+    # source formatting
+    fpretty=${HOME}/utils/bash/.bashrc_pretty
+    if [ -e $fpretty ]; then
+	source $fpretty
+    fi
 fi
 # save login timestamp to history
-fname=~/.bash_history
+hist_file=~/.bash_history
 if $VB; then
-    echo -n "${TAB}appending login timestamp to $fname... "
-fi   
-if [ -f $fname ]; then
-    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $(hostname -s)" >> $fname
+    echo -n "${TAB}appending login timestamp to $hist_file... "
+fi
+if [ -f $hist_file ]; then
+    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $(hostname -s)" >> $hist_file
     if [ $? ]; then
 	if $VB; then
 	    echo -e "${GOOD}OK${NORMAL}"
@@ -27,14 +29,14 @@ if [ -f $fname ]; then
 	if $VB; then
 	    echo -e "${BAD}FAIL${NORMAL}"
 	else
-	    echo "echo to $fname failed"
+	    echo "echo to $hist_file failed"
 	fi
     fi
 else
     if $VB; then
 	echo "NOT FOUND"
     else
-	echo "$fname not found"
+	echo "$hist_file not found"
     fi
 fi
 
@@ -42,7 +44,7 @@ fi
 fname=${HOME}/config/wsl/.bashrc
 if $VB; then
     echo "${TAB}loading $fname... "
-fi   
+fi
 if [ -f $fname ] ; then
     source $fname
     if [ $? -eq 0 ]; then
