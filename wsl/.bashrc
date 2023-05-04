@@ -1,6 +1,6 @@
 # ~/config/wsl/.bashrc
 # Interactive shell settings for Linux Subsystem for Windows
-# Note: this file must use unix line endings (LF)! 
+# Note: this file must use unix line endings (LF)!
 if [ -z $VB ]; then
     export VB=false
 else
@@ -8,10 +8,11 @@ else
 	fTAB="   "
 	TAB+=$fTAB
 	echo "${TAB}running $BASH_SOURCE..."
-	  GOOD='\033[0;32m' # green	
-	   BAD='\033[0;31m' # red
-	NORMAL='\033[0m'    # reset
-	    UL='\033[4m'    # underline
+	# source formatting
+	fpretty=${HOME}/utils/bash/.bashrc_pretty
+	if [ -e $fpretty ]; then
+	    source $fpretty
+	fi
     fi
 fi
 
@@ -53,7 +54,7 @@ do
 done
 
 # ROOT
-if [[ "$LIST" == *"thisroot.sh"* ]]; then 
+if [[ "$LIST" == *"thisroot.sh"* ]]; then
     which root
 fi
 

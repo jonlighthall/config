@@ -11,10 +11,11 @@ else
 	fTAB="   "
 	TAB+=$fTAB
 	echo "${TAB}running $BASH_SOURCE..."
-	  GOOD='\033[0;32m' # green	
-	   BAD='\033[0;31m' # red
-	NORMAL='\033[0m'    # reset
-	    UL='\033[4m'    # underline
+	# source formatting
+	fpretty=${HOME}/utils/bash/.bashrc_pretty
+	if [ -e $fpretty ]; then
+	    source $fpretty
+	fi
     fi
 fi
 
@@ -121,7 +122,7 @@ FILE='/cygdrive/c/Program\ Files\ \(x86\)/emacs-23.4/bin/runemacs.exe'
 FILE='/cygdrive/c/Program\ Files/emacs-24.1/bin/runemacs.exe'
 FILE='/c/Users/jlighthall/Downloads/emacs-26.1-x86_64/bin/runemacs.exe'
 if [ -f $FILE ]; then
-    alias emacs=$FILE    
+    alias emacs=$FILE
 fi
 #alias gsview='/cygdrive/c/Program\ Files/Ghostgum/gsview/gsview64.exe'
 

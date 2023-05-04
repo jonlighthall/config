@@ -8,9 +8,11 @@ else
 	fTAB="   "
 	TAB+=$fTAB
 	echo "${TAB}running $BASH_SOURCE..."
-	GOOD='\033[0;32m'
-	BAD='\033[0;31m'
-	NORMAL='\033[0m'
+	# source formatting
+	fpretty=${HOME}/utils/bash/.bashrc_pretty
+	if [ -e $fpretty ]; then
+	    source $fpretty
+	fi
     fi
 fi
 

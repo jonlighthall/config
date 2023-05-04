@@ -1,5 +1,5 @@
 # Set DISPLAY for WSL2
-# Note: this file must use unix line endings (LF)! 
+# Note: this file must use unix line endings (LF)!
 if [ -z $VB ]; then
     export VB=false
 else
@@ -7,10 +7,11 @@ else
 	fTAB="   "
 	TAB+=$fTAB
 	echo "${TAB}running $BASH_SOURCE..."
-	  GOOD='\033[0;32m' # green	
-	   BAD='\033[0;31m' # red
-	NORMAL='\033[0m'    # reset
-	    UL='\033[4m'    # underline
+	# source formatting
+	fpretty=${HOME}/utils/bash/.bashrc_pretty
+	if [ -e $fpretty ]; then
+	    source $fpretty
+	fi
     fi
 fi
 # one of the following asignments should work
@@ -19,7 +20,7 @@ if [ $HOSTNAME = "DTWUSC001" ]; then
 else
     IDX=1
     #export DISPLAY=$(\grep nameserver /etc/resolv.conf | sed -n ''"${IDX}"' p' | awk '{print $2}'):0.0
-    export DISPLAY=$(route.exe print | \grep 0.0.0.0 | sed -n ''"${IDX}"' p' | awk '{print $4}'):0.0 # works on lappy   
+    export DISPLAY=$(route.exe print | \grep 0.0.0.0 | sed -n ''"${IDX}"' p' | awk '{print $4}'):0.0 # works on lappy
 fi
 
 # X Window
@@ -39,7 +40,7 @@ alias vcx='/mnt/c/Program\ Files/VcXsrv/vcxsrv.exe >/dev/null 2>&1 :0 -ac -clipb
 
 # Check if xwin is running
 # -x flag only match processes whose name (or command line if -f is
-# specified) exactly match the pattern. 
+# specified) exactly match the pattern.
 
 PROG="vcxsrv.exe"
 if pgrep -x $PROG >/dev/null
@@ -80,7 +81,7 @@ else
 	    fi
 	    unalias vcx 2>/dev/null
 	fi
-    else	
+    else
 	if $VB; then
 	    echo -e "${TAB}$DIR ${UL}not found${NORMAL}"
 	    echo "${TAB}unaliasing $PROG..."
@@ -96,7 +97,7 @@ then
 	echo "${TAB}$PROG is already running"
     fi
     TAB=${TAB::-${#fTAB}}
-    return 0   
+    return 0
 else
     DIR=/mnt/c/Program\ Files\ \(x86\)/Xming
     if [ -d "$DIR" ]; then
@@ -113,7 +114,7 @@ else
 		    echo -e "${GOOD}OK${NORMAL}"
 		fi
 		TAB=${TAB::-${#fTAB}}
-		return 0   
+		return 0
 	    else
 		if $VB; then
 		    echo -e "${BAD}FAIL${NORMAL}"

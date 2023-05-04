@@ -7,15 +7,17 @@ if $VB; then
     TAB+=$profTAB
     echo "${TAB}running $BASH_SOURCE..."
     echo "${TAB}verbose bash printing is...$VB"
-      GOOD='\033[0;32m'
-       BAD='\033[0;31m'
-    NORMAL='\033[0m'
+    # source formatting
+    fpretty=${HOME}/utils/bash/.bashrc_pretty
+    if [ -e $fpretty ]; then
+	source $fpretty
+    fi
 fi
 # save login timestamp to history
 fname=~/.bash_history
 if $VB; then
     echo -n "${TAB}appending login timestamp to $fname..."
-fi   
+fi
 if [ -f $fname ]; then
     echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $(hostname -s)" >> $fname
     if [ $? ]; then
@@ -41,7 +43,7 @@ fi
 fname=${HOME}/config/linux/.bashrc
 if $VB; then
     echo "${TAB}loading $fname..."
-fi   
+fi
 if [ -f $fname ] ; then
     source $fname
     if [ $? -eq 0 ]; then
