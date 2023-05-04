@@ -31,7 +31,7 @@ set -o emacs
 
 # Aliases 
 alias close='source ~/.bash_logout;killall -9 -v -u $USER$USERNAME; exit'
-alias d='diff --color=auto --suppress-common-lines -yiEZbwBs'
+alias d='diffy -s'
 alias diffy='diff --color=auto --suppress-common-lines -yiEZbwB'
 alias du0='duf --max-depth=0'
 alias du1='duf --max-depth=1'
