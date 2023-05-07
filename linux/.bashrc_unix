@@ -186,4 +186,6 @@ else
     fi
 fi
 
-TAB=${TAB::${#TAB}-${#fTAB}}
+if $VB; then
+    TAB=${TAB#$fTAB}
+fi

@@ -5,9 +5,16 @@ if [ -z $VB ]; then
     export VB=false
 else
     if $VB; then
+	# set tab
 	libTAB="   "
 	TAB+=$libTAB
-	echo "${TAB}running $BASH_SOURCE..."
+	# print source name at start
+	echo -n "${TAB}running $BASH_SOURCE"
+	src_name=$(readlink -f $BASH_SOURCE)
+	if [ ! "$BASH_SOURCE" = "$src_name" ]; then
+	    echo -n " -> $src_name"
+	fi
+	echo "..."
     fi
 fi
 
@@ -24,7 +31,7 @@ if [[ $HOSTNAME =~ ${host_list} ]]; then
 	echo "found"
 	LIBPATH=$(echo $LIBPATH | sed 's|\(.*\)/.*|\1|')
 	echo "${TAB}$FINDLIB path is $LIBPATH"
-# Path addition
+	# Path addition
 	ADDPATH=${LIBPATH}
 	if [[ ":$LD_LIBRARY_PATH" != *":${ADDPATH}"*  ]]; then
 	    if [ -d "${ADDPATH}" ] ; then
@@ -59,5 +66,5 @@ else
 fi
 
 if $VB; then
-    TAB=${TAB::${#TAB}-${#libTAB}}
+    TAB=${TAB#$libTAB}
 fi

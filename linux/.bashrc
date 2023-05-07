@@ -57,4 +57,6 @@ do
 	echo "$FILE not found"
     fi
 done
-TAB=${TAB::${#TAB}-${#fTAB}}
+if $VB; then
+    TAB=${TAB#$fTAB}
+fi
