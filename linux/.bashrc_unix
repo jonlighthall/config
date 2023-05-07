@@ -39,14 +39,16 @@ screen_pid() {
 
 if $VB; then
     echo "${TAB}Setting prompt..."
-    echo -n "${TAB}${TAB}Checking Git... "
+    fTAB="   "
+    TAB+=$fTAB
+    echo -n "${TAB}Checking Git... "
     if [ -z $(git_branch) ]; then
 	echo "not in repository"
     else
 	echo -e "on\e[36m$(git_branch)\e[0m branch"
     fi
 
-    echo -n "${TAB}${TAB}Checking screen session... "
+    echo -n "${TAB}Checking screen session... "
     if [ -z "$STY" ]; then
 	echo "not in screen"
     else
@@ -82,7 +84,7 @@ do_load_nvidia=false
 # Test Git
 if $do_test_git; then
     if $VB; then
-	echo -e "${TAB}${TAB}Testing Git prompt... \c"
+	echo -e "${TAB}Testing Git prompt... \c"
     fi
     timeout -s 9 1s git branch >/dev/null 2>&1
     RETVAL=$?
@@ -97,6 +99,7 @@ if $do_test_git; then
 	fi
     fi
 fi
+TAB=${TAB#$fTAB}
 
 # Test ls color
 if $do_test_color; then
