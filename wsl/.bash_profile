@@ -3,10 +3,17 @@
 # Verbose bash prints?
 export VB=true
 if $VB; then
+    # set tab
     TAB=""
     profTAB=""
     TAB+=$profTAB
-    echo "${TAB}running $BASH_SOURCE..."
+    # print source name at start
+    echo -n "${TAB}running $BASH_SOURCE"
+    src_name=$(readlink -f $BASH_SOURCE)
+    if [ ! "$BASH_SOURCE" = "$src_name" ]; then
+	echo -n " -> $src_name"
+    fi
+    echo "..."
     echo "${TAB}verbose bash printing is... $VB"
     # source formatting
     fpretty=${HOME}/utils/bash/.bashrc_pretty
@@ -34,7 +41,7 @@ if [ -f $hist_file ]; then
     fi
 else
     if $VB; then
-	echo "NOT FOUND"
+	echo "${BAD}NOT FOUND{NORMAL}"
     else
 	echo "$hist_file not found"
     fi

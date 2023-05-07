@@ -1,13 +1,20 @@
 # ~/config/.bashrc_common
 # Interactive shell settings for UNIX-like systems
-# Note: this file must use unix line endings (LF)! 
+# Note: this file must use unix line endings (LF)!
 if [ -z $VB ]; then
     export VB=false
 else
     if $VB; then
+	# set tab
 	comTAB="   "
 	TAB+=$comTAB
-	echo "${TAB}running $BASH_SOURCE..."
+	# print source name at start
+	echo -n "${TAB}running $BASH_SOURCE"
+	src_name=$(readlink -f $BASH_SOURCE)
+	if [ ! "$BASH_SOURCE" = "$src_name" ]; then
+	    echo -n " -> $src_name"
+	fi
+	echo "..."
     fi
 fi
 
@@ -29,7 +36,7 @@ export GIT_EDITOR='emacs -nw'
 export SVN_EDITOR=emacs
 set -o emacs
 
-# Aliases 
+# Aliases
 alias close='source ~/.bash_logout;killall -9 -v -u $USER$USERNAME; exit'
 alias d='diffy -s'
 alias diffy='diff --color=auto --suppress-common-lines -yiEZbwB'
@@ -63,7 +70,7 @@ alias pkill='pkill -9 -u ${USER}'
 alias pwd='pwd -L;pwd -P'
 
 # Fucntions
-function duf {	       
+function duf {
     du -k "$@" | sort -n |
 	while read size fname; do
      	    for unit in k M G T P E Z Y;
