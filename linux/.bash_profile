@@ -2,11 +2,18 @@
 # Verbose bash prints?
 export VB=false
 if $VB; then
+    # set tab
     TAB=""
     profTAB=""
     TAB+=$profTAB
-    echo "${TAB}running $BASH_SOURCE..."
-    echo "${TAB}verbose bash printing is...$VB"
+    # print source name at start
+    echo -n "${TAB}running $BASH_SOURCE"
+    src_name=$(readlink -f $BASH_SOURCE)
+    if [ ! "$BASH_SOURCE" = "$src_name" ]; then
+	echo -n " -> $src_name"
+    fi
+    echo "..."
+    echo "${TAB}verbose bash printing is... $VB"
     # source formatting
     fpretty=${HOME}/utils/bash/.bashrc_pretty
     if [ -e $fpretty ]; then
@@ -14,12 +21,12 @@ if $VB; then
     fi
 fi
 # save login timestamp to history
-fname=~/.bash_history
+hist_file=~/.bash_history
 if $VB; then
-    echo -n "${TAB}appending login timestamp to $fname..."
+    echo -n "${TAB}appending login timestamp to $hist_file... "
 fi
-if [ -f $fname ]; then
-    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $(hostname -s)" >> $fname
+if [ -f $hist_file ]; then
+    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $(hostname -s)" >> $hist_file
     if [ $? ]; then
 	if $VB; then
 	    echo -e "${GOOD}OK${NORMAL}"
@@ -28,21 +35,21 @@ if [ -f $fname ]; then
 	if $VB; then
 	    echo -e "${BAD}FAIL${NORMAL}"
 	else
-	    echo "echo to $fname failed"
+	    echo "echo to $hist_file failed"
 	fi
     fi
 else
     if $VB; then
-	echo "NOT FOUND"
+	echo "${BAD}NOT FOUND{NORMAL}"
     else
-	echo "$fname not found"
+	echo "$hist_file not found"
     fi
 fi
 
-# source users bashrc if it exists
+# source the user's .bashrc if it exists
 fname=${HOME}/config/linux/.bashrc
 if $VB; then
-    echo "${TAB}loading $fname..."
+    echo "${TAB}loading $fname... "
 fi
 if [ -f $fname ] ; then
     source $fname
@@ -56,7 +63,7 @@ if [ -f $fname ] ; then
 else
     echo "${TAB}$fname not found"
 fi
-TAB=${TAB::${#TAB}-${#profTAB}}
+TAB=${TAB##$profTAB}
 
 echo
 NP=3
@@ -72,12 +79,12 @@ echo
 
 # print runtime duration
 if $VB; then
-    echo -e "${TAB}$(basename $BASH_SOURCE) runtime...\c"
+    echo -e "${TAB}$(basename $BASH_SOURCE) runtime... \c"
     if command -v sec2elap &>/dev/null
     then
-	echo "$(sec2elap $SECONDS)"
+	echo "$(sec2elap $(($SECONDS-start_time)))"
     else
-	echo "$SECONDS"
+	echo "$(($SECONDS-start_time)))"
     fi
     echo "${TAB}$(date)"
 fi
@@ -86,4 +93,4 @@ fi
 if $VB; then
     echo
 fi
-echo -e "Welcome to $(hostname -f)"
+echo "${TAB}Welcome to $(hostname -f)"

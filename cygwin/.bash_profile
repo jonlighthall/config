@@ -2,10 +2,17 @@
 # Verbose bash prints?
 export VB=true
 if $VB; then
+    # set tab
     TAB=""
     profTAB=""
     TAB+=$profTAB
-    echo "${TAB}running $BASH_SOURCE..."
+    # print source name at start
+    echo -n "${TAB}running $BASH_SOURCE"
+    src_name=$(readlink -f $BASH_SOURCE)
+    if [ ! "$BASH_SOURCE" = "$src_name" ]; then
+	echo -n " -> $src_name"
+    fi
+    echo "..."
     echo "${TAB}verbose bash printing is... $VB"
     # source formatting
     fpretty=${HOME}/utils/bash/.bashrc_pretty
@@ -14,12 +21,12 @@ if $VB; then
     fi
 fi
 # save login timestamp to history
-fname=~/.bash_history
+hist_file=~/.bash_history
 if $VB; then
-    echo -n "${TAB}appending login timestamp to $fname... "
+    echo -n "${TAB}appending login timestamp to $hist_file... "
 fi
-if [ -f $fname ]; then
-    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $HOSTNAME" >> $fname
+if [ -f $hist_file ]; then
+    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $HOSTNAME" >> $hist_file
     if [ $? ]; then
 	if $VB; then
 	    echo -e "${GOOD}OK${NORMAL}"
@@ -28,14 +35,14 @@ if [ -f $fname ]; then
 	if $VB; then
 	    echo -e "${BAD}FAIL${NORMAL}"
 	else
-	    echo "echo to $fname failed"
+	    echo "echo to $hist_file failed"
 	fi
     fi
 else
     if $VB; then
-	echo "NOT FOUND"
+	echo "${BAD}NOT FOUND{NORMAL}"
     else
-	echo "$fname not found"
+	echo "$hist_file not found"
     fi
 fi
 
@@ -56,7 +63,7 @@ if [ -f $fname ] ; then
 else
     echo "${TAB}$fname not found"
 fi
-TAB=${TAB##$fTAB}
+TAB=${TAB##$profTAB}
 
 # Set MANPATH so it includes users' private man if it exists
 # if [ -d "${HOME}/man" ]; then
@@ -73,9 +80,9 @@ if $VB; then
     echo -e "${TAB}$(basename $BASH_SOURCE) runtime... \c"
     if command -v sec2elap &>/dev/null
     then
-	echo "$(sec2elap $SECONDS)"
+	echo "$(sec2elap $(($SECONDS-start_time)))"
     else
-	echo "$SECONDS"
+	echo "$(($SECONDS-start_time)))"
     fi
     echo "${TAB}$(date)"
 fi
@@ -84,4 +91,4 @@ fi
 if $VB; then
     echo
 fi
-echo "${TAB}Welcome to" $HOSTNAME
+echo "${TAB}Welcome to $HOSTNAME"
