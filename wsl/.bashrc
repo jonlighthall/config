@@ -64,5 +64,4 @@ done
 if [[ "$LIST" == *"thisroot.sh"* ]]; then
     which root
 fi
-
-TAB=${TAB::-${#fTAB}}
+TAB=${TAB#$fTAB}

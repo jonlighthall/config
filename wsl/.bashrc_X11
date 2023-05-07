@@ -144,4 +144,4 @@ else
 	unalias xming 2>/dev/null
     fi
 fi
-TAB=${TAB::-${#fTAB}}
+TAB=${TAB#$fTAB}
