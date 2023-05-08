@@ -86,16 +86,16 @@ if $do_test_git; then
     if $VB; then
 	echo -e "${TAB}Testing Git prompt... \c"
     fi
-    timeout -s 9 1s git branch >/dev/null 2>&1
+    timeout -s 9 1s git branch &>/dev/null
     RETVAL=$?
     if [[ $RETVAL -eq 137 ]]; then
 	echo -e "\n RETVAL = $RETVAL"
-	echo " git branch timed out"
+	echo " git branch ${BAD}timed out${NORMAL}"
 	export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[0;32m\n$\[\e[0m\] ' # no git
 	echo -e " git branch removed from prompt\n"
     else
 	if $VB; then
-	    echo -e "${GOOD}OK${NORMAL}"
+	    echo -e "${GOOD}OK${NORMAL} (RETVAL = $RETVAL)"
 	fi
     fi
 fi
@@ -106,7 +106,7 @@ if $do_test_color; then
     if $VB; then
 	echo -e "${TAB}Testing color ls alias... \c"
     fi
-    timeout -s 9 1s \ls -ld --color=auto ./* >/dev/null 2>&1
+    timeout -s 9 1s \ls -ld --color=auto ./* &>/dev/null
     RETVAL=$?
     if [[ $RETVAL -eq 137 ]]; then
 	echo -e "\n${TAB}RETVAL = $RETVAL"
@@ -115,7 +115,7 @@ if $do_test_color; then
 	echo -e "${TAB}--color=auto removed from ls alias"
     else
 	if $VB; then
-	    echo -e "${GOOD}OK${NORMAL}"
+	    echo -e "${GOOD}OK${NORMAL} (RETVAL = $RETVAL)"
 	fi
     fi
 fi

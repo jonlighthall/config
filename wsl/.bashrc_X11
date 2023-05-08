@@ -31,7 +31,7 @@ do
 done
 command_name="route.exe"
 echo -n "${TAB}${command_name}... "
-if command -v ${command_name} &> /dev/null; then
+if command -v ${command_name} &>/dev/null; then
     echo "found"
     route_list=$(route.exe print | \grep -E '(0.0.0.0\s*){2}' | awk '{print $4}')
     for route in $route_list
@@ -46,13 +46,13 @@ for disp in $display_list
 do
     export DISPLAY="${disp}:0.0"
     echo -n "${TAB}setting DISPLAY to $DISPLAY... "
-    xpdyinfo -display $DISPLAY &>/dev/null
-    retval=$?
-    if xdpyinfo -display $DISPLAY &>/dev/null; then
-	echo -e "${GOOD}OK${NORMAL} ($retval)"
+    xdpyinfo -display $DISPLAY &>/dev/null
+    RETVAL=$?
+    if [[ $RETVAL == 0 ]]; then
+	echo -e "${GOOD}OK${NORMAL} (RETVAL = $RETVAL)"
 	break
     else
-	echo -e "${BAD}FAIL${NORMAL} ($retval)"
+	echo -e "${BAD}FAIL${NORMAL} (RETVAL = $RETVAL)"
     fi
 done
 echo "${TAB}done"
@@ -70,8 +70,8 @@ else
     fi
 fi
 
-alias xming='/mnt/c/Program\ Files\ \(x86\)/Xming/Xming.exe >/dev/null 2>&1 :0 -clipboard -multiwindow -silent-dup-error -logverbose 0 &'
-alias vcx='/mnt/c/Program\ Files/VcXsrv/vcxsrv.exe >/dev/null 2>&1 :0 -ac -clipboard -multiwindow -silent-dup-error &'
+alias xming='/mnt/c/Program\ Files\ \(x86\)/Xming/Xming.exe &>/dev/null :0 -clipboard -multiwindow -silent-dup-error -logverbose 0 &'
+alias vcx='/mnt/c/Program\ Files/VcXsrv/vcxsrv.exe &>/dev/null :0 -ac -clipboard -multiwindow -silent-dup-error &'
 
 # Check if xwin is running
 # -x flag only match processes whose name (or command line if -f is
@@ -96,16 +96,16 @@ else
 		echo -e "${TAB}Launching $PROG... \c"
 	    fi
 	    (vcx)
-	    retval=$?
-	    if [[ $retval == 0 ]]; then
+	    RETVAL=$?
+	    if [[ $RETVAL == 0 ]]; then
 		if $VB; then
-		    echo -e "${GOOD}OK${NORMAL} ($retval)"
+		    echo -e "${GOOD}OK${NORMAL} (RETVAL = $RETVAL)"
 		fi
 		TAB=${TAB::-${#fTAB}}
 		return 0
 	    else
 		if $VB; then
-		    echo -e "${BAD}FAIL${NORMAL} ($retval)"
+		    echo -e "${BAD}FAIL${NORMAL} (RETVAL = $RETVAL)"
 		    echo "${TAB}unaliasing $PROG..."
 		fi
 		unalias vcx 2>/dev/null
@@ -145,16 +145,16 @@ else
 		echo -e "${TAB}Launching $PROG... \c"
 	    fi
 	    (xming)
-	    retval=$?
-	    if [[ $retval == 0 ]]; then
+	    RETVAL=$?
+	    if [[ $RETVAL == 0 ]]; then
 		if $VB; then
-		    echo -e "${GOOD}OK${NORMAL} ($retval)"
+		    echo -e "${GOOD}OK${NORMAL} ($RETVAL)"
 		fi
 		TAB=${TAB::-${#fTAB}}
 		return 0
 	    else
 		if $VB; then
-		    echo -e "${BAD}FAIL${NORMAL} ($retval)"
+		    echo -e "${BAD}FAIL${NORMAL} ($RETVAL)"
 		    echo "${TAB}unaliasing $PROG..."
 		fi
 		unalias xming 2>/dev/null
