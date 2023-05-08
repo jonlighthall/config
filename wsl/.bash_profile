@@ -65,7 +65,7 @@ if [ -f $fname ] ; then
 else
     echo "${TAB}$fname not found"
 fi
-TAB=${TAB##$profTAB}
+TAB=${TAB#$profTAB}
 
 # print runtime duration
 if $VB; then

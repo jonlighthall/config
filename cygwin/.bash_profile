@@ -63,7 +63,7 @@ if [ -f $fname ] ; then
 else
     echo "${TAB}$fname not found"
 fi
-TAB=${TAB##$profTAB}
+TAB=${TAB#$profTAB}
 
 # Set MANPATH so it includes users' private man if it exists
 # if [ -d "${HOME}/man" ]; then
