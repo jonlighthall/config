@@ -96,15 +96,16 @@ else
 		echo -e "${TAB}Launching $PROG... \c"
 	    fi
 	    (vcx)
-	    if [[ $? == 0 ]]; then
+	    retval=$?
+	    if [[ $retval == 0 ]]; then
 		if $VB; then
-		    echo -e "${GOOD}OK${NORMAL}"
+		    echo -e "${GOOD}OK${NORMAL} ($retval)"
 		fi
 		TAB=${TAB::-${#fTAB}}
 		return 0
 	    else
 		if $VB; then
-		    echo -e "${BAD}FAIL${NORMAL}"
+		    echo -e "${BAD}FAIL${NORMAL} ($retval)"
 		    echo "${TAB}unaliasing $PROG..."
 		fi
 		unalias vcx 2>/dev/null
@@ -144,15 +145,16 @@ else
 		echo -e "${TAB}Launching $PROG... \c"
 	    fi
 	    (xming)
-	    if [[ $? == 0 ]]; then
+	    retval=$?
+	    if [[ $retval == 0 ]]; then
 		if $VB; then
-		    echo -e "${GOOD}OK${NORMAL}"
+		    echo -e "${GOOD}OK${NORMAL} ($retval)"
 		fi
 		TAB=${TAB::-${#fTAB}}
 		return 0
 	    else
 		if $VB; then
-		    echo -e "${BAD}FAIL${NORMAL}"
+		    echo -e "${BAD}FAIL${NORMAL} ($retval)"
 		    echo "${TAB}unaliasing $PROG..."
 		fi
 		unalias xming 2>/dev/null
