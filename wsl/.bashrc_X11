@@ -21,18 +21,14 @@ else
 	fi
     fi
 fi
-#echo "${TAB}setting DISPLAY to $DISPLAY"
-#export DISPLAY=localhost:0.0
-echo "${TAB}building candidate display list..."
+echo "${TAB}building candidate DISPLAY list..."
+TAB+=$fTAB
 display_list="localhost "
-#echo "$display_list"
 name_list=$(\grep nameserver /etc/resolv.conf | awk '{print $2}')
 for name in $name_list
 do
     display_list+="$name "
 done
-#echo "$display_list"
-
 command_name="route.exe"
 echo -n "${TAB}${command_name}... "
 if command -v ${command_name} &> /dev/null; then
@@ -42,46 +38,25 @@ if command -v ${command_name} &> /dev/null; then
     do
 	display_list+="$route "
     done
-    #    echo "$display_list"
 else
-    echo "not found"
+    echo "${UL}not found${NORMAL}"
 fi
 
 for disp in $display_list
 do
-
-    #    echo -n "${TAB}checking $disp... "
     export DISPLAY="${disp}:0.0"
     echo -n "${TAB}setting DISPLAY to $DISPLAY... "
-    #   echo "${TAB}DISPLAY =  $DISPLAY"
     xpdyinfo -display $DISPLAY &>/dev/null
     retval=$?
-
     if xdpyinfo -display $DISPLAY &>/dev/null; then
 	echo -e "${GOOD}OK${NORMAL} ($retval)"
-	#	echo "success"
-	#	echo "${TAB}setting DISPLAY to $DISPLAY"
 	break
     else
 	echo -e "${BAD}FAIL${NORMAL} ($retval)"
-	#	echo "failure"
     fi
 done
 echo "${TAB}done"
-
-#return 0
-
-
-
-# one of the following asignments should work
-# if [ $HOSTNAME = "DTWUSC001" ] || [ $HOSTNAME = "LPWUD110" ]; then
-
-# else
-#     IDX=1
-#     #export DISPLAY=$(\grep nameserver /etc/resolv.conf | awk '{print $2}' | sed -n "${IDX}p"):0.0
-#     export DISPLAY=$(route.exe print | \grep -E '(0.0.0.0\s*){2}' | awk '{print $4}' | sed -n "${IDX}p"):0.0 # works on lappy
-
-# fi
+TAB=${TAB#$fTAB}
 
 # X Window
 if [ -z "${DISPLAY}" ]; then
