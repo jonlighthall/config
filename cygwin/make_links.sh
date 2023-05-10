@@ -2,11 +2,10 @@
 # print source name at start
 echo -n "source: $BASH_SOURCE"
 src_name=$(readlink -f $BASH_SOURCE)
-if [ $BASH_SOURCE = $src_name ]; then
-    echo
-else
-    echo " -> $src_name"
+if [ ! "$BASH_SOURCE" = "$src_name" ]; then
+    echo -n " -> $src_name"
 fi
+echo "..."
 
 TAB="   "
 
@@ -41,7 +40,7 @@ echo "------ Start Linking Repo Files-------"
 echo "--------------------------------------"
 
 # list of files to be linked
-for my_link in .bash_logout .bash_profile .emacs.d .gitconfig 
+for my_link in .bash_logout .bash_profile .emacs.d .gitconfig
 do
     target=${source_dir}/${my_link}
     sub_dir=$(dirname "$my_link")

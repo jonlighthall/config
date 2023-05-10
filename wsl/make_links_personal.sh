@@ -2,11 +2,10 @@
 # print source name at start
 echo -n "source: $BASH_SOURCE"
 src_name=$(readlink -f $BASH_SOURCE)
-if [ $BASH_SOURCE = $src_name ]; then
-    echo
-else
-    echo " -> $src_name"
+if [ ! "$BASH_SOURCE" = "$src_name" ]; then
+    echo -n " -> $src_name"
 fi
+echo "..."
 
 TAB="   "
 
