@@ -23,7 +23,8 @@ else
 fi
 
 # set default display for WSLg
-export DISPLAY=:0
+#export DISPLAY=:0
+export DISPLAY=localhost:0.0
 echo -n "${TAB}setting DISPLAY to $DISPLAY... "
 xdpyinfo -display $DISPLAY &>/dev/null
 RETVAL=$?
