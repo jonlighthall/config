@@ -1,5 +1,5 @@
 # User-dependent .bash_profile for WSL
-# Note: this file must use unix line endings (LF)!
+# Note: this file must use Unix line endings (LF)!
 start_time=$SECONDS
 # Verbose bash prints?
 export VB=true
@@ -69,12 +69,13 @@ TAB=${TAB#$profTAB}
 
 # print runtime duration
 if $VB; then
-    echo -e "${TAB}$(basename $BASH_SOURCE) runtime... \c"
+    echo -e "${TAB}$(basename $BASH_SOURCE) run time... \c"
+    dT=$(($SECONDS-start_time))
     if command -v sec2elap &>/dev/null
     then
-	echo "$(sec2elap $(($SECONDS-start_time)))"
+	echo "$(sec2elap $dT)"
     else
-	echo "$(($SECONDS-start_time)))"
+	echo "elapsed time is ${dT} sec"
     fi
     echo "${TAB}$(date)"
 fi
