@@ -6,7 +6,7 @@
 	helper = store --file ~/.git-credentials	
 [core]
 	autocrlf = input
-	fileMode = false
+	fileMode = true
 [color]
 	ui = true
 [push]
