@@ -22,9 +22,15 @@ else
     fi
 fi
 
+# try to determine WSL version
+WSL_ver=$(wsl.exe -l -v | \grep -a \* | cut -b 58)
+echo "${TAB}WSL version $WSL_ver"
+if [[ $WSL_ver == 2 ]]; then
 # set default display for WSLg
-#export DISPLAY=:0
-export DISPLAY=localhost:0.0
+    export DISPLAY=:0
+else
+    export DISPLAY=localhost:0.0
+fi
 echo -n "${TAB}setting DISPLAY to $DISPLAY... "
 xdpyinfo -display $DISPLAY &>/dev/null
 RETVAL=$?
