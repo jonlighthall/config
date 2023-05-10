@@ -50,8 +50,5 @@ bar() {
 }
 
 if [ -z ${TAB+x} ]; then
-    #echo -e "${yellow}tab unset${NORMAL}"
     export TAB="   "
-#else
-    #echo -e "${TAB}${GOOD}tab set${NORMAL} to '${TAB}'"
 fi
