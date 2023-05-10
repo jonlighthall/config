@@ -21,52 +21,70 @@ else
 	fi
     fi
 fi
-echo "${TAB}building candidate DISPLAY list..."
-TAB+=$fTAB
-display_list="localhost "
-name_list=$(\grep nameserver /etc/resolv.conf | awk '{print $2}')
-for name in $name_list
-do
-    display_list+="$name "
-done
-command_name="route.exe"
-echo -n "${TAB}${command_name}... "
-if command -v ${command_name} &>/dev/null; then
-    echo "found"
-    route_list=$(route.exe print | \grep -E '(0.0.0.0\s*){2}' | awk '{print $4}')
-    for route in $route_list
+
+# set default display for WSLg
+export DISPLAY=:0
+echo -n "${TAB}setting DISPLAY to $DISPLAY... "
+xdpyinfo -display $DISPLAY &>/dev/null
+RETVAL=$?
+if [[ $RETVAL == 0 ]]; then
+    echo -e "${GOOD}OK${NORMAL} (RETVAL = $RETVAL)"
+else
+    echo -e "${BAD}FAIL${NORMAL} (RETVAL = $RETVAL)"
+
+    # check other values if FAIL
+    echo "${TAB}building candidate DISPLAY list..."
+    TAB+=$fTAB
+    display_list="localhost "
+    #echo "${TAB}DISPLAY list = $display_list"
+    #echo -n "$${TAB}checking /etc/resolv.conf for nameserver..."
+    name_list=$(\grep nameserver /etc/resolv.conf | awk '{print $2}')
+    for name in $name_list
     do
-	display_list+="$route "
+	display_list+="$name "
     done
-else
-    echo "${UL}not found${NORMAL}"
-fi
-
-for disp in $display_list
-do
-    export DISPLAY="${disp}:0.0"
-    echo -n "${TAB}setting DISPLAY to $DISPLAY... "
-    xdpyinfo -display $DISPLAY &>/dev/null
-    RETVAL=$?
-    if [[ $RETVAL == 0 ]]; then
-	echo -e "${GOOD}OK${NORMAL} (RETVAL = $RETVAL)"
-	break
+    #echo "done"
+    #echo "${TAB}DISPLAY list = $display_list"
+    command_name="route.exe"
+    echo -n "${TAB}${command_name}... "
+    if command -v ${command_name} &>/dev/null; then
+	echo "found"
+	route_list=$(route.exe print | \grep -E '(0.0.0.0\s*){2}' | awk '{print $4}')
+	for route in $route_list
+	do
+	    display_list+="$route "
+	done
     else
-	echo -e "${BAD}FAIL${NORMAL} (RETVAL = $RETVAL)"
+	echo "${UL}not found${NORMAL}"
     fi
-done
-echo "${TAB}done"
-TAB=${TAB#$fTAB}
+    #echo "${TAB}DISPLAY list = $display_list"
+    for disp in $display_list
+    do
+	export DISPLAY="${disp}:0.0"
+	echo -n "${TAB}setting DISPLAY to $DISPLAY... "
+	xdpyinfo -display $DISPLAY #&>/dev/null
+	RETVAL=$?
+	if [[ $RETVAL == 0 ]]; then
+	    echo -e "${GOOD}OK${NORMAL} (RETVAL = $RETVAL)"
+	    break
+	else
+	    echo -e "${BAD}FAIL${NORMAL} (RETVAL = $RETVAL)"
+	    unset DISPLAY
+	fi
+    done
+    echo "${TAB}done"
+    TAB=${TAB#$fTAB}
 
-# X Window
-if [ -z "${DISPLAY}" ]; then
-    export DISPLAY=localhost:0.0
-    if $VB; then
-	echo "${TAB}setting DISPLAY to $DISPLAY"
-    fi
-else
-    if $VB; then
-	echo "${TAB}DISPLAY set to $DISPLAY"
+    # set display to WSL 1 default
+    if [ -z "${DISPLAY}" ]; then
+	export DISPLAY=localhost:0.0
+	if $VB; then
+	    echo "${TAB}setting DISPLAY to $DISPLAY"
+	fi
+    else
+	if $VB; then
+	    echo "${TAB}DISPLAY set to $DISPLAY"
+	fi
     fi
 fi
 
