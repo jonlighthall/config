@@ -34,7 +34,7 @@ do
 	LIST+=" $FILE"
     else
 	if $VB; then
-	    echo "${TAB}$FILE not found"
+	    echo -e "${TAB}$FILE ${UL}not found${NORMAL}"
 	fi
     fi
 done
@@ -54,7 +54,7 @@ do
 	    echo -e "${TAB}$FILE ${BAD}FAIL${NORMAL}"
 	fi
     else
-	echo "$FILE not found"
+	echo -e "${TAB}$FILE ${UL}not found${NORMAL}"
     fi
 done
 if $VB; then

@@ -10,9 +10,18 @@ fi
 
 TAB="   "
 
+if [ "$EUID" -ne 0 ]; then
+    echo "${TAB}This command must be run as root!"
+    echo "${TAB}Retry with the following command:"
+    echo "${TAB}   sudo $BASH_SOURCE"
+    exit
+else
+    echo "${TAB} running as root"
+fi
+
 # set source and target directories
 source_dir=$(dirname $src_name)
-target_dir=$HOME
+target_dir=/etc
 
 # check directories
 echo -n "source directory ${source_dir}... "
@@ -41,7 +50,7 @@ echo "------ Start Linking Repo Files-------"
 echo "--------------------------------------"
 
 # list of files to be linked
-for my_link in .bash_profile .emacs.d .gitconfig .rootrc .inputrc .bash_logout
+for my_link in wsl.conf
 do
     target=${source_dir}/${my_link}
     sub_dir=$(dirname "$my_link")
@@ -86,12 +95,8 @@ done
 echo "--------------------------------------"
 echo "--------- Done Making Links ----------"
 echo "--------------------------------------"
-
-echo
-sudo ./make_links_etc.sh
-
 # print time at exit
-echo -en "$(date +"%R") ${BASH_SOURCE##*/} "
+echo -en "\n$(date +"%R") ${BASH_SOURCE##*/} "
 if command -v sec2elap &>/dev/null; then
     echo "$(sec2elap $SECONDS)"
 else
