@@ -87,10 +87,11 @@ echo "--------------------------------------"
 echo "--------- Done Making Links ----------"
 echo "--------------------------------------"
 
+echo
 sudo ./make_links_etc.sh
 
 # print time at exit
-echo -en "\n$(date +"%R") ${BASH_SOURCE##*/} "
+echo -en "$(date +"%R") ${BASH_SOURCE##*/} "
 if command -v sec2elap &>/dev/null; then
     echo "$(sec2elap $SECONDS)"
 else
