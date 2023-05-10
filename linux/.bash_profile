@@ -1,6 +1,7 @@
 # User-dependent .bash_profile for Linux
+start_time=$SECONDS
 # Verbose bash prints?
-export VB=false
+export VB=true
 if $VB; then
     # set tab
     TAB=""
