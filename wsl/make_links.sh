@@ -95,5 +95,5 @@ echo -en "$(date +"%R") ${BASH_SOURCE##*/} "
 if command -v sec2elap &>/dev/null; then
     echo "$(sec2elap $SECONDS)"
 else
-    echo "ellapsed time is ${SECONDS} sec"
+    echo "elapsed time is ${SECONDS} sec"
 fi
