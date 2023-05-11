@@ -61,7 +61,9 @@ else
 		if $VB; then
 		    echo -e "${GOOD}OK${NORMAL} (RETVAL = $RETVAL)"
 		    xPID=$(pgrep -x $PROG)
-		    echo "${TAB}$PROG running with PID ${xPID}"
+		    if [ ! -z $xPID ]; then 
+			echo "${TAB}$PROG running with PID ${xPID}"
+		    fi
 		fi
 	    else
 		if $VB; then
@@ -92,6 +94,7 @@ fi
 if ! $xOK; then
     PROG="Xming.exe"
     xPID=$(pgrep -x $PROG)
+    xOK=false
     if [ ! -z $xPID ];then
 	xOK=true
 	if $VB; then
@@ -118,7 +121,9 @@ if ! $xOK; then
 		    if $VB; then
 			echo -e "${GOOD}OK${NORMAL} (RETVAL = $RETVAL)"
 			xPID=$(pgrep -x $PROG)
-			echo "${TAB}$PROG running with PID ${xPID}"
+			if [ ! -z $xPID ]; then 
+			    echo "${TAB}$PROG running with PID ${xPID}"
+			fi
 		    fi
 		else
 		    if $VB; then
@@ -141,9 +146,9 @@ if ! $xOK; then
 	    fi
 	    unalias xming 2>/dev/null
 	fi
-    fi
-    if $VB; then
-	TAB=${TAB#$fTAB}
+	if $VB; then
+	    TAB=${TAB#$fTAB}
+	fi
     fi
 fi
 
