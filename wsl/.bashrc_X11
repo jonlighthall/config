@@ -147,85 +147,109 @@ if ! $xOK; then
     fi
 fi
 
-if  $xOK; then
-    # try to determine WSL version
-    WSL_ver=$(wsl.exe -l -v | \grep -a \* | sed 's/[^[:print:]]//g;s/  */ /g' | cut -d ' ' -f 4)
-    if $VB; then
-	echo "${TAB}applying default DISPLAY for WSL version $WSL_ver"
-    fi
-    if [[ $WSL_ver == 2 ]]; then
-	# set default display for WSLg
-	export DISPLAY=:0
-    else
-	export DISPLAY=localhost:0.0
-    fi
-    if $VB; then
-	echo -n "${TAB}setting DISPLAY to $DISPLAY... "
-    fi
-    xdpyinfo -display $DISPLAY &>/dev/null
-    RETVAL=$?
-    if [[ $RETVAL == 0 ]]; then
-	if $VB; then
-	    echo -e "${GOOD}OK${NORMAL} (RETVAL = $RETVAL)"
-	fi
+if $xOK; then
+    dispOK=false
+    if [ -z $DISPLAY ];then
+	echo "${TAB}DISPLAY not set"
     else
 	if $VB; then
-	    echo -e "${BAD}FAIL${NORMAL} (RETVAL = $RETVAL)"
-	    # check other values if FAIL
-	    echo "${TAB}building candidate DISPLAY list..."
-	    TAB+=$fTAB
+	    echo -n "${TAB}DISPLAY set to $DISPLAY... "
 	fi
-	display_list="localhost "
-	name_list=$(\grep nameserver /etc/resolv.conf | awk '{print $2}')
-	for name in $name_list
-	do
-	    display_list+="$name "
-	done
-	command_name="route.exe"
-	if $VB; then
-	    echo -n "${TAB}${command_name}... "
-	fi
-	if command -v ${command_name} &>/dev/null; then
+	xdpyinfo -display $DISPLAY &>/dev/null
+	RETVAL=$?
+	if [[ $RETVAL == 0 ]]; then
+	    dispOK=true
 	    if $VB; then
-		echo "found"
+		echo -e "${GOOD}OK${NORMAL} (RETVAL = $RETVAL)"
 	    fi
-	    route_list=$(route.exe print | \grep -E '(0.0.0.0\s*){2}' | awk '{print $4}')
-	    for route in $route_list
-	    do
-		display_list+="$route "
-	    done
 	else
 	    if $VB; then
-		echo "${UL}not found${NORMAL}"
+		echo -e "${BAD}FAIL${NORMAL} (RETVAL = $RETVAL)"
 	    fi
+	    unset DISPLAY
 	fi
-	for disp in $display_list
-	do
-	    export DISPLAY="${disp}:0.0"
+    fi
+
+    if ! $dispOK; then
+	# try to determine WSL version
+	WSL_ver=$(wsl.exe -l -v | \grep -a \* | sed 's/[^[:print:]]//g;s/  */ /g' | cut -d ' ' -f 4)
+	if $VB; then
+	    echo "${TAB}applying default DISPLAY for WSL version $WSL_ver"
+	fi
+	if [[ $WSL_ver == 2 ]]; then
+	    # set default display for WSLg
+	    export DISPLAY=:0
+	else
+	    export DISPLAY=localhost:0.0
+	fi
+	if $VB; then
+	    echo -n "${TAB}setting DISPLAY to $DISPLAY... "
+	fi
+	xdpyinfo -display $DISPLAY &>/dev/null
+	RETVAL=$?
+	if [[ $RETVAL == 0 ]]; then
 	    if $VB; then
-		echo -n "${TAB}setting DISPLAY to $DISPLAY... "
+		echo -e "${GOOD}OK${NORMAL} (RETVAL = $RETVAL)"
 	    fi
-	    xdpyinfo -display $DISPLAY &>/dev/null
-	    RETVAL=$?
-	    if [[ $RETVAL == 0 ]]; then
+	else
+	    if $VB; then
+		echo -e "${BAD}FAIL${NORMAL} (RETVAL = $RETVAL)"
+		# check other values if FAIL
+		echo "${TAB}building candidate DISPLAY list..."
+		TAB+=$fTAB
+	    fi
+	    display_list="localhost "
+	    name_list=$(\grep nameserver /etc/resolv.conf | awk '{print $2}')
+	    for name in $name_list
+	    do
+		display_list+="$name "
+	    done
+	    command_name="route.exe"
+	    if $VB; then
+		echo -n "${TAB}${command_name}... "
+	    fi
+	    if command -v ${command_name} &>/dev/null; then
 		if $VB; then
-		    echo -e "${GOOD}OK${NORMAL} (RETVAL = $RETVAL)"
+		    echo "found"
 		fi
-		break
+		route_list=$(route.exe print | \grep -E '(0.0.0.0\s*){2}' | awk '{print $4}')
+		for route in $route_list
+		do
+		    display_list+="$route "
+		done
 	    else
 		if $VB; then
-		    echo -e "${BAD}FAIL${NORMAL} (RETVAL = $RETVAL)"
+		    echo "${UL}not found${NORMAL}"
 		fi
-		unset DISPLAY
 	    fi
-	done
-	TAB=${TAB#$fTAB}
+	    for disp in $display_list
+	    do
+		export DISPLAY="${disp}:0.0"
+		if $VB; then
+		    echo -n "${TAB}setting DISPLAY to $DISPLAY... "
+		fi
+		xdpyinfo -display $DISPLAY &>/dev/null
+		RETVAL=$?
+		if [[ $RETVAL == 0 ]]; then
+		    if $VB; then
+			echo -e "${GOOD}OK${NORMAL} (RETVAL = $RETVAL)"
+		    fi
+		    break
+		else
+		    if $VB; then
+			echo -e "${BAD}FAIL${NORMAL} (RETVAL = $RETVAL)"
+		    fi
+		    unset DISPLAY
+		fi
+	    done
+	    TAB=${TAB#$fTAB}
 
-	if [ -z "${DISPLAY}" ]; then
-	    echo -e "${TAB}${BAD}ERROR: ${NORMAL}DISPLAY not set"
-	else
-	    if $VB; then
-		echo "${TAB}DISPLAY set to $DISPLAY"
+	    if [ -z "${DISPLAY}" ]; then
+		echo -e "${TAB}${BAD}ERROR: ${NORMAL}DISPLAY not set"
+	    else
+		if $VB; then
+		    echo "${TAB}DISPLAY set to $DISPLAY"
+		fi
 	    fi
 	fi
     fi
