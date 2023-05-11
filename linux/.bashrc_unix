@@ -99,7 +99,9 @@ if $do_test_git; then
 	fi
     fi
 fi
-TAB=${TAB#$fTAB}
+if $VB; then
+    TAB=${TAB#$fTAB}
+fi
 
 # Test ls color
 if $do_test_color; then

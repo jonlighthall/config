@@ -24,7 +24,6 @@ else
 fi
 
 # required list
-LIST=""
 LIST="$HOME/.bashrc $HOME/config/.bashrc_common
 $HOME/config/linux/.bashrc_unix $HOME/config/wsl/.bashrc_X11"
 
