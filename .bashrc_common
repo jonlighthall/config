@@ -52,6 +52,7 @@ alias ffi='ff -iname'
 alias fl='find ./ -maxdepth 1 -type l -exec ls --color -l {} \;' # find link
 alias g='gr'
 alias gitb='git branch -va'
+alias gitcp='git cherry-pick'
 alias gitd='git diff'
 alias gitdn='git diff --name-only'
 alias gitr='git remote -v'
