@@ -63,7 +63,7 @@ do
 		echo "${TAB}skipping..."
 		continue
 	    else
-		if [ -z $(diff ${target} ${link} ) ]; then
+		if [ $(diff ${target} ${link} | wc -c) -eq 0 ]; then
 		    echo "have the same contents"
 		    continue
 		else
