@@ -72,7 +72,7 @@ do
 		echo "${TAB}skipping..."
 		continue
 	    else
-		if [ -z $(diff ${target} ${link} ) ]; then
+		if [ $(diff ${target} ${link} | wc -c) -eq 0 ]; then
 		    echo "have the same contents"
 		    continue
 		else
@@ -99,5 +99,5 @@ echo -en "\n$(date +"%R") ${BASH_SOURCE##*/} "
 if command -v sec2elap &>/dev/null; then
     echo "$(sec2elap $SECONDS)"
 else
-    echo "ellapsed time is ${SECONDS} sec"
+    echo "elapsed time is ${SECONDS} sec"
 fi
