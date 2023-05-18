@@ -58,7 +58,7 @@ do
 	if [ -L $link ] || [ -f $link ] || [ -d $link ]; then
 	    echo -n "exists and "
 	    if [[ $target -ef $link ]]; then
-                echo -e "${GOOD}already points to ${prog}${NORMAL}"
+                echo -e "${GOOD}already points to ${my_link}${NORMAL}"
 		echo -n "${TAB}"
 		ls -lhG --color=auto $link
 		echo "${TAB}skipping..."
@@ -81,7 +81,7 @@ do
 	ln -sv $target $link | sed "s/^/${TAB}/"
 	echo -ne "${TAB}";hline 72;echo -en "${NORMAL}"
     else
-        echo -e"${BAD}does not exist${NORMAL}"
+        echo -e "${BAD}does not exist${NORMAL}"
     fi
 done
 bar 38 "--------- Done Making Links ----------"

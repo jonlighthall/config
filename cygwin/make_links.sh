@@ -7,7 +7,10 @@ if [ ! "$BASH_SOURCE" = "$src_name" ]; then
 fi
 echo "..."
 
-TAB="   "
+fpretty=${HOME}/utils/bash/.bashrc_pretty
+if [ -e $fpretty ]; then
+    source $fpretty
+fi
 
 # set source and target directories
 source_dir=$(dirname $src_name)
@@ -35,9 +38,7 @@ else
     fi
 fi
 
-echo "--------------------------------------"
-echo "------ Start Linking Repo Files-------"
-echo "--------------------------------------"
+bar 38 "------ Start Linking Repo Files-------"
 
 # list of files to be linked
 for my_link in .bash_logout .bash_profile .emacs.d .gitconfig
@@ -57,31 +58,40 @@ do
 	if [ -L $link ] || [ -f $link ] || [ -d $link ]; then
 	    echo -n "exists and "
 	    if [[ $target -ef $link ]]; then
-		echo "already points to ${my_link}"
+                echo -e "${GOOD}already points to ${my_link}${NORMAL}"
 		echo -n "${TAB}"
 		ls -lhG --color=auto $link
 		echo "${TAB}skipping..."
 		continue
 	    else
-		echo -n "will be backed up..."
-		mv -v $link ${link}_$(date +'%Y-%m-%d-t%H%M')
+		if [ $(diff ${target} ${link} | wc -c) -eq 0 ]; then
+		    echo "have the same contents"
+		    continue
+		else
+		    echo -n "will be backed up..."
+		    mv -v $link ${link}_$(date +'%Y-%m-%d-t%H%M')
+		fi
 	    fi
 	else
 	    echo "does not exist"
 	fi
         # then link
-	echo -n "${TAB}making link... "
-	ln -sv $target $link
+	echo -en "${TAB}${GRH}";hline 72;
+	echo "${TAB}making link... "
+	ln -sv $target $link | sed "s/^/${TAB}/"
+	echo -ne "${TAB}";hline 72;echo -en "${NORMAL}"
     else
-	echo "does not exist"
+        echo -e "${BAD}does not exist${NORMAL}"
     fi
-    echo
 done
-echo "--------------------------------------"
-echo "--------- Done Making Links ----------"
-echo "--------------------------------------"
+bar 38 "--------- Done Making Links ----------"
 
 echo "set bell-style none" | sudo tee -a /etc/inputrc
 
 # print time at exit
-echo -e "\n$(date +"%R") ${BASH_SOURCE##*/} $(sec2elap $SECONDS)"
+echo -en "$(date +"%R") ${BASH_SOURCE##*/} "
+if command -v sec2elap &>/dev/null; then
+    echo "$(sec2elap $SECONDS)"
+else
+    echo "elapsed time is ${SECONDS} sec"
+fi
