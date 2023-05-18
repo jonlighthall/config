@@ -80,7 +80,17 @@ do
 done
 
 cd ${HOME}/config
+dname=private
 for my_repo in config_private
 do
-    git clone ${github_https}$my_repo private
+    git clone ${github_https}$my_repo $dname
+    cd $dname
+	fname=make_links.sh
+	echo -n "${TAB}$fname... "
+	if [ -f $fname ]; then
+	    echo "found"
+	    ./$fname
+	else
+	    echo "not found"
+	fi
 done
