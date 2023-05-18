@@ -63,8 +63,13 @@ do
 		echo "${TAB}skipping..."
 		continue
 	    else
-		echo -n "will be backed up..."
-		mv -v $link ${link}_$(date +'%Y-%m-%d-t%H%M')
+		if [ -z $(diff ${target} ${link} ) ]; then
+		    echo "have the same contents"
+		    continue
+		else
+		    echo -n "will be backed up..."
+		    mv -v $link ${link}_$(date +'%Y-%m-%d-t%H%M')
+		fi
 	    fi
 	else
 	    echo "does not exist"
@@ -81,4 +86,9 @@ echo "--------------------------------------"
 echo "--------- Done Making Links ----------"
 echo "--------------------------------------"
 # print time at exit
-echo -e "\n$(date +"%R") ${BASH_SOURCE##*/} $(sec2elap $SECONDS)"
+echo -en "$(date +"%R") ${BASH_SOURCE##*/} "
+if command -v sec2elap &>/dev/null; then
+    echo "$(sec2elap $SECONDS)"
+else
+    echo "elapsed time is ${SECONDS} sec"
+fi
