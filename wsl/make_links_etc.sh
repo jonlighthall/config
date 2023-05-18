@@ -7,6 +7,7 @@ if [ ! "$BASH_SOURCE" = "$src_name" ]; then
 fi
 echo "..."
 
+# source formatting
 fpretty=${HOME}/utils/bash/.bashrc_pretty
 if [ -e $fpretty ]; then
     source $fpretty
@@ -27,11 +28,11 @@ target_dir=/etc
 
 # check directories
 echo -n "source directory ${source_dir}... "
-if [ -d $source_dir ]; then
+if [ -d "$source_dir" ]; then
     echo "exists"
 else
-    echo "does not exist"
-    return 1
+    echo -e "${BAD}does not exist${NORMAL}"
+    exit 1
 fi
 
 echo -n "target directory ${target_dir}... "
@@ -60,7 +61,7 @@ do
     link=${target_dir}/${my_link}
 
     echo -n "source file ${target}... "
-    if [ -e $target ]; then
+    if [ -e "$target" ]; then
 	echo "exists "
 	echo -n "${TAB}link $link... "
 	# first, backup existing copy
