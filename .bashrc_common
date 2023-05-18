@@ -89,9 +89,11 @@ ADDPATH=${HOME}/bin
 if [[ ":$PATH" != *":${ADDPATH}"*  ]]; then
     if [ -d "${ADDPATH}" ] ; then
 	if $VB; then
-	    echo -n "${TAB}adding ${ADDPATH} to PATH... "
+	    echo -n "${TAB}appending ${ADDPATH} to PATH... "
+	    #echo -n "${TAB}prepending ${ADDPATH} to PATH... "
 	fi
 	export PATH=$PATH:$ADDPATH
+#	export PATH=$ADDPATH:$PATH
 	echo "done"
     else
 	echo "${TAB}${ADDPATH} not found"
