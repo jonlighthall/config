@@ -69,6 +69,7 @@ alias lt='ls -ltr' # sort by time
 alias ping='ping -c 5'
 alias pkill='pkill -9 -u ${USER}'
 alias pwd='pwd -L;pwd -P'
+alias up='update_repos'
 
 # Fucntions
 function duf {
