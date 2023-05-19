@@ -95,7 +95,7 @@ if $do_test_git; then
 	echo -e " git branch removed from prompt\n"
     else
 	if $VB; then
-	    echo -e "${GOOD}OK${NORMAL} (RETVAL = $RETVAL)"
+	    echo -e "${GOOD}OK${NORMAL}  ${gray}RETVAL=$RETVAL${NORMAL}"
 	fi
     fi
 fi
@@ -111,13 +111,12 @@ if $do_test_color; then
     timeout -s 9 1s \ls -ld --color=auto ./* &>/dev/null
     RETVAL=$?
     if [[ $RETVAL -eq 137 ]]; then
-	echo -e "\n${TAB}RETVAL = $RETVAL"
-	echo -e "${TAB}ls --color=auto ${BAD}timed out${NORMAL}"
+	echo -e "${TAB}ls --color=auto ${BAD}FAIL${NORMAL}  ${gray}RETVAL=$RETVAL${NORMAL}"
 	unalias ls
 	echo -e "${TAB}--color=auto removed from ls alias"
     else
 	if $VB; then
-	    echo -e "${GOOD}OK${NORMAL} (RETVAL = $RETVAL)"
+	    echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	fi
     fi
 fi
