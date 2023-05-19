@@ -23,6 +23,8 @@ BROKEN='\033[1;31m' # bold red    : broken link
  yellow='\033[33m'
    cyan='\033[36m'
 magenta='\033[35m'
+# define monochrome colors
+   gray='\x1B[90m'
 
 # define horizontal line
 hline() {
