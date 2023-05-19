@@ -8,7 +8,7 @@ if $VB; then
     profTAB=""
     TAB+=$profTAB
     # print source name at start
-    echo "${TAB}running $BASH_SOURCE"
+    echo -n "${TAB}running $BASH_SOURCE"
     src_name=$(readlink -f $BASH_SOURCE)
     if [ ! "$BASH_SOURCE" = "$src_name" ]; then
 	echo -n " -> $src_name"
