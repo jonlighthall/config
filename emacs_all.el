@@ -136,6 +136,13 @@
           (goto-char (point-min))
           (re-search-forward "^<<<<<<< " nil t))
     (smerge-ediff)))
+;; for wsl2 lappy
+(defun vc-git-find-file-hook ()
+  (when (save-excursion
+          (goto-char (point-min))
+          (re-search-forward "^<<<<<<< " nil t))
+    (smerge-ediff)))
+
 
 ;; setup files ending in “.m” to open in octave-mode
 (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))

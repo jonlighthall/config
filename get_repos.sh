@@ -3,7 +3,7 @@
 echo -n "${TAB}running $BASH_SOURCE"
 src_name=$(readlink -f $BASH_SOURCE)
 if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-    echo -n " -> $src_name"
+    echo " -> $src_name"
 fi
 echo "..."
 TAB='   '
