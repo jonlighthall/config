@@ -7,12 +7,11 @@ if $VB; then
     profTAB=""
     TAB+=$profTAB
     # print source name at start
-    echo -n "${TAB}running $BASH_SOURCE"
+    echo "${TAB}running $BASH_SOURCE..."
     src_name=$(readlink -f $BASH_SOURCE)
     if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-	echo -n " -> $src_name"
+	echo "${TAB}     -> $src_name"
     fi
-    echo "..."
     echo "${TAB}verbose bash printing is... $VB"
     # source formatting
     fpretty=${HOME}/utils/bash/.bashrc_pretty
