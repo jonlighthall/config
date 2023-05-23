@@ -58,7 +58,7 @@ else
 	    if [[ $RETVAL == 0 ]]; then
 		xOK=true
 		if $VB; then
-		    echo -e "${GOOD}OK${NORMAL}  ${gray}RETVAL=$RETVAL${NORMAL}"
+		    echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 		    xPID=$(pgrep -x $PROG)
 		    if [ ! -z $xPID ]; then 
 			echo "${TAB}$PROG running with PID ${xPID}"
@@ -66,7 +66,7 @@ else
 		fi
 	    else
 		if $VB; then
-		    echo -e "${BAD}FAIL${NORMAL}  ${gray}RETVAL=$RETVAL${NORMAL}"
+		    echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 		    echo "${TAB}unaliasing $PROG..."
 		fi
 		unalias vcx 2>/dev/null
@@ -118,7 +118,7 @@ if ! $xOK; then
 		if [[ $RETVAL == 0 ]]; then
 		    xOK=true
 		    if $VB; then
-			echo -e "${GOOD}OK${NORMAL}  ${gray}RETVAL=$RETVAL${NORMAL}"
+			echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 			xPID=$(pgrep -x $PROG)
 			if [ ! -z $xPID ]; then 
 			    echo "${TAB}$PROG running with PID ${xPID}"
@@ -126,7 +126,7 @@ if ! $xOK; then
 		    fi
 		else
 		    if $VB; then
-			echo -e "${BAD}FAIL${NORMAL}  ${gray}RETVAL=$RETVAL${NORMAL}"
+			echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 			echo "${TAB}unaliasing $PROG..."
 		    fi
 		    unalias xming 2>/dev/null
@@ -164,11 +164,11 @@ if $xOK; then
 	if [[ $RETVAL == 0 ]]; then
 	    dispOK=true
 	    if $VB; then
-		echo -e "${GOOD}OK${NORMAL}  ${gray}RETVAL=$RETVAL${NORMAL}"
+		echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	    fi
 	else
 	    if $VB; then
-		echo -e "${BAD}FAIL${NORMAL}  ${gray}RETVAL=$RETVAL${NORMAL}"
+		echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	    fi
 	    unset DISPLAY
 	fi
@@ -193,11 +193,11 @@ if $xOK; then
 	RETVAL=$?
 	if [[ $RETVAL == 0 ]]; then
 	    if $VB; then
-		echo -e "${GOOD}OK${NORMAL}  ${gray}RETVAL=$RETVAL${NORMAL}"
+		echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	    fi
 	else
 	    if $VB; then
-		echo -e "${BAD}FAIL${NORMAL}  ${gray}RETVAL=$RETVAL${NORMAL}"
+		echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 		# check other values if FAIL
 		echo "${TAB}building candidate DISPLAY list..."
 		TAB+=$fTAB
@@ -236,12 +236,12 @@ if $xOK; then
 		RETVAL=$?
 		if [[ $RETVAL == 0 ]]; then
 		    if $VB; then
-			echo -e "${GOOD}OK${NORMAL}  ${gray}RETVAL=$RETVAL${NORMAL}"
+			echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 		    fi
 		    break
 		else
 		    if $VB; then
-			echo -e "${BAD}FAIL${NORMAL}  ${gray}RETVAL=$RETVAL${NORMAL}"
+			echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 		    fi
 		    unset DISPLAY
 		fi

@@ -28,13 +28,14 @@ if $VB; then
 fi
 if [ -f $hist_file ]; then
     echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $(hostname -s)" >> $hist_file
-    if [ $? ]; then
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]; then
 	if $VB; then
-	    echo -e "${GOOD}OK${NORMAL}"
+	    echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	fi
     else
 	if $VB; then
-	    echo -e "${BAD}FAIL${NORMAL}"
+	    echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	else
 	    echo "echo to $hist_file failed"
 	fi
@@ -54,12 +55,13 @@ if $VB; then
 fi
 if [ -f $fname ] ; then
     source $fname
-    if [ $? -eq 0 ]; then
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]; then
 	if $VB; then
-	    echo -e "${TAB}$fname ${GOOD}OK${NORMAL}"
+	    echo -e "${TAB}$fname ${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	fi
     else
-	echo -e "${TAB}$fname ${BAD}FAIL${NORMAL}"
+	echo -e "${TAB}$fname ${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
     fi
 else
     echo "${TAB}$fname not found"

@@ -94,7 +94,7 @@ if $do_test_git; then
 	echo -e " git branch removed from prompt\n"
     else
 	if $VB; then
-	    echo -e "${GOOD}OK${NORMAL}  ${gray}RETVAL=$RETVAL${NORMAL}"
+	    echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	fi
     fi
 fi
