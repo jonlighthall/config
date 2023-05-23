@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # print source name at start
 echo "${TAB}running $BASH_SOURCE..."
 src_name=$(readlink -f $BASH_SOURCE)
@@ -22,7 +23,7 @@ else
 fi
 
 # set source and target directories
-source_dir=$(dirname $src_name)
+source_dir=$(dirname "$src_name")
 target_dir=/etc
 
 # check directories
@@ -60,25 +61,25 @@ do
     link=${target_dir}/${my_link}
 
     echo -n "source file ${target}... "
-    if [ -e "$target" ]; then
+    if [ -e "${target}" ]; then
 	echo "exists "
 	echo -n "${TAB}link $link... "
 	# first, backup existing copy
-	if [ -L $link ] || [ -f $link ] || [ -d $link ]; then
+	if [ -L ${link} ] || [ -f ${link} ] || [ -d ${link} ]; then
 	    echo -n "exists and "
-	    if [[ $target -ef $link ]]; then
-                echo -e "${GOOD}already points to ${my_link}${NORMAL}"
+	    if [[ "${target}" -ef ${link} ]]; then
+                echo "already points to ${my_link}"
 		echo -n "${TAB}"
-		ls -lhG --color=auto $link
+		ls -lhG --color=auto ${link}
 		echo "${TAB}skipping..."
 		continue
 	    else
-		if [ $(diff ${target} ${link} | wc -c) -eq 0 ]; then
+		if [ $(diff "${target}" ${link} | wc -c) -eq 0 ]; then
 		    echo "have the same contents"
 		    continue
 		else
 		    echo -n "will be backed up..."
-		    mv -v $link ${link}_$(date +'%Y-%m-%d-t%H%M')
+		    mv -v ${link} ${link}_$(date +'%Y-%m-%d-t%H%M')
 		fi
 	    fi
 	else
@@ -87,7 +88,7 @@ do
         # then link
 	echo -en "${TAB}${GRH}";hline 72;
 	echo "${TAB}making link... "
-	ln -sv $target $link | sed "s/^/${TAB}/"
+	ln -sv "${target}" ${link} | sed "s/^/${TAB}/"
 	echo -ne "${TAB}";hline 72;echo -en "${NORMAL}"
     else
         echo -e "${BAD}does not exist${NORMAL}"
