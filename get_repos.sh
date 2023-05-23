@@ -3,7 +3,7 @@
 echo "${TAB}running $BASH_SOURCE..."
 src_name=$(readlink -f $BASH_SOURCE)
 if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-    echo "${TAB}     -> $src_name"
+    echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
 fi
 TAB='   '
 if [ $# -eq 0 ]; then
