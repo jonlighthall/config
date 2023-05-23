@@ -11,7 +11,7 @@ else
 	# set tab
 	fTAB="   "
 	TAB+=$fTAB
-	# source formatting
+	# load formatting
 	fpretty=${HOME}/utils/bash/.bashrc_pretty
 	if [ -e $fpretty ]; then
 	    source $fpretty

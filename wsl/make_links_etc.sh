@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# source formatting
+# load formatting
 fpretty=${HOME}/utils/bash/.bashrc_pretty
 if [ -e $fpretty ]; then
     source $fpretty
