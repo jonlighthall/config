@@ -13,7 +13,6 @@ if $VB; then
     src_name=$(readlink -f $BASH_SOURCE)
     if [ ! "$BASH_SOURCE" = "$src_name" ]; then
 	echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
-#	echo -e "${TAB} ${VALID}linked${NORMAL} $src_name"
     fi
     echo "${TAB}verbose bash printing is... $VB"
     # source formatting
