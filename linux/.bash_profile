@@ -7,6 +7,11 @@ if $VB; then
     TAB=""
     profTAB=""
     TAB+=$profTAB
+    # source formatting
+    fpretty=${HOME}/utils/bash/.bashrc_pretty
+    if [ -e $fpretty ]; then
+	source $fpretty
+    fi
     # print source name at start
     echo "${TAB}running $BASH_SOURCE..."
     src_name=$(readlink -f $BASH_SOURCE)
@@ -14,11 +19,6 @@ if $VB; then
 	echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
     fi
     echo "${TAB}verbose bash printing is... $VB"
-    # source formatting
-    fpretty=${HOME}/utils/bash/.bashrc_pretty
-    if [ -e $fpretty ]; then
-	source $fpretty
-    fi
 fi
 # save login timestamp to history
 hist_file=~/.bash_history
