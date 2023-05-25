@@ -28,12 +28,17 @@ magenta='\033[35m'
 
 # define horizontal line
 hline() {
-    if [ "$#" -ne 1 ]; then
+    if [ "$#" -lt 1 ]; then
 	N=38
     else
 	N=$1
     fi
-    for (( i=1;i<=$N; i++ )); do echo -n "-"; done
+    if [ "$#" -lt 2 ]; then
+	m="-"
+    else
+	m=$2
+    fi
+    for (( i=1;i<=$N; i++ )); do echo -n "$m"; done
     echo
 }
 
