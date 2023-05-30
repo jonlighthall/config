@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+
 # print source name at start
 echo "${TAB}running $BASH_SOURCE..."
 src_name=$(readlink -f $BASH_SOURCE)
@@ -9,13 +11,14 @@ TAB='   '
 if [ $# -eq 0 ]; then
     echo "No system specified"
 fi
+# set file name to be run in system directory
+fname=make_links.sh
 if [ $# -eq 1 ]; then
     echo "Loading configuration options for $1"
     echo -n "${TAB}$1... "
     if [ -d $1 ]; then
 	echo "found"
 	cd $1
-	fname=make_links.sh
 	echo -n "${TAB}$fname... "
 	if [ -f $fname ]; then
 	    echo "found"
@@ -47,7 +50,11 @@ edir=${HOME}/examp
 echo "creating repository directories..."
 for my_dir in $rdir $udir $edir
 do
-    mkdir -vp ${my_dir}
+    if [ ! -d ${my_dir} ]; then
+	mkdir -vp ${my_dir}
+    else
+	echo "directory ${my_dir} already exists"
+    fi
 done
 
 echo "--------------------------------------"
@@ -59,31 +66,58 @@ github_https=https://github.com/${github_user}/
 github_ssh=git@github.com:${github_user}/
 
 cd ${rdir}
-# list of repos to be cloned
+# list of utility repos to be cloned
 for my_repo in bash batch fortran_utilities powershell
 do
-    git clone ${github_https}${my_repo}
-    ln -sv ${udir}/${my_repo} ${rdir}/${my_repo}
+    if [ ! -d ${my_repo} ]; then
+	echo "cloning $my_repo..."
+	git clone ${github_https}${my_repo}
+    else
+	echo "dirctory $my_repo already exits"
+    fi
+    link=${udir}/${my_repo}
+    if [ ! -e ${link} ]; then
+	ln -sv ${rdir}/${my_repo} ${link}
+    fi
 done
 
+# list of example repos to be cloned
 for my_repo in fortran hello nrf python
 do
-    git clone ${github_https}$my_repo
-    ln -sv ${edir}/${my_repo} ${rdir}/${my_repo}
+    if [ ! -d ${my_repo} ]; then
+	echo "cloning $my_repo..."
+	git clone ${github_https}$my_repo
+    else
+	echo "dirctory $my_repo already exits"
+    fi
+    link=${edir}/${my_repo}
+    if [ ! -e ${link} ]; then
+	ln -sv ${rdir}/${my_repo} ${link}
+    fi
+
 done
 
-
+# list of other repos to be cloned
 for my_repo in matlab
 do
-    git clone ${github_https}$my_repo
+    if [ ! -d ${my_repo} ]; then
+	echo "cloning $my_repo..."
+	git clone ${github_https}$my_repo
+    else
+	echo "dirctory $my_repo already exits"
+    fi
 done
 
+# list of private repos to be cloned
 cd ${HOME}/config
 dname=private
 for my_repo in config_private
 do
-    git clone ${github_https}$my_repo $dname
-    cd $dname
+    if [ ! -d $dname ]; then
+	echo "cloning $dname..."
+	echo "see ${github_https}$my_repo/blob/master/.git-credentials"
+	git clone ${github_https}$my_repo $dname
+	cd $dname
 	fname=make_links.sh
 	echo -n "${TAB}$fname... "
 	if [ -f $fname ]; then
@@ -92,4 +126,5 @@ do
 	else
 	    echo "not found"
 	fi
+    fi
 done
