@@ -7,7 +7,7 @@ if [ -e $fpretty ]; then
 fi
 
 # print source name at start
-echo "${TAB}running $BASH_SOURCE..."
+echo -e "${TAB}running ${PSDIR}$BASH_SOURCE${NORMAL}..."
 src_name=$(readlink -f $BASH_SOURCE)
 if [ ! "$BASH_SOURCE" = "$src_name" ]; then
     echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
@@ -19,7 +19,7 @@ if [ "$EUID" -ne 0 ]; then
     echo "${TAB}   sudo $BASH_SOURCE"
     exit
 else
-    echo "${TAB} running as root"
+    echo "${TAB} running ${PSDIR}as root"
 fi
 
 # set source and target directories

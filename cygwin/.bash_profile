@@ -12,7 +12,7 @@ if $VB; then
 	source $fpretty
     fi
     # print source name at start
-    echo "${TAB}running $BASH_SOURCE..."
+    echo -e "${TAB}running ${PSDIR}$BASH_SOURCE${NORMAL}..."
     src_name=$(readlink -f $BASH_SOURCE)
     if [ ! "$BASH_SOURCE" = "$src_name" ]; then
 	echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"

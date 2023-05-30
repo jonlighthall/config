@@ -1,7 +1,7 @@
 # ~/config/cygwin/.bashrc
 # Interactive shell settings for Cygwin
 
-# If not running interactively, don't do anything
+# If not running ${PSDIR}interactively, don't do anything
 [[ "$-" != *i* ]] && return
 
 if [ -z $VB ]; then
@@ -17,7 +17,7 @@ else
 	    source $fpretty
 	fi
 	# print source name at start
-	echo "${TAB}running $BASH_SOURCE..."
+	echo -e "${TAB}running ${PSDIR}$BASH_SOURCE${NORMAL}..."
 	src_name=$(readlink -f $BASH_SOURCE)
 	if [ ! "$BASH_SOURCE" = "$src_name" ]; then
 	    echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
