@@ -79,6 +79,12 @@ do
     if [ ! -e ${link} ]; then
 	ln -sv ${rdir}/${my_repo} ${link}
     fi
+    fname="${link}/make_links.sh"
+    if [ -e "${fname}" ];then
+	cd ${link}
+	${fname}
+	cd ${rdir}
+    fi
 done
 
 # load formatting
