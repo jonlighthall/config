@@ -1,4 +1,5 @@
-# User-dependent .bash_profile file
+# User-dependent .bash_profile for Cygwin
+start_time=$SECONDS
 # Verbose bash prints?
 export VB=true
 if $VB; then
@@ -26,13 +27,14 @@ if $VB; then
 fi
 if [ -f $hist_file ]; then
     echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $HOSTNAME" >> $hist_file
-    if [ $? ]; then
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]; then
 	if $VB; then
-	    echo -e "${GOOD}OK${NORMAL}"
+	    echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	fi
     else
 	if $VB; then
-	    echo -e "${BAD}FAIL${NORMAL}"
+	    echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	else
 	    echo "echo to $hist_file failed"
 	fi
@@ -52,12 +54,13 @@ if $VB; then
 fi
 if [ -f $fname ] ; then
     source $fname
-    if [ $? -eq 0 ]; then
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]; then
 	if $VB; then
-	    echo -e "${TAB}$fname ${GOOD}OK${NORMAL}"
+	    echo -e "${TAB}$fname ${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	fi
     else
-	echo -e "${TAB}$fname ${BAD}FAIL${NORMAL}"
+	echo -e "${TAB}$fname ${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
     fi
 else
     echo "${TAB}$fname not found"
@@ -76,12 +79,13 @@ TAB=${TAB#$profTAB}
 
 # print runtime duration
 if $VB; then
-    echo -e "${TAB}$(basename $BASH_SOURCE) runtime... \c"
+    echo -e "${TAB}$(basename $BASH_SOURCE) run time... \c"
+    dT=$(($SECONDS-start_time))
     if command -v sec2elap &>/dev/null
     then
-	echo "$(sec2elap $(($SECONDS-start_time)))"
+	echo "$(sec2elap $dT)"
     else
-	echo "$(($SECONDS-start_time)))"
+	echo "elapsed time is ${dT} sec"
     fi
     echo "${TAB}$(date)"
 fi
