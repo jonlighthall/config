@@ -26,7 +26,7 @@ fi
 LIST="/etc/bashrc $HOME/config/.bashrc_common $HOME/config/linux/.bashrc_unix"
 
 # optional list
-LIST_OPT="$HOME/.bash_local $HOME/.bash_aliases $HOME/config/linux/.bashrc_libgfortran"
+LIST_OPT="$HOME/.bash_local $HOME/.bash_aliases $HOME/config/linux/.bashrc_X11 $HOME/config/linux/.bashrc_libgfortran"
 for FILE in $LIST_OPT
 do
     if [ -f $FILE ]; then
@@ -45,12 +45,13 @@ do
     fi
     if [ -f $FILE ]; then
 	source $FILE
-	if [ $? -eq 0 ]; then
+	RETVAL=$?
+	if [ $RETVAL -eq 0 ]; then
 	    if $VB; then
-		echo -e "${TAB}$FILE ${GOOD}OK${NORMAL}"
+		echo -e "${TAB}$FILE ${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	    fi
 	else
-	    echo -e "${TAB}$FILE ${BAD}FAIL${NORMAL}"
+	    echo -e "${TAB}$FILE ${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	fi
     else
 	echo -e "${TAB}$FILE ${UL}not found${NORMAL}"
