@@ -1,7 +1,7 @@
 # ~/config/cygwin/.bashrc
 # Interactive shell settings for Cygwin
 
-# If not running ${PSDIR}interactively, don't do anything
+# If not running interactively, don't do anything
 [[ "$-" != *i* ]] && return
 
 if [ -z $VB ]; then
@@ -48,12 +48,13 @@ do
     fi
     if [ -f $FILE ]; then
 	source $FILE
-	if [ $? -eq 0 ]; then
+	RETVAL=$?
+	if [ $RETVAL -eq 0 ]; then
 	    if $VB; then
-		echo -e "${TAB}$FILE ${GOOD}OK${NORMAL}"
+		echo -e "${TAB}$FILE ${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	    fi
 	else
-	    echo -e "${TAB}$FILE ${BAD}FAIL${NORMAL}"
+	    echo -e "${TAB}$FILE ${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	fi
     else
 	echo -e "${TAB}$FILE ${UL}not found${NORMAL}"
@@ -140,4 +141,6 @@ fi
 #export PATH='cygpath -u $ROOTSYS'/bin:$PATH
 #export PATH=$PATH:/c/WINNT/system32:/c/WINNT:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/Tools/WinNT:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/MSDev98/Bin:/c/Program\ Files/Microsoft\ Visual\ Studio/Common/Tools:/c/Program\ Files/Microsoft\ Visual\ Studio/VC98/bin:/c/Program\ Files/DevStudio/DF/bin:/c/Program\ Files/DevStudio/SharedIDE/bin
 
-TAB=${TAB#$fTAB}
+if $VB; then
+    TAB=${TAB#$fTAB}
+fi

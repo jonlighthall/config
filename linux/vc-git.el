@@ -779,7 +779,7 @@ If SHORTLOG is non-nil, use a short format based on `vc-git-root-log-format'.
 If START-REVISION is non-nil, it is the newest revision to show.
 If LIMIT is non-nil, show no more than this many entries."
   (let ((coding-system-for-read vc-git-commits-coding-system))
-    ;; `vc-do-command' creates the buffer, but we need it before running ${PSDIR}$
+    ;; `vc-do-command' creates the buffer, but we need it before running
     ;; the command.
     (vc-setup-buffer buffer)
     ;; If the buffer exists from a previous invocation it might be

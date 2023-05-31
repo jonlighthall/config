@@ -19,7 +19,7 @@ if [ "$EUID" -ne 0 ]; then
     echo "${TAB}   sudo $BASH_SOURCE"
     exit
 else
-    echo "${TAB} running ${PSDIR}as root"
+    echo "${TAB} running as root"
 fi
 
 # set source and target directories

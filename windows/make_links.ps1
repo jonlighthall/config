@@ -2,7 +2,7 @@
 
 # Must run in elevated prompt to make link
 
-# Must first run the command before ${UL}runningcd .. this script
+# Must run the following command before running this script
 # Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process
 
 
