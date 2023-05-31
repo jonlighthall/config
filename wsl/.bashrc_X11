@@ -27,7 +27,7 @@ fi
 alias xming='/mnt/c/Program\ Files\ \(x86\)/Xming/Xming.exe &>/dev/null :0 -clipboard -multiwindow -silent-dup-error -logverbose 0 &'
 alias vcx='/mnt/c/Program\ Files/VcXsrv/vcxsrv.exe &>/dev/null :0 -ac -clipboard -multiwindow -silent-dup-error &'
 
-# Check if xwin is running ${PSDIR}$
+# Check if xwin is running
 # -x flag only match processes whose name (or command line if -f is
 # specified) exactly match the pattern.
 
@@ -37,7 +37,7 @@ xOK=false
 if [ ! -z $xPID ]; then
     xOK=true
     if $VB; then
-	echo "${TAB}${PROG} already running ${PSDIR}with PID ${xPID}"
+	echo "${TAB}${PROG} already running with PID ${xPID}"
     fi
 else
     if $VB; then
@@ -61,7 +61,7 @@ else
 		    echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 		    xPID=$(pgrep -x $PROG)
 		    if [ ! -z $xPID ]; then 
-			echo "${TAB}$PROG running ${PSDIR}with PID ${xPID}"
+			echo "${TAB}$PROG running with PID ${xPID}"
 		    fi
 		fi
 	    else
@@ -97,7 +97,7 @@ if ! $xOK; then
     if [ ! -z $xPID ];then
 	xOK=true
 	if $VB; then
-	    echo "${TAB}${PROG} already running ${PSDIR}with PID ${xPID}"
+	    echo "${TAB}${PROG} already running with PID ${xPID}"
 	fi
     else
 	if $VB; then
@@ -121,7 +121,7 @@ if ! $xOK; then
 			echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 			xPID=$(pgrep -x $PROG)
 			if [ ! -z $xPID ]; then 
-			    echo "${TAB}$PROG running ${PSDIR}with PID ${xPID}"
+			    echo "${TAB}$PROG running with PID ${xPID}"
 			fi
 		    fi
 		else
@@ -258,7 +258,7 @@ if $xOK; then
 	fi
     fi
 else
-    echo -e "${TAB}${BAD}ERROR: ${NORMAL}no X11 program ${UL}running"
+    echo -e "${TAB}${BAD}ERROR: ${NORMAL}no X11 program running"
     echo "${TAB}DISPLAY not set by $BASH_SOURCE"
     echo "${TAB}DISPLAY set to to $DISPLAY"
 fi
