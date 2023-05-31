@@ -64,6 +64,7 @@ echo "--------------------------------------"
 github_user=jonlighthall
 github_https=https://github.com/${github_user}/
 github_ssh=git@github.com:${github_user}/
+github_auth=${github_ssh}
 
 cd ${rdir}
 # list of utility repos to be cloned
@@ -71,7 +72,7 @@ for my_repo in bash batch fortran_utilities powershell
 do
     if [ ! -d ${my_repo} ]; then
 	echo "cloning $my_repo..."
-	git clone ${github_https}${my_repo}
+	git clone ${github_http}${my_repo}
     else
 	echo "${TAB}dirctory $my_repo already exits"
     fi
@@ -98,7 +99,7 @@ for my_repo in fortran hello nrf python
 do
     if [ ! -d ${my_repo} ]; then
 	echo "cloning $my_repo..."
-	git clone ${github_https}$my_repo
+	git clone ${github_auth}$my_repo
     else
 	echo "${TAB}dirctory $my_repo already exits"
     fi
@@ -114,7 +115,7 @@ for my_repo in matlab
 do
     if [ ! -d ${my_repo} ]; then
 	echo "cloning $my_repo..."
-	git clone ${github_https}$my_repo
+	git clone ${github_auth}$my_repo
     else
 	echo "${TAB}dirctory $my_repo already exits"
     fi
@@ -128,7 +129,7 @@ do
     if [ ! -d $dname ]; then
 	echo "cloning $dname..."
 	echo "see ${github_https}$my_repo/blob/master/.git-credentials"
-	git clone ${github_https}$my_repo $dname
+	git clone ${github_auth}$my_repo $dname
 	cd $dname
 	fname=make_links.sh
 	echo -n "${TAB}$fname... "
