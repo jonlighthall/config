@@ -45,10 +45,10 @@ alias du2='duf --max-depth=2'
 alias e='emacs'
 alias en='emacs -nw'
 alias fb='ff | perl -lne "print if not -T"' # find binary
-alias fd='find ./ -not -path "*/.git/*" -type d' # find directory
-alias ff='find ./ -not -path "*/.git*/*" -type f' # find file
+alias fd='find -L ./ -not -path "*/.git/*" -type d' # find directory
+alias ff='find -L ./ -not -path "*/.git*/*" -type f' # find file
 alias ffi='ff -iname'
-alias fl='find ./ -maxdepth 1 -type l -exec ls --color -l {} \;' # find link
+alias fl='find -L ./ -maxdepth 1 -type l -exec ls --color -l {} \;' # find link
 alias g='gr'
 alias gitb='git branch -va'
 alias gitcp='git cherry-pick'
