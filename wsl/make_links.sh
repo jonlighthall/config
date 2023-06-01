@@ -67,6 +67,7 @@ do
 	    else
 		if [ $(diff "${target}" ${link} | wc -c) -eq 0 ]; then
 		    echo "have the same contents"
+		    echo "then, delete it and link!"
 		    continue
 		else
 		    echo -n "will be backed up..."
