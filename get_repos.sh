@@ -72,7 +72,7 @@ for my_repo in bash batch fortran_utilities powershell
 do
     if [ ! -d ${my_repo} ]; then
 	echo "cloning $my_repo..."
-	git clone ${github_http}${my_repo}
+	git clone ${github_auth}${my_repo}.git
     else
 	echo "${TAB}dirctory $my_repo already exits"
     fi
@@ -103,11 +103,29 @@ do
     else
 	echo "${TAB}dirctory $my_repo already exits"
     fi
+
+    # define link
     link=${edir}/${my_repo}
-    if [ ! -e ${link} ]; then
-	ln -sv ${rdir}/${my_repo} ${link}
+
+    # check if link exists
+    if [ -L ${link} ] || [ -d ${link} ]; then
+	echo "${TAB}link ${link} already exits"
+	if [ $(\diff --suppress-common-lines -r ${rdir}/${my_repo} ${link} "${my_repo}" | wc -eq 0) ]; then
+	    echo "have the same contents"
+	    echo "delete!"
+	else
+	    echo "are differnt"
+	    echo "back up!"
+	fi
     fi
 
+    # create link
+    if [ ! -e ${link} ]; then
+	echo -en "${TAB}${GRH}";hline 72;
+	echo "${TAB}making link... "
+	ln -sv ${rdir}/${my_repo} ${link}
+	echo -ne "${TAB}";hline 72;echo -en "${NORMAL}"
+    fi
 done
 
 # list of other repos to be cloned
