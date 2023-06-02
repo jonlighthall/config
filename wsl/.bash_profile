@@ -1,13 +1,16 @@
 # User-dependent .bash_profile for WSL
 # Note: this file must use Unix line endings (LF)!
+
+# If not running interactively, don't do anything
+[[ "$-" != *i* ]] && return
+
 start_time=$SECONDS
 # Verbose bash prints?
 export VB=true
 if $VB; then
     # set tab
     TAB=""
-    profTAB=""
-    TAB+=$profTAB
+    TAB+=${profTAB:=''}
     # load formatting
     fpretty=${HOME}/utils/bash/.bashrc_pretty
     if [ -e $fpretty ]; then
