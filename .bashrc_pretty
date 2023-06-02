@@ -56,6 +56,5 @@ bar() {
     hline $N
 }
 
-if [ -z ${TAB+x} ]; then
-    export TAB="   "
-fi
+# set tab
+${TAB:='   '}
