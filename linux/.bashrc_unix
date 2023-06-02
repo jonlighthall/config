@@ -1,13 +1,13 @@
-# ~/config/linux/.bashrc
+# ~/config/linux/.bashrc_prompt
 # Interactive shell settings for linux kernel systems
+# Sets prompt and path settings
 # Note: this file must use unix line endings (LF)!
 if [ -z $VB ]; then
     export VB=false
 else
     if $VB; then
 	# set tab
-	fTAB="   "
-	TAB+=$fTAB
+	TAB+=${fTAB:='   '}
 	# load formatting
 	fpretty=${HOME}/utils/bash/.bashrc_pretty
 	if [ -e $fpretty ]; then
@@ -24,7 +24,7 @@ fi
 
 # System-specific aliases and functions
 
-# Prompt
+# Prompt functions
 git_branch() {
     git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
     # 2>/dev/null redirects stderr to null
@@ -38,8 +38,7 @@ screen_pid() {
 
 if $VB; then
     echo "${TAB}Setting prompt..."
-    fTAB="   "
-    TAB+=$fTAB
+    TAB+=${fTAB:='   '}
     echo -n "${TAB}Checking Git... "
     if [ -z $(git_branch) ]; then
 	echo "not in repository"
@@ -55,6 +54,7 @@ if $VB; then
     fi
 fi
 
+# Normal prompt
 if [ -z "$STY" ]; then
     export PS1='\e[0;32m$\e[0m' # stark
     export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]\e[35m$(git_branch)\e[32m]$\[\e[0m\] ' # user, host, base dir, branch
@@ -65,6 +65,7 @@ if [ -z "$STY" ]; then
     export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host
     export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[36m$(git_branch)\e[0;32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
 else
+    # Screen prompt
     export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \e[0;35m\]$STY\[\e[0;33m\] \w\[\e[0;32m\]\e[36m$(git_branch)\e[0;32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
     export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h \e[0;35m\]$STY \[\e[0;33m\]\w \[\e[0;32m\]\e[36m$(git_branch)\e[0;32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
     export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h \e[0;35m\]$(screen_pid) \[\e[0;33m\]\w \[\e[0;32m\]\e[36m$(git_branch)\e[0;32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
