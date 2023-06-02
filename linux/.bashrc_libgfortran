@@ -6,8 +6,7 @@ if [ -z $VB ]; then
 else
     if $VB; then
 	# set tab
-	libTAB="   "
-	TAB+=$libTAB
+	TAB+=${libTAB:='   '}
 	# print source name at start
 	echo -e "${TAB}running ${PSDIR}$BASH_SOURCE${NORMAL}..."
 	src_name=$(readlink -f $BASH_SOURCE)

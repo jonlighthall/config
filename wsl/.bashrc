@@ -6,8 +6,7 @@ if [ -z $VB ]; then
 else
     if $VB; then
 	# set tab
-	fTAB="   "
-	TAB+=$fTAB
+	TAB+=${fTAB:='   '}
 	# load formatting
 	fpretty=${HOME}/utils/bash/.bashrc_pretty
 	if [ -e $fpretty ]; then
