@@ -17,7 +17,8 @@ else
     fi
 fi
 
-if [ $HOSTNAME = "snuffleupagus.nrlssc.navy.mil" ]; then
+host_list="snuffleupagus"
+if [[ $HOSTNAME =~ ${host_list} ]]; then
 # Find path
     if $VB; then
 	echo "${TAB}LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
@@ -56,6 +57,10 @@ if [ $HOSTNAME = "snuffleupagus.nrlssc.navy.mil" ]; then
 	fi
     else
 	echo "not found"
+    fi
+else
+    if $VB; then
+	echo "${TAB}hostname $HOSTNAME not recognized"
     fi
 fi
 
