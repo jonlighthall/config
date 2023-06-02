@@ -23,7 +23,7 @@ else
 fi
 
 # required list
-LIST="/etc/bashrc $HOME/config/.bashrc_common $HOME/config/linux/.bashrc_unix"
+LIST="/etc/bashrc $HOME/config/.bashrc_common $HOME/config/linux/.bashrc_prompt"
 
 # optional list
 LIST_OPT="$HOME/.bash_local $HOME/.bash_aliases $HOME/config/linux/.bashrc_X11 $HOME/config/linux/.bashrc_libgfortran"

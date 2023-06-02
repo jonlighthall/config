@@ -23,7 +23,7 @@ fi
 
 # required list
 LIST="$HOME/.bashrc $HOME/config/.bashrc_common
-$HOME/config/linux/.bashrc_unix $HOME/config/wsl/.bashrc_X11"
+$HOME/config/linux/.bashrc_prompt $HOME/config/wsl/.bashrc_X11"
 
 # optional list
 LIST_OPT="$HOME/.bash_local root_v5.34.36/bin/thisroot.sh"
