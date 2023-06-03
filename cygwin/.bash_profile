@@ -8,6 +8,7 @@ start_time=$SECONDS
 export VB=true
 if $VB; then
     # set tab
+    # .bash_profile should be the first thing to run, so zero TAB
     TAB=""
     TAB+=${profTAB:=''}
     # load formatting
@@ -69,16 +70,6 @@ else
     echo "${TAB}$fname not found"
 fi
 TAB=${TAB#$profTAB}
-
-# Set MANPATH so it includes users' private man if it exists
-# if [ -d "${HOME}/man" ]; then
-#   MANPATH="${HOME}/man:${MANPATH}"
-# fi
-
-# Set INFOPATH so it includes users' private info if it exists
-# if [ -d "${HOME}/info" ]; then
-#   INFOPATH="${HOME}/info:${INFOPATH}"
-# fi
 
 # print runtime duration
 if $VB; then
