@@ -10,9 +10,7 @@ for Emacs. However, since Emacs is only officially supported in 32-bit
 format, it is necessary to install the 32-bit version of Cygwin take
 take advantage of these functions.
 
-Setup instruction for Cygwin can be found here
-
-<http://x.cygwin.com/docs/ug/setup-cygwin-x-installing.html>
+Setup instruction for Cygwin can be found here: <http://x.cygwin.com/docs/ug/setup-cygwin-x-installing.html>
 
 To setup and run Cygwin
 
@@ -27,26 +25,6 @@ To setup and run Cygwin
 7.  Select a mirror site such as ~~`ftp://mirror.mcs.anl.gov`~~
     `http://mirror.weathercity.com/` (Vancouver)
 This will then load a menu of available packages.
-
-## Packages
-The packages necessary for a base installation are selected by default.
-Some useful additions are:
-
-|   **Category** | **Program**             |  **Suggested Package(s)**
-| --------------|-------------------------|-----------------------------
-|               | fortran                 | `gcc-fortran`
-|               | C++                     | `gcc-g++`
-|               | SVN                     | `subversion`
-|               | Xmgrace                 | `grace`
-|               | SSH                     | `openssh`
-|               | Cygwin Bash Prompt Here | `chere`
-|               | GNU Apell               | `aspell`
-|               | Dictionary              | `aspell-en`
-|               | Cygwin/X                | `xinit, X-start-menu-icons`
-
-After selecting these packages, the Cygwin installer will automatically
-select addition packages to resolve any dependencies.
-The packages given above can be installed by running the batch file [cygwin_packages](cygwin_packages.bat).
 
 ## Home Directory
 Cygwin (and programs started from within Cygwin) start in the
@@ -94,6 +72,26 @@ line the first instance of `Jon Lighthall` is the user name and the last
 instance is the home directory.
 
      Jon Lighthall:unused:1000:513:U-JCL-N5010-Win7\Jon Lighthall,S-1-5-21-238998706-2098893708-732278632-1000:/home/Jon Lighthall:/bin/bash
+
+## Packages
+The packages necessary for a base installation are selected by default.
+Some useful additions are:
+
+|   **Category** | **Program**             |  **Suggested Package(s)**
+| --------------|-------------------------|-----------------------------
+|               | fortran                 | `gcc-fortran`
+|               | C++                     | `gcc-g++`
+|               | SVN                     | `subversion`
+|               | Xmgrace                 | `grace`
+|               | SSH                     | `openssh`
+|               | Cygwin Bash Prompt Here | `chere`
+|               | GNU Apell               | `aspell`
+|               | Dictionary              | `aspell-en`
+|               | Cygwin/X                | `xinit, X-start-menu-icons`
+
+After selecting these packages, the Cygwin installer will automatically
+select addition packages to resolve any dependencies.
+The packages given above can be installed by running the batch file [cygwin_packages](cygwin_packages.bat).
 
 ## Launching
 ### mintty
