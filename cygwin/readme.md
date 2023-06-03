@@ -46,21 +46,7 @@ Some useful additions are:
 
 After selecting these packages, the Cygwin installer will automatically
 select addition packages to resolve any dependencies.
-
-The packages given above can be installed by executing the following
-command as a batch file.
-
-      setup-x86.exe ^
-     --packages ^
-     subversion,^
-     grace,^
-     openssh,^
-     chere,^
-     aspell,^
-     aspell-en,^
-     xinit,^
-     gcc-g++,^
-     gcc-fortran,^
+The packages given above can be installed by running the batch file [cygwin_packages](cygwin_packages.bat).
 
 ## Home Directory
 Cygwin (and programs started from within Cygwin) start in the
