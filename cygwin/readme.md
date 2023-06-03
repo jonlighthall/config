@@ -53,6 +53,7 @@ name. Additionally, add the line
 
 to the `C:/cygwin/Cygwin.bat` file (optional).
 
+#### Linking
 To move the home directory out of the Cygwin directory (e.g., to move
 the home directory into the My Documents directory) a Cygwin link must
 be made. First, make the destination directory and copy the contents of
@@ -60,6 +61,11 @@ original directory into the new directory. Then delete the original
 directory and make a link.
 
      ln -s /cygdrive/c/Users/Jon\ Lighthall/Documents/.cygwin_home /home/lighthall
+     
+##### Redefining
+Similarly, the following command can be used to redine the location of the home folder.
+
+    cat /etc/nsswitch.conf | sed -i 's/^\sdb_home:\s*/& /cygdrive/c/Users/jonli/OneDrive/Documents/home/cygwin #/'
 
 ## Username
 In order to change the user name, a `/etc/passwd` file must be manually
@@ -72,6 +78,11 @@ line the first instance of `Jon Lighthall` is the user name and the last
 instance is the home directory.
 
      Jon Lighthall:unused:1000:513:U-JCL-N5010-Win7\Jon Lighthall,S-1-5-21-238998706-2098893708-732278632-1000:/home/Jon Lighthall:/bin/bash
+     
+Assuming the home directoyr has been properly set using the commands int he previous section, the following command can be used to change the specified user name.
+
+    sed -i 's/^jonli/jlighthall/' /etc/passwd
+
 
 ## Packages
 The packages necessary for a base installation are selected by default.
