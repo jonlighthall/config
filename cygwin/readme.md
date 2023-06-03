@@ -16,7 +16,7 @@ The `.bash_aliases` files are used for site-specific settings.
 
 ## Emacs
 Make a directory junction from the parent directory `C:\Users\jonli\AppData\Roaming\` using the following command. 
-Open a command prompt as Administrator. Since the location of the link is outisde of OneDrive, this will not cause a OneDrive synchronization problem.
+Open a command prompt as Administrator. Since the location of the link is outside of OneDrive, this will not cause a OneDrive synchronization problem.
 
 ```bash
 rmdir /s .emacs.d
@@ -44,7 +44,7 @@ git config --global core.editor '/cygdrive/c/Program\ Files\ \(x86\)/emacs-25.1-
 Use the following command to create symlink from the user directory to the location of the file.
 This command should be used from both
 * the Windows home directory (`C:\Users\jonli`) and 
-* the Cygwin home dicectory (`C:\Users\jonli\OneDrive\Documents\.cygwin_home`).
+* the Cygwin home directory (`C:\Users\jonli\OneDrive\Documents\.cygwin_home`).
 
 Open a command prompt as Administrator.
 ```bash
@@ -224,7 +224,7 @@ and change the terminal colors as needed.
 Windows integration
 -------------------
 
-Add cygwin to path to use linux commands from the Windows command
+Add cygwin to path to use Linux commands from the Windows command
 prompt. Under System Properties, Advanced, Environment Variables...,
 select Path in the System variables window and click Edit.... Click new
 and enter `C:\cygwin\bin`.
