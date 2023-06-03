@@ -9,6 +9,7 @@ start_time=$SECONDS
 export VB=true
 if $VB; then
     # set tab
+    # .bash_profile should be the first thing to run, so zero TAB
     TAB=""
     TAB+=${profTAB:=''}
     # load formatting
