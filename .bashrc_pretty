@@ -74,6 +74,6 @@ j=${#TAB}
 if [ $i = $j ]; then
     echo -n ""
 else
-    echo -n "${TAB}TAB = \x1B[106m${oldTAB}${NORMAL} ->  \x1B[106m${TAB}${NORMAL}"
+    echo -ne "${TAB}TAB = \x1B[106m${oldTAB}${NORMAL} ->  \x1B[106m${TAB}${NORMAL}"
     echo " length $i -> $j"
 fi
