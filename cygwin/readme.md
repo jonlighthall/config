@@ -1,71 +1,9 @@
-# dotfiles for Cygwin on Windows
-One way to utilize the files in this directory is to copy them  the Cygwin home directory. However, changes in the files will not be tracked by Git.
-Linux-like symbolic links can be made using the `ln -s` command.
-This approach will allow the files to be read by Cygwin, but they cannot be opened in programs like emacs.
-As of this writing, links created from within OneDrive using the `mklink` command will cause OneDrive to synchronize indefinitely.
+# dotfiles for Cygwin
 
-## Bash
-Use the following commands to create a symbolic link from the home directory to the `config\cygwin` directory
-```bash
-ln -s ~/config/linux/.bashrc .bashrc
-ln -s ~/config/cygwin/.bash_profile ~/.bash_profile
-ln -s ~/config/linux/.bash_aliases_<local> .bash_aliases
-```
-The file `.bashrc` is loaded directly by `.bash_profile` but may still need to be linked to the home directory for system use. 
-The `.bash_aliases` files are used for site-specific settings.
-
-## Emacs
-Make a directory junction from the parent directory `C:\Users\jonli\AppData\Roaming\` using the following command. 
-Open a command prompt as Administrator. Since the location of the link is outside of OneDrive, this will not cause a OneDrive synchronization problem.
-
-```bash
-rmdir /s .emacs.d
-mklink /J .emacs.d C:\Users\jonli\OneDrive\Documents\.cygwin_home\config\cygwin\.emacs.d
-```
-Symbolic directory junctions cannot be made using the `ln` command.
-Creating a link using the `mklink` command will cause OneDrive errors.
-In the meantime, use `rsync` from the Cygwin home `C:\Users\jonli\OneDrive\Documents\.cygwin_home\` using the following command. 
-
-```bash
-rm -r .emacs.d
-rsync -vr config/cygwin/.emacs.d/ ./.emacs.d/	
-```
-## Git
-Use the following command to create a symbolic link from the home directory to the `config\cygwin` directory.
-```bash
-ln -s ~/config/cygwin/.gitconfig .gitconfig
-```
-Use the following command to properly set Emacs as the Git editor under Cygwin. Without this setting, Emacs cannot be used as the default Git editor: the conflict between the DOS file path and the cygpath will prevent commit messages to be saved.
-```bash
-git config --global core.editor '/cygdrive/c/Program\ Files\ \(x86\)/emacs-25.1-i686-w64-mingw32/bin/emacs.exe `cygpath --windows ${1}` && set'
-```
-
-## ROOT
-Use the following command to create symlink from the user directory to the location of the file.
-This command should be used from both
-* the Windows home directory (`C:\Users\jonli`) and 
-* the Cygwin home directory (`C:\Users\jonli\OneDrive\Documents\.cygwin_home`).
-
-Open a command prompt as Administrator.
-```bash
-rm .rootrc
-mklink .rootrc C:\Users\jonli\OneDrive\Documents\.cygwin_home\config\cygwin\.rootrc
-```
-
-```bash
-rm .rootrc
-rsync -v config/cygwin/.rootrc ./
-```
-
-The following is translated from
+Parts of the following are adapted from from
 https://github.com/jonlighthall/programs_and_options.git
 
-Cygwin
-======
-
-Installation
-------------
-
+## Installation
 Cygwin is available in 32-bit and 64-bit architectures. One of the major
 utilities of installing Cygwin is the added functionality it provides
 for Emacs. However, since Emacs is only officially supported in 32-bit
@@ -98,7 +36,7 @@ To setup and run Cygwin
 
 This will then load a menu of available packages.
 
-Packages
+## Packages
 --------
 
 The packages necessary for a base installation are selected by default.
@@ -134,7 +72,7 @@ command as a batch file.
 >     gcc-g++,^
 >     gcc-fortran,^
 
-Home Directory
+## Home Directory
 --------------
 
 Cygwin (and programs started from within Cygwin) start in the
@@ -173,7 +111,7 @@ directory and make a link.
 
 >     ln -s /cygdrive/c/Users/Jon\ Lighthall/Documents/.cygwin_home /home/lighthall
 
-Username
+## Username
 --------
 
 In order to change the user name, a `/etc/passwd` file must be manually
@@ -188,7 +126,7 @@ instance is the home directory.
 >     Jon Lighthall:unused:1000:513:U-JCL-N5010-Win7\Jon Lighthall,S-1-5-21-238998706-
 >     2098893708-732278632-1000:/home/Jon Lighthall:/bin/bash
 
-Launching
+## Launching
 ---------
 
 ### mintty
@@ -221,7 +159,7 @@ Similarly, Cygwin can be invoked from the command prompt using the
 command `bash -li` create a shortcut for bash and add the cygwin icon
 and change the terminal colors as needed.
 
-Windows integration
+## Windows integration
 -------------------
 
 Add cygwin to path to use Linux commands from the Windows command
@@ -243,3 +181,64 @@ entry in the installed programs list. Be sure that the `.bashrc` file
 does not have a `cd ~` entry. Then you may need to add
 `C:\Users\Jon\OneDrive\Documents\.cygwin_home` to the start in box under
 the program short cut on the menu
+
+## Links
+One way to utilize the files in this directory is to copy them  the Cygwin home directory. However, changes in the files will not be tracked by Git.
+Linux-like symbolic links can be made using the `ln -s` command.
+This approach will allow the files to be read by Cygwin, but they cannot be opened in programs like emacs.
+As of this writing, links created from within OneDrive using the `mklink` command will cause OneDrive to synchronize indefinitely.
+
+### Bash
+Use the following commands to create a symbolic link from the home directory to the `config\cygwin` directory
+```bash
+ln -s ~/config/linux/.bashrc .bashrc
+ln -s ~/config/cygwin/.bash_profile ~/.bash_profile
+ln -s ~/config/linux/.bash_aliases_<local> .bash_aliases
+```
+The file `.bashrc` is loaded directly by `.bash_profile` but may still need to be linked to the home directory for system use. 
+The `.bash_aliases` files are used for site-specific settings.
+
+### Emacs
+Make a directory junction from the parent directory `C:\Users\jonli\AppData\Roaming\` using the following command. 
+Open a command prompt as Administrator. Since the location of the link is outside of OneDrive, this will not cause a OneDrive synchronization problem.
+
+```bash
+rmdir /s .emacs.d
+mklink /J .emacs.d C:\Users\jonli\OneDrive\Documents\.cygwin_home\config\cygwin\.emacs.d
+```
+Symbolic directory junctions cannot be made using the `ln` command.
+Creating a link using the `mklink` command will cause OneDrive errors.
+In the meantime, use `rsync` from the Cygwin home `C:\Users\jonli\OneDrive\Documents\.cygwin_home\` using the following command. 
+
+```bash
+rm -r .emacs.d
+rsync -vr config/cygwin/.emacs.d/ ./.emacs.d/	
+```
+### Git
+Use the following command to create a symbolic link from the home directory to the `config\cygwin` directory.
+```bash
+ln -s ~/config/cygwin/.gitconfig .gitconfig
+```
+Use the following command to properly set Emacs as the Git editor under Cygwin. Without this setting, Emacs cannot be used as the default Git editor: the conflict between the DOS file path and the cygpath will prevent commit messages to be saved.
+```bash
+git config --global core.editor '/cygdrive/c/Program\ Files\ \(x86\)/emacs-25.1-i686-w64-mingw32/bin/emacs.exe `cygpath --windows ${1}` && set'
+```
+
+### ROOT
+Use the following command to create symlink from the user directory to the location of the file.
+This command should be used from both
+* the Windows home directory (`C:\Users\jonli`) and 
+* the Cygwin home directory (`C:\Users\jonli\OneDrive\Documents\.cygwin_home`).
+
+Open a command prompt as Administrator.
+```bash
+rm .rootrc
+mklink .rootrc C:\Users\jonli\OneDrive\Documents\.cygwin_home\config\cygwin\.rootrc
+```
+
+```bash
+rm .rootrc
+rsync -v config/cygwin/.rootrc ./
+```
+
+
