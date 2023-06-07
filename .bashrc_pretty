@@ -67,15 +67,10 @@ if [ -z ${TAB+dummy} ]; then
     export TAB="   "
 else
     echo -en "${GOOD}set${NORMAL} to \x1B[106m${TAB}${NORMAL}"
-    if [ $i -gt 0 ]; then
-	echo -n " "
-    fi
+    [ $i -gt 0 ] && echo -n " "
     echo "length = $i"
 fi
 j=${#TAB}
-if [ $i = $j ]; then
-    echo -n ""
-else
-    echo -ne "${TAB}TAB = \x1B[106m${oldTAB}${NORMAL} ->  \x1B[106m${TAB}${NORMAL}"
-    echo " length $i -> $j"
+if [ $i -ne $j ]; then
+    echo -e "${TAB}TAB = \x1B[106m${oldTAB}${NORMAL} -> \x1B[106m${TAB}${NORMAL} length $i -> $j"
 fi
