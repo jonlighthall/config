@@ -9,9 +9,11 @@ BROKEN='\033[1;31m' # bold red    : broken link
    DIR='\033[1;34m' # bold blue   : directory
  VALID='\033[1;36m' # bold cyan   : valid link
 # define PS1 colors
- PSUSR='\033[0;32m' # green       : user name
- PSDIR='\033[0;33m' # yellow      : directory, host
-  PSBR='\033[1;34m' # bold blue   : branch
+PSTIME='\033[0;37m' # light gray  : time
+PSUSER='\033[0;32m' # green       : user name, prompt
+PSHOST='\033[1;34m' # bold blue   : host name
+ PSDIR='\033[0;33m' # yellow      : directory
+  PSBR='\033[0;36m' # bold blue   : branch
 # define 'grep' colors
    GRH='\033[1;31m' # bold red    : pattern match
    GRF='\033[0;35m' # magenta     : file match
