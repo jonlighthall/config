@@ -60,12 +60,11 @@ bar() {
 
 # set tab
 i=${#TAB}
-oldTAB=${TAB}
 if [ -z ${TAB+dummy} ]; then
     echo -e "TAB ${yellow}unset${NORMAL}"    
     export TAB="   "
 fi
 j=${#TAB}
 if [ $i -ne $j ]; then
-    echo -e "${TAB}TAB = \x1B[106m${oldTAB}${NORMAL} -> \x1B[106m${TAB}${NORMAL} length $i -> $j"
+    echo -e "${TAB}TAB = \x1B[106m${TAB}${NORMAL} length $j"
 fi
