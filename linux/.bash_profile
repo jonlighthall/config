@@ -72,13 +72,13 @@ fi
 
 echo
 NP=3
-echo "Top $NP processes on $(hostname -s):"
-ps aux --sort=-pcpu | head -n $((NP+1)) | sed 's/1111499164/jlighthall/'
+echo -e "\033[4mTop $NP processes on $(hostname -s):\x1b[0m"
+ps aux --sort=-pcpu | head -n $((NP+1)) | sed 's/1111499164/\x1b\[32mjlighthall\x1b\[0m/'
 echo
-echo "Top $NP processes by ${USER}:"
+echo -e "\033[4mTop $NP processes by ${USER}:\x1b[0m"
 ps ux --sort=-pcpu | head -n $((NP+1)) | sed 's/1111499164/jlighthall/'
 echo
-echo "Last $NP log-ins on $(hostname -s):"
+echo -e "\033[4mLast $NP log-ins on $(hostname -s):\x1b[0m"
 last -wFa | \grep light | head -n $NP
 echo
 

@@ -32,8 +32,9 @@ done
 echo
 
 # show top processes
-echo "Top processes by ${USER}:"
-ps ux --sort=-pcpu | sed 's_1111499164_jlight  _'
+NP=3
+echo -e "\033[4mTop $NP processes by ${USER}:\x1b[0m"
+ps ux --sort=-pcpu | head -n $((NP+1)) | sed 's/1111499164/jlighthall/'
 echo
 
 # say goodbye
