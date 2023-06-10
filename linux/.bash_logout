@@ -33,8 +33,9 @@ echo
 
 # show top processes
 NP=3
+line_width=$(( $(tput cols) - 1 ))
 echo -e "\033[4mTop $NP processes by ${USER}:\x1b[0m"
-ps ux --sort=-pcpu | head -n $((NP+1)) | sed 's/1111499164/jlighthall/'
+ps ux --sort=-pcpu | head -n $((NP+1)) | sed 's/1111499164/jlighthall/' | cut -c -$line_width
 echo
 
 # say goodbye
