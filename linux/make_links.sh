@@ -98,7 +98,7 @@ do
 done
 bar 38 "--------- Done Making Links ----------"
 # print time at exit
-echo -en "$(date +"%a %b %d %I:%M %p %Z") ${BASH_SOURCE##*/} "
+echo -en "$(date +"%a %b %-d %I:%M %p %Z") ${BASH_SOURCE##*/} "
 if command -v sec2elap &>/dev/null; then
     echo "$(sec2elap $SECONDS)"
 else

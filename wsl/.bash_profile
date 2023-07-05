@@ -83,7 +83,7 @@ if $VB; then
     else
 	echo "elapsed time is ${dT} sec"
     fi
-    echo "${TAB}$(date)"
+    echo "${TAB}$(date +"%a %b %-d %I:%M %p %Z")"
 fi
 
 # print welcome message
