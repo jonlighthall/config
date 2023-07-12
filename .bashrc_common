@@ -94,7 +94,13 @@ function nf {
     for dir in $dir_list
     do
 	dir=${dir%/}
-	printf "%'7d files found in ${dir}\n%'7d files found in ${dir}/*\n" $(find ${dir} -maxdepth 1 -type f | wc -l) $(find ${dir} -type f | wc -l)
+	n1=$(find ${dir} -maxdepth 1 -type f | wc -l)
+	printf "%'7d files found in ${dir}\n" $n1
+
+	n2=$(find ${dir} -type f | wc -l)
+	if [ $n1 -ne $n2 ]; then
+	printf "%'7d files found in ${dir}/*\n"
+	fi
     done
 }
 
