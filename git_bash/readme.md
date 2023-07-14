@@ -4,7 +4,4 @@ first copy ssh credentials from
     https://github.com/jonlighthall/config_private.git
 then
     git clone git@github.com:jonlighthall/config.git
-
-
-
-add C:\msys64\mingw64\bin to path for executables
+    ./get_repos.sh
