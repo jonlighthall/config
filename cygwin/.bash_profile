@@ -69,10 +69,11 @@ if [ -f $fname ] ; then
 else
     echo "${TAB}$fname not found"
 fi
-TAB=${TAB#$profTAB}
+echo
 
 # print runtime duration
 if $VB; then
+    TAB=${TAB#$profTAB}
     echo -e "${TAB}$(basename $BASH_SOURCE) run time... \c"
     dT=$(($SECONDS-start_time))
     if command -v sec2elap &>/dev/null
