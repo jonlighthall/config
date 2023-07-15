@@ -31,7 +31,7 @@ if $VB; then
     echo -n "${TAB}appending login timestamp to $hist_file... "
 fi
 if [ -f $hist_file ]; then
-    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $(hostname -s)" >> $hist_file
+    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $HOSTNAME" >> $hist_file
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
 	if $VB; then
