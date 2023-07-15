@@ -64,5 +64,5 @@ if [[ "$LIST" == *"thisroot.sh"* ]]; then
 fi
 
 if $VB; then
-    TAB=${TAB#$fTAB}
+    TAB=${TAB%$fTAB}
 fi

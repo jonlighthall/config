@@ -7,6 +7,7 @@ if [ -z $VB ]; then
 else
     if $VB; then
 	# set tab
+	${TAB:=''}
 	TAB+=${fTAB:='   '}
 	# load formatting
 	fpretty=${HOME}/utils/bash/.bashrc_pretty
@@ -119,5 +120,5 @@ fi
 # fi
 
 if $VB; then
-    TAB=${TAB#$fTAB}
+    TAB=${TAB%$fTAB}
 fi

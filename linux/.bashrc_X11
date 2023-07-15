@@ -95,7 +95,7 @@ if ! $dispOK; then
 	fi	
     done
     
-    TAB=${TAB#$fTAB}
+    TAB=${TAB%$fTAB}
 
     if [ -z "${DISPLAY}" ]; then
 	echo -e "${TAB}${BAD}ERROR: ${NORMAL}DISPLAY not set"
@@ -106,4 +106,4 @@ if ! $dispOK; then
     fi
 fi
 
-TAB=${TAB#$fTAB}
+TAB=${TAB%$fTAB}

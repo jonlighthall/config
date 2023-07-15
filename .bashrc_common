@@ -6,8 +6,8 @@ if [ -z $VB ]; then
 else
     if $VB; then
 	# set tab
-	TAB=${TAB:=''}
-	comTAB=${comTAB:='   '}
+	 ${TAB:=''}
+	TAB+=${fTAB:='   '}
 	# print source name at start
 	echo -e "${TAB}running ${PSDIR}$BASH_SOURCE${NORMAL}..."
 	src_name=$(readlink -f $BASH_SOURCE)
@@ -132,5 +132,5 @@ else
 fi
 
 if $VB; then
-    TAB=${TAB#$comTAB}
+    TAB=${TAB%$fTAB}
 fi

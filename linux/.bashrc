@@ -58,5 +58,5 @@ do
     fi
 done
 if $VB; then
-    TAB=${TAB#$fTAB}
+    TAB=${TAB%$fTAB}
 fi

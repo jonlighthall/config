@@ -85,7 +85,7 @@ else
 	unalias vcx 2>/dev/null
     fi
     if $VB; then
-	TAB=${TAB#$fTAB}
+	TAB=${TAB%$fTAB}
     fi
 fi
 
@@ -145,7 +145,7 @@ if ! $xOK; then
 	    unalias xming 2>/dev/null
 	fi
 	if $VB; then
-	    TAB=${TAB#$fTAB}
+	    TAB=${TAB%$fTAB}
 	fi
     fi
 fi
@@ -245,7 +245,7 @@ if $xOK; then
 		    unset DISPLAY
 		fi
 	    done
-	    TAB=${TAB#$fTAB}
+	    TAB=${TAB%$fTAB}
 
 	    if [ -z "${DISPLAY}" ]; then
 		echo -e "${TAB}${BAD}ERROR: ${NORMAL}DISPLAY not set"
@@ -262,4 +262,4 @@ else
     echo "${TAB}DISPLAY set to to $DISPLAY"
 fi
 
-TAB=${TAB#$fTAB}
+TAB=${TAB%$fTAB}

@@ -64,5 +64,5 @@ else
 fi
 
 if $VB; then
-    TAB=${TAB#$libTAB}
+    TAB=${TAB%$libTAB}
 fi

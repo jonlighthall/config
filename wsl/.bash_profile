@@ -10,8 +10,8 @@ export VB=true
 if $VB; then
     # set tab
     # .bash_profile should be the first thing to run, so zero TAB
-    TAB=""
-    TAB+=${profTAB:=''}
+    TAB=''
+    ${fTAB:='   '}
     # load formatting
     fpretty=${HOME}/utils/bash/.bashrc_pretty
     if [ -e $fpretty ]; then
@@ -74,7 +74,7 @@ echo
 
 # print runtime duration
 if $VB; then
-    TAB=${TAB#$profTAB}
+    TAB=${TAB%$fTAB}
     echo -e "${TAB}$(basename $BASH_SOURCE) run time... \c"
     dT=$(($SECONDS-start_time))
     if command -v sec2elap &>/dev/null
