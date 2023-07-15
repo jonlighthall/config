@@ -11,6 +11,7 @@
 # known directories
 !apple/
 !cygwin/
+!git_bash/
 !linux/
 !mingw/
 !windows/
