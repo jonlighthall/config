@@ -62,7 +62,7 @@ bar() {
 i=${#TAB}
 if [ -z ${TAB+dummy} ]; then
     echo -e "TAB ${yellow}unset${NORMAL}"    
-    export TAB="   "
+    export TAB='   '
 fi
 j=${#TAB}
 if [ $i -ne $j ]; then
