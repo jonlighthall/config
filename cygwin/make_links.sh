@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # load formatting
 fpretty=${HOME}/utils/bash/.bashrc_pretty
@@ -67,12 +68,13 @@ do
 		echo "${TAB}skipping..."
 		continue
 	    else
-		if [ $(diff "${target}" ${link} | wc -c) -eq 0 ]; then
+		if [ $(diff -ebwB "${target}" ${link} | wc -c) -eq 0 ]; then
 		    echo "have the same contents"
-		    continue
+		    echo -n "${TAB}deleting... "
+		    rm -v ${link}
 		else
 		    echo -n "will be backed up..."
-		    mv -v ${link} ${link}_$(date +'%Y-%m-%d-t%H%M')
+		    mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M')
 		fi
 	    fi
 	else
@@ -92,7 +94,7 @@ bar 38 "--------- Done Making Links ----------"
 echo "set bell-style none" | sudo tee -a /etc/inputrc
 
 # print time at exit
-echo -en "$(date +"%a %b %-d %I:%M %p %Z") ${BASH_SOURCE##*/} "
+echo -en "\n$(date +"%a %b %-d %I:%M %p %Z") ${BASH_SOURCE##*/} "
 if command -v sec2elap &>/dev/null; then
     echo "$(sec2elap $SECONDS)"
 else
