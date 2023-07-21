@@ -76,10 +76,16 @@ do
     else
 	echo "${TAB}dirctory $my_repo already exits"
     fi
+
+    # define link
     link=${udir}/${my_repo}
+
+    # create link
     if [ ! -e ${link} ]; then
 	ln -sv ${rdir}/${my_repo} ${link}
     fi
+
+    # run make_links
     fname="${link}/make_links.sh"
     if [ -e "${fname}" ];then
 	cd ${link}
@@ -148,11 +154,14 @@ do
 	echo "cloning $dname..."
 	echo "see ${github_https}$my_repo/blob/master/.git-credentials"
 	git clone ${github_auth}$my_repo $dname
-	cd $dname
-	fname=make_links.sh
-	echo -n "${TAB}$fname... "
-	if [ -f $fname ]; then
+
+	# run make_links
+	fname=make_links.sh	
+	fpath="${dname}/make_links.sh"
+	echo -n "${TAB}$fpath... "
+	if [ -f "${fpath}" ]; then
 	    echo "found"
+	    cd $dname	    
 	    ./$fname
 	else
 	    echo "not found"
