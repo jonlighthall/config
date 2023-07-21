@@ -1,5 +1,7 @@
 # dotfiles for Windows Subsystem for Linux
-One way to utilize the files in this directory is to copy them to the WSL home directory. However, changes in the files will not be tracked by Git. Linux-like symbolic links can be made using the `ln -s` command.
+One way to utilize the files in this directory is to copy them to the WSL home directory.
+However, changes in the files will not be tracked by Git.
+Linux-like symbolic links can be made using the `ln -s` command.
 
 ## Prerequisites 
 An X windows server is needed use the following link to download Xming.
