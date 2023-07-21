@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # load formatting
 fpretty=${HOME}/utils/bash/.bashrc_pretty
@@ -67,10 +68,10 @@ do
 		echo "${TAB}skipping..."
 		continue
 	    else
-		if [ $(diff "${target}" ${link} | wc -c) -eq 0 ]; then
+		if [ $(diff -ebwB "${target}" ${link} | wc -c) -eq 0 ]; then
 		    echo "have the same contents"
-		    echo "then, delete it and link!"
-		    continue
+		    echo -n "${TAB}deleting... "
+		    rm -v ${link}
 		else
 		    echo -n "will be backed up..."
 		    mv -v ${link} ${link}_$(date +'%Y-%m-%d-t%H%M')
