@@ -13,29 +13,29 @@ if [ ! "$BASH_SOURCE" = "$src_name" ]; then
     echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
 fi
 
-# set source and target directories
-source_dir=$(dirname "$src_name")
-target_dir=$HOME
+# set target and link directories
+target_dir=$(dirname "$src_name")
+link_dir=$HOME
 
 # check directories
-echo -n "source directory ${source_dir}... "
-if [ -d "$source_dir" ]; then
+echo -n "target directory ${target_dir}... "
+if [ -d "$target_dir" ]; then
     echo "exists"
 else
     echo -e "${BAD}does not exist${NORMAL}"
     exit 1
 fi
 
-echo -n "target directory ${target_dir}... "
-if [ -d $target_dir ]; then
+echo -n "link directory ${link_dir}... "
+if [ -d $link_dir ]; then
     echo "exists"
 else
     echo "does not exist"
-    mkdir -pv $target_dir
-    if [ $target_dir = $HOME ]; then
-	echo "this should never be true! $target_dir is HOME"
+    mkdir -pv $link_dir
+    if [ $link_dir = $HOME ]; then
+	echo "this should never be true! $link_dir is HOME"
     else
-	echo "$target_dir != $HOME"
+	echo "$link_dir != $HOME"
     fi
 fi
 
@@ -44,14 +44,16 @@ bar 38 "------ Start Linking Repo Files-------"
 # list of files to be linked
 for my_link in .bash_profile .emacs.d .gitconfig .rootrc .inputrc .bash_logout
 do
-    target=${source_dir}/${my_link}
+    # define target (source)
+    target=${target_dir}/${my_link}
+    # define link (destination)
     sub_dir=$(dirname "$my_link")
     if [ ! $sub_dir = "." ]; then
 	my_link=$(basename "$my_link")
     fi
-    link=${target_dir}/${my_link}
+    link=${link_dir}/${my_link}
 
-    echo -n "source file ${target}... "
+    echo -n "target file ${target}... "
     if [ -e "${target}" ]; then
 	echo "exists "
 	echo -n "${TAB}link $link... "
@@ -71,7 +73,7 @@ do
 		    continue
 		else
 		    echo -n "will be backed up..."
-		    mv -v ${link} ${link}_$(date +'%Y-%m-%d-t%H%M')
+		    mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M')
 		fi
 	    fi
 	else
@@ -92,7 +94,7 @@ echo
 sudo ./make_links_etc.sh
 
 # print time at exit
-echo -en "$(date +"%a %b %-d %I:%M %p %Z") ${BASH_SOURCE##*/} "
+echo -en "\n$(date +"%a %b %-d %I:%M %p %Z") ${BASH_SOURCE##*/} "
 if command -v sec2elap &>/dev/null; then
     echo "$(sec2elap $SECONDS)"
 else
