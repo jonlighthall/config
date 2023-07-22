@@ -23,86 +23,110 @@ else
     fi
 fi
 
+vecho() {
+    if $VB; then
+	echo $@
+    fi
+}
+
 # System-specific aliases and functions
 
 # Prompt functions
 git_branch() {
-    git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \x1B[36m(\1)\x1B[0m/'
-    # 2>/dev/null redirects stderr to null
-    # sed -e '/^[^*]/d' deletes any lines not starting with *
-    # sed -e 's/* \(.*\)/ (\1)/' replaces the first instance of '* ' and add parethesis
+    if  command -v git &>/dev/null; then
+	git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \x1B[36m(\1)\x1B[0m/'
+	# 2>/dev/null redirects stderr to null
+	# sed -e '/^[^*]/d' deletes any lines not starting with *
+	# sed -e 's/* \(.*\)/ (\1)/' replaces the first instance of '* ' and add parethesis
+    else
+	:
+    fi
 }
 
 screen_pid() {
-    echo ${STY} | cut -d "." -f1 | sed 's/.*/\x1B[35m&\x1B[0m/'
+    if  command -v screen &>/dev/null; then
+	if [ -z "$STY" ]; then
+	    echo ${STY} | cut -d "." -f1 | sed 's/.*/\x1B[35m&\x1B[0m/'
+	else
+	    :
+	fi
+    else
+	:
+    fi
 }
 
 tmux_ses() {
-    tmux display-message -p '#S' | sed 's/.*/\x1B[35m&\x1B[0m/'
+    if  command -v tmux &>/dev/null; then
+	if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
+	    tmux display-message -p '#S' | sed 's/.*/\x1B[35m&\x1B[0m/'
+	else
+	    :
+	fi
+    else
+	:
+    fi
 }
 
 if $VB; then
     echo "${TAB}Setting prompt..."
     TAB+=${fTAB:='   '}
-    echo -n "${TAB}Checking Git... "
-    if  command -v git &>/dev/null; then
-	if [ -z $(git_branch) ]; then
-	    echo "not in repository"
-	else
-	    echo -e "on\e[36m$(git_branch)\e[0m branch"
-	fi
-    else
-	echo -e "${BAD}FAIL${NORMAL} Git not defined"
-	git_branch() {
-	    :
-	}
-    fi
-
-    echo -n "${TAB}Checking screen session... "
-    if  command -v screen &>/dev/null; then
-	if [ -z "$STY" ]; then
-	    echo "not in screen"
-	else
-	    echo -e "in screen session \e[35m$(screen_pid)\e[0m"
-	fi
-    else
-	echo -e "${BAD}FAIL${NORMAL} screen not defined"
-	screen_pid() {
-	    :
-	}
-    fi
-
-    echo -n "${TAB}Checking tmux session... "
-    if  command -v tmux &>/dev/null; then
-	if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
-	    echo -e "in tmux session \e[35m$(tmux_ses)\e[0m"
-	else
-	    echo "not in tmux"
-	fi
-    else
-	echo -e "${BAD}FAIL${NORMAL} tmux not defined"
-	tmux_ses() {
-	    :
-	}
-    fi
 fi
 
-# Normal prompt
-if [ -z "$STY" ]; then
-    export PS1='\e[0;32m$\e[0m' # stark
-    export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]$(git_branch)\e[32m]$\[\e[0m\] ' # user, host, base dir, branch
-    export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\w\[\e[32m\]$(git_branch)\e[32m]\n$\[\e[0m\] ' # full dir, prompt on new line
-    export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\w\[\e[32m\]$(git_branch)\e[32m]\n\e[0;37m\A\e[0;32m $\[\e[0m\] ' # time, prompt on new line
-    export PS1='\e[0;37m\A\[\e[1;32m\][\u@\h \[\e[34m\]\w\[\e[32m\]$(git_branch)\e[32m]$\[\e[0m\] ' # time, prompt on same line
-    export PS1='\e[0;37m\A\[\e[1;32m\] \u@\h \[\e[34m\]\w\[\e[32m\]$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets
-    export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host
-    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
+vecho -n "${TAB}Checking Git... "
+if  command -v git &>/dev/null; then
+    if [ -z $(git_branch) ]; then
+	vecho "not in repository"
+    else
+	vecho -e "on\e[36m$(git_branch)\e[0m branch"
+    fi
 else
-    # Screen prompt
-    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h $(screen_pid) \[\e[0;33m\] \[\e[33m\] \w\[\e[0m\]$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
-    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h $(screen_pid) \[\e[33m\]\w \[\e[0;32m\]$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
-    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h $(screen_pid)$(tmux_ses) \[\e[33m\]\w \[\e[0;32m\]$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
+    vecho -e "${BAD}FAIL${NORMAL} Git not defined"
+    git_branch() {
+	:
+    }
 fi
+
+vecho -n "${TAB}Checking screen session... "
+if  command -v screen &>/dev/null; then
+    if [ -z "$STY" ]; then
+	vecho "not in screen"
+    else
+	vecho -e "in screen session $(screen_pid)"
+    fi
+else
+    vecho -e "${BAD}FAIL${NORMAL} screen not defined"
+    screen_pid() {
+	:
+    }
+fi
+
+vecho -n "${TAB}Checking tmux session... "
+if  command -v tmux &>/dev/null; then
+    if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
+	vecho -e "in tmux session $(tmux_ses)"
+    else
+	vecho "not in tmux"
+    fi
+else
+    vecho -e "${BAD}FAIL${NORMAL} tmux not defined"
+    tmux_ses() {
+	:
+    }
+fi
+
+# define prompt
+export PS1='\e[0;32m$\e[0m' # stark
+export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W$(git_branch)\e[32m]$\[\e[0m\] ' # user, host, base dir, branch
+export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\w$(git_branch)\e[32m]\n$\[\e[0m\] ' # full dir, prompt on new line
+export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\w$(git_branch)\e[32m]\n\e[0;37m\A\e[0;32m $\[\e[0m\] ' # time, prompt on new line
+export PS1='\e[0;37m\A\[\e[1;32m\][\u@\h \[\e[34m\]\w$(git_branch)\e[32m]$\[\e[0m\] ' # time, prompt on same line
+export PS1='\e[0;37m\A\[\e[1;32m\] \u@\h \[\e[34m\]\w$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets
+export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host
+export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
+
+export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h $(screen_pid) \[\e[0;33m\] \[\e[33m\] \w\[\e[0m\]$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
+export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h $(screen_pid) \[\e[33m\]\w $(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
+export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h $(screen_pid)$(tmux_ses) \[\e[33m\]\w $(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
 
 # Macros
 alias naut='nautilus --no-desktop --browser ./ &'
@@ -116,33 +140,25 @@ do_load_nvidia=false
 
 # Test Git
 if $do_test_git; then
-    if $VB; then
-	echo -e "${TAB}Testing Git prompt... \c"
-    fi
+    vecho -n "${TAB}Testing Git prompt... "
     # first, check if git is defined
     if  command -v git &>/dev/null; then
 	# then, see if git is slow
 	timeout -s 9 1s git branch &>/dev/null
 	RETVAL=$?
 	if [[ $RETVAL -eq 137 || $RETVAL -eq 127 ]]; then
-	    echo -e "\n RETVAL = $RETVAL"
-	    echo " git branch ${BAD}timed out${NORMAL}"
+	    vecho -e "\n RETVAL = $RETVAL"
+	    vecho " git branch ${BAD}timed out${NORMAL}"
 	    git_bad=true
 	else
-	    if $VB; then
-		echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-	    fi
+	    vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	    git_bad=false
-
 	fi
     else
-	if $VB; then
-	    echo -e "${BAD}FAIL${NORMAL} Git not defined"
-	fi
+	vecho -e "${BAD}FAIL${NORMAL} Git not defined"
 	git_bad=true
     fi
     if $git_bad; then
-	#	export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[0;32m\n$\[\e[0m\] ' # no git
 	git_branch() {
 	    :
 	}
@@ -155,9 +171,7 @@ fi
 
 # Test ls color
 if $do_test_color; then
-    if $VB; then
-	echo -e "${TAB}Testing color ls alias... \c"
-    fi
+    vecho -e "${TAB}Testing color ls alias... \c"
     timeout -s 9 1s \ls -ld --color=auto ./* &>/dev/null
     RETVAL=$?
     if [[ $RETVAL -eq 137 ]]; then
@@ -165,9 +179,7 @@ if $do_test_color; then
 	unalias ls
 	echo -e "${TAB}--color=auto removed from ls alias"
     else
-	if $VB; then
-	    echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-	fi
+	vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
     fi
 fi
 
@@ -175,23 +187,17 @@ fi
 if $do_load_pgi; then
     export PGI_DIR=/opt/pgi
     if [ -d $PGI_DIR ]; then
-	if $VB; then
-	    echo "${TAB}adding PGI to path..."
-	fi
+	vecho "${TAB}adding PGI to path..."
 	if [[ ":$PATH" != *":${PGI_DIR}"*  ]]; then
 	    export PATH=$PGI_DIR/linux86-64/19.10/bin:$PATH
 	else
-	    if $VB; then
-		echo "${TAB}${PGI_DIR} already in PATH"
-	    fi
+	    vecho "${TAB}${PGI_DIR} already in PATH"
 	fi
 
 	if [[ ":$MANPATH" != *":${PGI_DIR}"*  ]]; then
 	    export MANPATH=$MANPATH:$PGI_DIR/linux86-64/19.10/man
 	else
-	    if $VB; then
-		echo "${TAB}${PGI_DIR} already in MANPATH"
-	    fi
+	    vecho "${TAB}${PGI_DIR} already in MANPATH"
 	fi
 	export LM_LICENSE_FILE=$LM_LICENSE_FILE:$PGI_DIR/license.dat;
     else
@@ -203,16 +209,16 @@ fi
 if $do_load_nvidia; then
     export NV_DIR=/opt/nvidia/hpc_sdk/Linux_x86_64/22.3/compilers
     if [ -d $NV_DIR ]; then
-	echo "${TAB}adding NVIDIA to path..."
+	vecho "${TAB}adding NVIDIA to path..."
 	if [[ ":$MANPATH" != *":${NV_DIR}"*  ]]; then
 	    MANPATH=$MANPATH:$NV_DIR/man; export MANPATH
 	else
-	    echo "${TAB}${NV_DIR} already in MANPATH"
+	    vvecho "${TAB}${NV_DIR} already in MANPATH"
 	fi
 	if [[ ":$PATH" != *":${NV_DIR}"*  ]]; then
 	    PATH=$NV_DIR/bin:$PATH; export PATH
 	else
-	    echo "${TAB}${NV_DIR} already in PATH"
+	    vecho "${TAB}${NV_DIR} already in PATH"
 	fi
     else
 	echo "${TAB}${NV_DIR} not found"
@@ -223,18 +229,14 @@ fi
 ADDPATH=${HOME}/.local/bin
 if [[ ":$PATH" != *":${ADDPATH}"*  ]]; then
     if [ -d "${ADDPATH}" ] ; then
-	if $VB; then
-	    echo -n "${TAB}adding ${ADDPATH} to PATH... "
-	fi
+	vecho -n "${TAB}adding ${ADDPATH} to PATH... "
 	export PATH=$PATH:$ADDPATH
-	echo "done"
+	vecho "done"
     else
 	echo "${TAB}${ADDPATH} not found"
     fi
 else
-    if $VB; then
-	echo "${TAB}${ADDPATH} already in PATH"
-    fi
+    vecho "${TAB}${ADDPATH} already in PATH"
 fi
 
 if $VB; then
