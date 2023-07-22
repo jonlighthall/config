@@ -34,7 +34,7 @@ git_branch() {
 }
 
 screen_pid() {
-    echo ${STY} | cut -d "." -f1
+    echo ${STY} | cut -d "." -f1 | sed 's/.*/\x1B[37m&\x1B[0m/' 
 }
 
 tmux_ses() {
