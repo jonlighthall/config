@@ -44,7 +44,7 @@ fi
 
 # check if git is defined
 if  command -v git ; then
-    echo "proceeding with git commands"
+    echo "proceeding with Git commands..."
 
     # define directory names
     rdir=${HOME}/repos
@@ -175,5 +175,5 @@ if  command -v git ; then
 	fi
     done
 else
-    echo "git not defined"
+    echo "Git not defined."
 fi
