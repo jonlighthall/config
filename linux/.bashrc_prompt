@@ -103,7 +103,7 @@ fi
 vecho -n "${TAB}Checking tmux session... "
 if  command -v tmux &>/dev/null; then
     if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
-	vecho -e "in tmux session $(tmux_ses)"
+	vecho -e "in tmux session$(tmux_ses)"
     else
 	vecho "not in tmux"
     fi
