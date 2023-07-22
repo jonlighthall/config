@@ -181,6 +181,11 @@ if $do_test_color; then
     fi
 fi
 
+if $VB; then
+    echo "${TAB}Path additions..."
+    TAB+=${fTAB:='   '}
+fi
+
 # PGI
 if $do_load_pgi; then
     export PGI_DIR=/opt/pgi
