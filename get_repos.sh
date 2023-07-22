@@ -42,131 +42,138 @@ if [ $# -eq 1 ]; then
     fi
 fi
 
-# define directory names
-rdir=${HOME}/repos
-udir=${HOME}/utils
-edir=${HOME}/examp
+# check if git is defined
+if  command -v git ; then
+    echo "proceeding with git commands"
 
-echo "creating repository directories..."
-for my_dir in $rdir $udir $edir
-do
-    if [ ! -d ${my_dir} ]; then
-	mkdir -vp ${my_dir}
-    else
-	echo "${TAB}directory ${my_dir} already exists"
-    fi
-done
+    # define directory names
+    rdir=${HOME}/repos
+    udir=${HOME}/utils
+    edir=${HOME}/examp
 
-echo "--------------------------------------"
-echo "------ Start Cloning Repo Files-------"
-echo "--------------------------------------"
-
-github_user=jonlighthall
-github_https=https://github.com/${github_user}/
-github_ssh=git@github.com:${github_user}/
-github_auth=${github_ssh}
-
-cd ${rdir}
-# list of utility repos to be cloned
-for my_repo in bash batch fortran_utilities powershell
-do
-    if [ ! -d ${my_repo} ]; then
-	echo "cloning $my_repo..."
-	git clone ${github_auth}${my_repo}.git
-    else
-	echo "${TAB}dirctory $my_repo already exits"
-    fi
-
-    # define link
-    link=${udir}/${my_repo}
-
-    # create link
-    if [ ! -e ${link} ]; then
-	ln -sv ${rdir}/${my_repo} ${link}
-    fi
-
-    # run make_links
-    fname="${link}/make_links.sh"
-    if [ -e "${fname}" ];then
-	cd ${link}
-	${fname}
-	cd ${rdir}
-    fi
-done
-
-# load formatting
-fpretty=${HOME}/utils/bash/.bashrc_pretty
-if [ -e $fpretty ]; then
-    source $fpretty
-fi
-
-# list of example repos to be cloned
-for my_repo in fortran hello nrf python
-do
-    if [ ! -d ${my_repo} ]; then
-	echo "cloning $my_repo..."
-	git clone ${github_auth}$my_repo
-    else
-	echo "${TAB}dirctory $my_repo already exits"
-    fi
-
-    # define link
-    link=${edir}/${my_repo}
-
-    # check if link exists
-    if [ -L ${link} ] || [ -d ${link} ]; then
-	echo "${TAB}link ${link} already exits"
-	if [ $(\diff --suppress-common-lines -r ${rdir}/${my_repo} ${link} "${my_repo}" | wc -eq 0) ]; then
-	    echo "have the same contents"
-	    echo "delete!"
+    echo "creating repository directories..."
+    for my_dir in $rdir $udir $edir
+    do
+	if [ ! -d ${my_dir} ]; then
+	    mkdir -vp ${my_dir}
 	else
-	    echo "are differnt"
-	    echo "back up!"
+	    echo "${TAB}directory ${my_dir} already exists"
 	fi
-    fi
+    done
 
-    # create link
-    if [ ! -e ${link} ]; then
-	echo -en "${TAB}${GRH}";hline 72;
-	echo "${TAB}making link... "
-	ln -sv ${rdir}/${my_repo} ${link}
-	echo -ne "${TAB}";hline 72;echo -en "${NORMAL}"
-    fi
-done
+    echo "--------------------------------------"
+    echo "------ Start Cloning Repo Files-------"
+    echo "--------------------------------------"
 
-# list of other repos to be cloned
-for my_repo in matlab
-do
-    if [ ! -d ${my_repo} ]; then
-	echo "cloning $my_repo..."
-	git clone ${github_auth}$my_repo
-    else
-	echo "${TAB}dirctory $my_repo already exits"
-    fi
-done
+    github_user=jonlighthall
+    github_https=https://github.com/${github_user}/
+    github_ssh=git@github.com:${github_user}/
+    github_auth=${github_ssh}
 
-# list of private repos to be cloned
-cd ${HOME}/config
-dname=private
-for my_repo in config_private
-do
-    if [ ! -d $dname ]; then
-	echo "cloning $dname..."
-	echo "see ${github_https}$my_repo/blob/master/.git-credentials"
-	git clone ${github_auth}$my_repo $dname
+    cd ${rdir}
+    # list of utility repos to be cloned
+    for my_repo in bash batch fortran_utilities powershell
+    do
+	if [ ! -d ${my_repo} ]; then
+	    echo "cloning $my_repo..."
+	    git clone ${github_auth}${my_repo}.git
+	else
+	    echo "${TAB}dirctory $my_repo already exits"
+	fi
+
+	# define link
+	link=${udir}/${my_repo}
+
+	# create link
+	if [ ! -e ${link} ]; then
+	    ln -sv ${rdir}/${my_repo} ${link}
+	fi
 
 	# run make_links
-	fname=make_links.sh	
-	fpath="${dname}/make_links.sh"
-	echo -n "${TAB}$fpath... "
-	if [ -f "${fpath}" ]; then
-	    echo "found"
-	    cd $dname	    
-	    ./$fname
-	else
-	    echo "not found"
+	fname="${link}/make_links.sh"
+	if [ -e "${fname}" ];then
+	    cd ${link}
+	    ${fname}
+	    cd ${rdir}
 	fi
-    else
-	echo "${TAB}dirctory $my_repo already exits"
+    done
+
+    # load formatting
+    fpretty=${HOME}/utils/bash/.bashrc_pretty
+    if [ -e $fpretty ]; then
+	source $fpretty
     fi
-done
+
+    # list of example repos to be cloned
+    for my_repo in fortran hello nrf python
+    do
+	if [ ! -d ${my_repo} ]; then
+	    echo "cloning $my_repo..."
+	    git clone ${github_auth}$my_repo
+	else
+	    echo "${TAB}dirctory $my_repo already exits"
+	fi
+
+	# define link
+	link=${edir}/${my_repo}
+
+	# check if link exists
+	if [ -L ${link} ] || [ -d ${link} ]; then
+	    echo "${TAB}link ${link} already exits"
+	    if [ $(\diff --suppress-common-lines -r ${rdir}/${my_repo} ${link} "${my_repo}" | wc -eq 0) ]; then
+		echo "have the same contents"
+		echo "delete!"
+	    else
+		echo "are differnt"
+		echo "back up!"
+	    fi
+	fi
+
+	# create link
+	if [ ! -e ${link} ]; then
+	    echo -en "${TAB}${GRH}";hline 72;
+	    echo "${TAB}making link... "
+	    ln -sv ${rdir}/${my_repo} ${link}
+	    echo -ne "${TAB}";hline 72;echo -en "${NORMAL}"
+	fi
+    done
+
+    # list of other repos to be cloned
+    for my_repo in matlab
+    do
+	if [ ! -d ${my_repo} ]; then
+	    echo "cloning $my_repo..."
+	    git clone ${github_auth}$my_repo
+	else
+	    echo "${TAB}dirctory $my_repo already exits"
+	fi
+    done
+
+    # list of private repos to be cloned
+    cd ${HOME}/config
+    dname=private
+    for my_repo in config_private
+    do
+	if [ ! -d $dname ]; then
+	    echo "cloning $dname..."
+	    echo "see ${github_https}$my_repo/blob/master/.git-credentials"
+	    git clone ${github_auth}$my_repo $dname
+
+	    # run make_links
+	    fname=make_links.sh
+	    fpath="${dname}/make_links.sh"
+	    echo -n "${TAB}$fpath... "
+	    if [ -f "${fpath}" ]; then
+		echo "found"
+		cd $dname
+		./$fname
+	    else
+		echo "not found"
+	    fi
+	else
+	    echo "${TAB}dirctory $my_repo already exits"
+	fi
+    done
+else
+    echo "git not defined"
+fi

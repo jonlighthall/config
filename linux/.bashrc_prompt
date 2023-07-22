@@ -87,17 +87,31 @@ if $do_test_git; then
     if $VB; then
 	echo -e "${TAB}Testing Git prompt... \c"
     fi
-    timeout -s 9 1s git branch &>/dev/null
-    RETVAL=$?
-    if [[ $RETVAL -eq 137 ]]; then
-	echo -e "\n RETVAL = $RETVAL"
-	echo " git branch ${BAD}timed out${NORMAL}"
-	export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[0;32m\n$\[\e[0m\] ' # no git
-	echo -e " git branch removed from prompt\n"
+    # first, check if git is defined
+    if  command -v git ; then
+	# then, see if git is slow
+	timeout -s 9 1s git branch &>/dev/null
+	RETVAL=$?
+	if [[ $RETVAL -eq 137 || $RETVAL -eq 127 ]]; then
+	    echo -e "\n RETVAL = $RETVAL"
+	    echo " git branch ${BAD}timed out${NORMAL}"
+	    git_bad=true
+	else
+	    if $VB; then
+		echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+	    fi
+	    git_bad=false
+
+	fi
     else
 	if $VB; then
-	    echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+	    echo -e "${BAD}FAIL${NORMAL} git not defined"
 	fi
+	git_bad=true
+    fi
+    if $git_bad; then
+	export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[0;32m\n$\[\e[0m\] ' # no git
+	echo -e " git branch removed from prompt\n"
     fi
 fi
 if $VB; then
