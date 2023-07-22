@@ -73,7 +73,7 @@ if $VB; then
     fi
 
     echo -n "${TAB}Checking tmux session... "
-    if  command -v screen &>/dev/null; then
+    if  command -v tmux &>/dev/null; then
 	if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
 	    echo -e "in tmux session \e[35m$(tmux_ses)\e[0m"
 	else
