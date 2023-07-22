@@ -22,7 +22,7 @@ if [ $# -eq 1 ]; then
 	echo -n "${TAB}$fname... "
 	if [ -f $fname ]; then
 	    echo "found"
-	    ./$fname
+	    bash $fname
 	    src_name2=~/.bash_profile
 	    echo -n "$src_name2... "
 	    if [ -f $src_name2 ]; then
@@ -166,7 +166,7 @@ if  command -v git ; then
 	    if [ -f "${fpath}" ]; then
 		echo "found"
 		cd $dname
-		./$fname
+		bash $fname
 	    else
 		echo "not found"
 	    fi
