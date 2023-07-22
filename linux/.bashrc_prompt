@@ -34,11 +34,11 @@ git_branch() {
 }
 
 screen_pid() {
-    echo ${STY} | cut -d "." -f1 | sed 's/.*/\x1B[37m&\x1B[0m/' 
+    echo ${STY} | cut -d "." -f1 | sed 's/.*/\x1B[35m&\x1B[0m/' 
 }
 
 tmux_ses() {
-    \e[0;35m\]tmux display-message -p '#S'\e[0m\]
+    tmux display-message -p '#S' | sed 's/.*/\x1B[35m&\x1B[0m/' 
 }
 
 if $VB; then
