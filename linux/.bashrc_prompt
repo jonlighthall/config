@@ -41,10 +41,14 @@ if $VB; then
     echo "${TAB}Setting prompt..."
     TAB+=${fTAB:='   '}
     echo -n "${TAB}Checking Git... "
-    if [ -z $(git_branch) ]; then
-	echo "not in repository"
+    if  command -v git ; then
+	if [ -z $(git_branch) ]; then
+	    echo "not in repository"
+	else
+	    echo -e "on\e[36m$(git_branch)\e[0m branch"
+	fi
     else
-	echo -e "on\e[36m$(git_branch)\e[0m branch"
+	echo -e "${BAD}FAIL${NORMAL} Git not defined"
     fi
 
     echo -n "${TAB}Checking screen session... "
@@ -105,7 +109,7 @@ if $do_test_git; then
 	fi
     else
 	if $VB; then
-	    echo -e "${BAD}FAIL${NORMAL} git not defined"
+	    echo -e "${BAD}FAIL${NORMAL} Git not defined"
 	fi
 	git_bad=true
     fi
