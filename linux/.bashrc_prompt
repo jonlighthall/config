@@ -46,7 +46,7 @@ git_branch() {
 screen_pid() {
     if  command -v screen &>/dev/null; then
 	if [ -z "$STY" ]; then
-	    echo ${STY} | cut -d "." -f1 | sed 's/.*/\x1B[35m&\x1B[0m/ '
+	    echo ${STY} | cut -d "." -f1 | sed 's/.*/\x1B[35m&\x1B[0m /'
 	else
 	    :
 	fi
@@ -58,7 +58,7 @@ screen_pid() {
 tmux_ses() {
     if  command -v tmux &>/dev/null; then
 	if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
-	    tmux display-message -p '#S' | sed 's/.*/\x1B[35m&\x1B[0m/ '
+	    tmux display-message -p '#S' | sed 's/.*/\x1B[35m&\x1B[0m /'
 	else
 	    :
 	fi
