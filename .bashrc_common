@@ -6,8 +6,13 @@ if [ -z $VB ]; then
 else
     if $VB; then
 	# set tab
-	 ${TAB:=''}
+	: ${TAB:=''}
 	TAB+=${fTAB:='   '}
+	# load formatting
+	fpretty=${HOME}/utils/bash/.bashrc_pretty
+	if [ -e $fpretty ]; then
+	    source $fpretty
+	fi
 	# print source name at start
 	echo -e "${TAB}running ${PSDIR}$BASH_SOURCE${NORMAL}..."
 	src_name=$(readlink -f $BASH_SOURCE)
