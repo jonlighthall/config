@@ -37,6 +37,10 @@ screen_pid() {
     echo ${STY} | cut -d "." -f1
 }
 
+tmux_ses() {
+    tmux display-message -p '#S'
+}
+
 if $VB; then
     echo "${TAB}Setting prompt..."
     TAB+=${fTAB:='   '}
@@ -60,7 +64,7 @@ if $VB; then
 
     echo -n "${TAB}Checking tmux session... "
     if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
-	echo -e "in tmux session \e[35m$(tmux display-message -p '#S')\e[0m"
+	echo -e "in tmux session \e[35m$(tmux_ses)\e[0m"
     else
 	echo "not in tmux"
     fi
@@ -80,7 +84,7 @@ else
     # Screen prompt
     export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \e[0;35m\]$STY\[\e[0;33m\] \w\[\e[0;32m\]\e[36m$(git_branch)\e[0;32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
     export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h \e[0;35m\]$STY \[\e[0;33m\]\w \[\e[0;32m\]\e[36m$(git_branch)\e[0;32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
-    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h \e[0;35m\]$(screen_pid) \[\e[0;33m\]\w \[\e[0;32m\]\e[36m$(git_branch)\e[0;32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
+    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h \e[0;35m\]$(screen_pid)$(tmux_ses) \[\e[0;33m\]\w \[\e[0;32m\]\e[36m$(git_branch)\e[0;32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
 fi
 
 # Macros
