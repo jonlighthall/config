@@ -57,6 +57,13 @@ if $VB; then
     else
 	echo -e "in screen session \e[35m$(screen_pid)\e[0m"
     fi
+
+    echo -n "${TAB}Checking tmux session... "
+    if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
+	echo -e "in tmux session \e[35m$(tmux display-message -p '#S')\e[0m"
+    else
+	echo "not in tmux"
+    fi
 fi
 
 # Normal prompt
