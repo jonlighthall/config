@@ -115,7 +115,7 @@ if $do_test_git; then
     fi
     if $git_bad; then
 	export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[0;32m\n$\[\e[0m\] ' # no git
-	echo -e " git branch removed from prompt\n"
+	echo -e "${TAB}${fTAB}git branch removed from prompt"
     fi
 fi
 if $VB; then
