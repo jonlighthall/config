@@ -34,11 +34,11 @@ git_branch() {
 }
 
 screen_pid() {
-    echo ${STY} | cut -d "." -f1 | sed 's/.*/\x1B[35m&\x1B[0m/' 
+    echo ${STY} | cut -d "." -f1 | sed 's/.*/\x1B[35m&\x1B[0m/'
 }
 
 tmux_ses() {
-    tmux display-message -p '#S' | sed 's/.*/\x1B[35m&\x1B[0m/' 
+    tmux display-message -p '#S' | sed 's/.*/\x1B[35m&\x1B[0m/'
 }
 
 if $VB; then
@@ -53,20 +53,37 @@ if $VB; then
 	fi
     else
 	echo -e "${BAD}FAIL${NORMAL} Git not defined"
+	git_branch() {
+	    :
+	}
     fi
 
     echo -n "${TAB}Checking screen session... "
-    if [ -z "$STY" ]; then
-	echo "not in screen"
+    if  command -v screen &>/dev/null; then
+	if [ -z "$STY" ]; then
+	    echo "not in screen"
+	else
+	    echo -e "in screen session \e[35m$(screen_pid)\e[0m"
+	fi
     else
-	echo -e "in screen session \e[35m$(screen_pid)\e[0m"
+	echo -e "${BAD}FAIL${NORMAL} screen not defined"
+	screen_pid() {
+	    :
+	}
     fi
 
     echo -n "${TAB}Checking tmux session... "
-    if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
-	echo -e "in tmux session \e[35m$(tmux_ses)\e[0m"
+    if  command -v screen &>/dev/null; then
+	if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
+	    echo -e "in tmux session \e[35m$(tmux_ses)\e[0m"
+	else
+	    echo "not in tmux"
+	fi
     else
-	echo "not in tmux"
+	echo -e "${BAD}FAIL${NORMAL} tmux not defined"
+	tmux_ses() {
+	    :
+	}
     fi
 fi
 
@@ -82,9 +99,9 @@ if [ -z "$STY" ]; then
     export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
 else
     # Screen prompt
-    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \e[0;35m\]$STY\[\e[0;33m\] \w\[\e[0m\]$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
-    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h \e[0;35m\]$STY \[\e[0;33m\]\w \[\e[0;32m\]$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
-    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h \e[0;35m\]$(screen_pid)$(tmux_ses) \[\e[0;33m\]\w \[\e[0;32m\]$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
+    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h $(screen_pid) \[\e[0;33m\] \[\e[33m\] \w\[\e[0m\]$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
+    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h $(screen_pid) \[\e[33m\]\w \[\e[0;32m\]$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
+    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h $(screen_pid)$(tmux_ses) \[\e[33m\]\w \[\e[0;32m\]$(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
 fi
 
 # Macros
