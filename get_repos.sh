@@ -93,7 +93,7 @@ if  command -v git ; then
 	fname="${link}/make_links.sh"
 	if [ -e "${fname}" ];then
 	    cd ${link}
-	    ${fname}
+	    bash ${fname}
 	    cd ${rdir}
 	fi
     done
