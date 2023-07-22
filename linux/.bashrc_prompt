@@ -25,7 +25,7 @@ fi
 
 vecho() {
     if $VB; then
-	echo $@
+	echo "$@"
     fi
 }
 
