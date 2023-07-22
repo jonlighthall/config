@@ -34,7 +34,7 @@ vecho() {
 # Prompt functions
 git_branch() {
     if  command -v git &>/dev/null; then
-	git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\x1B[36m(\1)\x1B[0m/'
+	git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \x1B[36m(\1)\x1B[0m/'
 	# 2>/dev/null redirects stderr to null
 	# sed -e '/^[^*]/d' deletes any lines not starting with *
 	# sed -e 's/* \(.*\)/ (\1)/' replaces the first instance of '* ' and add parethesis
@@ -45,8 +45,8 @@ git_branch() {
 
 screen_pid() {
     if  command -v screen &>/dev/null; then
-	if [ -z "$STY" ]; then
-	    echo ${STY} | cut -d "." -f1 | sed 's/.*/\x1B[35m&\x1B[0m /'
+	if [ ! -z "$STY" ]; then
+	    echo ${STY} | cut -d "." -f1 | sed 's/.*/ \x1B[1;35m&\x1B[0m/'
 	else
 	    :
 	fi
@@ -58,7 +58,7 @@ screen_pid() {
 tmux_ses() {
     if  command -v tmux &>/dev/null; then
 	if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
-	    tmux display-message -p '#S' | sed 's/.*/\x1B[35m&\x1B[0m /'
+	    tmux display-message -p '#S' | sed 's/.*/ \x1B[1;35m&\x1B[0m/'
 	else
 	    :
 	fi
@@ -77,7 +77,7 @@ if  command -v git &>/dev/null; then
     if [ -z $(git_branch) ]; then
 	vecho "not in repository"
     else
-	vecho -e "on\e[36m$(git_branch)\e[0m branch"
+	vecho -e "on\e[1;36m$(git_branch)\e[0m branch"
     fi
 else
     vecho -e "${BAD}FAIL${NORMAL} Git not defined"
@@ -91,7 +91,7 @@ if  command -v screen &>/dev/null; then
     if [ -z "$STY" ]; then
 	vecho "not in screen"
     else
-	vecho -e "in screen session $(screen_pid)"
+	vecho -e "in screen session$(screen_pid)"
     fi
 else
     vecho -e "${BAD}FAIL${NORMAL} screen not defined"
@@ -117,19 +117,14 @@ fi
 # define prompt
 #export PS1='\[\e[1;32m\]\u@\h\[\e[0m\]:\[\e[1;34m\]\w\[\e[0m\]\$' # default
 #export PS1='\[\e[0;32m\]\$\[\e[0m\] ' # stark
-#export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W $(git_branch)\e[32m]$\[\e[0m\] ' # user, host, base dir, branch
-#export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\w $(git_branch)\e[32m]\n$\[\e[0m\] ' # full dir, prompt on new line
-#export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\w $(git_branch)\e[32m]\n\[\e[0;37m\]\A\[\e[0;32m\] $\[\e[0m\] ' # time, prompt on new line
-#export PS1='\e[0;37m\A\[\e[1;32m\][\u@\h \[\e[34m\]\w $(git_branch)\e[32m]$\[\e[0m\] ' # time, prompt on same line
-#export PS1='\e[0;37m\A\[\e[1;32m\] \u@\h \[\e[34m\]\w $(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets
-#export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w $(git_branch)\e[32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host
-#export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w $(git_branch)\e[0;32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
-
-export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h$(screen_pid)$(tmux_ses)\[\e[0;33m\] \w $(git_branch)\e[0;32m\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
-
-# export PS1='\[\e[0;37m\A\e[0;32m \u@\e[1;34m\h $(screen_pid) \e[0;33m \e[33m \w\e[0m$(git_branch)\e[32m\n$\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
-# export PS1='\[\e[0;37m\A\e[0;32m \u@\e[1;34m\h $(screen_pid) \e[33m\w $(git_branch)\e[32m\n$\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
-# export PS1='\[\e[0;37m\A\e[0;32m \u@\e[1;34m\h $(screen_pid)$(tmux_ses)\e[33m\w $(git_branch)\e[32m\n$\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
+#export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W$(git_branch)\e[1;32m]$\[\e[0m\] ' # user, host, base dir, branch
+#export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\w$(git_branch)\e[1;32m]\n$\[\e[0m\] ' # full dir, prompt on new line
+#export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\w$(git_branch)\e[32m]\n\[\e[0;37m\]\A\[\e[0;32m\] $\[\e[0m\] ' # time, prompt on new line
+#export PS1='\[\e[0;37m\]\A\[\e[1;32m\] [\u@\h \[\e[34m\]\w$(git_branch)\[\e[32m\]]$\[\e[0m\] ' # time, prompt on same line
+#export PS1='\[\e[0;37m\]\A\[\e[1;32m\] \u@\h \[\e[34m\]\w$(git_branch)\[\e[32m\]\n$\[\e[0m\] ' # time before, new line, no brackets
+#export PS1='\[\e[0;37m\]\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w$(git_branch)\[\e[32m\]\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host
+# export PS1='\[\e[0;37m\]\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w$(git_branch)\[\e[0;32m\]\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
+export PS1='\[\e[0;37m\]\A\[\e[0;32m\] \u@\[\e[1;34m\]\h$(screen_pid)$(tmux_ses)\[\e[0;33m\] \w$(git_branch)\[\e[0;32m\]\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
 
 # Macros
 alias naut='nautilus --no-desktop --browser ./ &'
