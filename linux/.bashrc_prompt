@@ -23,6 +23,7 @@ else
     fi
 fi
 
+# define conditional echo
 vecho() {
     if $VB; then
 	echo "$@"
@@ -232,7 +233,7 @@ fi
 ADDPATH=${HOME}/.local/bin
 if [[ ":$PATH" != *":${ADDPATH}"*  ]]; then
     if [ -d "${ADDPATH}" ] ; then
-	vecho -n "${TAB}adding ${ADDPATH} to PATH... "
+	vecho -n "${TAB}appending ${ADDPATH} to PATH... "
 	export PATH=$PATH:$ADDPATH
 	vecho "done"
     else

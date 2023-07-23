@@ -22,6 +22,13 @@ else
     fi
 fi
 
+# define conditional echo
+vecho() {
+    if $VB; then
+	echo "$@"
+    fi
+}
+
 # Settings
 # Commands to save
 export HISTFILESIZE=
@@ -79,14 +86,14 @@ alias up='update_repos'
 function duf {
     du -k "$@" | sort -n |
 	while read size fname; do
-     	    for unit in k M G T P E Z Y;
+     	    for unit in k M G T P E Z Y
 	    do
 		if [ $size -lt 1024 ]; then
 		    echo -e "${size}${unit}B${fname}";
 		    break;
 		fi;
 		size=$((size/1024));
-	    done;
+	    done
 	done
 }
 
@@ -117,25 +124,27 @@ function nf {
 }
 
 # Path additions
+if $VB; then
+    echo "${TAB}Path additions..."
+    TAB+=${fTAB:='   '}
+fi
+
 ADDPATH=${HOME}/bin
 if [[ ":$PATH" != *":${ADDPATH}"*  ]]; then
     if [ -d "${ADDPATH}" ] ; then
-	if $VB; then
-	    echo -n "${TAB}appending ${ADDPATH} to PATH... "
-	    #echo -n "${TAB}prepending ${ADDPATH} to PATH... "
-	fi
+	vecho -n "${TAB}appending ${ADDPATH} to PATH... "
+	#vecho -n "${TAB}prepending ${ADDPATH} to PATH... "
 	export PATH=$PATH:$ADDPATH
-#	export PATH=$ADDPATH:$PATH
-	echo "done"
+	#export PATH=$ADDPATH:$PATH
+	vecho "done"
     else
 	echo "${TAB}${ADDPATH} not found"
     fi
 else
-    if $VB; then
-	echo "${TAB}${ADDPATH} already in PATH"
-    fi
+    vecho "${TAB}${ADDPATH} already in PATH"
 fi
 
 if $VB; then
-    TAB=${TAB%$fTAB}
+    TAB=${TAB%$fTAB} # once for path
+    TAB=${TAB%$fTAB} # once for file
 fi

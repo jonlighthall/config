@@ -1,5 +1,4 @@
 # User-dependent .bash_profile for Cygwin
-
 # If not running interactively, don't do anything
 [[ "$-" != *i* ]] && return
 
@@ -24,18 +23,22 @@ if $VB; then
     fi
     echo "${TAB}verbose bash printing is... $VB"
 fi
+
+# define conditional echo
+vecho() {
+    if $VB; then
+	echo "$@"
+    fi
+}
+
 # save login timestamp to history
 hist_file=~/.bash_history
-if $VB; then
-    echo -n "${TAB}appending login timestamp to $hist_file... "
-fi
+vecho -n "${TAB}appending login timestamp to $hist_file... "
 if [ -f $hist_file ]; then
     echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $HOSTNAME" >> $hist_file
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
-	if $VB; then
-	    echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-	fi
+	vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
     else
 	if $VB; then
 	    echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
@@ -53,23 +56,19 @@ fi
 
 # source the user's .bashrc if it exists
 fname=${HOME}/config/cygwin/.bashrc
-if $VB; then
-    echo "${TAB}loading $fname... "
-fi
+vecho "${TAB}loading $fname... "
 if [ -f $fname ] ; then
     source $fname
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
-	if $VB; then
-	    echo -e "${TAB}$fname ${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-	fi
+	vecho -e "${TAB}$fname ${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
     else
 	echo -e "${TAB}$fname ${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
     fi
 else
     echo "${TAB}$fname not found"
 fi
-echo
+vecho
 
 # print runtime duration
 if $VB; then
@@ -86,7 +85,5 @@ if $VB; then
 fi
 
 # print welcome message
-if $VB; then
-    echo
-fi
+vecho
 echo "${TAB}Welcome to $HOSTNAME"
