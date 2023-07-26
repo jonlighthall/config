@@ -35,7 +35,7 @@ export HISTFILESIZE=
 export HISTSIZE=
 # Don't put duplicate lines in the history
 export HISTCONTROL=ignoredups
-export HISTIGNORE=$'bg:exit:ls:pwd:history'
+export HISTIGNORE=$'bg:exit:ls:pwd:history:la:lt:gits:gitd:git status:git log:git diff'
 # Realtime history
 shopt -s histappend
 PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
