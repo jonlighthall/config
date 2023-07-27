@@ -333,16 +333,39 @@ else
     echo "false: set and not null"
 fi
 
-return
-
-
-echo -n "NULL and NOT NULL (-z && -n): "
+echo "----------------------------------------------------"
+# impossible and
+echo -n "    NULL and     NOT NULL (-z && -n)        : "
 if [ -z ${VB} ] && [ -n ${VB}  ]; then
-    echo " true: impossible!, VB unset"
+    echo " true: impossible! unset or null?"
 else
-    echo "false: VB either no, VB set"
+    echo "false: OK"
 fi
 
+echo -n "    NULL and     NOT NULL (-z && -n \"\")     : "
+if [ -z ${VB} ] && [ -n "${VB}"  ]; then
+    echo " true: impossible!"
+else
+    echo "false: OK"
+fi
+
+echo -n "NOT NULL and NOT NOT NULL (! -z && ! -n)    : "
+if [ ! -z ${VB} ] && [ ! -n ${VB}  ]; then
+    echo " true: impossible!"
+else
+    echo "false: OK"
+fi
+
+echo -n "NOT NULL and NOT NOT NULL (! -z && ! -n \"\") : "
+if [ ! -z ${VB} ] && [ ! -n "${VB}"  ]; then
+    echo " true: impossible!"
+else
+    echo "false: OK"
+fi
+
+echo "----------------------------------------------------"
+
+return
 echo -n "NULL (-z :+): "
 if [ -z ${VB:+dummy} ]; then
     echo "unset"
