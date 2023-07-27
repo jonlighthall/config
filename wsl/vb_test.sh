@@ -1,250 +1,250 @@
 echo "VB = '${VB}'"
 
 # true false
-echo "----------------------------------------------------"
-echo -n "             bare : "
+echo -e "----------------------------------------------------"
+echo -e -n "             bare : "
 if $VB; then
-    echo " true"
+    echo -e " \x1B[1;32mtrue\x1B[0m"
 else
-    echo "false"
+    echo -e "\x1B[1;31mfalse\x1B[0m"
 fi
-echo -n "         brackets : "
+echo -e -n "         brackets : "
 if ${VB}; then
-    echo " true"
+    echo -e " \x1B[1;32mtrue\x1B[0m"
 else
-    echo "false"
+    echo -e "\x1B[1;31mfalse\x1B[0m"
 fi
 
-echo -n "        not unset : "
+echo -e -n "        not unset\x1B[0m : "
 if [ ! -z ${VB:+dummy} ]; then
-    echo " true"
+    echo -e " \x1B[1;32mtrue\x1B[0m"
 else
-    echo "false"
+    echo -e "\x1B[1;31mfalse\x1B[0m"
 fi
 
-echo -n "not unset and true: "
+echo -e -n "not unset\x1B[0m and true\x1B[0m: "
 if [ ! -z ${VB:+dummy} ] && ${VB}; then
-    echo " true"
+    echo -e " \x1B[1;32mtrue\x1B[0m"
 else
-    echo "false"
+    echo -e "\x1B[1;31mfalse\x1B[0m"
 fi
 
 
-echo -n "      set and true: "
+echo -e -n "      set and true\x1B[0m: "
 if [ -n ${VB:+dummy} ] && ${VB}; then
-    echo " true"
+    echo -e " \x1B[1;32mtrue\x1B[0m"
 else
-    echo "false"
+    echo -e "\x1B[1;31mfalse\x1B[0m"
 fi
 
 
 
-echo "----------------------------------------------------"
+echo -e "----------------------------------------------------"
 # null, no quotes
-echo "----------------------------------------------------"
-echo -n "    NULL (-z)         : "
+echo -e "----------------------------------------------------"
+echo -e -n "    NULL (-z)         : "
 if [ -z ${VB} ]; then
-    echo " true: unset or null (empty)"
+    echo -e " \x1B[1;32mtrue\x1B[0m: \x1B[1;33munset\x1B[0m or null (empty)"
 else
-    echo "false: set and not null"
+    echo -e "\x1B[1;31mfalse\x1B[0m: set and not null"
 fi
 
-echo -n "    NULL (-z -)       : "
+echo -e -n "    NULL (-z -)       : "
 if [ -z ${VB-dummy} ]; then
-    echo " true: set and null (empty)"
+    echo -e " \x1B[1;32mtrue\x1B[0m: set and null (empty)"
 else
-    echo "false: unset or not null"
+    echo -e "\x1B[1;31mfalse\x1B[0m: \x1B[1;33munset\x1B[0m or not null"
 fi
 
-echo -n "    NULL (-z +)       : "
+echo -e -n "    NULL (-z +)       : "
 if [ -z ${VB+dummy} ]; then
-    echo " true: unset"
+    echo -e " \x1B[1;32mtrue\x1B[0m: \x1B[1;33munset\x1B[0m"
 else
-    echo "false: set (maybe null)"
+    echo -e "\x1B[1;31mfalse\x1B[0m: set (maybe null)"
 fi
 
-echo -n "    NULL (-z :+)      : "
+echo -e -n "    NULL (-z :+)      : "
 if [ -z ${VB:+dummy} ]; then
-    echo " true: unset or null"
+    echo -e " \x1B[1;32mtrue\x1B[0m: \x1B[1;33munset\x1B[0m or null"
 else
-    echo "false: set and not null"
+    echo -e "\x1B[1;31mfalse\x1B[0m: set and not null"
 fi
 
 # not null, no quotes
-echo "----------------------------------------------------"
-echo -n "NOT NULL (! -z)       : "
+echo -e "----------------------------------------------------"
+echo -e -n "NOT NULL (! -z)       : "
 if [ ! -z ${VB} ]; then
-    echo " true: not null"
+    echo -e " \x1B[1;32mtrue\x1B[0m: not null"
 else
-    echo "false: unset or null"
+    echo -e "\x1B[1;31mfalse\x1B[0m: \x1B[1;33munset\x1B[0m or null"
 fi
 
-echo -n "NOT NULL (! -z -)     : "
+echo -e -n "NOT NULL (! -z -)     : "
 if [ ! -z ${VB-dummy} ]; then
-    echo " true: unset or not null"
+    echo -e " \x1B[1;32mtrue\x1B[0m: \x1B[1;33munset\x1B[0m or not null"
 else
-    echo "false: set and null"
+    echo -e "\x1B[1;31mfalse\x1B[0m: set and null"
 fi
 
-echo -n "NOT NULL (! -z +)     : "
+echo -e -n "NOT NULL (! -z +)     : "
 if [ ! -z ${VB+dummy} ]; then
-    echo " true: set (maybe null)"
+    echo -e " \x1B[1;32mtrue\x1B[0m: set (maybe null)"
 else
-    echo "false: unset"
+    echo -e "\x1B[1;31mfalse\x1B[0m: \x1B[1;33munset\x1B[0m"
 fi
 
-echo -n "NOT NULL (! -z :+)    : "
+echo -e -n "NOT NULL (! -z :+)    : "
 if [ ! -z ${VB:+dummy} ]; then
-    echo " true: set and not null"
+    echo -e " \x1B[1;32mtrue\x1B[0m: set and not null"
 else
-    echo "false: unset or null"
+    echo -e "\x1B[1;31mfalse\x1B[0m: \x1B[1;33munset\x1B[0m or null"
 fi
 
 # not null, quotes
-echo "----------------------------------------------------"
-echo -n "NOT NULL (-n \"\")      : "
+echo -e "----------------------------------------------------"
+echo -e -n "NOT NULL (-n \"\")      : "
 if [ -n "${VB}" ]; then
-    echo " true: set and not null (empty)"
+    echo -e " \x1B[1;32mtrue\x1B[0m: set and not null (empty)"
 else
-    echo "false: unset or null"
+    echo -e "\x1B[1;31mfalse\x1B[0m: \x1B[1;33munset\x1B[0m or null"
 fi
 
-echo -n "NOT NULL (-n - \"\")    : "
+echo -e -n "NOT NULL (-n - \"\")    : "
 if [ -n "${VB-dummy}" ]; then
-    echo " true: unset or not null (empty)"
+    echo -e " \x1B[1;32mtrue\x1B[0m: \x1B[1;33munset\x1B[0m or not null (empty)"
 else
-    echo "false: set and null"
+    echo -e "\x1B[1;31mfalse\x1B[0m: set and null"
 fi
 
-echo -n "NOT NULL (-n + \"\")    : "
+echo -e -n "NOT NULL (-n + \"\")    : "
 if [ -n "${VB+dummy}" ]; then
-    echo " true: set (maybe null)"
+    echo -e " \x1B[1;32mtrue\x1B[0m: set (maybe null)"
 else
-    echo "false: unset"
+    echo -e "\x1B[1;31mfalse\x1B[0m: \x1B[1;33munset\x1B[0m"
 fi
 
-echo -n "NOT NULL (-n :+ \"\")   : "
+echo -e -n "NOT NULL (-n :+ \"\")   : "
 if [ -n "${VB:+dummy}" ]; then
-    echo " true: set and not null"
+    echo -e " \x1B[1;32mtrue\x1B[0m: set and not null"
 else
-    echo "false: unset or null"
+    echo -e "\x1B[1;31mfalse\x1B[0m: \x1B[1;33munset\x1B[0m or null"
 fi
 
 # not not null, quotes
-echo "----------------------------------------------------"
-echo -n "    NULL (! -n \"\")    : "
+echo -e "----------------------------------------------------"
+echo -e -n "    NULL (! -n \"\")    : "
 if [ ! -n "${VB}" ]; then
-    echo " true: unset or null"
+    echo -e " \x1B[1;32mtrue\x1B[0m: \x1B[1;33munset\x1B[0m or null"
 else
-    echo "false: set and not null"
+    echo -e "\x1B[1;31mfalse\x1B[0m: set and not null"
 fi
 
-echo -n "    NULL (! -n - \"\")  : "
+echo -e -n "    NULL (! -n - \"\")  : "
 if [ ! -n "${VB-dummy}" ]; then
-    echo " true: set and null"
+    echo -e " \x1B[1;32mtrue\x1B[0m: set and null"
 else
-    echo "false: unset or not null"
+    echo -e "\x1B[1;31mfalse\x1B[0m: \x1B[1;33munset\x1B[0m or not null"
 fi
 
-echo -n "    NULL (! -n + \"\")  : "
+echo -e -n "    NULL (! -n + \"\")  : "
 if [ ! -n "${VB+dummy}" ]; then
-    echo " true: unset"
+    echo -e " \x1B[1;32mtrue\x1B[0m: \x1B[1;33munset\x1B[0m"
 else
-    echo "false: set (maybe null)"
+    echo -e "\x1B[1;31mfalse\x1B[0m: set (maybe null)"
 fi
 
-echo -n "    NULL (! -n :+ \"\") : "
+echo -e -n "    NULL (! -n :+ \"\") : "
 if [ ! -n "${VB:+dummy}" ]; then
-    echo " true: unset or null"
+    echo -e " \x1B[1;32mtrue\x1B[0m: \x1B[1;33munset\x1B[0m or null"
 else
-    echo "false: set and not null"
+    echo -e "\x1B[1;31mfalse\x1B[0m: set and not null"
 fi
-echo "----------------------------------------------------"
+echo -e "----------------------------------------------------"
 # not null ands, quotes
-echo "----------------------------------------------------"
-echo -n "NOT NULL (! -z && -n \"\")    : "
+echo -e "----------------------------------------------------"
+echo -e -n "NOT NULL (! -z && -n \"\")    : "
 if [ ! -z ${VB} ] && [ -n "${VB}"  ]; then
-    echo " true: set and not null"
+    echo -e " \x1B[1;32mtrue\x1B[0m: set and not null"
 else
-    echo "false: unset or null"
+    echo -e "\x1B[1;31mfalse\x1B[0m: \x1B[1;33munset\x1B[0m or null"
 fi
 
-echo -n "NOT NULL (! -z && -n + \"\")  : "
+echo -e -n "NOT NULL (! -z && -n + \"\")  : "
 if [ ! -z ${VB+dummy} ] && [ -n "${VB+dummy}"  ]; then
-    echo " true: set (maybe null)"
+    echo -e " \x1B[1;32mtrue\x1B[0m: set (maybe null)"
 else
-    echo "false: unset"
+    echo -e "\x1B[1;31mfalse\x1B[0m: \x1B[1;33munset\x1B[0m"
 fi
 
-echo -n "NOT NULL (! -z && -n :+ \"\") : "
+echo -e -n "NOT NULL (! -z && -n :+ \"\") : "
 if [ ! -z ${VB:+dummy} ] && [ -n "${VB:+dummy}" ]; then
-    echo " true: set and not null"
+    echo -e " \x1B[1;32mtrue\x1B[0m: set and not null"
 else
-    echo "false: unset or null"
+    echo -e "\x1B[1;31mfalse\x1B[0m: \x1B[1;33munset\x1B[0m or null"
 fi
 
 # null ands, quotes
-echo "----------------------------------------------------"
-echo -n "    NULL (-z && ! -n \"\")    : "
+echo -e "----------------------------------------------------"
+echo -e -n "    NULL (-z && ! -n \"\")    : "
 if [ -z ${VB} ] && [ ! -n "${VB}"  ]; then
-    echo " true: unset or null"
+    echo -e " \x1B[1;32mtrue\x1B[0m: \x1B[1;33munset\x1B[0m or null"
 else
-    echo "false: set and not null"
+    echo -e "\x1B[1;31mfalse\x1B[0m: set and not null"
 fi
    
-echo -n "    NULL (-z && ! -n + \"\")  : "
+echo -e -n "    NULL (-z && ! -n + \"\")  : "
 if [ -z ${VB+dummy} ] && [ ! -n "${VB+dummy}" ]; then
-    echo " true: unset"
+    echo -e " \x1B[1;32mtrue\x1B[0m: \x1B[1;33munset\x1B[0m"
 else
-    echo "false: set (maybe null)"
+    echo -e "\x1B[1;31mfalse\x1B[0m: set (maybe null)"
 fi
 
-echo -n "    NULL (-z && ! -n :+ \"\") : "
+echo -e -n "    NULL (-z && ! -n :+ \"\") : "
 if [ -z ${VB:+dummy} ] && [ ! -n "${VB:+dummy}" ]; then
-    echo " true: unset or null"
+    echo -e " \x1B[1;32mtrue\x1B[0m: \x1B[1;33munset\x1B[0m or null"
 else
-    echo "false: set and not null"
+    echo -e "\x1B[1;31mfalse\x1B[0m: set and not null"
 fi
 
-echo "----------------------------------------------------"
+echo -e "----------------------------------------------------"
 # impossible and
-echo "----------------------------------------------------"
-echo -n "    NULL and NOT NULL (-z && -n \"\")     : "
+echo -e "----------------------------------------------------"
+echo -e -n "    NULL and NOT NULL (-z && -n \"\")     : "
 if [ -z ${VB} ] && [ -n "${VB}"  ]; then
-    echo " true: impossible!"
+    echo -e " \x1B[1;32mtrue\x1B[0m: impossible!"
 else
-    echo "false: OK"
+    echo -e "\x1B[1;31mfalse\x1B[0m: OK"
 fi
 
-echo -n "NOT NULL and     NULL (! -z && ! -n \"\") : "
+echo -e -n "NOT NULL and     NULL (! -z && ! -n \"\") : "
 if [ ! -z ${VB} ] && [ ! -n "${VB}"  ]; then
-    echo " true: impossible!"
+    echo -e " \x1B[1;32mtrue\x1B[0m: impossible!"
 else
-    echo "false: OK"
+    echo -e "\x1B[1;31mfalse\x1B[0m: OK"
 fi
-echo "----------------------------------------------------"
+echo -e "----------------------------------------------------"
 
 return
-echo -n "NULL (-z :+): "
+echo -e -n "NULL (-z :+): "
 if [ -z ${VB:+dummy} ]; then
-    echo "unset"
+    echo -e "\x1B[1;33munset\x1B[0m"
 else
-    echo "set"
+    echo -e "set"
     if [ -z ${VB} ]; then
-	echo " true: VB -z yes"
+	echo -e " \x1B[1;32mtrue\x1B[0m: VB -z yes"
     else
-	echo "false: VB -z no"
+	echo -e "\x1B[1;31mfalse\x1B[0m: VB -z no"
     fi
 
     if [ -n ${VB} ]; then
-	echo " true: VB -n yes"
+	echo -e " \x1B[1;32mtrue\x1B[0m: VB -n yes"
     else
-	echo "false: VB -n no"
+	echo -e "\x1B[1;31mfalse\x1B[0m: VB -n no"
     fi
     if ${VB}; then
-	echo " true: VB yes"
+	echo -e " \x1B[1;32mtrue\x1B[0m: VB yes"
     else
-	echo "false: VB no"
+	echo -e "\x1B[1;31mfalse\x1B[0m: VB no"
     fi
 
 fi
