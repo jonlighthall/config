@@ -94,30 +94,30 @@ fi
 echo "----------------------------------------------------"
 echo -n "NOT NULL (! -z \"\")    : "
 if [ ! -z "${VB}" ]; then
-    echo " true: unset or null (empty)"
+    echo " true: set and not null"
 else
-    echo "false: not null"
+    echo "false: unset or null"
 fi
 
 echo -n "NOT NULL (! -z - \"\")  : "
 if [ ! -z "${VB-dummy}" ]; then
-    echo " true: set and null (empty)"
+    echo " true: unset or not null"
 else
-    echo "false: unset or not null"
+    echo "false: set and null"
 fi
 
 echo -n "NOT NULL (! -z + \"\")  : "
 if [ ! -z "${VB+dummy}" ]; then
-    echo " true: unset"
+    echo " true: set or null"
 else
-    echo "false: set or null"
+    echo "false: unset"
 fi
 
 echo -n "NOT NULL (! -z :+ \"\") : "
 if [ ! -z "${VB:+dummy}" ]; then
-    echo " true: unset or null"
+    echo " true: set and not null"
 else
-    echo "false: set"
+    echo "false: unset or null"
 fi
 echo "----------------------------------------------------"
 # not null, no quotes
