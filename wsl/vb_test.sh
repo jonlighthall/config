@@ -122,32 +122,32 @@ fi
 echo "----------------------------------------------------"
 # not null, no quotes
 echo "----------------------------------------------------"
-echo -n "NOT NULL (-n)         : "
+echo -n "NOT NULL (-n)      BAD: "
 if [ -n ${VB} ]; then
-    echo " true: unset or null (empty)"
+    echo " true: set and not null (empty)"
 else
-    echo "false: not null"
+    echo "false: unset or null"
 fi
 
 echo -n "NOT NULL (-n -)       : "
 if [ -n ${VB-dummy} ]; then
-    echo " true: set and null (empty)"
+    echo " true: unset or not null (empty)"
 else
-    echo "false: unset or not null"
+    echo "false: set and null"
 fi
 
-echo -n "NOT NULL (-n +)       : "
+echo -n "NOT NULL (-n +)    BAD: "
 if [ -n ${VB+dummy} ]; then
-    echo " true: unset"
+    echo " true: set or null"
 else
-    echo "false: set or null"
+    echo "false: unset"
 fi
 
-echo -n "NOT NULL (-n :+)      : "
+echo -n "NOT NULL (-n :+)   BAD: "
 if [ -n ${VB:+dummy} ]; then
-    echo " true: unset or null"
+    echo " true: set and not null"
 else
-    echo "false: set"
+    echo "false: unset or null"
 fi
 
 # not null, quotes
@@ -184,14 +184,14 @@ fi
 echo "----------------------------------------------------"
 echo -n "NOT NULL (! -n)       : "
 if [ ! -n ${VB} ]; then
-    echo " true: unset or null (empty)"
+    echo " true: unset or null"
 else
-    echo "false: not null"
+    echo "false: set and not null"
 fi
 
 echo -n "NOT NULL (! -n -)     : "
 if [ ! -n ${VB-dummy} ]; then
-    echo " true: set and null (empty)"
+    echo " true: set and null"
 else
     echo "false: unset or not null"
 fi
@@ -207,7 +207,7 @@ echo -n "NOT NULL (! -n :+)    : "
 if [ ! -n ${VB:+dummy} ]; then
     echo " true: unset or null"
 else
-    echo "false: set"
+    echo "false: set and not null"
 fi
 
 # not not null, quotes
