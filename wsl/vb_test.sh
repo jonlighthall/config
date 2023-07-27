@@ -1,5 +1,45 @@
 echo "VB = '${VB}'"
 
+# true false
+echo "----------------------------------------------------"
+echo -n "             bare : "
+if $VB; then
+    echo " true"
+else
+    echo "false"
+fi
+echo -n "         brackets : "
+if ${VB}; then
+    echo " true"
+else
+    echo "false"
+fi
+
+echo -n "        not unset : "
+if [ ! -z ${VB:+dummy} ]; then
+    echo " true"
+else
+    echo "false"
+fi
+
+echo -n "not unset and true: "
+if [ ! -z ${VB:+dummy} ] && ${VB}; then
+    echo " true"
+else
+    echo "false"
+fi
+
+
+echo -n "      set and true: "
+if [ -n ${VB:+dummy} ] && ${VB}; then
+    echo " true"
+else
+    echo "false"
+fi
+
+
+
+echo "----------------------------------------------------"
 # null, no quotes
 echo "----------------------------------------------------"
 echo -n "    NULL (-z)         : "
