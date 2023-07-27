@@ -240,20 +240,20 @@ else
     echo "false: set and not null"
 fi
 echo "----------------------------------------------------"
-# not null ands
+# not null ands, not quotes
 echo "----------------------------------------------------"
 echo -n "NOT NULL (! -z && -n)       : "
 if [ ! -z ${VB} ] && [ -n ${VB}  ]; then
-    echo " true: set or not null"
+    echo " true: set and not null"
 else
     echo "false: unset or null"
 fi
 
 echo -n "NOT NULL (! -z && -n +)     : "
 if [ ! -z ${VB+dummy} ] && [ -n ${VB+dummy}  ]; then
-    echo " true: set and not null"
+    echo " true: set or null"
 else
-    echo "false: unset or null"
+    echo "false: unset"
 fi
 
 echo -n "NOT NULL (! -z && -n :+)    : "
@@ -275,9 +275,9 @@ fi
 
 echo -n "NOT NULL (! -z && -n + \"\")  : "
 if [ ! -z ${VB+dummy} ] && [ -n "${VB+dummy}"  ]; then
-    echo " true: set and not null"
+    echo " true: set or null"
 else
-    echo "false: unset or null"
+    echo "false: unset"
 fi
 
 echo -n "NOT NULL (! -z && -n :+ \"\") : "
@@ -286,8 +286,6 @@ if [ ! -z ${VB:+dummy} ] && [ -n "${VB:+dummy}" ]; then
 else
     echo "false: unset or null"
 fi
-
-
 
 return
 echo "----------------------------------------------------"
