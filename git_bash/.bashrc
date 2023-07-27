@@ -1,7 +1,7 @@
 # ~/config/cygwin/.bashrc
 # Interactive shell settings for Cygwin
 
-if [ -z $VB ]; then
+if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
     if $VB; then
@@ -21,6 +21,13 @@ else
     fi
 fi
 
+# define conditional echo
+vecho() {
+    if [ ! -z ${VB:+dummy} ] && ${VB}; then
+	echo "$@"
+    fi
+}
+
 # required list
 LIST="$HOME/config/.bashrc_common $HOME/config/cygwin/.bashrc_prompt"
 
@@ -31,24 +38,18 @@ do
     if [ -f $FILE ]; then
 	LIST+=" $FILE"
     else
-	if $VB; then
-	    echo -e "${TAB}$FILE ${UL}not found${NORMAL}"
-	fi
+	vecho -e "${TAB}$FILE ${UL}not found${NORMAL}"
     fi
 done
 
 for FILE in $LIST
 do
-    if $VB; then
-	echo "${TAB}loading $FILE..."
-    fi
+    vecho "${TAB}loading $FILE..."
     if [ -f $FILE ]; then
 	source $FILE
 	RETVAL=$?
 	if [ $RETVAL -eq 0 ]; then
-	    if $VB; then
-		echo -e "${TAB}$FILE ${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-	    fi
+	    vecho -e "${TAB}$FILE ${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	else
 	    echo -e "${TAB}$FILE ${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	fi
@@ -56,7 +57,6 @@ do
 	echo -e "${TAB}$FILE ${UL}not found${NORMAL}"
     fi
 done
-
 
 if $VB; then
     TAB=${TAB%$fTAB}

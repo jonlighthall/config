@@ -26,7 +26,7 @@ fi
 
 # define conditional echo
 vecho() {
-    if $VB; then
+    if [ ! -z ${VB:+dummy} ] && ${VB}; then
 	echo "$@"
     fi
 }

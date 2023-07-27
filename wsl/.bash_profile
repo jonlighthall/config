@@ -6,7 +6,7 @@
 
 start_time=$SECONDS
 # Verbose bash prints?
-export VB=false
+export VB=true
 if $VB; then
     # set tab
     # .bash_profile should be the first thing to run, so zero TAB
@@ -28,7 +28,7 @@ fi
 
 # define conditional echo
 vecho() {
-    if $VB; then
+    if [ ! -z ${VB:+dummy} ] && ${VB}; then
 	echo "$@"
     fi
 }

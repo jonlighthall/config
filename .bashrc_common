@@ -1,7 +1,7 @@
 # ~/config/.bashrc_common
 # Interactive shell settings for UNIX-like systems
 # Note: this file must use unix line endings (LF)!
-if [ -z $VB ]; then
+if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
     if $VB; then
@@ -24,7 +24,7 @@ fi
 
 # define conditional echo
 vecho() {
-    if $VB; then
+    if [ ! -z ${VB:+dummy} ] && ${VB}; then
 	echo "$@"
     fi
 }

@@ -2,13 +2,13 @@
 # Interactive shell settings for linux kernel systems
 # Sets prompt and path settings
 # Note: this file must use unix line endings (LF)!
-if [ -z $VB ]; then
+if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
     if $VB; then
 	# set tab
-	${TAB:=''}
-	${fTAB:='   '}
+	:${TAB:=''}
+	:${fTAB:='   '}
 	# load formatting
 	fpretty=${HOME}/utils/bash/.bashrc_pretty
 	if [ -e $fpretty ]; then
@@ -25,7 +25,7 @@ fi
 
 # define conditional echo
 vecho() {
-    if $VB; then
+    if [ ! -z ${VB:+dummy} ] && ${VB}; then
 	echo "$@"
     fi
 }
