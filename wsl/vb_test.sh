@@ -92,28 +92,28 @@ fi
 
 # not not null, quotes
 echo "----------------------------------------------------"
-echo -n "NOT NULL (! -n \"\")    : "
+echo -n "    NULL (! -n \"\")    : "
 if [ ! -n "${VB}" ]; then
     echo " true: unset or null"
 else
     echo "false: set and not null"
 fi
 
-echo -n "NOT NULL (! -n - \"\")  : "
+echo -n "    NULL (! -n - \"\")  : "
 if [ ! -n "${VB-dummy}" ]; then
     echo " true: set and null"
 else
     echo "false: unset or not null"
 fi
 
-echo -n "NOT NULL (! -n + \"\")  : "
+echo -n "    NULL (! -n + \"\")  : "
 if [ ! -n "${VB+dummy}" ]; then
     echo " true: unset"
 else
     echo "false: set (maybe null)"
 fi
 
-echo -n "NOT NULL (! -n :+ \"\") : "
+echo -n "    NULL (! -n :+ \"\") : "
 if [ ! -n "${VB:+dummy}" ]; then
     echo " true: unset or null"
 else
@@ -169,21 +169,14 @@ fi
 echo "----------------------------------------------------"
 # impossible and
 echo "----------------------------------------------------"
-echo -n "    NULL and     NOT NULL (-z && -n \"\")     : "
+echo -n "    NULL and NOT NULL (-z && -n \"\")     : "
 if [ -z ${VB} ] && [ -n "${VB}"  ]; then
     echo " true: impossible!"
 else
     echo "false: OK"
 fi
 
-echo -n "NOT NULL and NOT NOT NULL (! -z && ! -n)    : "
-if [ ! -z ${VB} ] && [ ! -n ${VB}  ]; then
-    echo " true: impossible!"
-else
-    echo "false: OK"
-fi
-
-echo -n "NOT NULL and NOT NOT NULL (! -z && ! -n \"\") : "
+echo -n "NOT NULL and     NULL (! -z && ! -n \"\") : "
 if [ ! -z ${VB} ] && [ ! -n "${VB}"  ]; then
     echo " true: impossible!"
 else
