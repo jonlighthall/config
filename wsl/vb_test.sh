@@ -287,30 +287,61 @@ else
     echo "false: unset or null"
 fi
 
-return
 echo "----------------------------------------------------"
-# null ands
+# null ands, no quotes
 echo "----------------------------------------------------"
+echo -n "    NULL (-z && ! -n \"\"): "
+if [ -z ${VB} ] && [ ! -n ${VB}  ]; then
+    echo " true: unset or null"
+else
+    echo "false: set and not null"
+fi
 
+echo -n "    NULL (-z && ! -n + \"\"): "
+if [ -z ${VB+dummy} ] && [ ! -n ${VB+dummy} ]; then
+    echo " true: unset"
+else
+    echo "false: set or null"
+fi
+
+echo -n "    NULL (-z && ! -n :+ \"\"): "
+if [ -z ${VB:+dummy} ] && [ ! -n ${VB:+dummy} ]; then
+    echo " true: unset or null"
+else
+    echo "false: set and not null"
+fi
+
+# null ands, quotes
+echo "----------------------------------------------------"
 echo -n "    NULL (-z && ! -n \"\"): "
 if [ -z ${VB} ] && [ ! -n "${VB}"  ]; then
-    echo " true: must be null"
+    echo " true: unset or null"
 else
-    echo "false: must be not null"
+    echo "false: set and not null"
+fi
+   
+echo -n "    NULL (-z && ! -n + \"\"): "
+if [ -z ${VB+dummy} ] && [ ! -n "${VB+dummy}" ]; then
+    echo " true: unset"
+else
+    echo "false: set or null"
 fi
 
-echo -n "    NULL (-z && ! -n + \"): "
-if [ -z ${VB+dummy} ] && [ ! -n "${VB+dummy}" ]; then
-    echo " true: must be unset"
+echo -n "    NULL (-z && ! -n :+ \"\"): "
+if [ -z ${VB:+dummy} ] && [ ! -n "${VB:+dummy}" ]; then
+    echo " true: unset or null"
 else
-    echo "false: must be set or null"
+    echo "false: set and not null"
 fi
+
+return
+
 
 echo -n "NULL and NOT NULL (-z && -n): "
 if [ -z ${VB} ] && [ -n ${VB}  ]; then
-    echo " true: impossible!, VB must be unset"
+    echo " true: impossible!, VB unset"
 else
-    echo "false: VB either no, VB must be set"
+    echo "false: VB either no, VB set"
 fi
 
 echo -n "NULL (-z :+): "
@@ -335,48 +366,4 @@ else
 	echo "false: VB no"
     fi
 
-fi
-
-echo
-
-echo -n "NOT NULL (-n) BAD       : "
-if [ -n ${VB} ]; then
-    echo " true: not null"
-else
-    echo "false: null (length zero)"
-fi
-
-echo -n "NOT NULL (-n +) BAD     : "
-if [ -n ${VB+dummy} ]; then
-    echo " true: set or null"
-else
-    echo "false: unset or not null"
-fi
-
-echo -n "NOT NULL (-n :+) BAD    : "
-if [ -n ${VB:+dummy} ]; then
-    echo " true: set and not null"
-else
-    echo "false: unset or null"
-fi
-
-echo -n "    NULL (-z && ! -n)BAD: "
-if [ -z ${VB} ] && [ ! -n ${VB}  ]; then
-    echo " true: must be null"
-else
-    echo "false: must be not null"
-fi
-
-echo -n "NOT NULL (! -z && -n +) : BAD"
-if [ ! -z ${VB+dummy} ] && [ -n ${VB+dummy}  ]; then
-    echo " true: set and not null"
-else
-    echo "false: unset or null"
-fi
-
-echo -n "BAD NULL (-z && ! -n +) : "
-if [ -z ${VB+dummy} ] && [ ! -n ${VB+dummy}  ]; then
-    echo " true: must be unset"
-else
-    echo "false: must be set or null"
 fi
