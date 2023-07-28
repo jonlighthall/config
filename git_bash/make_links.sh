@@ -89,8 +89,8 @@ do
 		    echo -n "${TAB}deleting... "
 		    rm -v ${link}
 		else
-		    echo -n "will be backed up..."
-		    mv -v ${link} ${link}_$(date +'%Y-%m-%d-t%H%M')
+		    echo "will be backed up..."
+		    mv -v ${link} ${link}_$(date +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
 		fi
 	    fi
 	else
