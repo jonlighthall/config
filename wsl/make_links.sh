@@ -6,6 +6,13 @@ set -e
 fpretty=${HOME}/utils/bash/.bashrc_pretty
 if [ -e $fpretty ]; then
     source $fpretty
+else
+    bar() {
+	echo "$2"
+    }
+    hline () {
+	echo "---"
+    }
 fi
 
 # print source name at start
