@@ -9,23 +9,18 @@ if [ -e $fpretty ]; then
     source $fpretty
 fi
 
-hello() {
-    echo "world"
-}
-
-for func in hello bar hline
+for func in bar hline
 do
     echo "testing if $func is a function"
-    if [ $(type -t $func) != function ]; then
+    if [ "$(type -t $func)" != function ]; then
 	echo "$func not a function"
-    $func() {
-	:
-    }
+	eval "$func() {
+	    :
+	}"
     else
-	echo "$func is a function"
+	echo "$func is a function:"
 	$func
     fi
-    
 done
 
 # print source name at start
