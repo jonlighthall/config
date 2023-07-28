@@ -1,10 +1,18 @@
 #!/bin/bash
+
+# exit on errors
 set -e
 
 # load formatting
 fpretty=${HOME}/utils/bash/.bashrc_pretty
 if [ -e $fpretty ]; then
     source $fpretty
+fi
+
+if [ $(type -t bar) != function ]; then
+    bar() {
+	:
+    }
 fi
 
 # print source name at start
