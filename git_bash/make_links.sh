@@ -2,6 +2,16 @@
 # exit on errors
 set -e
 
+# set tab
+:${fTAB:='   '}
+if [ ! -z ${TAB:+dummy} ]; then
+    # set
+    TAB+=$fTAB
+else
+    # unset
+    TAB=''
+fi
+
 # load formatting
 fpretty=${HOME}/utils/bash/.bashrc_pretty
 if [ -e $fpretty ]; then
@@ -60,6 +70,7 @@ else
 fi
 
 bar 38 "------ Start Linking Repo Files-------"
+TAB+=$fTAB
 
 # list of files to be linked
 for my_link in .bash_profile # .emacs.d .gitconfig .rootrc .inputrc .bash_logout
