@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # exit on errors
 set -e
 
@@ -11,15 +10,10 @@ fi
 
 for func in bar hline
 do
-    echo "testing if $func is a function"
     if [ "$(type -t $func)" != function ]; then
-	echo "$func not a function"
 	eval "$func() {
 	    :
 	}"
-    else
-	echo "$func is a function:"
-	$func
     fi
 done
 
@@ -90,7 +84,7 @@ do
 		    rm -v ${link}
 		else
 		    echo "will be backed up..."
-		    mv -v ${link} ${link}_$(date +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
+		    mv -v ${link} ${link}_$(date r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
 		fi
 	    fi
 	else
@@ -111,7 +105,7 @@ echo
 sudo ./make_links_etc.sh
 
 # print time at exit
-echo -en "$(date +"%a %b %-d %I:%M %p %Z") ${BASH_SOURCE##*/} "
+echo -en "\n$(date +"%a %b %-d %I:%M %p %Z") ${BASH_SOURCE##*/} "
 if command -v sec2elap &>/dev/null; then
     echo "$(sec2elap $SECONDS)"
 else
