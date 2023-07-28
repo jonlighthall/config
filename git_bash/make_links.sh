@@ -9,11 +9,24 @@ if [ -e $fpretty ]; then
     source $fpretty
 fi
 
-if [ $(type -t bar) != function ]; then
-    bar() {
+hello() {
+    echo "world"
+}
+
+for func in hello bar hline
+do
+    echo "testing if $func is a function"
+    if [ $(type -t $func) != function ]; then
+	echo "$func not a function"
+    $func() {
 	:
     }
-fi
+    else
+	echo "$func is a function"
+	$func
+    fi
+    
+done
 
 # print source name at start
 echo -e "${TAB}running ${PSDIR}$BASH_SOURCE${NORMAL}..."
