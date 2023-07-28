@@ -1,6 +1,9 @@
 # User-dependent .bash_profile for WSL
 # Note: this file must use Unix line endings (LF)!
 
+# exit on errors
+set -e
+
 # If not running interactively, don't do anything
 [[ "$-" != *i* ]] && return
 
