@@ -5,20 +5,16 @@ alias onedrive='open -a /Applications/OneDrive.app/Contents/MacOS/OneDrive'
 
 # Source remote aliases
 if [ -f ~/config/.bash_remotes ]; then
-	. ~/config/.bash_remotes 
+    . ~/config/.bash_remotes
 fi
 
 #. ~/Applications/root-v5-34-00-patches/bin/thisroot.sh
-. /Applications/root_v5.34.34/bin/thisroot.sh 
-#. /Applications/root_v6.06.00/bin/thisroot.sh 
+. /Applications/root_v5.34.34/bin/thisroot.sh
+#. /Applications/root_v6.06.00/bin/thisroot.sh
 #alias xroot='xquartz & root'
 alias root='root -l'
 
 . /Users/lighthall/Applications/geant4.9.6.p02-install/bin/geant4.sh
-
-##
-# Your previous /Users/lighthall/.profile file was backed up as /Users/lighthall/.profile.macports-saved_2013-06-05_at_15:50:58
-##
 
 # MacPorts Installer addition on 2013-06-05_at_15:50:58: adding an appropriate PATH variable for use with MacPorts.
 export PATH=/Applications/Emacs.app/Contents/MacOS/:/opt/local/bin:/opt/local/sbin:$PATH
@@ -35,11 +31,8 @@ export HISTCONTROL=ignoredups
 export SVN_EDITOR=emacs
 export SVN_MERGE=emacs
 
+# print welcome message
 echo "Welcome to" $HOSTNAME
-
-##
-# Your previous /Users/lighthall/.profile file was backed up as /Users/lighthall/.profile.macports-saved_2014-11-20_at_12:41:02
-##
 
 # MacPorts Installer addition on 2014-11-20_at_12:41:02: adding an appropriate PATH variable for use with MacPorts.
 export PATH="/opt/local/bin:/opt/local/sbin:$PATH"

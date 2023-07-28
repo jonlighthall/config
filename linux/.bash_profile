@@ -5,12 +5,12 @@
 
 start_time=$SECONDS
 # Verbose bash prints?
-export VB=false
+export VB=true
 if $VB; then
     # set tab
     # .bash_profile should be the first thing to run, so zero TAB
     TAB=''
-    ${fTAB:='   '}
+    : ${fTAB:='   '}
     # load formatting
     fpretty=${HOME}/utils/bash/.bashrc_pretty
     if [ -e $fpretty ]; then
@@ -27,16 +27,21 @@ fi
 
 # define conditional echo
 vecho() {
-    if [ ! -z ${VB:+dummy} ] && ${VB}; then
+    if [ ! -z ${VB:+dummy} ] || ${VB}; then
+	# if VB is (unset or null) or true
 	echo "$@"
     fi
 }
+
+SYS_NAME=linux
+HOST_NAME=$(hostname -s)
+vecho "${TAB}applying ${SYS_NAME} settings on ${HOST_NAME}"
 
 # save login timestamp to history
 hist_file=~/.bash_history
 vecho -n "${TAB}appending login timestamp to $hist_file... "
 if [ -f $hist_file ]; then
-    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from $(hostname -s)" >> $hist_file
+    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from ${HOST_NAME}" >> $hist_file
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
 	vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
@@ -56,7 +61,7 @@ else
 fi
 
 # source the user's .bashrc if it exists
-fname=${HOME}/config/linux/.bashrc
+fname=${HOME}/config/${SYS_NAME}/.bashrc
 vecho "${TAB}loading $fname... "
 if [ -f $fname ] ; then
     source $fname
@@ -87,7 +92,7 @@ echo
 # print runtime duration
 if $VB; then
     TAB=${TAB%$fTAB}
-    echo -e "${TAB}$(basename $BASH_SOURCE) run time... \c"
+    echo -n "${TAB}$(basename $BASH_SOURCE) "
     dT=$(($SECONDS-start_time))
     if command -v sec2elap &>/dev/null
     then
@@ -98,6 +103,7 @@ if $VB; then
     echo "${TAB}$(date +"%a %b %-d %I:%M %p %Z")"
 fi
 
+clear -x
+
 # print welcome message
-vecho
-echo "${TAB}Welcome to $(hostname -f)"
+echo "${TAB}Welcome to ${HOST_NAME}"
