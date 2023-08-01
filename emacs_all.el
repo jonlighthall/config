@@ -41,6 +41,7 @@
   (delete-trailing-whitespace)
   (goto-char 1)
   (replace-regexp "^\n\\{2,\\}" "\n") ; delete repeated blank lines
+  (pop-mark) ; pop mark position saved by regexp
   (goto-char (mark-marker)) ; go back to starting position
   (prin1 "done indenting")
   )
