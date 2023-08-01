@@ -188,7 +188,6 @@
 ;; automatcially line-wrap text and comments
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (setq-default auto-fill-function 'do-auto-fill)
-(setq-local comment-auto-fill-only-comments t)
 (auto-fill-mode 1)
 
 ;; add bullets to fill
