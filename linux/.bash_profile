@@ -33,9 +33,10 @@ vecho() {
     fi
 }
 
+# system dependencies
 SYS_NAME=linux
 HOST_NAME=$(hostname -s)
-vecho "${TAB}applying ${SYS_NAME} settings on ${HOST_NAME}"
+vecho -e "${TAB}applying ${SYS_NAME} settings on ${PSHOST}${HOST_NAME}${NORMAL}"
 
 # save login timestamp to history
 hist_file=~/.bash_history

@@ -34,9 +34,10 @@ vecho() {
     fi
 }
 
+# system dependencies
 SYS_NAME=git_bash
 HOST_NAME=$HOSTNAME
-vecho "${TAB}applying ${SYS_NAME} settings on ${HOST_NAME}"
+vecho -e "${TAB}applying ${SYS_NAME} settings on ${PSHOST}${HOST_NAME}${NORMAL}"
 
 # save login timestamp to history
 hist_file=~/.bash_history
