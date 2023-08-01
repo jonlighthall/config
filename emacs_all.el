@@ -34,14 +34,14 @@
                 (lambda () (interactive)
                   (disable-theme 'misterioso)))
 (defun select-all-and-indent ()
-  "mark whole buffer and indent region"
+  "mark whole buffer and indent region, delete trailing whitespace, delete repeated blank lines"
   (interactive "*")
-  (push-mark)
-  (indent-region (point-min) (point-max))
+  (push-mark) ; save position
+  (indent-region (point-min) (point-max)) ; select all
   (delete-trailing-whitespace)
   (goto-char 1)
-  (delete-blank-lines) ;; should only delete repeated blanks
-  (goto-char (mark-marker))
+  (replace-regexp "^\n\\{2,\\}" "\n") ; delete repeated blank lines
+  (goto-char (mark-marker)) ; go back to starting position
   (prin1 "done indenting")
   )
 (global-set-key (kbd "C-x j") 'select-all-and-indent)
@@ -112,7 +112,7 @@
 
   (goto-char (mark-marker))
   (replace-regexp ";EOF" "\nEOF")
- 
+
   (deactivate-mark)
   (goto-char 1)
   (prin1 "done sorting history")
@@ -142,7 +142,6 @@
           (goto-char (point-min))
           (re-search-forward "^<<<<<<< " nil t))
     (smerge-ediff)))
-
 
 ;; setup files ending in “.m” to open in octave-mode
 (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
@@ -185,6 +184,12 @@
 (setq-default fill-column ncols)
 (global-whitespace-mode 1)
 ;;(add-hook 'prog-mode-hook 'whitespace-mode)
+
+;; automatcially line-wrap text and comments
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+(setq-default auto-fill-function 'do-auto-fill)
+(setq-local comment-auto-fill-only-comments t)
+(auto-fill-mode 1)
 
 ;; add bullets to fill
 (setq paragraph-start "\f\\|[ \t]*$\\|[ \t]*[-+*] ")
