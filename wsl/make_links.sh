@@ -66,6 +66,7 @@ do
     if [ -e "${target}" ]; then
 	echo "exists "
 	echo -n "${TAB}link $link... "
+	TAB+=${fTAB:='   '}
 	# first, backup existing copy
 	if [ -L ${link} ] || [ -f ${link} ] || [ -d ${link} ]; then
 	    echo -n "exists and "
@@ -74,6 +75,7 @@ do
 		echo -n "${TAB}"
 		ls -lhG --color=auto ${link}
 		echo "${TAB}skipping..."
+		TAB=${TAB%$fTAB}
 		continue
 	    else
 		if [ $(diff -ebwB "${target}" ${link} | wc -c) -eq 0 ]; then
@@ -82,7 +84,7 @@ do
 		    rm -v ${link}
 		else
 		    echo "will be backed up..."
-		    mv -v ${link} ${link}_$(date r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
+		    mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
 		fi
 	    fi
 	else
@@ -93,6 +95,7 @@ do
 	echo "${TAB}making link... "
 	ln -sv "${target}" ${link} | sed "s/^/${TAB}/"
 	echo -ne "${TAB}";hline 72;echo -en "${NORMAL}"
+	TAB=${TAB%$fTAB}
     else
         echo -e "${BAD}does not exist${NORMAL}"
     fi
