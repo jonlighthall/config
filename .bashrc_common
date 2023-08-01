@@ -1,5 +1,6 @@
 # ~/config/.bashrc_common
 # Interactive shell settings for UNIX-like systems
+# 
 # Note: this file must use unix line endings (LF)!
 if [ -z ${VB:+dummy} ]; then
     export VB=false
@@ -21,13 +22,6 @@ else
 	fi
     fi
 fi
-
-# define conditional echo
-vecho() {
-    if [ ! -z ${VB:+dummy} ] && ${VB}; then
-	echo "$@"
-    fi
-}
 
 # Settings
 # Commands to save
@@ -121,6 +115,13 @@ function nf {
 	    printf "%'${np}d files found in ${dir}/*\n" $n2
 	fi
     done
+}
+
+# conditional echo
+vecho() {
+    if [ ! -z ${VB:+dummy} ] || [ "${VB}"=true ] ; then
+	echo "$@"
+    fi
 }
 
 # Path additions
