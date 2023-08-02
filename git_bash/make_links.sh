@@ -27,15 +27,6 @@ fi
 
 fi
 
-for func in bar hline
-do
-    if [ "$(type -t $func)" != function ]; then
-	eval "$func() {
-	    :
-	}"
-    fi
-done
-
 # print source name at start
 echo -e "${TAB}running ${PSDIR}$BASH_SOURCE${NORMAL}..."
 src_name=$(readlink -f $BASH_SOURCE)
@@ -104,8 +95,8 @@ do
 		    echo -n "${TAB}deleting... "
 		    rm -v ${link}
 		else
-		    echo -n "will be backed up..."
-		    mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M')
+		    echo "will be backed up..."
+		    mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
 		fi
 	    fi
 	else
