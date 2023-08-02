@@ -1,12 +1,14 @@
 # ~/config/wsl/.bashrc
+#
 # Interactive shell settings for Linux Subsystem for Windows
+#
 # Note: this file must use unix line endings (LF)!
 if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
     if $VB; then
 	# set tab
-	TAB+=${fTAB:='   '}
+	TAB+=${TAB+${fTAB:='   '}}
 	# load formatting
 	fpretty=${HOME}/utils/bash/.bashrc_pretty
 	if [ -e $fpretty ]; then
@@ -20,6 +22,13 @@ else
 	fi
     fi
 fi
+
+# define conditional echo
+vecho() {
+    if [ ! -z ${VB:+dummy} ] && ${VB}; then
+	echo "$@"
+    fi
+}
 
 # required list
 LIST="$HOME/.bashrc $HOME/config/.bashrc_common
@@ -58,5 +67,6 @@ if [[ "$LIST" == *"thisroot.sh"* ]]; then
 fi
 
 if $VB; then
+    # reset tab
     TAB=${TAB%$fTAB}
 fi

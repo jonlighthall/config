@@ -1,11 +1,12 @@
 # Set DISPLAY for WSL2
+#
 # Note: this file must use unix line endings (LF)!
-if [ -z $VB ]; then
+if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
     if $VB; then
 	# set tab
-	TAB+=${fTAB:='   '}
+	TAB+=${TAB+${fTAB:='   '}}
 	# load formatting
 	fpretty=${HOME}/utils/bash/.bashrc_pretty
 	if [ -e $fpretty ]; then
@@ -20,24 +21,25 @@ else
     fi
 fi
 
+# define conditional echo
+vecho() {
+    if [ ! -z ${VB:+dummy} ] && ${VB}; then
+	echo "$@"
+    fi
+}
+
 dispOK=false
 if [ -z $DISPLAY ];then
     echo "${TAB}DISPLAY not set"
 else
-    if $VB; then
-	echo -n "${TAB}DISPLAY set to $DISPLAY... "
-    fi
+    vecho -n "${TAB}DISPLAY set to $DISPLAY... "
     xdpyinfo -display $DISPLAY &>/dev/null
     RETVAL=$?
     if [[ $RETVAL == 0 ]]; then
 	dispOK=true
-	if $VB; then
-	    echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-	fi
+	vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
     else
-	if $VB; then
-	    echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-	fi
+	vecho -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	unset DISPLAY
     fi
 fi
@@ -56,20 +58,14 @@ if ! $dispOK; then
     for disp in $display_list
     do
 	export DISPLAY="${disp}:0.0"
-	if $VB; then
-	    echo -n "${TAB}setting DISPLAY to $DISPLAY... "
-	fi
+	vecho -n "${TAB}setting DISPLAY to $DISPLAY... "
 	xdpyinfo -display $DISPLAY &>/dev/null
 	RETVAL=$?
 	if [[ $RETVAL == 0 ]]; then
-	    if $VB; then
-		echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-	    fi
+	    vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	    break
 	else
-	    if $VB; then
-		echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-	    fi
+	    vecho -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	    unset DISPLAY
 	fi
     done
@@ -77,20 +73,14 @@ if ! $dispOK; then
     for ((i=1;i<13;i++))	
     do
 	export DISPLAY="localhost:${i}.0"
-	if $VB; then
-	    echo -n "${TAB}setting DISPLAY to $DISPLAY... "
-	fi
+	vecho -n "${TAB}setting DISPLAY to $DISPLAY... "
 	xdpyinfo -display $DISPLAY &>/dev/null
 	RETVAL=$?
 	if [[ $RETVAL == 0 ]]; then
-	    if $VB; then
-		echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-	    fi
+	    vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	    break
 	else
-	    if $VB; then
-		echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-	    fi
+	    vecho -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	    unset DISPLAY
 	fi	
     done
@@ -100,10 +90,11 @@ if ! $dispOK; then
     if [ -z "${DISPLAY}" ]; then
 	echo -e "${TAB}${BAD}ERROR: ${NORMAL}DISPLAY not set"
     else
-	if $VB; then
-	    echo "${TAB}DISPLAY set to $DISPLAY"
-	fi
+	vecho "${TAB}DISPLAY set to $DISPLAY"
     fi
 fi
 
-TAB=${TAB%$fTAB}
+if $VB; then
+    # reset tab
+    TAB=${TAB%$fTAB}
+fi

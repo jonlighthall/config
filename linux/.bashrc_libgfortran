@@ -1,12 +1,19 @@
 # ~/config/linux/.bashrc_libgfortran
+#
 # Make sure fortran libraries are in the library path
+#
 # Note: this file must use unix line endings (LF)!
-if [ -z $VB ]; then
+if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
     if $VB; then
 	# set tab
-	TAB+=${libTAB:='   '}
+	TAB+=${TAB+${fTAB:='   '}}
+	# load formatting
+	fpretty=${HOME}/utils/bash/.bashrc_pretty
+	if [ -e $fpretty ]; then
+	    source $fpretty
+	fi
 	# print source name at start
 	echo -e "${TAB}running ${PSDIR}$BASH_SOURCE${NORMAL}..."
 	src_name=$(readlink -f $BASH_SOURCE)
@@ -64,5 +71,6 @@ else
 fi
 
 if $VB; then
-    TAB=${TAB%$libTAB}
+    # reset tab
+    TAB=${TAB%$fTAB}
 fi

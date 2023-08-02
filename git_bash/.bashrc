@@ -1,4 +1,5 @@
 # ~/config/cygwin/.bashrc
+#
 # Interactive shell settings for Cygwin
 
 if [ -z ${VB:+dummy} ]; then
@@ -6,7 +7,7 @@ if [ -z ${VB:+dummy} ]; then
 else
     if $VB; then
 	# set tab
-	TAB+=${fTAB:='   '}
+	TAB+=${TAB+${fTAB:='   '}}
 	# load formatting
 	fpretty=${HOME}/utils/bash/.bashrc_pretty
 	if [ -e $fpretty ]; then
@@ -59,5 +60,6 @@ do
 done
 
 if $VB; then
+    # reset tab
     TAB=${TAB%$fTAB}
 fi

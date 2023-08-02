@@ -1,14 +1,13 @@
 # ~/config/cygwin/.bashrc_prompt
-# Interactive shell settings for Cygwin
-# Sets prompt and path settings
+#
+# Prompt and path settings for interactive shells on Cygwin
 
 if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
     if $VB; then
 	# set tab
-	${TAB:=''}
-	TAB+=${fTAB:='   '}
+	TAB+=${TAB+${fTAB:='   '}}
 	# load formatting
 	fpretty=${HOME}/utils/bash/.bashrc_pretty
 	if [ -e $fpretty ]; then
@@ -119,5 +118,6 @@ fi
 # fi
 
 if $VB; then
+    # reset tab
     TAB=${TAB%$fTAB}
 fi

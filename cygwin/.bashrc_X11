@@ -1,11 +1,12 @@
 # Set DISPLAY for Cygwin
+#
 # Note: this file must use unix line endings (LF)!
-if [ -z $VB ]; then
+if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
     if $VB; then
 	# set tab
-	TAB+=${fTAB:='   '}
+	TAB+=${TAB+${fTAB:='   '}}
 	# print source name at start
 	echo -e "${TAB}running ${PSDIR}$BASH_SOURCE${NORMAL}..."
 	src_name=$(readlink -f $BASH_SOURCE)
@@ -20,13 +21,9 @@ export DISPLAY=localhost:0
 # X Window
 if [ -z "${DISPLAY}" ]; then
     export DISPLAY=localhost:0.0
-    if $VB; then
-	echo "${TAB}setting DISPLAY to $DISPLAY"
-    fi
+    vecho "${TAB}setting DISPLAY to $DISPLAY"
 else
-    if $VB; then
-	echo "${TAB}DISPLAY set to $DISPLAY"
-    fi
+    vecho "${TAB}DISPLAY set to $DISPLAY"
 fi
 
 #alias xwin='startxwin; echo -e "\033c"'
@@ -35,4 +32,7 @@ alias close='kill -9 `ps -a | \grep Xming`; kill -9 `ps -a | \grep ssh`;exit'
 #alias ssh='xwin ssh'
 #xwin #start xwin on startup
 
-TAB=${TAB%$fTAB}
+if $VB; then
+    # reset tab
+    TAB=${TAB%$fTAB}
+fi

@@ -1,6 +1,10 @@
 #!/bin/bash
+
 # exit on errors
 set -e
+
+# set tab
+TAB+=${TAB+${fTAB:='   '}}
 
 # load formatting
 fpretty=${HOME}/utils/bash/.bashrc_pretty

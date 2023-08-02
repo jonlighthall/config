@@ -3,14 +3,7 @@
 set -e
 
 # set tab
-:${fTAB:='   '}
-if [ ! -z ${TAB:+dummy} ]; then
-    # set
-    TAB+=$fTAB
-else
-    # unset
-    TAB=''
-fi
+TAB+=${TAB+${fTAB:='   '}}
 
 # load formatting
 fpretty=${HOME}/utils/bash/.bashrc_pretty
@@ -23,8 +16,6 @@ else
     hline () {
 	echo "---"
     }
-fi
-
 fi
 
 # print source name at start

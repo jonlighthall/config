@@ -1,14 +1,14 @@
 # ~/config/linux/.bashrc_prompt
-# Interactive shell settings for linux kernel systems
-# Sets prompt and path settings
+#
+# Prompt and path settings for interactive shells on linux kernel systems
+#
 # Note: this file must use unix line endings (LF)!
 if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
     if $VB; then
 	# set tab
-	:${TAB:=''}
-	:${fTAB:='   '}
+	TAB+=${TAB+${fTAB:='   '}}
 	# load formatting
 	fpretty=${HOME}/utils/bash/.bashrc_pretty
 	if [ -e $fpretty ]; then
@@ -47,7 +47,7 @@ git_branch() {
 screen_pid() {
     if  command -v screen &>/dev/null; then
 	if [ ! -z "$STY" ]; then
-	    echo ${STY} | cut -d "." -f1 | sed 's/.*/ \x1B[1;35m&\x1B[0m/'
+	    echo ${STY} | cut -d "." -f1 | sed 's/.*/ \x1B[1;35mscreen &\x1B[0m/'
 	else
 	    :
 	fi
@@ -59,7 +59,7 @@ screen_pid() {
 tmux_ses() {
     if  command -v tmux &>/dev/null; then
 	if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
-	    tmux display-message -p '#S' | sed 's/.*/ \x1B[1;35m&\x1B[0m/'
+	    tmux display-message -p '#S' | sed 's/.*/ \x1B[1;35mtmux &\x1B[0m/'
 	else
 	    :
 	fi
@@ -244,5 +244,6 @@ else
 fi
 
 if $VB; then
+    # reset tab
     TAB=${TAB%$fTAB}
 fi
