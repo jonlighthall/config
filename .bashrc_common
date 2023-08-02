@@ -1,4 +1,5 @@
 # ~/config/.bashrc_common
+#
 # Interactive shell settings for UNIX-like systems
 # 
 # Note: this file must use unix line endings (LF)!
@@ -68,6 +69,7 @@ else
 fi
 
 if $VB; then
+    # reset tab
     TAB=${TAB%$fTAB} # once for path
     TAB=${TAB%$fTAB} # once for file
 fi

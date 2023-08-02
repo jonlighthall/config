@@ -182,6 +182,7 @@ if $do_test_color; then
     fi
 fi
 
+# Path additions
 if $VB; then
     echo "${TAB}Path additions..."
     TAB+=${fTAB:='   '}
@@ -229,7 +230,6 @@ if $do_load_nvidia; then
     fi
 fi
 
-# Path additions
 ADDPATH=${HOME}/.local/bin
 if [[ ":$PATH" != *":${ADDPATH}"*  ]]; then
     if [ -d "${ADDPATH}" ] ; then
@@ -245,5 +245,6 @@ fi
 
 if $VB; then
     # reset tab
-    TAB=${TAB%$fTAB}
+    TAB=${TAB%$fTAB} # once for path
+    TAB=${TAB%$fTAB} # once for file
 fi
