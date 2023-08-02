@@ -62,7 +62,7 @@ bar() {
 cbar() {
     msg=$(echo " $1 ")
     ln=$(for (( i=1;i<=${#msg};i++ )); do echo -n "-"; done)
-    echo -e "$ln\n$msg\n$ln"
+    echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
 }
 
 # set tab
