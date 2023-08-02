@@ -6,16 +6,16 @@ set -e
 fpretty=${HOME}/utils/bash/.bashrc_pretty
 if [ -e $fpretty ]; then
     source $fpretty
-fi
-
-for func in bar hline
-do
-    if [ "$(type -t $func)" != function ]; then
-	eval "$func() {
+else
+    for func in bar hline
+    do
+	if [ "$(type -t $func)" != function ]; then
+	    eval "$func() {
 	    :
 	}"
-    fi
-done
+	fi
+    done
+fi
 
 # print source name at start
 echo -e "${TAB}running ${PSDIR}$BASH_SOURCE${NORMAL}..."
@@ -53,7 +53,7 @@ fi
 bar 38 "------ Start Linking Repo Files-------"
 
 # list of files to be linked
-for my_link in .bash_logout .bash_profile .emacs.d .gitconfig
+for my_link in .bash_logout .bash_profile .emacs.d .gitconfig .inputrc
 do
     # define target (source)
     target=${target_dir}/${my_link}
@@ -85,8 +85,8 @@ do
 		    echo -n "${TAB}deleting... "
 		    rm -v ${link}
 		else
-		    echo -n "will be backed up..."
-		    mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M')
+		    echo "will be backed up..."
+		    mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
 		fi
 	    fi
 	else
@@ -103,8 +103,6 @@ do
     fi
 done
 bar 38 "--------- Done Making Links ----------"
-
-echo "set bell-style none" | sudo tee -a /etc/inputrc
 
 # print time at exit
 echo -en "\n$(date +"%a %b %-d %I:%M %p %Z") ${BASH_SOURCE##*/} "
