@@ -58,10 +58,17 @@ bar() {
     hline $N
 }
 
+# define centered bar print
+cbar() {
+    msg=$(echo " $1 ")
+    ln=$(for (( i=1;i<=${#msg};i++ )); do echo -n "-"; done)
+    echo -e "$ln\n$msg\n$ln"
+}
+
 # set tab
 i=${#TAB}
 if [ -z ${TAB+dummy} ]; then
-    echo -e "TAB ${yellow}unset${NORMAL}"    
+    echo -e "TAB ${yellow}unset${NORMAL}"
     export TAB='   '
 fi
 j=${#TAB}
