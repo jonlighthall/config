@@ -13,7 +13,12 @@ else
 	    source $fpretty
 	fi
 	# print source name at start
-	echo -e "${TAB}running ${PSDIR}$BASH_SOURCE${NORMAL}..."
+	if (return 0 2>/dev/null); then
+	    RUN_TYPE="sourcing"
+	else
+	    RUN_TYPE="executing"
+	fi
+	echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
 	src_name=$(readlink -f $BASH_SOURCE)
 	if [ ! "$BASH_SOURCE" = "$src_name" ]; then
 	    echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
@@ -70,7 +75,7 @@ if ! $dispOK; then
 	fi
     done
 
-    for ((i=1;i<13;i++))	
+    for ((i=1;i<13;i++))
     do
 	export DISPLAY="localhost:${i}.0"
 	vecho -n "${TAB}setting DISPLAY to $DISPLAY... "
@@ -82,9 +87,9 @@ if ! $dispOK; then
 	else
 	    vecho -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
 	    unset DISPLAY
-	fi	
+	fi
     done
-    
+
     TAB=${TAB%$fTAB}
 
     if [ -z "${DISPLAY}" ]; then

@@ -31,7 +31,7 @@ alias lt='ls -ltr' # sort by time
 alias ping='ping -c 5'
 alias pkill='pkill -9 -u ${USER}'
 alias pwd='pwd -L;pwd -P'
-alias up='update_repos'
+alias up='. update_repos' # should be sourced
 
 # Fucntions
 function duf {
