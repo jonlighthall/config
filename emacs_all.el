@@ -186,11 +186,6 @@
 (global-whitespace-mode 1)
 ;;(add-hook 'prog-mode-hook 'whitespace-mode)
 
-;; automatcially line-wrap text and comments
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
-(setq-default auto-fill-function 'do-auto-fill)
-(auto-fill-mode 1)
-
 ;; add bullets to fill
 (setq paragraph-start "\f\\|[ \t]*$\\|[ \t]*[-+*] ")
 
