@@ -157,6 +157,7 @@ if $xOK; then
     fi
 
     if ! $dispOK; then
+	TAB+=$fTAB
 	# try to determine WSL version
 	WSL_ver=$(wsl.exe -l -v | \grep -a \* | sed 's/[^[:print:]]//g;s/  */ /g' | cut -d ' ' -f 4)
 	vecho "${TAB}applying default DISPLAY for WSL version $WSL_ver"
@@ -217,6 +218,9 @@ if $xOK; then
 	    else
 		vecho "${TAB}DISPLAY set to $DISPLAY"
 	    fi
+	fi
+	if $VB; then
+	    TAB=${TAB%$fTAB}
 	fi
     fi
 else
