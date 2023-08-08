@@ -12,7 +12,7 @@ do
     if [[ -z $pid ]]; then
 	if $VB; then echo "not found";fi
     else
-	if $VB; then 
+	if $VB; then
 	    echo "found"
 	else
 	    echo "$prog is running"
@@ -32,10 +32,16 @@ done
 echo
 
 # show top processes
+# number of processes to show
 NP=3
+# set line width to one less than the terminal width
 line_width=$(( $(tput cols) - 1 ))
+# user ID
+U_ID=1111499164
+# user name
+U_NAME=jlighthall
 echo -e "\033[4mTop $NP processes by ${USER}:\x1b[0m"
-ps ux --sort=-pcpu | head -n $((NP+1)) | sed 's/1111499164/jlighthall/' | cut -c -$line_width
+ps ux --sort=-pcpu | head -n $((NP+1)) | sed "s/${U_ID}/${U_NAME}/" | awk '{printf "%-10s %5s %5s %5s %4s %5s %6s %s\n",$1,$2,$3,$4,$8,$9,$10,$11}' | cut -c -$line_width
 echo
 
 # say goodbye

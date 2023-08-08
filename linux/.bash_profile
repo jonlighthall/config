@@ -79,20 +79,6 @@ else
     echo "${TAB}$fname not found"
 fi
 vecho
-
-# show top processes
-NP=3
-line_width=$(( $(tput cols) - 1 ))
-echo -e "\033[4mTop $NP processes on $(hostname -s):\x1b[0m"
-ps aux --sort=-pcpu | head -n $((NP+1)) | sed 's/1111499164/\x1b\[32mjlighthall\x1b\[0m/' | cut -c -$line_width
-echo
-echo -e "\033[4mTop $NP processes by ${USER}:\x1b[0m"
-ps ux --sort=-pcpu | head -n $((NP+1)) | sed 's/1111499164/jlighthall/' | cut -c -$line_width
-echo
-echo -e "\033[4mLast $NP log-ins on $(hostname -s):\x1b[0m"
-last -wFa | \grep light | head -n $NP
-echo
-
 # print runtime duration
 if $VB; then
     TAB=${TAB%$fTAB}
@@ -108,6 +94,26 @@ if $VB; then
 fi
 
 clear -x
+
+# show top processes
+# number of processes to show
+NP=3
+# set line width to one less than the terminal width
+line_width=$(( $(tput cols) - 1 ))
+# user ID
+U_ID=1111499164
+# user name
+U_NAME=jlighthall
+echo -e "\033[4mTop $NP processes on ${HOST_NAME}:\x1b[0m"
+ps aux --sort=-pcpu | head -n $((NP+1)) | sed "s/${U_ID}/\x1b\[32m${U_NAME}\x1b\[0m/" | awk '{printf "%-10s %5s %5s %5s %4s %5s %6s %s\n",$1,$2,$3,$4,$8,$9,$10,$11}' | cut -c -$line_width
+echo
+echo -e "\033[4mTop $NP processes by ${USER}:\x1b[0m"
+ps ux --sort=-pcpu | head -n $((NP+1)) | sed "s/${U_ID}/${U_NAME}/" | awk '{printf "%-10s %5s %5s %5s %4s %5s %6s %s\n",$1,$2,$3,$4,$8,$9,$10,$11}' | cut -c -$line_width
+echo
+echo -e "\033[4mLast $NP log-ins by ${USER} on ${HOST_NAME}:\x1b[0m"
+# print full user and domain neamse, full login and logout times and dates, and hostname
+last -wFa | \grep ${U_NAME:0:8} | head -n $NP
+echo
 
 # print welcome message
 echo "${TAB}Welcome to ${HOST_NAME}"
