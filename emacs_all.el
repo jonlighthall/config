@@ -215,10 +215,8 @@
 (setq paragraph-start "\f\\|[ \t]*$\\|[ \t]*[-+*] ")
 
 ;; FORTRAN column highlighting
-(add-hook 'fortran-mode-hook 'turn-on-auto-fill)
 (add-hook 'fortran-mode-hook
           (lambda ()
-            (setq-local whitespace-line-column fcols)))
-(add-hook 'fortran-mode-hook
-          (lambda ()
-            (setq-local global-whitespace-mode 1)))
+	    'turn-on-auto-fill
+            (setq-local whitespace-line-column fcols)
+	    (setq-local global-whitespace-mode 1)))
