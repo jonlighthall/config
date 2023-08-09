@@ -151,31 +151,34 @@
 ;; MATLAB tabbing
 (add-hook 'octave-mode-hook
 	  (lambda ()
-	    (setq indent-tabs-mode t)
-	    (setq tab-stop-list (number-sequence mtab 200 mtab))
-	    (setq tab-width mtab)
 	    (setq indent-line-function 'insert-tab)
 	    )
 	  )
 
 (setq octave-mode-hook
-      (lambda () (progn
-		   (setq octave-comment-char ?%)
-                   (setq comment-start "%")
-                   (setq indent-tabs-mode t)
-                   (setq comment-add 0)
-                   (setq tab-width mtab)
-                   (setq tab-stop-list (number-sequence mtab 200 mtab))
-                   (setq octave-block-offset mtab)
+      (lambda ()
+	(progn
+	  (setq indent-tabs-mode t)                   
+          (setq tab-width mtab)
+          (setq tab-stop-list (number-sequence mtab 200 mtab))
+	  ;; set code block indent
+	  (setq octave-block-offset mtab)
 
-                   (defun octave-indent-comment ()
-                     "A function for `smie-indent-functions' (which see)."
-                     (save-excursion
-                       (back-to-indentation)
-                       (cond
-                        ((octave-in-string-or-comment-p) nil)
-                        ((looking-at-p "\\(\\s<\\)\\1\\{2,\\}") 0))))
-		   )
+	  ;; keep comments from being inappropriately indented
+	  (setq octave-comment-char ?%)
+          (setq comment-start "%")
+	  (setq comment-add 0)	   
+          (defun octave-indent-comment ()
+            "A function for `smie-indent-functions' (which see)."
+            (save-excursion
+              (back-to-indentation)
+              (cond
+               ((octave-in-string-or-comment-p) nil)
+               ((looking-at-p "\\(\\s<\\)\\1\\{2,\\}") 0)
+	       )
+	      )
+	    )
+	  )
 	)
       )
 
