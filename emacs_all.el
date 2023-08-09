@@ -151,6 +151,7 @@
 ;; MATLAB tabbing
 (add-hook 'octave-mode-hook
 	  (lambda ()
+	    ;; don't indent every line for no reason
 	    (setq indent-line-function 'insert-tab)
 	    )
 	  )
