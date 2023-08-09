@@ -2,7 +2,7 @@
 #
 # Interactive shell settings for UNIX-like systems
 #
-# Note: this file must use unix line endings (LF)!
+# Note: this file must use UNIX line endings (LF)!
 if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
@@ -28,31 +28,38 @@ else
     fi
 fi
 
-# Settings
-# Commands to save
+# Command History
+# -----------------
+# history length (commands to save)
 export HISTFILESIZE=
 export HISTSIZE=
 # Don't put duplicate lines in the history
 export HISTCONTROL=ignoredups
+# commands to ignore
 export HISTIGNORE=$'bg:exit:ls:pwd:history:la:lt:gits:gitd:git status:git log:git diff'
-# Realtime history
+# append to the history file, don't overwrite it
 shopt -s histappend
+# append history after every command (real time history)
 PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 # Timestamp history
 HISTTIMEFORMAT="%F %T "
+
 # Editors
+# --------
 export EDITOR='emacs -nw'
 export GIT_EDITOR='emacs -nw'
 export SVN_EDITOR=emacs
 set -o emacs
 
 # Aliases and Functions
+# ----------------------
 falias="${HOME}/config/.bash_aliases"
 if [ -f $falias ]; then
     source $falias
 fi
 
 # Path additions
+# ---------------
 if $VB; then
     echo "${TAB}Path additions..."
     TAB+=${fTAB:='   '}
