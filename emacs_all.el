@@ -4,6 +4,7 @@
 ;; Set line width for fortran and other
 (set 'fcols 72)
 (set 'ncols 97)
+(set 'mtab 4)
 
 (custom-set-variables
  '(ediff-split-window-function (quote split-window-horizontally))
@@ -146,6 +147,30 @@
 
 ;; setup files ending in “.m” to open in octave-mode
 (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
+
+;; MATLAB tabbing
+(add-hook 'octave-mode-hook (lambda ()
+			      (setq indent-tabs-mode t)
+			      (setq tab-stop-list (number-sequence matb 200 mtab))
+			      (setq tab-width mtab)
+			      (setq indent-line-function 'insert-tab) ))
+
+(setq octave-mode-hook
+      (lambda () (progn (setq octave-comment-char ?%)
+                        (setq comment-start "%")
+                        (setq indent-tabs-mode t)
+                        (setq comment-add 0)
+                        (setq tab-width mtab)
+                        (setq tab-stop-list (number-sequence mtab 200 mtab))
+                        (setq octave-block-offset mtab)
+
+                        (defun octave-indent-comment ()
+                          "A function for `smie-indent-functions' (which see)."
+                          (save-excursion
+                            (back-to-indentation)
+                            (cond
+                             ((octave-in-string-or-comment-p) nil)
+                             ((looking-at-p "\\(\\s<\\)\\1\\{2,\\}") 0)))))))
 
 ;; open arduino as c++
 (add-to-list 'auto-mode-alist '("\\.ino\\'" . c++-mode))
