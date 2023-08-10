@@ -26,6 +26,7 @@ alias hg='history | grep'
 alias lS='ls -ltS'
 alias la='ls -la'
 alias lh='ls -ld .?*' # list hidden only
+alias ls='ls -l'
 alias ls='ls --color'
 alias lt='ls -ltr' # sort by time
 alias ping='ping -c 5'
