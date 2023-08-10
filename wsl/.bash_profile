@@ -4,7 +4,7 @@
 # If not running interactively, don't do anything
 [[ "$-" != *i* ]] && return
 
-start_time=$SECONDS
+start_time=$(date +%s%N)
 # Verbose bash prints?
 export VB=true
 if $VB; then
@@ -84,15 +84,17 @@ vecho
 # print runtime duration
 if $VB; then
     TAB=${TAB%$fTAB}
-    echo -n "${TAB}$(basename $BASH_SOURCE) "
-    dT=$(($SECONDS-start_time))
+    echo -en "${TAB}${PSDIR}$(basename $BASH_SOURCE)${NORMAL} "
+    T_end=$(date +%s%N)
+    dT_ns=$((${T_end}-${start_time}))
+    dT_sec=$(bc <<< "scale=3;$dT_ns/1000000000")
     if command -v sec2elap &>/dev/null
     then
-	echo "$(sec2elap $dT)"
+	echo -n "$(sec2elap $dT_sec | tr -d '\n')"
     else
-	echo "elapsed time is ${dT} sec"
+	echo -n "elapsed time is ${dT_sec} sec"
     fi
-    echo "${TAB}$(date +"%a %b %-d %I:%M %p %Z")"
+    echo " on $(date +"%a %b %-d at %I:%M %p %Z")"
 fi
 
 clear -x
