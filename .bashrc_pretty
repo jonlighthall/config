@@ -13,7 +13,7 @@ PSTIME='\033[0;37m' # light gray  : time
 PSUSER='\033[0;32m' # green       : user name, prompt
 PSHOST='\033[1;34m' # bold blue   : host name
  PSDIR='\033[0;33m' # yellow      : directory
-  PSBR='\033[0;36m' # bold blue   : branch
+  PSBR='\033[0;36m' # blue        : branch
 # define 'grep' colors
    GRH='\033[1;31m' # bold red    : pattern match
    GRF='\033[0;35m' # magenta     : file match
