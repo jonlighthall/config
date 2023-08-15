@@ -100,17 +100,17 @@
 
   ;; clean up quotes
   (goto-char (mark-marker))
-  (replace-regexp "^[^\n\"]*\"[^\n\"]*$" "\\&;\" # unmatched quote")
+  (replace-regexp "^[^\n\"]*\"[^\n\"]*$" "\\&;\" # unmatched quote EMACS")
 
   (goto-char (mark-marker))
-  (replace-regexp "^[^\n`]*`[^\n`]*$" "\\&;` # unmatched grave")
+  (replace-regexp "^[^\n`]*`[^\n`]*$" "\\&;` # unmatched grave EMACS")
 
   (goto-char (mark-marker))
-  (replace-regexp "^[^\n'\"`]*\'[^\n'\"`]*$" "\\& # escaped apostrophe '")
-  (replace-regexp "^[^\n'\"`]*'[^\n'\"`]*$" "\\&;' # unmatched apostrophe")
+  (replace-regexp "^[^\n'\"`]*\'[^\n'\"`]*$" "\\&;\' # escaped apostrophe EMACS")
+  (replace-regexp "^[^\n'\"`]*'[^\n'\"`]*$" "\\&;' # unmatched apostrophe EMACS")
 
   (goto-char (mark-marker))
-  (replace-regexp "^[^\n]*<<[^\n<<EOF]*$" "\\& <<-EOF # unmatched redirect\nEOF")
+  (replace-regexp "^[^\n\"]*<<[^\n<<EOF\"]*$" "\\& <<-EOF # unmatched redirect EMACS\nEOF")
 
   (goto-char (mark-marker))
   (replace-regexp ";EOF" "\nEOF")
