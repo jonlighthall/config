@@ -92,7 +92,7 @@ if $VB; then
     else
 	echo "elapsed time is ${dT} sec"
     fi
-    echo "${TAB}$(date +"%a %b %-d %I:%M %p %Z")"
+    echo "${TAB}$(date +"%a %b %-d %-l:%M %p %Z")"
 fi
 
 clear -x

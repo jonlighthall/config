@@ -115,7 +115,7 @@ echo
 sudo ./make_links_etc.sh
 
 # print time at exit
-echo -en "\n$(date +"%a %b %-d %I:%M %p %Z") ${BASH_SOURCE##*/} "
+echo -en "\n$(date +"%a %b %-d %-l:%M %p %Z") ${BASH_SOURCE##*/} "
 if command -v sec2elap &>/dev/null; then
     sec2elap ${SECONDS}
 else
