@@ -73,6 +73,14 @@ tmux_ses() {
     fi
 }
 
+sh_lvl() {
+    if [ "$SHLVL" -gt 1 ]; then
+	echo -en " \x1B[1;31mLVL${SHLVL}\x1B[0m"
+    else
+	:
+    fi
+}
+
 if $VB; then
     echo "${TAB}Setting prompt..."
     TAB+=${fTAB:='   '}
@@ -130,7 +138,8 @@ fi
 #export PS1='\[\e[0;37m\]\A\[\e[1;32m\] \u@\h \[\e[34m\]\w$(git_branch)\[\e[32m\]\n$\[\e[0m\] ' # time before, new line, no brackets
 #export PS1='\[\e[0;37m\]\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w$(git_branch)\[\e[32m\]\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host
 # export PS1='\[\e[0;37m\]\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w$(git_branch)\[\e[0;32m\]\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
-export PS1='\[\e[0;37m\]\A\[\e[0;32m\] \u@\[\e[1;34m\]\h$(screen_pid)$(tmux_ses)\[\e[0;33m\] \w$(git_branch)\[\e[0;32m\]\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
+#export PS1='\[\e[0;37m\]\A\[\e[0;32m\] \u@\[\e[1;34m\]\h$(screen_pid)$(tmux_ses)\[\e[0;33m\] \w$(git_branch)\[\e[0;32m\]\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
+export PS1='\[\e[0;37m\]\A\[\e[0;32m\] \u@\[\e[1;34m\]\h$(screen_pid)$(tmux_ses)\[\e[0;33m\] \w$(git_branch)$(sh_lvl)\[\e[0;32m\]\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color, shlvl
 
 # Macros
 alias naut='nautilus --no-desktop --browser ./ &'
