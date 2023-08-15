@@ -27,6 +27,7 @@ PSHOST='\033[1;34m' # bold blue   : host name
 magenta='\033[35m'
 # define monochrome colors
    gray='\x1B[90m'
+  white='\x1B[1;37m'
 
 # define horizontal line
 hline() {
