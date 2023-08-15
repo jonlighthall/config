@@ -80,19 +80,17 @@ else
     echo "${TAB}$fname not found"
 fi
 vecho
-
 # print runtime duration
 if $VB; then
     TAB=${TAB%$fTAB}
-    echo -en "${TAB}${PSDIR}$(basename $BASH_SOURCE)${NORMAL} "
-    end_time=$(date +%s%N)
-    elap_time=$((${end_time}-${start_time}))
-    dT_sec=$(bc <<< "scale=3;$elap_time/1000000000")
+    echo -n "${TAB}$(basename $BASH_SOURCE) "
+    elap_time=$(($(date +%s%N)-${start_time}))
+    dT=$(bc <<< "scale=3;$elap_time/1000000000")
     if command -v sec2elap &>/dev/null
     then
-	echo -n "$(sec2elap ${dT_sec} | tr -d '\n')"
+	echo -n "$(sec2elap ${dT} | tr -d '\n')"
     else
-    echo -n "elapsed time is ${white}${dT_sec} sec${NORMAL}"
+    echo -n "elapsed time is ${white}${dT} sec${NORMAL}"
     fi
     echo " on $(date +"%a %b %-d at %-l:%M %p %Z")"
 fi

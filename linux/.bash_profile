@@ -3,7 +3,7 @@
 # If not running interactively, don't do anything
 [[ "$-" != *i* ]] && return
 
-start_time=$SECONDS
+start_time=$(date +%s%N)
 # Verbose bash prints?
 export VB=true
 if $VB; then
@@ -31,7 +31,7 @@ fi
 # define conditional echo
 vecho() {
     if [ ! -z ${VB:+dummy} ] || ${VB}; then
-	# if VB is (unset or null) or true
+	# [not (unset or null)] or true -> print if true or null or unset
 	echo "$@"
     fi
 }
@@ -83,14 +83,15 @@ vecho
 if $VB; then
     TAB=${TAB%$fTAB}
     echo -n "${TAB}$(basename $BASH_SOURCE) "
-    dT=$(($SECONDS-start_time))
+    elap_time=$(($(date +%s%N)-${start_time}))
+    dT=$(bc <<< "scale=3;$elap_time/1000000000")
     if command -v sec2elap &>/dev/null
     then
-	echo "$(sec2elap $dT)"
+	echo -n "$(sec2elap ${dT} | tr -d '\n')"
     else
-	echo "elapsed time is ${dT} sec"
+    echo -n "elapsed time is ${white}${dT} sec${NORMAL}"
     fi
-    echo "${TAB}$(date +"%a %b %-d %-l:%M %p %Z")"
+    echo " on $(date +"%a %b %-d at %-l:%M %p %Z")"
 fi
 
 clear -x

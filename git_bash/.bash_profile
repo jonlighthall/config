@@ -32,7 +32,7 @@ fi
 # define conditional echo
 vecho() {
     if [ ! -z ${VB:+dummy} ] || ${VB}; then
-	# if VB is (unset or null) or true
+	# [not (unset or null)] or true -> print if true or null or unset
 	echo "$@"
     fi
 }
@@ -80,7 +80,6 @@ else
     echo "${TAB}$fname not found"
 fi
 vecho
-
 # print runtime duration
 if $VB; then
     TAB=${TAB%$fTAB}
@@ -88,11 +87,11 @@ if $VB; then
     dT=$(($SECONDS-start_time))
     if command -v sec2elap &>/dev/null
     then
-	echo "$(sec2elap $dT)"
+	echo -n "$(sec2elap ${dT} | tr -d '\n')"
     else
-	echo "elapsed time is ${dT} sec"
+    echo -n "elapsed time is ${white}${dT} sec${NORMAL}"
     fi
-    echo "${TAB}$(date +"%a %b %-d %-l:%M %p %Z")"
+    echo " on $(date +"%a %b %-d at %-l:%M %p %Z")"
 fi
 
 clear -x
