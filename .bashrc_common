@@ -35,8 +35,6 @@ export HISTFILESIZE=
 export HISTSIZE=
 # Don't put duplicate lines in the history
 export HISTCONTROL=ignoredups
-# commands to ignore
-export HISTIGNORE=$'bg:exit:ls:pwd:history:la:lt:gits:gitd:git status:git log:git diff'
 # append to the history file, don't overwrite it
 shopt -s histappend
 # append history after every command (real time history)
