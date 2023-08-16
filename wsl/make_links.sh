@@ -1,11 +1,8 @@
 #!/bin/bash
-
 # exit on errors
 set -e
-
 # set tab
 TAB+=${TAB+${fTAB:='   '}}
-
 # load formatting
 fpretty=${HOME}/utils/bash/.bashrc_pretty
 if [ -e $fpretty ]; then
@@ -67,6 +64,7 @@ do
     # define link (destination)
     sub_dir=$(dirname "$my_link")
     if [ ! $sub_dir = "." ]; then
+        # strip target subdirectory from link name
 	my_link=$(basename "$my_link")
     fi
     link=${link_dir}/${my_link}
@@ -119,5 +117,5 @@ echo -en "\n$(date +"%a %b %-d %-l:%M %p %Z") ${BASH_SOURCE##*/} "
 if command -v sec2elap &>/dev/null; then
     sec2elap ${SECONDS}
 else
-    echo "elapsed time is ${SECONDS} sec"
+    echo "elapsed time is ${white}${SECONDS} sec${NORMAL}"
 fi
