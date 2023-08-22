@@ -1,6 +1,9 @@
 ;; ------Universal Emacs settings--------------------------
 ;; The following settings are intended to be system independent
 
+;; MF Mouse
+(xterm-mouse-mode 1)
+
 ;; Set line width for fortran and other
 (set 'fcols 72)
 (set 'ncols 97)
