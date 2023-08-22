@@ -68,19 +68,40 @@ if $VB; then
     TAB+=${fTAB:='   '}
 fi
 
-ADDPATH=${HOME}/bin
-if [[ ":$PATH" != *":${ADDPATH}"*  ]]; then
-    if [ -d "${ADDPATH}" ] ; then
-	vecho -n "${TAB}appending ${ADDPATH} to PATH... "
-	#vecho -n "${TAB}prepending ${ADDPATH} to PATH... "
-	export PATH=$PATH:$ADDPATH
-	#export PATH=$ADDPATH:$PATH
-	vecho "done"
-    else
-	echo "${TAB}${ADDPATH} not found"
-    fi
-else
-    vecho "${TAB}${ADDPATH} already in PATH"
+# list paths to append to PATH
+appPATH="${HOME}/bin"
+if [ ! -z ${appPATH} ]; then
+    for path in $appPATH; do 
+	if [[ ":$PATH" != *":${path}"*  ]]; then
+	    if [ -d "${path}" ] ; then
+		vecho -n "${TAB} appending ${path} to PATH... "
+		export PATH=$PATH:$path
+		vecho "done"
+	    else
+		echo -e "${TAB}${path} ${UL}not found${NORMAL}"
+	    fi
+	else
+	    vecho "${TAB}${path} already in PATH"
+	fi
+    done
+fi
+
+# list paths to prepend to PATH
+prePATH=""
+if [ ! -z "${prePATH}" ]; then
+    for path in $prePATH; do 
+	if [[ ":$PATH" != *":${path}"*  ]]; then
+	    if [ -d "${path}" ] ; then
+		vecho -n "${TAB}prepending ${path} to PATH... "
+		export PATH=$path:$PATH
+		vecho "done"
+	    else
+		echo -e "${TAB}${path} ${UL}not found${NORMAL}"
+	    fi
+	else
+	    vecho "${TAB}${path} already in PATH"
+	fi
+    done
 fi
 
 if $VB; then
