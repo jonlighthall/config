@@ -57,7 +57,7 @@ fi
 bar 38 "------ Start Linking Repo Files-------"
 
 # list of files to be linked
-for my_link in .bash_logout .bash_profile .emacs.d .gitconfig o.inputrc .rootrc
+for my_link in .bash_logout .bash_profile .emacs.d .gitconfig .hushlogin .inputrc .rootrc
 do
     # define target (source)
     target=${target_dir}/${my_link}
