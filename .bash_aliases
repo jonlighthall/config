@@ -5,8 +5,6 @@ alias diffy='diff --color=auto --suppress-common-lines -yiEZbwB'
 alias du0='duf --max-depth=0'
 alias du1='duf --max-depth=1'
 alias du2='duf --max-depth=2'
-alias e='emacs'
-alias en='emacs -nw'
 alias fb='ff | perl -lne "print if not -T"' # find binary
 alias fd='find -L ./ -not -path "*/.git/*" -type d' # find directory
 alias ff='find -L ./ -not -path "*/.git*/*" -type f' # find file

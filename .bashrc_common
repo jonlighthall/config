@@ -44,6 +44,9 @@ HISTTIMEFORMAT="%F %T "
 
 # Editors
 # --------
+alias e='emacs'
+alias en='emacs -nw'
+
 export EDITOR='emacs -nw'
 export GIT_EDITOR='emacs -nw'
 export SVN_EDITOR=emacs
