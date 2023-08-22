@@ -56,17 +56,21 @@ set -o emacs
 
 # Pagers
 # -------
-fface="${HOME}/downloads/face-explorer/face-explorer.el "
+# add syntax highlighting to less, etc
+# git clone https://github.com/Lindydancer/e2ansi.git
+# git clone https://github.com/Lindydancer/face-explorer.git
+fface="${HOME}/downloads/face-explorer/face-explorer.el"
 fe2an="${HOME}/downloads/e2ansi/bin/e2ansi-cat"
 if [ -f $fface ] && [ -f $fe2an ] ; then
-    vecho "${TAB}configuring e2ansi..."
+    vecho -n "${TAB}configuring e2ansi..."
     export "LESSOPEN=|emacs --batch -l $fface -l $fe2an --theme misterioso %s"
     export "LESS=-R --mouse --wheel-lines=3"
-    alias ecat="$fe2an"
+    alias ecat="$fe2an"    
 fi
 
 alias lessn='less -N' # add line numbers to less
 alias more='echo "Did you mean less?";less -E -F -X' # redefine more as less
+vecho "done"
 #
 
 # Aliases and Functions
