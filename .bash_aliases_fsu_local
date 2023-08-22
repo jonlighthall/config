@@ -25,8 +25,8 @@ alias lsudaq2='ssh -Y splitpole@dhcp111201.physics.fsu.edu'
 alias splitpole='ssh -Y splitpole@dhcp11108.physics.fsu.edu'
 
 # Set execution paths for manually-installed programs
-alias emacs='~/bin/emacs'
-alias git='~/bin/git'
+alias emacs='${HOME}/bin/emacs'
+alias git='${HOME}/bin/git'
 
 PATH=$HOME/bin:$PATH
 export PATH
@@ -40,11 +40,11 @@ export PKG_CONFIG_PATH
 MANPATH=$HOME/Downloads/curl/share/man:$MANPATH
 export MANPATH
 
-if [ -f ~/bin/openssl ]; then
-alias openssl='~/bin/openssl'
+if [ -f ${HOME}/bin/openssl ]; then
+alias openssl='${HOME}/bin/openssl'
 fi
-if [ -f ~/bin/cur ]; then
-alias curl='~/bin/curl'
+if [ -f ${HOME}/bin/cur ]; then
+alias curl='${HOME}/bin/curl'
 fi
 
 # Gtk and Glib version errors will fill terminal window for newer progrmas.

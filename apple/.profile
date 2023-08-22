@@ -4,11 +4,11 @@ alias emacs='open -a /Applications/Emacs.app/Contents/MacOS/Emacs $1'
 alias onedrive='open -a /Applications/OneDrive.app/Contents/MacOS/OneDrive'
 
 # Source remote aliases
-if [ -f ~/config/.bash_remotes ]; then
-    . ~/config/.bash_remotes
+if [ -f ${HOME}/config/.bash_remotes ]; then
+    . ${HOME}/config/.bash_remotes
 fi
 
-#. ~/Applications/root-v5-34-00-patches/bin/thisroot.sh
+#. ${HOME}/Applications/root-v5-34-00-patches/bin/thisroot.sh
 . /Applications/root_v5.34.34/bin/thisroot.sh
 #. /Applications/root_v6.06.00/bin/thisroot.sh
 #alias xroot='xquartz & root'

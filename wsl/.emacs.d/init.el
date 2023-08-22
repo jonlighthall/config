@@ -1,5 +1,5 @@
 ;; ------Settings for WSL----------------------------------
-(load "~/config/emacs_all.el")
+(load "${HOME}/config/emacs_all.el")
 
 (require 'diff)
 
@@ -24,9 +24,10 @@
 ;;(add-hook 'flyspell-mode-hook 'flyspell-buffer)
 
 ;; ------Frame appearance and behavior---------------------
+;; window (non-terminal) setings
 (when window-system-version
   ;; Set frame position
-  ; intended to move window to upper left corner
+  ;; intended to move window to upper left corner
   (setq initial-frame-alist '((top . 197) (left . 1))) ;; Windows 11 WSLg
 
   ;; Set frame size

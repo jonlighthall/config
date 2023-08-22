@@ -1,4 +1,4 @@
-# ~/config/linux/.bashrc
+# ${HOME}/config/linux/.bashrc
 #
 # Interactive shell settings for Linux
 

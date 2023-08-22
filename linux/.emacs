@@ -1,5 +1,5 @@
 ;; ------Settings for Linux -------------------------------
-(load "~/config/emacs_all.el")
+(load "${HOME}/config/emacs_all.el")
 
 ;; default to unified diffs
 ;(setq diff-switches "-u")
@@ -10,16 +10,16 @@
 ;; enable visual feedback on selections
 ;(setq transient-mark-mode t)
 
-;;; ------Frame appearance and behavior---------------------
+;; ------Frame appearance and behavior---------------------
 ;; unique buffer names
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
+;; window (non-terminal) setings
 (when window-system-version
-  ;; setup for graphic environment
-
   ;; Set frame position
-  (setq initial-frame-alist '((top . 70) (left . 0))) ; moves window to upper left corner
+  ;; intended to move window to upper left corner
+  (setq initial-frame-alist '((top . 70) (left . 0))) 
   
   ;; Window transparency
   (set-frame-parameter (selected-frame) 'alpha '(95 . 95)) ;may not work in X-windows
@@ -37,5 +37,5 @@
 ;; turn on font-lock mode
 (global-font-lock-mode t)
 
-;; (load-file "~/.emacs.d/setnu.el")
-;; (load-file "~/.emacs.d/psvn.el")
+;; (load-file "${HOME}/.emacs.d/setnu.el")
+;; (load-file "${HOME}/.emacs.d/psvn.el")

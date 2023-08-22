@@ -1,4 +1,4 @@
-# ~/config/linux/.bashrc_libgfortran
+# ${HOME}/config/linux/.bashrc_libgfortran
 #
 # Make sure fortran libraries are in the library path
 #

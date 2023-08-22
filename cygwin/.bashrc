@@ -1,4 +1,4 @@
-# ~/config/cygwin/.bashrc
+# ${HOME}/config/cygwin/.bashrc
 # Interactive shell settings for Cygwin
 
 if [ -z ${VB:+dummy} ]; then

@@ -48,6 +48,6 @@ echo
 echo "goodbye, $(hostname -s)"
 
 # enter logout time into history
-if [ -f ~/.bash_history ]; then
-    echo "#$(date +'%s') LOGOUT $(date +'%a %b %d %Y %R:%S %Z') from $(hostname -s) $(ps -o etime | sed -n '2p' | sed 's/^[ ]*//')" >> ~/.bash_history
+if [ -f ${HOME}/.bash_history ]; then
+    echo "#$(date +'%s') LOGOUT $(date +'%a %b %d %Y %R:%S %Z') from $(hostname -s) $(ps -o etime | sed -n '2p' | sed 's/^[ ]*//')" >> ${HOME}/.bash_history
 fi

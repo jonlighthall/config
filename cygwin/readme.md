@@ -162,9 +162,9 @@ As of this writing, links created from within OneDrive using the `mklink` comman
 ### Bash
 Use the following commands to create a symbolic link from the home directory to the `config\cygwin` directory
 ```bash
-ln -s ~/config/linux/.bashrc .bashrc
-ln -s ~/config/cygwin/.bash_profile ~/.bash_profile
-ln -s ~/config/linux/.bash_aliases_<local> .bash_aliases
+ln -s ${HOME}/config/linux/.bashrc .bashrc
+ln -s ${HOME}/config/cygwin/.bash_profile ${HOME}/.bash_profile
+ln -s ${HOME}/config/linux/.bash_aliases_<local> .bash_aliases
 ```
 The file `.bashrc` is loaded directly by `.bash_profile` but may still need to be linked to the home directory for system use. 
 The `.bash_aliases` files are used for site-specific settings.
@@ -188,7 +188,7 @@ rsync -vr config/cygwin/.emacs.d/ ./.emacs.d/
 ### Git
 Use the following command to create a symbolic link from the home directory to the `config\cygwin` directory.
 ```bash
-ln -s ~/config/cygwin/.gitconfig .gitconfig
+ln -s ${HOME}/config/cygwin/.gitconfig .gitconfig
 ```
 Use the following command to properly set Emacs as the Git editor under Cygwin. Without this setting, Emacs cannot be used as the default Git editor: the conflict between the DOS file path and the cygpath will prevent commit messages to be saved.
 ```bash

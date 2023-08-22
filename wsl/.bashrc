@@ -1,4 +1,4 @@
-# ~/config/wsl/.bashrc
+# ${HOME}/config/wsl/.bashrc
 #
 # Interactive shell settings for Linux Subsystem for Windows
 #

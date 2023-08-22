@@ -1,5 +1,5 @@
 # Aliases
-alias close='source ~/.bash_logout;killall -9 -v -u $USER$USERNAME; exit'
+alias close='source ${HOME}/.bash_logout;killall -9 -v -u $USER$USERNAME; exit'
 alias d='diffy -s'
 alias diffy='diff --color=auto --suppress-common-lines -yiEZbwB'
 alias du0='duf --max-depth=0'

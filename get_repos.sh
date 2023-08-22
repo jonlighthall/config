@@ -28,7 +28,7 @@ if [ $# -eq 1 ]; then
 	if [ -f $fname ]; then
 	    echo "found"
 	    bash $fname
-	    src_name2=~/.bash_profile
+	    src_name2=${HOME}/.bash_profile
 	    echo -n "$src_name2... "
 	    if [ -f $src_name2 ]; then
 		echo "found"

@@ -15,6 +15,6 @@
 (setq initial-frame-alist '((top . 0) (left . 0)))
 ;; moves window to upper left corner
 
-(load "~/config/emacs_all.el")
+(load "${HOME}/config/emacs_all.el")
 
 (setq linum-format "  %d")

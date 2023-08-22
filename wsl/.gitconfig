@@ -3,7 +3,7 @@
 	email = jon.lighthall@gmail.com
 [credential]
 	helper = cache --timeout 172800
-	helper = store --file ~/.git-credentials	
+	helper = store --file ${HOME}/.git-credentials	
 [core]
 	autocrlf = input
 	fileMode = true

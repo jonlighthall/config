@@ -22,8 +22,8 @@ Github will require SSH keys.
 The SSH keys are stored in the following private repository.
 The repository password will be needed.
 ```bash
-git clone https://jonlighthall@bitbucket.org/jonlighthall/.ssh.git ~/.ssh
-chmod 600 ~/.ssh/id_rsa
+git clone https://jonlighthall@bitbucket.org/jonlighthall/.ssh.git ${HOME}/.ssh
+chmod 600 ${HOME}/.ssh/id_rsa
 git clone git@github.com:jonlighthall/config.git
 ```
 
@@ -39,31 +39,31 @@ The following commands are executed by the scripts.
 ### Bash
 Use the following commands to create a symbolic link from the home directory to the `config\wsl` directory
 ```bash
-ln -s ~/config/wsl/.bash_profile ~/.bash_profile
+ln -s ${HOME}/config/wsl/.bash_profile ${HOME}/.bash_profile
 ```
 
 ### Emacs
 
 ```bash
 rm -r .emacs.d
-ln -s ~/config/wsl/.emacs.d/ ~/.emacs.d
+ln -s ${HOME}/config/wsl/.emacs.d/ ${HOME}/.emacs.d
 
 ```
 ### Git
 Use the following command to create a symbolic link from the home directory to the `config\cygwin` directory.
 ```bash
-ln -s ~/config/wsl/.gitconfig ~/.gitconfig
-ln -s /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/.git-credentials ~/.git-credentials
-cp /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/.git-credentials ~/
+ln -s ${HOME}/config/wsl/.gitconfig ${HOME}/.gitconfig
+ln -s /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/.git-credentials ${HOME}/.git-credentials
+cp /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/.git-credentials ${HOME}/
 
 ```
 
 ### SSH
 WSL does not allow chmod changes to Windows files. SSH files require certain permissions. A copy of the ssh files is required.
 ```bash
-rsync -vr /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/.ssh ~/.ssh
-chmod 600 ~/.ssh/config 
-chmod 600 ~/.ssh/id_rsa
+rsync -vr /mnt/c/Users/jonli/OneDrive/Documents/.cygwin_home/.ssh ${HOME}/.ssh
+chmod 600 ${HOME}/.ssh/config 
+chmod 600 ${HOME}/.ssh/id_rsa
 ```
 
 ### ROOT

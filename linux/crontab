@@ -1,3 +1,3 @@
-0 0 * * 1-5 echo "#$(date +'\%s') TODAY  $(date +'\%a \%b \%d \%Y')" >> ~/.bash_history
-0 8,12,18 * * 1-5 echo "#$(date +'\%s') TIME   $(date +'\%a \%b \%d \%Y \%R:\%S \%Z')" >> ~/.bash_history
-0 0 * * 1 cp ~/.bash_history ~/.bash_history_$(date +'\%Y-\%m-\%d')
+0 0 * * 1-5 echo "#$(date +'\%s') TODAY  $(date +'\%a \%b \%d \%Y')" >> ${HOME}/.bash_history
+0 8,12,18 * * 1-5 echo "#$(date +'\%s') TIME   $(date +'\%a \%b \%d \%Y \%R:\%S \%Z')" >> ${HOME}/.bash_history
+0 0 * * 1 cp ${HOME}/.bash_history ${HOME}/.bash_history_$(date +'\%Y-\%m-\%d')
