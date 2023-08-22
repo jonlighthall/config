@@ -1,6 +1,6 @@
 ## Copy and link from OneDrive
 # PowerShell history
-if [ -f ~/.bash_history ];
+if [ -f ${HOME}/.bash_history ];
 then
     echo "appending local copy with synced copy..."
     type C:\Users\jonli\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt >> C:\Users\jonli\OneDrive\Documents\ConsoleHost_history.txt
