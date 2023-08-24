@@ -16,7 +16,7 @@ alias gitcp='git cherry-pick'
 alias gitd='git diff'
 alias gitdn='git diff --name-only'
 alias gitr='git remote -v'
-alias gitl='git log --follow'
+
 alias gits='git status'
 alias gr='grep -iIrR --exclude-dir=".git"'
 alias grep='grep --color=auto'
@@ -45,6 +45,15 @@ function duf {
 		size=$((size/1024));
 	    done
 	done
+}
+
+function gitl {
+    # alias gitl='git log --follow'
+    if [ $# -eq 0 ]; then
+	git log
+    else
+	git log --follow $@
+    fi
 }
 
 function nf {
