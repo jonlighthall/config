@@ -65,7 +65,7 @@ do
 	echo "exists "
 	echo -n "${TAB}link $link... "
 	TAB+=${fTAB:='   '}
-	# first, backup existing copy
+	# first, check for existing copy
 	if [ -L ${link} ] || [ -f ${link} ] || [ -d ${link} ]; then
 	    echo -n "exists and "
 	    if [[ "${target}" -ef ${link} ]]; then
@@ -76,8 +76,9 @@ do
 		TAB=${TAB%$fTAB}
 		continue
 	    else
+		# next, delete or backup existing copy
 		if [ $(diff -ebwB "${target}" ${link} | wc -c) -eq 0 ]; then
-		    echo "have the same contents"
+		    echo "has the same contents"
 		    echo -n "${TAB}deleting... "
 		    rm -v ${link}
 		else
@@ -91,7 +92,7 @@ do
         # then link
 	echo -en "${TAB}${GRH}";hline 72;
 	echo "${TAB}making link... "
-	ln -sv "${target}" ${link} | sed "s/^/${TAB}/"
+	ln -sv "${target}" ${link} 2>&1 | sed "s/^/${TAB}/"
 	echo -ne "${TAB}";hline 72;echo -en "${NORMAL}"
 	TAB=${TAB%$fTAB}
     else
