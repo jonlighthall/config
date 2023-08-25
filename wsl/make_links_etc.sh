@@ -21,15 +21,6 @@ if [ ! "$BASH_SOURCE" = "$src_name" ]; then
     echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
 fi
 
-if [ "$EUID" -ne 0 ]; then
-    echo "${TAB}This command must be run as root!"
-    echo "${TAB}Retry with the following command:"
-    echo "${TAB}   sudo $BASH_SOURCE"
-    exit
-else
-    echo "${TAB} running as root"
-fi
-
 # set target and link directories
 target_dir=$(dirname "$src_name")
 link_dir=/etc
@@ -75,24 +66,36 @@ do
 	echo "exists "
 	echo -n "${TAB}link $link... "
 	TAB+=${fTAB:='   '}
-	# first, backup existing copy
+	# first, check for existing copy
 	if [ -L ${link} ] || [ -f ${link} ] || [ -d ${link} ]; then
-	    echo -n "exists and "
+	    echo -n "exists and"
 	    if [[ "${target}" -ef ${link} ]]; then
-                echo "already points to ${my_link}"
+                echo " already points to ${my_link}"
 		echo -n "${TAB}"
 		ls -lhG --color=auto ${link}
 		echo "${TAB}skipping..."
 		TAB=${TAB%$fTAB}
 		continue
 	    else
+		if [ "$EUID" -ne 0 ]; then
+		    echo "..."
+		    echo -e "${TAB}${GRH}This command must be run as root!"
+		    echo -en "${NORMAL}"
+		    echo -n "${TAB}${link} "
+		fi
+		# next, delete or backup existing copy
 		if [ $(diff -ebwB "${target}" ${link} | wc -c) -eq 0 ]; then
-		    echo "have the same contents"
+		    echo "has the same contents"
 		    echo -n "${TAB}deleting... "
-		    rm -v ${link}
+		    rmcom="rm -v ${link}"
+		    if [ -w ${link} ] && [ -w ${link_dir} ]; then
+			${rmcom}
+		    else
+			sudo ${rmcom}
+		    fi
 		else
 		    echo "will be backed up..."
-		    mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
+		    sudo mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
 		fi
 	    fi
 	else
@@ -101,7 +104,7 @@ do
         # then link
 	echo -en "${TAB}${GRH}";hline 72;
 	echo "${TAB}making link... "
-	ln -sv "${target}" ${link} | sed "s/^/${TAB}/"
+	sudo ln -sv "${target}" ${link} 2>&1 | sed "s/^/${TAB}/"
 	echo -ne "${TAB}";hline 72;echo -en "${NORMAL}"
 	TAB=${TAB%$fTAB}
     else

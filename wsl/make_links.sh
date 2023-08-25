@@ -110,7 +110,7 @@ done
 bar 38 "--------- Done Making Links ----------"
 
 echo
-sudo ./make_links_etc.sh
+./make_links_etc.sh
 
 # print time at exit
 echo -en "\n$(date +"%a %b %-d %-l:%M %p %Z") ${BASH_SOURCE##*/} "
