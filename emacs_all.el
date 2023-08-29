@@ -3,6 +3,17 @@
 
 ;; MF Mouse
 (xterm-mouse-mode 1)
+;; After enabling xterm mouse mode, normal copy and paste functions will not work. Bindings are
+;; adjusted as follows
+;; --------+-------------+---------------------------
+;; command | before      | after
+;; --------+-------------+---------------------------
+;; copy    | select with | hold shift and select with
+;;         | mouse and   | mouse, release shift and
+;;         | hit Enter   | hit Enter
+;; --------+-------------+---------------------------
+;; paste   | right-click | shift-right-click
+;; --------+-------------+---------------------------
 
 ;; Set line width for fortran and other
 (set 'fcols 72)
