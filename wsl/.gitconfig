@@ -9,7 +9,7 @@
 	fileMode = true
 	pager = less -EX
 [color]
-	ui = true
+	ui = always
 [push]
 	default = simple
 [pager]
