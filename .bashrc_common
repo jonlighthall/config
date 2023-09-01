@@ -66,13 +66,13 @@ fe2ansi="${HOME}/downloads/e2ansi/bin/e2ansi-cat"
 fsilent="${HOME}/downloads/e2ansi/e2ansi-silent.el"
 femacs="${HOME}/config/emacs_all.el"
 # define options
-eopts="-Q --batch -l $fsilent -l $femacs -l $fface -l $fe2ansi"
-eopts2="--theme misterioso"
+emacs_args="-Q --batch -l $fsilent -l $femacs -l $fface -l $fe2ansi"
+e2ansi_args="--theme misterioso"
 if [ -f $fface ] && [ -f $fe2ansi ] ; then
     vecho -n "${TAB}configuring e2ansi..."
-    export "LESSOPEN=|emacs $eopts $eopts2 %s"
+    export "LESSOPEN=|emacs $emacs_args $e2ansi_args %s"
     export "LESS=-RF --mouse --wheel-lines=3"
-    alias cat="emacs $eopts $eopts2 2>/dev/null"
+    alias cat="emacs $emacs_args $e2ansi_args 2>/dev/null"
     alias more='less -EX 2>/dev/null' # redefine more as less
     vecho "done"
 fi
