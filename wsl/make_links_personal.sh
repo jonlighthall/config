@@ -21,7 +21,7 @@ if [ ! "$BASH_SOURCE" = "$src_name" ]; then
 fi
 
 # set target and link directories
-target_dir=/mnt/c/Users/jonli/OneDrive/Documents/home/cygwin
+target_dir=/mnt/c/Users/jonli/OneDrive/Documents/home
 link_dir=$HOME
 
 # check directories
@@ -49,13 +49,14 @@ fi
 bar 38 "-- Start Linking Files Outside Repo --"
 
 # list of files to be linked
-for my_link in .bash_history .git-credentials
+for my_link in .bash_history
 do
     # define target (source)
     target=${target_dir}/${my_link}
     # define link (destination)
     sub_dir=$(dirname "$my_link")
     if [ ! $sub_dir = "." ]; then
+        # strip target subdirectory from link name
 	my_link=$(basename "$my_link")
     fi
     link=${link_dir}/${my_link}
@@ -100,6 +101,53 @@ do
     fi
 done
 
+# Create default directory links in ~
+
+# define winhome
+if [ ! -e ${HOME}/winhome ]; then
+    ln -sv /mnt/c/Users/jonli ${HOME}/winhome
+else
+    echo "winhome is already a link"
+fi
+
+# define links within winhome
+if [ ! -e ${HOME}/downloads ]; then
+    ln -sv ${HOME}/winhome/Downloads/ ${HOME}/downloads
+else
+    echo "downloads is already a link"
+fi
+
+# define onedrive
+if [ ! -e ${HOME}/onedrive ]; then
+    ln -sv ${HOME}/winhome/OneDrive/ ${HOME}/onedrive
+else
+    echo "onedrive is already a link"
+fi
+
+# define links wihtin onedrive
+if [ ! -e ${HOME}/home]; then
+    ln -sv ${HOME}/ondrive/Documents/home/ ${HOME}/home
+else
+    echo "home already a link"
+fi
+
+if [ ! -e ${HOME}/matlab]; then
+    ln -sv ${HOME}/ondrive/Documents/MATLAB/ ${HOME}/matlab
+else
+    echo "matlab already a link"
+fi
+
+bar 38 "--------- Done Making Links ----------"
+# print time at exit
+echo -en "\n$(date +"%a %b %-d %-l:%M %p %Z") ${BASH_SOURCE##*/} "
+if command -v sec2elap &>/dev/null; then
+    sec2elap ${SECONDS}
+else
+    echo "elapsed time is ${white}${SECONDS} sec${NORMAL}"
+fi
+
+exit
+
 # Copy .ssh
 if [ -d $target_dir/.ssh ]; then
     echo "Backing up .ssh..."
@@ -109,21 +157,3 @@ git clone https://jonlighthall@bitbucket.org/jonlighthall/.ssh.git ${HOME}/.ssh
 chmod -v 600 $target_dir/.ssh/config
 chmod -v 600 $target_dir/.ssh/id_rsa
 
-if [ ! -e $target_dir/winhome ]; then
-    ln -sv /mnt/c/Users/jonli $target_dir/winhome
-else
-    echo "winhome is already a link"
-fi
-if [ ! -e $target_dir/onedrive ]; then
-    ln -sv /mnt/c/Users/jonli/OneDrive/ $target_dir/onedrive
-else
-    echo "onedrive is already a link"
-fi
-bar 38 "--------- Done Making Links ----------"
-# print time at exit
-echo -en "\n$(date +"%a %b %-d %-l:%M %p %Z") ${BASH_SOURCE##*/} "
-if command -v sec2elap &>/dev/null; then
-    sec2elap ${SECONDS}
-else
-    echo "elapsed time is ${SECONDS} sec"
-fi
