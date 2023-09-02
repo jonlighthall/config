@@ -146,15 +146,3 @@ if command -v sec2elap &>/dev/null; then
 else
     echo "elapsed time is ${white}${SECONDS} sec${NORMAL}"
 fi
-
-exit
-
-# Copy .ssh
-if [ -d $target_dir/.ssh ]; then
-    echo "Backing up .ssh..."
-    mv -v $target_dir/.ssh/ ${HOME}/.ssh_$(date +'%Y-%m-%d-t%H%M')
-fi
-git clone https://jonlighthall@bitbucket.org/jonlighthall/.ssh.git ${HOME}/.ssh
-chmod -v 600 $target_dir/.ssh/config
-chmod -v 600 $target_dir/.ssh/id_rsa
-
