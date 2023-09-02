@@ -53,14 +53,15 @@ for my_link in .bash_history
 do
     # define target (source)
     target=${target_dir}/${my_link}
-    # define link (destination)
+    # strip target subdirectory from link name
     sub_dir=$(dirname "$my_link")
     if [ ! $sub_dir = "." ]; then
-        # strip target subdirectory from link name
 	my_link=$(basename "$my_link")
     fi
+    # define link (destination)
     link=${link_dir}/${my_link}
 
+    # check if target exists
     echo -n "target file ${target}... "
     if [ -e "${target}" ]; then
 	echo "exists "
