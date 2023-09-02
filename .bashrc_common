@@ -61,9 +61,10 @@ set -o emacs
 # git clone https://github.com/Lindydancer/face-explorer.git
 
 # define file names
-fface="${HOME}/downloads/face-explorer/face-explorer.el"
-fe2ansi="${HOME}/downloads/e2ansi/bin/e2ansi-cat"
-fsilent="${HOME}/downloads/e2ansi/e2ansi-silent.el"
+rep_dir="${HOME}/downloads/git"
+fface="${rep_dir}/face-explorer/face-explorer.el"
+fe2ansi="${rep_dir}/e2ansi/bin/e2ansi-cat"
+fsilent="${rep_dir}/e2ansi/e2ansi-silent.el"
 femacs="${HOME}/config/emacs_all.el"
 # define options
 emacs_args="-Q --batch -l $fsilent -l $femacs -l $fface -l $fe2ansi"
