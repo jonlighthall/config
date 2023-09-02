@@ -125,13 +125,13 @@ else
 fi
 
 # define links wihtin onedrive
-if [ ! -e ${HOME}/home]; then
+if [ ! -e ${HOME}/home ]; then
     ln -sv ${HOME}/ondrive/Documents/home/ ${HOME}/home
 else
     echo "home already a link"
 fi
 
-if [ ! -e ${HOME}/matlab]; then
+if [ ! -e ${HOME}/matlab ]; then
     ln -sv ${HOME}/ondrive/Documents/MATLAB/ ${HOME}/matlab
 else
     echo "matlab already a link"
