@@ -46,7 +46,7 @@ else
     fi
 fi
 
-bar 38 "-- Start Linking Files Outside Repo --"
+bar 38 "---- Start Linking External Files ----"
 
 # list of files to be linked
 for my_link in .bash_history
@@ -101,7 +101,9 @@ do
         echo -e "${BAD}does not exist${NORMAL}"
     fi
 done
+bar 38 "----- Done Linking External Files ----"
 
+bar 38 "- Start Linking External Directories -"
 # Create default directory links in ~
 
 # define winhome
@@ -125,7 +127,7 @@ else
     echo "onedrive is already a link"
 fi
 
-# define links wihtin onedrive
+# define links within onedrive
 if [ ! -e ${HOME}/home ]; then
     ln -sv ${HOME}/ondrive/Documents/home/ ${HOME}/home
 else
@@ -138,7 +140,9 @@ else
     echo "matlab already a link"
 fi
 
-bar 38 "--------- Done Making Links ----------"
+bar 38 "- Done Linking External Directories --"
+#       12345678901234567890123456789012345678
+
 # print time at exit
 echo -en "\n$(date +"%a %b %-d %-l:%M %p %Z") ${BASH_SOURCE##*/} "
 if command -v sec2elap &>/dev/null; then
