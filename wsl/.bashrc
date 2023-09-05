@@ -35,8 +35,47 @@ vecho() {
     fi
 }
 
+# since ~/.bashrc usually calls ~/.bash_aliases, a conditional could be added in .bash_aliases
+# (linked to repo) and have all the functionality of this script, but for subshells.
+
+run_home=true
+run_list=true
+N=${#BASH_SOURCE[@]}
+echo "start"
+echo -e "counting to $N... "
+for ((i=1;i<=$N;i++))
+do
+    echo -n "$i: ${BASH_SOURCE[$((i-1))]}"
+
+    if [[ "${BASH_SOURCE[$((i-1))]}" == "${HOME}/.bashrc" ]]; then
+	echo " FALSE"
+	run_home=false
+	break
+    fi
+
+    if [[ "${BASH_SOURCE[$((i-1))]}" == "${HOME}/config/"* ]]; then
+	echo " FALSE2"
+	run_list=false
+	break
+    fi
+    echo
+done
+echo "done"
+echo "run home = $run_home"
+echo "run list = $run_list"
+
+if [ "${run_home}" = true ]; then
+    echo "adding home"
+    LIST="$HOME/.bashrc  "
+else
+    echo "not running home"
+    unset LIST
+fi
+
+if [ "${run_list}" = true ]; then
+echo "running list"
 # required list
-LIST="$HOME/.bashrc $HOME/config/.bashrc_common
+LIST+="$HOME/config/.bashrc_common
 $HOME/config/linux/.bashrc_prompt $HOME/config/wsl/.bashrc_X11"
 
 # optional list
@@ -51,6 +90,9 @@ do
 	vecho -e "${TAB}$FILE ${UL}not found${NORMAL}"
     fi
 done
+else
+    echo "not running list"
+fi
 
 # source list of files
 for FILE in $LIST
