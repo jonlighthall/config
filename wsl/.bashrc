@@ -41,6 +41,8 @@ $HOME/config/linux/.bashrc_prompt $HOME/config/wsl/.bashrc_X11"
 
 # optional list
 LIST_OPT="$HOME/.bash_local root_v5.34.36/bin/thisroot.sh"
+
+# add optional list to required list if targets exist
 for FILE in $LIST_OPT
 do
     if [ -f $FILE ]; then
@@ -50,6 +52,7 @@ do
     fi
 done
 
+# source list of files
 for FILE in $LIST
 do
     vecho "${TAB}loading $FILE..."
