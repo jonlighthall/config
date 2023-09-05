@@ -34,6 +34,8 @@ if [ "${run_home}" = true ]; then
     LIST="$HOME/.bashrc  "
 else
     echo "not running home"
+    oldVB=$VB
+    export VB=false
     unset LIST
     if [ -z ${VB:+dummy} ]; then
 	export VB=false
@@ -59,7 +61,7 @@ else
 	    fi
 	fi
     fi
-
+    export VB=$oldVB
 fi
 # define conditional echo
 vecho() {
