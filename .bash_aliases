@@ -1,3 +1,9 @@
+# ~/config/.bash_aliases
+#
+# Aliases and fucnction for interactive UNIX-like shells. Intended to be universally compatible
+# with WSL, Debian derivatives (Ubuntu), Red Hat-based distros (Centos, Rock Linux), MinGW (MSYS,
+# GitBash), Cygwin, PGI Bash, etc.
+
 # Aliases
 alias close='source ${HOME}/.bash_logout;killall -9 -v -u $USER$USERNAME; exit'
 alias d='diffy -s'
