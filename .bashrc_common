@@ -1,6 +1,8 @@
 # ~/config/.bashrc_common
 #
-# Interactive shell settings for UNIX-like systems
+# Interactive shell settings for UNIX-like systems. Intended to be universally compatible with
+# WSL, Debian derivatives (Ubuntu), Red Hat-based distros (Centos, Rock Linux), MinGW (MSYS,
+# GitBash), Cygwin, PGI, etc.
 #
 # Note: this file must use UNIX line endings (LF)!
 if [ -z ${VB:+dummy} ]; then
