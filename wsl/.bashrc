@@ -19,15 +19,15 @@ TAB+=${TAB+${fTAB:='   '}}
 for ((i=1;i<=$N;i++)); do
     echo -n "${TAB}$i: ${BASH_SOURCE[$((i-1))]}"
     if [[ "${BASH_SOURCE[$((i-1))]}" == "${HOME}/.bashrc" ]]; then
-	echo " invoked by ~/.bashrc"
+	echo -e "\033[35m invoked by ~/.bashrc\x1b[0m"
 	run_home=false
 	break
     fi
 
     if [[ "${BASH_SOURCE[$((i-1))]}" == "${HOME}/config/"* ]]; then
-	echo " invoked by ~/config/"
+	echo -e "\x1b[35m invoked by ~/config/\x1b[0m"
 	if [ -L ${HOME}/.bash_aliases ]; then
-	    echo "alias link"
+	    echo "${TAB}${fTAB}alias link"
 	    run_list=false
 	    break
 	else
@@ -36,13 +36,13 @@ for ((i=1;i<=$N;i++)); do
     fi
     echo
 done
-echo "${TAB}run home = $run_home"
 
+echo "${TAB}run home = $run_home"
 if [ "${run_home}" = true ]; then
     echo "${TAB}adding home..."
     LIST="$HOME/.bashrc  "
 else
-    echo "${TAB}not running home"
+    echo "${TAB}${fTAB}not running home"
     oldVB=$VB
     #    export VB=false
     export VB=true
@@ -129,3 +129,4 @@ if $VB; then
     # reset tab
     TAB=${TAB%$fTAB}
 fi
+vecho "${TAB}$BASH_SOURCE done"
