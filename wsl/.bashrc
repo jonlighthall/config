@@ -17,6 +17,9 @@ N=${#BASH_SOURCE[@]}
 # set tab
 TAB+=${TAB+${fTAB:='   '}}
 for ((i=1;i<=$N;i++)); do
+    # or just add this loop inside the file check for loop
+    # that is, don't source any files that are in the bash source stack
+    
     echo -n "${TAB}$i: ${BASH_SOURCE[$((i-1))]}"
     if [[ "${BASH_SOURCE[$((i-1))]}" == "${HOME}/.bashrc" ]]; then
 	echo -e "\033[35m invoked by ~/.bashrc\x1b[0m"
