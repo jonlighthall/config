@@ -75,7 +75,7 @@ if [ -f $fface ] && [ -f $fe2ansi ] ; then
     vecho -n "${TAB}configuring e2ansi..."
     export "LESSOPEN=|emacs $emacs_args $e2ansi_args %s"
     export "LESS=-RF --mouse --wheel-lines=3"
-    alias cat="emacs $emacs_args $e2ansi_args 2>/dev/null"
+    alias cat='less -EX 2>/dev/null' # redefine cat as less
     alias more='less -EX 2>/dev/null' # redefine more as less
     vecho "done"
 fi
