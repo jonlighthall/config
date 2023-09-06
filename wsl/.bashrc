@@ -85,7 +85,7 @@ vecho() {
 
 echo "${TAB}run list = $run_list"
 if [ "${run_list}" = true ]; then
-    echo "${TAB}running list..."
+    vecho "${TAB}running list..."
     # required list
     LIST+="$HOME/config/.bashrc_common
 $HOME/config/linux/.bashrc_prompt $HOME/config/wsl/.bashrc_X11"
