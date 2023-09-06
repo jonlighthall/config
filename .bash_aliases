@@ -90,7 +90,7 @@ function nf {
 
 # conditional echo
 vecho() {
-    if [ ! -z ${VB:+dummy} ] || [ "${VB}"=true ] ; then
+    if [ ! -z ${VB:+dummy} ] && ${VB}; then
 	# if VB is (unset or null) or true
 	echo "$@"
     fi

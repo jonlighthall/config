@@ -30,7 +30,7 @@ fi
 
 # define conditional echo
 vecho() {
-    if [ ! -z ${VB:+dummy} ] || ${VB}; then
+    if [ ! -z ${VB:+dummy} ] && ${VB}; then
 	# [not (unset or null)] or true -> print if true or null or unset
 	echo "$@"
     fi
