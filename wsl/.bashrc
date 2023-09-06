@@ -7,35 +7,45 @@
 # since ~/.bashrc usually calls ~/.bash_aliases, a conditional could be added in .bash_aliases
 # (linked to repo) and have all the functionality of this script, but for subshells.
 
-run_home=true
+if [ -f ${HOME}/.bashrc ]; then
+    run_home=true
+else
+    run_home=false
+fi
 run_list=true
 N=${#BASH_SOURCE[@]}
+# set tab
+TAB+=${TAB+${fTAB:='   '}}
 for ((i=1;i<=$N;i++)); do
-    echo -n "$i: ${BASH_SOURCE[$((i-1))]}"
-
+    echo -n "${TAB}$i: ${BASH_SOURCE[$((i-1))]}"
     if [[ "${BASH_SOURCE[$((i-1))]}" == "${HOME}/.bashrc" ]]; then
-	echo " FALSE"
+	echo " invoked by ~/.bashrc"
 	run_home=false
 	break
     fi
 
     if [[ "${BASH_SOURCE[$((i-1))]}" == "${HOME}/config/"* ]]; then
-	echo " FALSE2"
-	run_list=false
-	break
+	echo " invoked by ~/config/"
+	if [ -L ${HOME}/.bash_aliases ]; then
+	    echo "alias link"
+	    run_list=false
+	    break
+	else
+	    echo -n "${TAB}${fTAB}no aliases link. continuing..."
+	fi
     fi
     echo
 done
-echo "run home = $run_home"
-echo "run list = $run_list"
+echo "${TAB}run home = $run_home"
 
 if [ "${run_home}" = true ]; then
-    echo "adding home"
+    echo "${TAB}adding home..."
     LIST="$HOME/.bashrc  "
 else
-    echo "not running home"
+    echo "${TAB}not running home"
     oldVB=$VB
-    export VB=false
+    #    export VB=false
+    export VB=true
     unset LIST
     if [ -z ${VB:+dummy} ]; then
 	export VB=false
@@ -70,6 +80,7 @@ vecho() {
     fi
 }
 
+echo "${TAB}run list = $run_list"
 if [ "${run_list}" = true ]; then
     echo "${TAB}running list..."
     # required list
