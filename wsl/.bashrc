@@ -7,32 +7,75 @@
 # since ~/.bashrc usually calls ~/.bash_aliases, a conditional could be added in .bash_aliases
 # (linked to repo) and have all the functionality of this script, but for subshells.
 
-# set tab
-if [ -z ${VB:+dummy} ]; then
-    export VB=false
+if [ -f ${HOME}/.bashrc ]; then
+    run_home=true
 else
-    if $VB; then
-	# set tab
-	TAB+=${TAB+${fTAB:='   '}}
-	# load formatting
-	fpretty=${HOME}/utils/bash/.bashrc_pretty
-	if [ -e $fpretty ]; then
-	    source $fpretty
-	fi
-	# print source name at start
-	if (return 0 2>/dev/null); then
-	    RUN_TYPE="sourcing"
+    run_home=false
+fi
+run_list=true
+N=${#BASH_SOURCE[@]}
+# set tab
+TAB+=${TAB+${fTAB:='   '}}
+for ((i=1;i<=$N;i++)); do
+    # or just add this loop inside the file check for loop
+    # that is, don't source any files that are in the bash source stack
+    
+    echo -n "${TAB}$i: ${BASH_SOURCE[$((i-1))]}"
+    if [[ "${BASH_SOURCE[$((i-1))]}" == "${HOME}/.bashrc" ]]; then
+	echo -e "\033[35m invoked by ~/.bashrc\x1b[0m"
+	run_home=false
+	break
+    fi
+
+    if [[ "${BASH_SOURCE[$((i-1))]}" == "${HOME}/config/"* ]]; then
+	echo -e "\x1b[35m invoked by ~/config/\x1b[0m"
+	if [ -L ${HOME}/.bash_aliases ]; then
+	    echo "${TAB}${fTAB}alias link"
+	    run_list=false
+	    break
 	else
-	    RUN_TYPE="executing"
-	fi
-	echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
-	src_name=$(readlink -f $BASH_SOURCE)
-	if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-	    echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
+	    echo -n "${TAB}${fTAB}no aliases link. continuing..."
 	fi
     fi
-fi
+    echo
+done
 
+echo "${TAB}run home = $run_home"
+if [ "${run_home}" = true ]; then
+    echo "${TAB}adding home..."
+    LIST="$HOME/.bashrc  "
+else
+    echo "${TAB}${fTAB}not running home"
+    oldVB=$VB
+    #    export VB=false
+    export VB=true
+    unset LIST
+    if [ -z ${VB:+dummy} ]; then
+	export VB=false
+    else
+	if $VB; then
+	    # set tab
+	    TAB+=${TAB+${fTAB:='   '}}
+	    # load formatting
+	    fpretty=${HOME}/utils/bash/.bashrc_pretty
+	    if [ -e $fpretty ]; then
+		source $fpretty
+	    fi
+	    # print source name at start
+	    if (return 0 2>/dev/null); then
+		RUN_TYPE="sourcing"
+	    else
+		RUN_TYPE="executing"
+	    fi
+	    echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
+	    src_name=$(readlink -f $BASH_SOURCE)
+	    if [ ! "$BASH_SOURCE" = "$src_name" ]; then
+		echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
+	    fi
+	fi
+    fi
+    export VB=$oldVB
+fi
 # define conditional echo
 vecho() {
     if [ ! -z ${VB:+dummy} ] && ${VB}; then
@@ -40,75 +83,31 @@ vecho() {
     fi
 }
 
-# required list
-LIST_IN="$HOME/.bashrc $HOME/config/.bashrc_common $HOME/config/linux/.bashrc_prompt
-$HOME/config/wsl/.bashrc_X11"
+echo "${TAB}run list = $run_list"
+if [ "${run_list}" = true ]; then
+    vecho "${TAB}running list..."
+    # required list
+    LIST+="$HOME/config/.bashrc_common
+$HOME/config/linux/.bashrc_prompt $HOME/config/wsl/.bashrc_X11"
 
-# optional list
-LIST_IN+=" $HOME/.bash_local root_v5.34.36/bin/thisroot.sh"
+    # optional list
+    LIST_OPT="$HOME/.bash_local root_v5.34.36/bin/thisroot.sh"
 
-# clear output list
-unset LIST_OUT
-
-# get bash source stack
-N=${#BASH_SOURCE[@]}
-
-echo "${TAB}checking file list $LIST_IN"
-echo
-TAB+=${fTAB}
-for FILE in $LIST_IN; do
-    echo -n "${TAB}${FILE}... "
-    # check if each file exists
-    if [ -f $FILE ]; then
-	echo "exists"
-	# check if file is in stack
-	TAB+=${fTAB}
-	include_file=true
-	for ((i=1;i<=$N;i++)); do		    
-	    echo -n "${TAB}$i: ${BASH_SOURCE[$((i-1))]}..."
-	    if [[ "${BASH_SOURCE[$((i-1))]}" == "${FILE}" ]]; then
-		echo -e "\033[35m invoked by ${FILE}\x1b[0m"
-		include_file=false
-		break 1
-	    else
-		echo " not in stack"
-	    fi
-	    if [[ "${BASH_SOURCE[$((i-1))]}" == "${src_name}" ]]; then
-		echo -e "\033[35m invoked by ${src_name}\x1b[0m"
-#		include_file=false
-#		break 2
-	    fi
-	    
-	done
-	TAB=${TAB%$fTAB}
-	# if test is passed, add to list
-	
-	if [ "${include_file}" = true ]; then
-
-	    LIST_OUT+=" $FILE"
-	    echo "${TAB}${FILE} added to list"
+    # add optional list to required list if targets exist
+    for FILE in $LIST_OPT
+    do
+	if [ -f $FILE ]; then
+	    LIST+=" $FILE"
 	else
-	    echo "${TAB}not added"
-	    continue
+	    vecho -e "${TAB}$FILE ${UL}not found${NORMAL}"
 	fi
-
-    else
-	echo -ne "\n${fTAB}"
-	vecho -e "${TAB}$FILE ${UL}not found${NORMAL}"
-    fi
-done
-TAB=${TAB%$fTAB}
-
-echo -n "${TAB}sourcing ${LIST_OUT}"
-if [ "${#LIST_OUT}" -eq 0 ]; then
-    echo "EMPTY!"
+    done
 else
-    echo
+    echo "not running list"
 fi
-echo
 
 # source list of files
-for FILE in $LIST_OUT
+for FILE in $LIST
 do
     vecho "${TAB}loading $FILE..."
     if [ -f $FILE ]; then
