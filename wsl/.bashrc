@@ -18,7 +18,8 @@ N=${#BASH_SOURCE[@]}
 TAB+=${TAB+${fTAB:='   '}}
 for ((i=1;i<=$N;i++)); do
     if [[ "${BASH_SOURCE[$((i-1))]}" == "${HOME}/.bashrc" ]]; then
-	echo -e "${TAB}\033[35minvoked by ${BASH_SOURCE[$((i-1))]}\x1b[0m: excluding ${HOME}/.bashrc from list..."
+	echo -e "${TAB}invoked by ${PSDIR}${BASH_SOURCE[$((i-1))]}${NORMAL}"
+	echo "${TAB}excluding ${HOME}/.bashrc from file list"
 	run_home=false
 	break
     fi
@@ -131,7 +132,7 @@ if $VB; then
 fi
 
 if [[ "${BASH_SOURCE}" == "${HOME}/.bash_aliases" ]]; then
-    vecho -e "${TAB}$BASH_SOURCE \x1b[31mdone\x1b[0m"
+    vecho -e "${TAB}${BASH_SOURCE[0]} ${GOOD}done\x1b[0m"
 fi
 
 if [ ! -z ${oldFILE+dummy} ]; then
