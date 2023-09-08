@@ -20,7 +20,6 @@ for ((i=1;i<=$N;i++)); do
     if [[ "${BASH_SOURCE[$((i-1))]}" == "${HOME}/.bashrc" ]]; then
 	echo -e "${TAB}\033[35minvoked by ${BASH_SOURCE[$((i-1))]}\x1b[0m: excluding ${HOME}/.bashrc from list..."
 	run_home=false
-	TAB=${TAB%$fTAB}
 	break
     fi
 
@@ -43,7 +42,6 @@ if [ "${run_home}" = true ]; then
 else
 #    echo "${TAB}${fTAB}not running home"
     oldVB=$VB
-    #    export VB=false
     export VB=true
     unset LIST
     if [ -z ${VB:+dummy} ]; then
@@ -82,6 +80,9 @@ vecho() {
 #echo "${TAB}run list = $run_list"
 if [ "${run_list}" = true ]; then
     vecho "${TAB}running list..."
+    if [ ! -z ${FILE+dummy} ]; then
+	oldFILE=$FILE
+    fi
     # required list
     LIST+="$HOME/config/.bashrc_common
 $HOME/config/linux/.bashrc_prompt $HOME/config/wsl/.bashrc_X11"
@@ -131,4 +132,9 @@ fi
 
 if [[ "${BASH_SOURCE}" == "${HOME}/.bash_aliases" ]]; then
     vecho -e "${TAB}$BASH_SOURCE \x1b[31mdone\x1b[0m"
+fi
+
+if [ ! -z ${oldFILE+dummy} ]; then
+    FILE=$oldFILE
+    TAB=${TAB%$fTAB}
 fi
