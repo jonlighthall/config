@@ -16,34 +16,38 @@ run_list=true
 N=${#BASH_SOURCE[@]}
 # set tab
 TAB+=${TAB+${fTAB:='   '}}
+# define conditional echo
+vecho() {
+    if [ ! -z ${VB:+dummy} ] && ${VB}; then
+	echo "$@"
+    fi
+}
 for ((i=1;i<=$N;i++)); do
     if [[ "${BASH_SOURCE[$((i-1))]}" == "${HOME}/.bashrc" ]]; then
-	echo -e "${TAB}invoked by ${PSDIR}${BASH_SOURCE[$((i-1))]}${NORMAL}"
-	echo "${TAB}excluding ${HOME}/.bashrc from file list"
+	vecho -e "${TAB}invoked by ${PSDIR}${BASH_SOURCE[$((i-1))]}${NORMAL}"
+	vecho "${TAB}excluding ${HOME}/.bashrc from file list"
 	run_home=false
 	break
     fi
 
     if [[ "${BASH_SOURCE[$((i-1))]}" == "${HOME}/config/"* ]]; then
-	echo -en "${TAB}\x1b[35minvoked by ${BASH_SOURCE[$((i-1))]}\x1b[0m: "
+	vecho -en "${TAB}\x1b[35minvoked by ${BASH_SOURCE[$((i-1))]}\x1b[0m: "
 	if [ -L ${HOME}/.bash_aliases ]; then
 	    run_list=false
-	    echo "not running list..."
+	    vecho "not running list..."
 	    break
 	else
-	    echo "continuing..."
+	    vecho "continuing..."
 	fi
     fi
 done
 
-#echo "${TAB}run home = $run_home"
 if [ "${run_home}" = true ]; then
-#    echo "${TAB}adding home..."
     LIST="$HOME/.bashrc  "
 else
-#    echo "${TAB}${fTAB}not running home"
-    oldVB=$VB
-    export VB=true
+    if [ ! -z ${VB:+dummy} ]; then
+	oldVB=$VB
+    fi
     unset LIST
     if [ -z ${VB:+dummy} ]; then
 	export VB=false
@@ -69,14 +73,10 @@ else
 	    fi
 	fi
     fi
-    export VB=$oldVB
-fi
-# define conditional echo
-vecho() {
-    if [ ! -z ${VB:+dummy} ] && ${VB}; then
-	echo "$@"
+    if [ ! -z ${oldVB:+dummy} ]; then
+	export VB=$oldVB
     fi
-}
+fi
 
 #echo "${TAB}run list = $run_list"
 if [ "${run_list}" = true ]; then
@@ -100,8 +100,8 @@ $HOME/config/linux/.bashrc_prompt $HOME/config/wsl/.bashrc_X11"
 	    vecho -e "${TAB}$FILE ${UL}not found${NORMAL}"
 	fi
     done
-#else
-#    echo "${TAB}${fTAB}not running list"
+    #else
+    #    echo "${TAB}${fTAB}not running list"
 fi
 
 # source list of files
