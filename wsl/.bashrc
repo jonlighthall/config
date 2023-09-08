@@ -17,35 +17,32 @@ N=${#BASH_SOURCE[@]}
 # set tab
 TAB+=${TAB+${fTAB:='   '}}
 for ((i=1;i<=$N;i++)); do
-    # or just add this loop inside the file check for loop
-    # that is, don't source any files that are in the bash source stack
-    
-    echo -n "${TAB}$i: ${BASH_SOURCE[$((i-1))]}"
     if [[ "${BASH_SOURCE[$((i-1))]}" == "${HOME}/.bashrc" ]]; then
+	echo -n "${TAB}$i: ${BASH_SOURCE[$((i-1))]}"
 	echo -e "\033[35m invoked by ~/.bashrc\x1b[0m"
 	run_home=false
 	break
     fi
 
     if [[ "${BASH_SOURCE[$((i-1))]}" == "${HOME}/config/"* ]]; then
+	echo -n "${TAB}$i: ${BASH_SOURCE[$((i-1))]}"
 	echo -e "\x1b[35m invoked by ~/config/\x1b[0m"
 	if [ -L ${HOME}/.bash_aliases ]; then
-	    echo "${TAB}${fTAB}alias link"
+#	    echo "${TAB}${fTAB}alias link"
 	    run_list=false
 	    break
-	else
-	    echo -n "${TAB}${fTAB}no aliases link. continuing..."
+#	else
+#	    echo "${TAB}${fTAB}no aliases link. continuing..."
 	fi
     fi
-    echo
 done
 
-echo "${TAB}run home = $run_home"
+#echo "${TAB}run home = $run_home"
 if [ "${run_home}" = true ]; then
-    echo "${TAB}adding home..."
+#    echo "${TAB}adding home..."
     LIST="$HOME/.bashrc  "
 else
-    echo "${TAB}${fTAB}not running home"
+#    echo "${TAB}${fTAB}not running home"
     oldVB=$VB
     #    export VB=false
     export VB=true
@@ -83,7 +80,7 @@ vecho() {
     fi
 }
 
-echo "${TAB}run list = $run_list"
+#echo "${TAB}run list = $run_list"
 if [ "${run_list}" = true ]; then
     vecho "${TAB}running list..."
     # required list
@@ -102,8 +99,8 @@ $HOME/config/linux/.bashrc_prompt $HOME/config/wsl/.bashrc_X11"
 	    vecho -e "${TAB}$FILE ${UL}not found${NORMAL}"
 	fi
     done
-else
-    echo "not running list"
+#else
+#    echo "${TAB}${fTAB}not running list"
 fi
 
 # source list of files
