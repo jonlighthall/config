@@ -18,21 +18,20 @@ N=${#BASH_SOURCE[@]}
 TAB+=${TAB+${fTAB:='   '}}
 for ((i=1;i<=$N;i++)); do
     if [[ "${BASH_SOURCE[$((i-1))]}" == "${HOME}/.bashrc" ]]; then
-	echo -n "${TAB}$i: ${BASH_SOURCE[$((i-1))]}"
-	echo -e "\033[35m invoked by ~/.bashrc\x1b[0m"
+	echo -e "${TAB}\033[35minvoked by ${BASH_SOURCE[$((i-1))]}\x1b[0m: excluding ${HOME}/.bashrc from list..."
 	run_home=false
+	TAB=${TAB%$fTAB}
 	break
     fi
 
     if [[ "${BASH_SOURCE[$((i-1))]}" == "${HOME}/config/"* ]]; then
-	echo -n "${TAB}$i: ${BASH_SOURCE[$((i-1))]}"
-	echo -e "\x1b[35m invoked by ~/config/\x1b[0m"
+	echo -en "${TAB}\x1b[35minvoked by ${BASH_SOURCE[$((i-1))]}\x1b[0m: "
 	if [ -L ${HOME}/.bash_aliases ]; then
-#	    echo "${TAB}${fTAB}alias link"
 	    run_list=false
+	    echo "not running list..."
 	    break
-#	else
-#	    echo "${TAB}${fTAB}no aliases link. continuing..."
+	else
+	    echo "continuing..."
 	fi
     fi
 done
@@ -129,4 +128,7 @@ if $VB; then
     # reset tab
     TAB=${TAB%$fTAB}
 fi
-vecho "${TAB}$BASH_SOURCE done"
+
+if [[ "${BASH_SOURCE}" == "${HOME}/.bash_aliases" ]]; then
+    vecho -e "${TAB}$BASH_SOURCE \x1b[31mdone\x1b[0m"
+fi
