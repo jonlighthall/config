@@ -64,6 +64,8 @@ do
     fi
 done
 
+unset command_not_found_handle
+
 if $VB; then
     # reset tab
     TAB=${TAB%$fTAB}
