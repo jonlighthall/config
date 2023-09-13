@@ -64,7 +64,7 @@ if ! $dispOK; then
     do
 	export DISPLAY="${disp}:0.0"
 	vecho -n "${TAB}setting DISPLAY to $DISPLAY... "
-	xdpyinfo -display $DISPLAY &>/dev/null
+	timeout -s 9 3s xdpyinfo -display $DISPLAY &>/dev/null
 	RETVAL=$?
 	if [[ $RETVAL == 0 ]]; then
 	    vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
@@ -79,7 +79,7 @@ if ! $dispOK; then
     do
 	export DISPLAY="localhost:${i}.0"
 	vecho -n "${TAB}setting DISPLAY to $DISPLAY... "
-	xdpyinfo -display $DISPLAY &>/dev/null
+	timeout -s 9 3s xdpyinfo -display $DISPLAY &>/dev/null
 	RETVAL=$?
 	if [[ $RETVAL == 0 ]]; then
 	    vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
