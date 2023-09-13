@@ -1,5 +1,15 @@
 #!/bin/bash
+# exit on errors
 set -e
+
+# set tab
+:${TAB:=''}
+
+# load formatting
+fpretty=${HOME}/utils/bash/.bashrc_pretty
+if [ -e $fpretty ]; then
+    source $fpretty
+fi
 
 # print source name at start
 if (return 0 2>/dev/null); then
@@ -86,7 +96,7 @@ if  command -v git ; then
 	    echo "${TAB}dirctory $my_repo already exits"
 	fi
 
-	# define link
+	# define link (destination)
 	link=${udir}/${my_repo}
 
 	# create link
@@ -112,35 +122,56 @@ if  command -v git ; then
     # list of example repos to be cloned
     for my_repo in fortran hello nrf python
     do
-	if [ ! -d ${my_repo} ]; then
-	    echo "cloning $my_repo..."
-	    git clone ${github_auth}$my_repo
-	else
-	    echo "${TAB}dirctory $my_repo already exits"
-	fi
-
-	# define link
+	TAB=''
+	# define target (source)
+	target=${rdir}/${my_repo}
+	# define link (destination)
 	link=${edir}/${my_repo}
 
-	# check if link exists
+	# check if target exists
+	echo -n "target dirctory ${target}... "
+	if [ -e "${target}" ]; then
+	    echo "exits"
+	else
+	    echo "does not exist"
+	    echo "${TAB}cloning $my_repo..."
+	    git clone ${github_auth}$my_repo
+	fi
+	# begin linking...
+	echo -n "${TAB}link ${link}... "
+	TAB+=${fTAB:='   '}
+	# first, check for existing copy
 	if [ -L ${link} ] || [ -d ${link} ]; then
-	    echo "${TAB}link ${link} already exits"
-	    if [ $(\diff --suppress-common-lines -r ${rdir}/${my_repo} ${link} "${my_repo}" | wc -eq 0) ]; then
-		echo "have the same contents"
-		echo "delete!"
+	    echo -n "exits and "
+	    if [[ "${target}" -ef ${link} ]]; then
+                echo "already points to ${my_repo}"
+		echo -n "${TAB}"
+		ls -lhG --color=auto ${link}
+		echo "${TAB}skipping..."
+		TAB=${TAB%$fTAB}
+		continue
 	    else
-		echo "are differnt"
-		echo "back up!"
+		# next, delete or backup existing copy
+		if [ $(\diff --suppress-common-lines -r ${rdir}/${my_repo} ${link} | wc -c) -eq 0 ]; then
+		    echo "has the same contents"
+		    echo -n "${TAB}deleting..."
+		    rm -rfd ${link}
+		else
+		    echo "will be backed up..."
+		    mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
+		fi
+		TAB=${TAB%$fTAB}
 	    fi
+	else
+	    echo "does not exist"
 	fi
-
-	# create link
-	if [ ! -e ${link} ]; then
-	    echo -en "${TAB}${GRH}";hline 72;
-	    echo "${TAB}making link... "
-	    ln -sv ${rdir}/${my_repo} ${link}
-	    echo -ne "${TAB}";hline 72;echo -en "${NORMAL}"
-	fi
+	
+	# then link
+	echo -en "${TAB}${GRH}";hline 72;
+	echo "${TAB}making link... "
+	ln -sv "${target}" ${link} | sed "s/^/${TAB}/"
+	echo -ne "${TAB}";hline 72;echo -en "${NORMAL}"
+	TAB=${TAB%$fTAB}
     done
 
     # list of other repos to be cloned
@@ -155,30 +186,32 @@ if  command -v git ; then
     done
 
     # list of private repos to be cloned
-    cd ${HOME}/config
-    dname=private
-    for my_repo in config_private
-    do
-	if [ ! -d $dname ]; then
-	    echo "cloning $dname..."
-	    echo "see ${github_https}$my_repo/blob/master/.git-credentials"
-	    git clone ${github_auth}$my_repo $dname
+    if [[ ! ("$(hostname -f)"  == *"navy.mil") ]]; then
+	cd ${HOME}/config
+	dname=private
+	for my_repo in config_private
+	do
+	    if [ ! -d $dname ]; then
+		echo "cloning $dname..."
+		echo "see ${github_https}$my_repo/blob/master/.git-credentials"
+		git clone ${github_auth}$my_repo $dname
 
-	    # run make_links
-	    fname=make_links.sh
-	    fpath="${dname}/make_links.sh"
-	    echo -n "${TAB}$fpath... "
-	    if [ -f "${fpath}" ]; then
-		echo "found"
-		cd $dname
-		bash $fname
+		# run make_links
+		fname=make_links.sh
+		fpath="${dname}/make_links.sh"
+		echo -n "${TAB}$fpath... "
+		if [ -f "${fpath}" ]; then
+		    echo "found"
+		    cd $dname
+		    bash $fname
+		else
+		    echo "not found"
+		fi
 	    else
-		echo "not found"
+		echo "${TAB}dirctory $my_repo already exits"
 	    fi
-	else
-	    echo "${TAB}dirctory $my_repo already exits"
-	fi
-    done
+	done
+    fi
 else
     echo "Git not defined."
 fi
