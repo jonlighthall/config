@@ -120,7 +120,7 @@ if  command -v git ; then
     fi
 
     # list of example repos to be cloned
-    for my_repo in fortran hello nrf python
+    for my_repo in cpp fortran hello nrf python
     do
 	TAB=''
 	# define target (source)
