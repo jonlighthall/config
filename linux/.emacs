@@ -1,6 +1,24 @@
 ;; ------Settings for Linux -------------------------------
 (load "${HOME}/config/emacs_all.el")
 
+(when (not window-system)
+  (message "Emacs not running in window.")
+
+  (if (<= emacs-major-version 23) 
+      (progn 
+	(message "defining mouse scroll...")
+	(global-set-key [mouse-4] 'scroll-down)
+	(global-set-key [mouse-5] 'scroll-up)
+	)
+    (message "Emacs version supports scroll lines.")
+    (when (fboundp 'scroll-down-line)
+	(message "defining mouse scroll lines...")
+      (global-set-key [mouse-4] 'scroll-down-line)
+      (global-set-key [mouse-5] 'scroll-up-line)
+      )
+    )
+  )
+
 ;; default to unified diffs
 ;(setq diff-switches "-u")
 
