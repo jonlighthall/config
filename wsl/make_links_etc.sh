@@ -1,6 +1,4 @@
 #!/bin/bash
-# exit on errors
-set -e
 # set tab
 TAB+=${TAB+${fTAB:='   '}}
 # load formatting
@@ -14,6 +12,8 @@ if (return 0 2>/dev/null); then
     RUN_TYPE="sourcing"
 else
     RUN_TYPE="executing"
+    # exit on errors
+    set -e
 fi
 echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
 src_name=$(readlink -f $BASH_SOURCE)
@@ -47,21 +47,22 @@ else
     fi
 fi
 
-bar 38 "------ Start Linking Repo Files-------"
+bar 38 "------ Start Linking Repo Files ------"
 
 # list of files to be linked
 for my_link in wsl.conf
 do
     # define target (source)
     target=${target_dir}/${my_link}
-    # define link (destination)
+    # strip target subdirectory from link name
     sub_dir=$(dirname "$my_link")
     if [ ! $sub_dir = "." ]; then
-        # strip target subdirectory from link name
 	my_link=$(basename "$my_link")
     fi
+    # define link (destination)
     link=${link_dir}/${my_link}
 
+    # check if target exists
     echo -n "target file ${target}... "
     if [ -e "${target}" ]; then
 	echo "exists "
@@ -71,7 +72,7 @@ do
 	if [ -L ${link} ] || [ -f ${link} ] || [ -d ${link} ]; then
 	    echo -n "exists and"
 	    if [[ "${target}" -ef ${link} ]]; then
-                echo " already points to ${my_link}"
+                echo "already points to ${my_link}"
 		echo -n "${TAB}"
 		ls -lhG --color=auto ${link}
 		echo "${TAB}skipping..."
@@ -88,7 +89,9 @@ do
 		if [ $(diff -ebwB "${target}" ${link} | wc -c) -eq 0 ]; then
 		    echo "has the same contents"
 		    echo -n "${TAB}deleting... "
+		    # define remove command
 		    rmcom="rm -v ${link}"
+		    # check for write permissions and remove as sudo if necessary
 		    if [ -w ${link} ] && [ -w ${link_dir} ]; then
 			${rmcom}
 		    else
@@ -112,7 +115,8 @@ do
         echo -e "${BAD}does not exist${NORMAL}"
     fi
 done
-bar 38 "--------- Done Making Links ----------"
+bar 38 "------- Done Linking Repo Files ------"
+
 # print time at exit
 echo -en "\n$(date +"%a %b %-d %-l:%M %p %Z") ${BASH_SOURCE##*/} "
 if command -v sec2elap &>/dev/null; then
