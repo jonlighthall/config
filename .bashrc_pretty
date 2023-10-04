@@ -61,8 +61,9 @@ bar() {
 
 # define centered bar print
 cbar() {
-    msg=$(echo " $1 ")
-    ln=$(for (( i=1;i<=${#msg};i++ )); do echo -n "-"; done)
+    msg=$(echo " $@ ")
+    msgne=$(echo -e " $@ " | sed "s/$(echo -e "\x1B")[^m]*m//g")
+    ln=$(for (( i=1;i<=${#msgne};i++ )); do echo -n "-"; done)
     echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
 }
 
