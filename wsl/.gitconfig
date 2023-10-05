@@ -12,5 +12,3 @@
 	ui = true
 [push]
 	default = simple
-[pager]
-	pager = less -FX
