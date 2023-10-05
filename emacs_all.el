@@ -30,9 +30,17 @@
 ;; Turn on highlight matching parentheses
 (show-paren-mode 1)
 
+;; ------Libraries-----------------------------------------
 ;; Turn on line numbering
 (require 'linum)
 (global-linum-mode 1)
+;; whitespace-mode settings
+(require 'whitespace)
+(setq whitespace-style '(face lines-tail))
+(setq whitespace-line-column ncols)
+(setq-default fill-column ncols)
+(global-whitespace-mode 1)
+;;(add-hook 'prog-mode-hook 'whitespace-mode)
 
 ;; default to better frame titles
 (setq frame-title-format
@@ -48,6 +56,8 @@
 (global-set-key (kbd "C-9")
                 (lambda () (interactive)
                   (disable-theme 'misterioso)))
+
+;; ------Custom functions----------------------------------
 (defun select-all-and-indent ()
   "mark whole buffer and indent region, delete trailing whitespace, delete repeated blank lines"
   (interactive "*")
@@ -227,14 +237,6 @@
    ;; If there is more than one, they won't work right.
    '(minibuffer-prompt ((t (:background "#FFF"  :foreground "medium blue")))))
   )
-
-;; whitespace-mode settings
-(require 'whitespace)
-(setq whitespace-style '(face lines-tail))
-(setq whitespace-line-column ncols)
-(setq-default fill-column ncols)
-(global-whitespace-mode 1)
-;;(add-hook 'prog-mode-hook 'whitespace-mode)
 
 ;; add bullets to fill
 (setq paragraph-start "\f\\|[ \t]*$\\|[ \t]*[-+*] ")

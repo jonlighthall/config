@@ -2,10 +2,10 @@
 (load "${HOME}/config/emacs_all.el")
 
 ;; ------Libraries-----------------------------------------
-(require 'diff)
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
+(require 'diff)
 
 ;; ------Spelling------------------------------------------
 (setq-default ispell-program-name "aspell")
