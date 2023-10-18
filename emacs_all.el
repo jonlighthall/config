@@ -25,7 +25,7 @@
  '(inhibit-startup-screen t)
  '(visible-bell t)
  '(fortran-line-length fcols)
- '(fortran-continuation-string "&"))
+ '(fortran-continuation-string ">"))
 
 ;; Turn on highlight matching parentheses
 (show-paren-mode 1)
