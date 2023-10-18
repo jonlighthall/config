@@ -78,7 +78,6 @@ else
     fi
 fi
 
-#echo "${TAB}run list = $run_list"
 if [ "${run_list}" = true ]; then
     vecho "${TAB}running list..."
     if [ ! -z ${FILE+dummy} ]; then
