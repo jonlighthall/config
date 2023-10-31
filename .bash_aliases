@@ -23,7 +23,7 @@ alias gitd='git diff'
 alias gitdn='git diff --name-only'
 alias gitr='git remote -v'
 alias gits='git status'
-alias gr='grep -iIrR --exclude-dir=".git"'
+alias gr='grep -iIrRn --exclude-dir=".git"'
 alias grep='grep --color=auto'
 alias hg='history | grep'
 alias hl="\cat ~/.bash_history | sed '/^#[0-9]\{10\}/d' | awk '{print length, \$0}' | sort -n | uniq -c | sort -n -r | sed 's/^\([ \t]*[0-9]*\) [0-9]* \(.*$\)/\1 \2/' | head -n 20"
