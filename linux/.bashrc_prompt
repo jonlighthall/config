@@ -75,7 +75,7 @@ tmux_ses() {
 
 sh_lvl() {
     if [ "$SHLVL" -gt 1 ]; then
-	echo -en " \x1B[1;31mLVL${SHLVL}\x1B[0m"
+	echo -en " \x1B[1;31mSHLVL${SHLVL}\x1B[0m"
     else
 	:
     fi
