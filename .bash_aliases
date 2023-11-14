@@ -55,7 +55,7 @@ function duf {
 
 function gitl {
     # alias gitl='git log --follow'
-    if [ $# -eq 0 ]; then
+    if [ $# -ne 1 ]; then
 	git log
     else
 	git log --follow $@
