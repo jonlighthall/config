@@ -1,7 +1,9 @@
 # define highligt colors
    BAD='\033[0;31m' # red
   GOOD='\033[0;32m' # green
+# define accents
 NORMAL='\033[0m'    # reset
+  BOLD='\033[1m'    # bold
     UL='\033[4m'    # underline
 # define 'ls' colors
 BROKEN='\033[1;31m' # bold red    : broken link
