@@ -71,10 +71,10 @@ function nf {
     for dir in $dir_list
     do
 	dir=${dir%/}
-	n1=$(find ${dir} -maxdepth 1 -type f | wc -l)
+	n1=$(find "${dir}" -maxdepth 1 -type f | wc -l)
 
 	# calculate length of longest number
-	n2=$(find ${dir} -type f | wc -l)
+	n2=$(find "${dir}" -type f | wc -l)
 	nn=$(echo "(l($n2)/l(10))+1" | bc -l | sed 's/\..*$//')
 	# account for commas
 	nc=$((($nn-1)/3))
