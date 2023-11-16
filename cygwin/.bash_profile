@@ -86,7 +86,7 @@ if $VB; then
     dT=$(($SECONDS-start_time))
     if command -v sec2elap &>/dev/null
     then
-	echo -n "$(sec2elap ${dT} | tr -d '\n')"
+	bash sec2elap ${dT} | tr -d '\n'
     else
     echo -n "elapsed time is ${white}${dT} sec${NORMAL}"
     fi
