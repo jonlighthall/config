@@ -1,6 +1,6 @@
 # ${HOME}/config/cygwin/.bashrc
 #
-# Interactive shell settings for Cygwin
+# Interactive shell settings for Git Bash (MinGW)
 
 if [ -z ${VB:+dummy} ]; then
     export VB=false

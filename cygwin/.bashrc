@@ -1,4 +1,5 @@
 # ${HOME}/config/cygwin/.bashrc
+#
 # Interactive shell settings for Cygwin
 
 if [ -z ${VB:+dummy} ]; then
@@ -64,5 +65,6 @@ do
 done
 
 if $VB; then
+    # reset tab
     TAB=${TAB%$fTAB}
 fi
