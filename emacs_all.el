@@ -162,12 +162,6 @@
           (goto-char (point-min))
           (re-search-forward "^<<<<<<< " nil t))
     (smerge-ediff)))
-;; for wsl2 lappy
-(defun vc-git-find-file-hook ()
-  (when (save-excursion
-          (goto-char (point-min))
-          (re-search-forward "^<<<<<<< " nil t))
-    (smerge-ediff)))
 
 ;;https://emacs.stackexchange.com/questions/3074/customizing-indentation-in-makefile-mode
 ;;Building on purple_arrows' solution:
