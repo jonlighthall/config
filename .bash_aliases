@@ -6,39 +6,50 @@
 
 # Aliases
 alias close='source ${HOME}/.bash_logout;killall -9 -v -u $USER$USERNAME; exit'
+alias ping='ping -c 5'
+alias pkill='pkill -9 -u ${USER}'
+alias pwd='pwd -L;pwd -P'
+alias up='bash update_repos' # should be sourced?
+
+# diff
 alias d='diffy -s'
 alias diffy='diff --color=auto --suppress-common-lines -yiEZbwB'
-alias du0='duf --max-depth=0'
-alias du1='duf --max-depth=1'
-alias du2='duf --max-depth=2'
+
+# find
 alias fb='ff | perl -lne "print if not -T"' # find binary
 alias fd='find -L ./ -not -path "*/.git/*" -type d' # find directory
 alias ff='find -L ./ -not -path "*/.git*/*" -type f' # find file
 alias ffi='ff -iname'
 alias fl='find -L ./ -maxdepth 1 -type l -exec ls --color -l {} \;' # find link
-alias g='gr'
+
+# git
 alias gitb='git branch -va'
 alias gitcp='git cherry-pick'
 alias gitd='git diff'
 alias gitdn='git diff --name-only'
 alias gitr='git remote -v'
 alias gits='git status'
-alias gr='grep -iIrRn --exclude-dir=".git"'
+
+# grep
+alias g='gr'
+alias gr='grep -iIrRn -D skip --exclude-dir=".git"'
 alias grep='grep --color=auto'
+
+# history
 alias hg='history | grep'
 alias hl="\cat ~/.bash_history | sed '/^#[0-9]\{10\}/d' | awk '{print length, \$0}' | sort -n | uniq -c | sort -n -r | sed 's/^\([ \t]*[0-9]*\) [0-9]* \(.*$\)/\1 \2/' | head -n 20"
+
+# list
 alias lS='ls -ltS'
 alias la='ls -la'
 alias lh='ls -ld .?*' # list hidden only
-alias ls='ls -l'
-alias ls='ls --color'
+alias ls='ls -l --color'
 alias lt='ls -ltr' # sort by time
-alias ping='ping -c 5'
-alias pkill='pkill -9 -u ${USER}'
-alias pwd='pwd -L;pwd -P'
-alias up='bash update_repos' # should be sourced?
 
 # Fucntions
+alias du0='duf --max-depth=0'
+alias du1='duf --max-depth=1'
+alias du2='duf --max-depth=2'
 function duf {
     du -k "$@" | sort -n |
 	while read size fname; do
