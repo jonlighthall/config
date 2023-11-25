@@ -91,7 +91,7 @@ if  command -v git ; then
 	    echo "cloning $my_repo..."
 	    git clone ${github_auth}${my_repo}.git
 	else
-	    echo "${TAB}dirctory $my_repo already exits"
+	    echo "dirctory $my_repo already exits"
 	fi
 
 	# define link (destination)
