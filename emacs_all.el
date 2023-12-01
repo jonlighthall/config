@@ -19,6 +19,7 @@
 (set 'fcols 72)
 (set 'ncols 97)
 (set 'mtab 4)
+(setq-default tab-width 4)
 
 (custom-set-variables
  '(ediff-split-window-function (quote split-window-horizontally))
