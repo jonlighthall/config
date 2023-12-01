@@ -18,8 +18,11 @@
 ;; Set line width for fortran and other
 (set 'fcols 72)
 (set 'ncols 97)
+
+;; Tab settings
 (set 'mtab 4)
 (setq-default tab-width 4)
+;;(setq-default indent-tabs-mode t)
 
 (custom-set-variables
  '(ediff-split-window-function (quote split-window-horizontally))
@@ -159,10 +162,11 @@
 
 ;; start Git merge conflicts in smerge ediff
 (defun vc-git-find-file-hook ()
-  (when (save-excursion
-          (goto-char (point-min))
-          (re-search-forward "^<<<<<<< " nil t))
-    (smerge-ediff)))
+  (save-excursion
+    (goto-char (point-min))
+	(when (re-search-forward "^<<<<<<< " nil t)
+      (smerge-ediff))))
+(add-hook 'find-file-hook 'vc-git-find-file-hook t)
 
 ;;https://emacs.stackexchange.com/questions/3074/customizing-indentation-in-makefile-mode
 ;;Building on purple_arrows' solution:
