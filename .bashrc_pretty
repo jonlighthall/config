@@ -33,53 +33,53 @@ magenta='\033[35m'
 
 # define horizontal line
 hline() {
-    if [ "$#" -lt 1 ]; then
-	N=38
-    else
-	N=$1
-    fi
-    if [ "$#" -lt 2 ]; then
-	m="-"
-    else
-	m=$2
-    fi
-    for (( i=1;i<=$N; i++ )); do echo -n "$m"; done
-    echo
+	if [ "$#" -lt 1 ]; then
+		N=38
+	else
+		N=$1
+	fi
+	if [ "$#" -lt 2 ]; then
+		m="-"
+	else
+		m=$2
+	fi
+	for ((i = 1; i <= $N; i++)); do echo -n "$m"; done
+	echo
 }
 
 # define bar
 bar() {
-    if [ "$#" -lt 2 ]; then
-	N=69
-	TXT=$1
-    else
-	N=$1
-	TXT=$2
-    fi
-    hline $N
-    echo "$TXT"
-    hline $N
+	if [ "$#" -lt 2 ]; then
+		N=69
+		TXT=$1
+	else
+		N=$1
+		TXT=$2
+	fi
+	hline $N
+	echo "$TXT"
+	hline $N
 }
 
 # define centered bar print
 cbar() {
-    msg=$(echo " $@ ")
-    msgne=$(echo -e " $@ " | sed "s/$(echo -e "\x1B")[^m]*m//g")
-    ln=$(for (( i=1;i<=${#msgne};i++ )); do echo -n "-"; done)
-    echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
+	msg=$(echo " $@ ")
+	msgne=$(echo -e " $@ " | sed "s/$(echo -e "\x1B")[^m]*m//g")
+	ln=$(for ((i = 1; i <= ${#msgne}; i++)); do echo -n "-"; done)
+	echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
 }
 
 # set tab
 if [ -z ${TAB+dummy} ]; then
-    i=0
-    echo -e "TAB ${yellow}unset${NORMAL}"
-    export TAB='   '
+	i=0
+	echo -e "TAB ${yellow}unset${NORMAL}"
+	export TAB='   '
 else
-    i=${#TAB}
+	i=${#TAB}
 fi
 j=${#TAB}
 if [ $i -ne $j ]; then
-    echo -e "${TAB}TAB = \x1B[106m${TAB}${NORMAL} length $j"
+	echo -e "${TAB}TAB = \x1B[106m${TAB}${NORMAL} length $j"
 fi
 
 function timestamp() {
