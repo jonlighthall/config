@@ -81,3 +81,77 @@ j=${#TAB}
 if [ $i -ne $j ]; then
     echo -e "${TAB}TAB = \x1B[106m${TAB}${NORMAL} length $j"
 fi
+
+function timestamp() {
+	echo "$(date +"%a %b %-d at %-l:%M %p %Z")"
+}
+
+function print_elap() {
+	end_time=$(date +%s%N)
+	elap_time=$((${end_time} - ${start_time}))
+	if command -v bc &>/dev/null; then
+		dT_sec=$(bc <<<"scale=3;$elap_time/1000000000")
+	else
+		dT_sec=${elap_time::-9}
+	fi
+	if command -v sec2elap &>/dev/null; then
+		bash sec2elap $dT_sec | tr -d "\n"
+	else
+		echo -n "elapsed time is ${white}${dT_sec} sec${NORMAL}"
+	fi
+}
+
+function print_exit() {
+	start_new_line
+	echo -e "${yellow}\E[7m EXIT ${NORMAL} ${BASH_SOURCE##*/}"
+	print_elap
+	echo -n " on "
+	timestamp
+}
+
+function start_new_line() {
+	# get the cursor position
+	echo -en "\E[6n"
+	read -sdR CURPOS
+	CURPOS=${CURPOS#*[}
+	# get the x-position of the cursor
+	x_pos=${CURPOS#*;}
+	# if the cursor is not at the start of a line, then create a new line
+	if [ ${x_pos} -gt 1 ]; then
+		echo
+	fi
+}
+
+function print_error() {
+	# expected arguments are $LINENO $? $BASH_COMMAND
+
+	# parse arguments
+	ERR_LINENO=$1
+	shift
+	ERR_RETVAL=$1
+	shift
+	ERR_CMD="$@"
+
+	# print summary
+	start_new_line
+	ERR_PRINT=$(echo -e "\E[37;41m ERROR ${NORMAL} ")
+	echo -n ${ERR_PRINT}
+	# print grep-like line match
+	echo -e " \E[35m${BASH_SOURCE##*/}\E[m\E[36m:\E[m\x1B[32m${ERR_LINENO}\x1B[m"
+
+	# define indent
+	declare -i spl=$(echo -ne "${ERR_PRINT}" | sed 's/\x1b\[[0-9;]*m//g' | wc -c)
+	spc=$(echo -ne "\x1B[${spl}C")
+
+	sed -n "${ERR_LINENO}p" $src_name | sed "s/^\s*/${spc}/"
+
+	# if command contains vairables, evaluate expression
+	if [[ "$ERR_CMD" =~ '$' ]]; then
+		eva='eval '
+		declare -i evl=${#eva}
+		declare -i etab=$((spl - evl))
+		echo -ne "\x1B[${etab}C${VALID}${eva}\E[m"
+		eval echo $ERR_CMD
+	fi
+	echo -e "${spc}${gray}RETVAL=${ERR_RETVAL}${NORMAL}"
+}
