@@ -87,8 +87,8 @@ function timestamp() {
 }
 
 function print_elap() {
-	end_time=$(date +%s%N)
-	elap_time=$((${end_time} - ${start_time}))
+	declare -i end_time=$(date +%s%N)
+	declare -i elap_time=$((${end_time} - ${start_time}))
 	if command -v bc &>/dev/null; then
 		dT_sec=$(bc <<<"scale=3;$elap_time/1000000000")
 	else
@@ -103,7 +103,7 @@ function print_elap() {
 
 function print_exit() {
 	start_new_line
-	echo -e "${yellow}\E[7m EXIT ${NORMAL} ${BASH_SOURCE##*/}"
+	echo -e "${yellow}\E[7m EXIT ${NORMAL} ${0##*/}"
 	print_elap
 	echo -n " on "
 	timestamp
@@ -137,7 +137,7 @@ function print_error() {
 	ERR_PRINT=$(echo -e "\E[37;41m ERROR ${NORMAL} ")
 	echo -n ${ERR_PRINT}
 	# print grep-like line match
-	echo -e " \E[35m${BASH_SOURCE##*/}\E[m\E[36m:\E[m\x1B[32m${ERR_LINENO}\x1B[m"
+	echo -e " \E[35m${0##*/}\E[m\E[36m:\E[m\x1B[32m${ERR_LINENO}\x1B[m"
 
 	# define indent
 	declare -i spl=$(echo -ne "${ERR_PRINT}" | sed 's/\x1b\[[0-9;]*m//g' | wc -c)
@@ -154,4 +154,17 @@ function print_error() {
 		eval echo $ERR_CMD
 	fi
 	echo -e "${spc}${gray}RETVAL=${ERR_RETVAL}${NORMAL}"
+}
+
+function print_int() {
+	start_new_line
+	echo -e "${yellow}\E[7m INT ${NORMAL} ${0##*/}"
+	echo " Ctrl-C pressed"
+#	echo -e "breaking..."
+#	break
+}
+
+function print_return() {
+	start_new_line
+	echo -e "${yellow}\E[7m RETURN ${NORMAL} ${0##*/}"
 }
