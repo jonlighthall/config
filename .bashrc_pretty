@@ -145,7 +145,7 @@ function print_error() {
 	declare -i spl=$(echo -ne "${ERR_PRINT}" | sed 's/\x1b\[[0-9;]*m//g' | wc -c)
 	spc=$(echo -ne "\x1B[${spl}C")
 
-	sed -n "${ERR_LINENO}p" $src_name | sed "s/^\s*/${spc}/"
+	sed -n "${ERR_LINENO}p" "$src_name" | sed "s/^\s*/${spc}/"
 
 	# if command contains vairables, evaluate expression
 	if [[ "$ERR_CMD" =~ '$' ]]; then
