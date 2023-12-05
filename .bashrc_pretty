@@ -97,7 +97,7 @@ function print_elap() {
 	if command -v sec2elap &>/dev/null; then
 		bash sec2elap $dT_sec | tr -d "\n"
 	else
-		echo -n "elapsed time is ${white}${dT_sec} sec${NORMAL}"
+		echo -ne "elapsed time is ${white}${dT_sec} sec${NORMAL}"
 	fi
 }
 
