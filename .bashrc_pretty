@@ -124,6 +124,8 @@ function start_new_line() {
 
 function print_error() {
 	# expected arguments are $LINENO $? $BASH_COMMAND
+	# e.g.
+	# trap 'print_error $LINENO $? $BASH_COMMAND' ERR
 
 	# parse arguments
 	ERR_LINENO=$1
