@@ -1,35 +1,35 @@
 # define highligt colors
-   BAD='\033[0;31m' # red
-  GOOD='\033[0;32m' # green
+   BAD='\E[0;31m' # red
+  GOOD='\E[0;32m' # green
 # define accents
-NORMAL='\033[0m'    # reset
-  BOLD='\033[1m'    # bold
-    UL='\033[4m'    # underline
+NORMAL='\E[0m'    # reset
+  BOLD='\E[1m'    # bold
+    UL='\E[4m'    # underline
 # define 'ls' colors
-BROKEN='\033[1;31m' # bold red    : broken link
-   TGT='\033[1;32m' # bold green  : target
-   DIR='\033[1;34m' # bold blue   : directory
- VALID='\033[1;36m' # bold cyan   : valid link
+BROKEN='\E[1;31m' # bold red    : broken link
+   TGT='\E[1;32m' # bold green  : target
+   DIR='\E[1;34m' # bold blue   : directory
+ VALID='\E[1;36m' # bold cyan   : valid link
 # define PS1 colors
-PSTIME='\033[0;37m' # light gray  : time
-PSUSER='\033[0;32m' # green       : user name, prompt
-PSHOST='\033[1;34m' # bold blue   : host name
- PSDIR='\033[0;33m' # yellow      : directory
-  PSBR='\033[0;36m' # blue        : branch
+PSTIME='\E[0;37m' # light gray  : time
+PSUSER='\E[0;32m' # green       : user name, prompt
+PSHOST='\E[1;34m' # bold blue   : host name
+ PSDIR='\E[0;33m' # yellow      : directory
+  PSBR='\E[0;36m' # blue        : branch
 # define 'grep' colors
-   GRH='\033[1;31m' # bold red    : pattern match
-   GRF='\033[0;35m' # magenta     : file match
+   GRH='\E[1;31m' # bold red    : pattern match
+   GRF='\E[0;35m' # magenta     : file match
 # define primary colors	(foreground)
-   red='\033[31m'
- green='\033[32m'
-  blue='\033[34m'
+   red='\E[31m'
+ green='\E[32m'
+  blue='\E[34m'
 # define secondary colors (foreground)
- yellow='\033[33m'
-   cyan='\033[36m'
-magenta='\033[35m'
+ yellow='\E[33m'
+   cyan='\E[36m'
+magenta='\E[35m'
 # define monochrome colors
-   gray='\x1B[90m'
-  white='\x1B[1;37m'
+   gray='\E[90m'
+  white='\E[1;37m'
 
 # define horizontal line
 hline() {
@@ -64,7 +64,7 @@ bar() {
 # define centered bar print
 cbar() {
 	msg=$(echo " $@ ")
-	msgne=$(echo -e " $@ " | sed "s/$(echo -e "\x1B")[^m]*m//g")
+	msgne=$(echo -e " $@ " | sed "s/$(echo -e "\E")[^m]*m//g")
 	ln=$(for ((i = 1; i <= ${#msgne}; i++)); do echo -n "-"; done)
 	echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
 }
@@ -79,7 +79,7 @@ else
 fi
 j=${#TAB}
 if [ $i -ne $j ]; then
-	echo -e "${TAB}TAB = \x1B[106m${TAB}${NORMAL} length $j"
+	echo -e "${TAB}TAB = \E[106m${TAB}${NORMAL} length $j"
 fi
 
 function timestamp() {
@@ -139,11 +139,11 @@ function print_error() {
 	ERR_PRINT=$(echo -e "\E[37;41m ERROR ${NORMAL} ")
 	echo -n ${ERR_PRINT}
 	# print grep-like line match
-	echo -e " \E[35m${0##*/}\E[m\E[36m:\E[m\x1B[32m${ERR_LINENO}\x1B[m"
+	echo -e " \E[35m${0##*/}\E[m\E[36m:\E[m\E[32m${ERR_LINENO}\E[m"
 
 	# define indent
-	declare -i spl=$(echo -ne "${ERR_PRINT}" | sed 's/\x1b\[[0-9;]*m//g' | wc -c)
-	spc=$(echo -ne "\x1B[${spl}C")
+	declare -i spl=$(echo -ne "${ERR_PRINT}" | sed 's/\E\[[0-9;]*m//g' | wc -c)
+	spc=$(echo -ne "\E[${spl}C")
 
 	sed -n "${ERR_LINENO}p" "$src_name" | sed "s/^\s*/${spc}/"
 
@@ -152,7 +152,7 @@ function print_error() {
 		eva='eval '
 		declare -i evl=${#eva}
 		declare -i etab=$((spl - evl))
-		echo -ne "\x1B[${etab}C${VALID}${eva}\E[m"
+		echo -ne "\E[${etab}C${VALID}${eva}\E[m"
 		eval echo $ERR_CMD
 	fi
 	echo -e "${spc}${gray}RETVAL=${ERR_RETVAL}${NORMAL}"
