@@ -20,7 +20,7 @@ alias fb='ff | perl -lne "print if not -T"' # find binary
 alias fd='find -L ./ -not -path "*/.git/*" -type d' # find directory
 alias ff='find -L ./ -not -path "*/.git*/*" -type f' # find file
 alias ffi='ff -iname'
-alias fl='find -L ./ -maxdepth 1 -type l -exec ls --color -l {} \;' # find link
+alias fl='find -L ./ \( -type l -o -xtype l \) -exec ls --color -l {} \;' # find link
 
 # git
 alias gitb='git branch -va'
