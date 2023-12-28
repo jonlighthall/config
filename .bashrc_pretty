@@ -90,13 +90,17 @@ function print_elap() {
 	declare -i end_time=$(date +%s%N)
 	declare -i elap_time=$((${end_time} - ${start_time}))
 	if command -v bc &>/dev/null; then
-		dT_sec=$(bc <<<"scale=3;$elap_time/1000000000")
+		dT_sec=$(bc <<<"scale=9;$elap_time/10^9" | sed 's/^\./0./')
 	else
 		dT_sec=${elap_time::-9}.${elap_time:$((${#elap_time}-9))}
 			if [ ${#elap_time} -eq 9 ];then
 				dT_sec=$(echo "0.$elap_time")
 			fi
 	fi
+	# set scale
+	declare -ir nd=3
+	fmt="%.${nd}f"
+	dT_sec=$(printf "$fmt" $dT_sec)	
 	
 	if command -v sec2elap &>/dev/null; then
 		bash sec2elap $dT_sec | tr -d "\n"
