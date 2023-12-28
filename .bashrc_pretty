@@ -92,8 +92,12 @@ function print_elap() {
 	if command -v bc &>/dev/null; then
 		dT_sec=$(bc <<<"scale=3;$elap_time/1000000000")
 	else
-		dT_sec=${elap_time::-9}
+		dT_sec=${elap_time::-9}.${elap_time:$((${#elap_time}-9))}
+			if [ ${#elap_time} -eq 9 ];then
+				dT_sec=$(echo "0.$elap_time")
+			fi
 	fi
+	
 	if command -v sec2elap &>/dev/null; then
 		bash sec2elap $dT_sec | tr -d "\n"
 	else
