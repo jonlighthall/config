@@ -4,7 +4,9 @@
 # If not running interactively, don't do anything
 [[ "$-" != *i* ]] && return
 
-start_time=$(date +%s%N)
+# get starting time in nanoseconds
+declare -i start_time=$(date +%s%N)
+
 # Verbose bash prints?
 export VB=true
 if $VB; then
@@ -83,16 +85,7 @@ vecho
 # print runtime duration
 if $VB; then
     TAB=${TAB%$fTAB}
-    echo -n "${TAB}$(basename $BASH_SOURCE) "
-    elap_time=$(($(date +%s%N)-${start_time}))
-    dT=$(bc <<< "scale=3;$elap_time/1000000000")
-    if command -v sec2elap &>/dev/null
-    then
-	bash sec2elap ${dT} | tr -d '\n'
-    else
-	echo -n "elapsed time is ${white}${dT} sec${NORMAL}"
-    fi
-    echo " on $(date +"%a %b %-d at %-l:%M %p %Z")"
+	print_elap
 fi
 
 clear -x
