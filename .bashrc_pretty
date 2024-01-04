@@ -162,6 +162,15 @@ function print_error() {
 		declare -i etab=$((spl - evl))
 		echo -ne "\E[${etab}C${VALID}${eva}\E[m"
 		eval echo $ERR_CMD
+		if [[ "$ERR_CMD" =~ "/dev/null" ]]; then
+			echo -e "${gray}redirect (no output)${NORMAL}"
+			# remove redirect
+			NCMD=$(echo $ERR_CMD | sed 's|/dev/null||')
+			NCMD=$(echo $NCMD | sed 's/[12>&\s]*$//')
+			# print evaluated ouput
+			echo -en "\E[${spl}C"
+			eval echo $NCMD
+		fi		   
 	fi
 	echo -e "${spc}${gray}RETVAL=${ERR_RETVAL}${NORMAL}"
 }
