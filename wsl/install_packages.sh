@@ -17,8 +17,10 @@ sudo apt install -y dbus-x11
 sudo apt install -y x11-apps
 # see github.com/jonlighthall/bash for X11 test
 
-# re-check and cleanup
+# re-check
 sudo apt upgrade -y --fix-missing
+
+# cleanup
 sudo apt autoremove --purge -y
 sudo apt autoclean
 sudo apt clean
