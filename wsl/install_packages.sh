@@ -8,6 +8,7 @@ sudo apt upgrade -y --fix-missing
 sudo apt install -y aspell
 sudo apt install -y dbus-x11
 sudo apt install -y emacs
+sudo apt install -y git
 sudo apt install -y nautilus
 sudo apt install -y x11-apps
 
