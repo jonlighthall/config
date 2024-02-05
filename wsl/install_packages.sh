@@ -5,11 +5,11 @@ sudo apt update
 sudo apt upgrade -y --fix-missing
 
 # install packages
-sudo apt install -y emacs
 sudo apt install -y aspell
 sudo apt install -y dbus-x11
-sudo apt install -y x11-apps
+sudo apt install -y emacs
 sudo apt install -y nautilus
+sudo apt install -y x11-apps
 
 # see github.com/jonlighthall/bash for X11 test
 
