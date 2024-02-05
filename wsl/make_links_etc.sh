@@ -70,7 +70,7 @@ do
 	TAB+=${fTAB:='   '}
 	# first, check for existing copy
 	if [ -L ${link} ] || [ -f ${link} ] || [ -d ${link} ]; then
-	    echo -n "exists and"
+	    echo -n "exists and "
 	    if [[ "${target}" -ef ${link} ]]; then
                 echo "already points to ${my_link}"
 		echo -n "${TAB}"
@@ -80,7 +80,7 @@ do
 		continue
 	    else
 		if [ "$EUID" -ne 0 ]; then
-		    echo "..."
+		    echo -e "\E[1D..."
 		    echo -e "${TAB}${GRH}This command must be run as root!"
 		    echo -en "${NORMAL}"
 		    echo -n "${TAB}${link} "

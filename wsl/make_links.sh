@@ -111,6 +111,7 @@ do
 done
 bar 38 "------- Done Linking Repo Files ------"
 
+# run make_linnks in /etc
 echo
 ./make_links_etc.sh
 
