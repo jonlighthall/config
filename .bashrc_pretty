@@ -5,6 +5,7 @@
 NORMAL='\E[0m'    # reset
   BOLD='\E[1m'    # bold
     UL='\E[4m'    # underline
+INVERT='\E[7m'    # invert
 # define 'ls' colors
 BROKEN='\E[1;31m' # bold red    : broken link
    TGT='\E[1;32m' # bold green  : target
@@ -64,8 +65,11 @@ bar() {
 # define centered bar print
 cbar() {
 	msg=$(echo " $@ ")
+	# remove escape characters
 	msgne=$(echo -e " $@ " | sed "s/$(echo -e "\E")[^m]*m//g")
+	# get length of text
 	ln=$(for ((i = 1; i <= ${#msgne}; i++)); do echo -n "-"; done)
+	# print with TAB
 	echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
 }
 
