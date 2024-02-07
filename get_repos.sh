@@ -115,10 +115,8 @@ if  command -v git ; then
 	echo -e "done cloning ${gname} repos"
 
     # load formatting
-    fpretty=${HOME}/utils/bash/.bashrc_pretty
     if [ -e $fpretty ]; then
 		source $fpretty
-#		TAB+=${fTAB:='   '}
 		cbar "${magenta}pretty print enabled${NORMAL}"
     fi
 
