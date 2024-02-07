@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Pagers
 # -------
 # add syntax highlighting to less, etc
@@ -17,13 +19,13 @@ else
     dir_Down=${HOME}/Downloads
     echo -n "directory ${dir_Down}..."
     if [ -d ${dir_Down} ]; then
-	echo "found"
-	echo "linking..."
-	ln -s ${dir_Down} ${dir_install}
+		echo "found"
+		echo "linking..."
+		ln -s ${dir_Down} ${dir_install}
     else
-	echo "not found"
-	echo "making directory..."
-	mkdir -pv ${dir_install}	
+		echo "not found"
+		echo "making directory..."
+		mkdir -pv ${dir_install}	
     fi
 fi
 
@@ -32,11 +34,11 @@ cd ${dir_install}
 for repo in e2ansi face-explorer; do
 
     if [ -d $repo ]; then
-	echo "$repo already exists"
+		echo "$repo already exists"
     else
-	echo "cloning $repo..."
-	git clone https://github.com/Lindydancer/${repo}.git
-	echo "done"
+		echo "cloning $repo..."
+		git clone https://github.com/Lindydancer/${repo}.git
+		echo "done"
     fi
 done
 
