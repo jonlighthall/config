@@ -3,8 +3,8 @@
 
 ;; MF Mouse
 (xterm-mouse-mode 1)
-;; After enabling xterm mouse mode, normal copy and paste functions will not work. Bindings are
-;; adjusted as follows
+;; After enabling xterm mouse mode, normal copy and paste functions will not
+;; work. Bindings are adjusted as follows
 ;; --------+-------------+---------------------------
 ;; command | before      | after
 ;; --------+-------------+---------------------------
