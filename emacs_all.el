@@ -231,18 +231,23 @@
 	)
       )
 
-;; open arduino as c++
+;; open arduino files as c++
 (add-to-list 'auto-mode-alist '("\\.ino\\'" . c++-mode))
 
-;; setup files containing “makefile” to open in makefile-mode
+;; open makefiles in makefile-mode
 (add-to-list 'auto-mode-alist '("[Mm]akefile.+\\'" . makefile-mode))
 
-;; files containing “bash” to open in shell-script-mode
+;; open bash in shell-script-mode
 (add-to-list 'auto-mode-alist '(".bash.+\\'" . shell-script-mode))
 
-(add-to-list 'auto-mode-alist '("\\.inc\\'" . fortran-mode))
+;; open batch files in bat-mode
+(add-to-list 'auto-mode-alist '("\\.bat\\'" . bat-mode))
+(add-to-list 'auto-mode-alist '("\\.bat\\'" . shell-script-mode))
+
+;; open Fortran includes and configuration managed files in fortran-mode
 (add-to-list 'auto-mode-alist '("\\.cmn\\'" . fortran-mode))
 (add-to-list 'auto-mode-alist '("\\.inc\\'" . fortran-mode))
+(add-to-list 'auto-mode-alist '("\\.unm\\'" . fortran-mode))
 
 ;; turn off starup message
 (defun display-startup-echo-area-message ()
