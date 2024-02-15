@@ -26,10 +26,11 @@
 
 (custom-set-variables
  '(ediff-split-window-function (quote split-window-horizontally))
+ '(fortran-continuation-string ">")
+ '(fortran-line-length fcols)
  '(inhibit-startup-screen t)
  '(visible-bell t)
- '(fortran-line-length fcols)
- '(fortran-continuation-string ">"))
+ )
 
 ;; Turn on highlight matching parentheses
 (show-paren-mode 1)
