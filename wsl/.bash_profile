@@ -7,6 +7,8 @@
 # get starting time in nanoseconds
 declare -i start_time=$(date +%s%N)
 
+clear -x
+
 # Verbose bash prints?
 export VB=true
 if $VB; then
