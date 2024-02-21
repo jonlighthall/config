@@ -32,6 +32,21 @@ magenta='\E[35m'
    gray='\E[90m'
   white='\E[1;37m'
 
+# set tab
+if [ -z ${TAB+dummy} ]; then
+	i=0
+	decho -e "TAB ${yellow}unset${NORMAL}"
+	export TAB=''
+else
+	i=${#TAB}
+fi
+j=${#TAB}
+if [ $i -ne $j ]; then
+	echo -e "${TAB}TAB = \E[106m${TAB}${NORMAL} length $j"
+fi
+: ${fTAB:='   '}
+
+
 # define horizontal line
 hline() {
 	if [ "$#" -lt 1 ]; then
@@ -73,18 +88,6 @@ cbar() {
 	echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
 }
 
-# set tab
-if [ -z ${TAB+dummy} ]; then
-	i=0
-	echo -e "TAB ${yellow}unset${NORMAL}"
-	export TAB='   '
-else
-	i=${#TAB}
-fi
-j=${#TAB}
-if [ $i -ne $j ]; then
-	echo -e "${TAB}TAB = \E[106m${TAB}${NORMAL} length $j"
-fi
 
 function timestamp() {
 	echo "$(date +"%a %b %-d at %-l:%M %p %Z")"
@@ -218,7 +221,7 @@ decho() {
 # define traps
 function set_traps() {
 	decho -e "${magenta}\E[7mset traps${NORMAL}"
-	decho "setting shell options..."
+	decho -n "setting shell options... "
 	if (return 0 2>/dev/null); then
 		decho -e "${magenta}\E[7mreturn flags${NORMAL}"
 		#		set -TE +e
@@ -234,14 +237,12 @@ function set_traps() {
 		decho "setting traps..."
 		trap 'print_error $LINENO $? $BASH_COMMAND' ERR
 		trap 'print_exit $?' EXIT
-		trap 'echo -e "${yellow}RETURN${NORMAL}: ${0##*/} $LINENO $? $BASH_COMMAND"' RETURN
+		trap 'print_return; echo -e "$LINENO $? $BASH_COMMAND"' RETURN
 
 	else
 		decho "${save_traps}" | sed "s/^/${fTAB}/"
 		decho "setting saved traps..."
 		eval $(echo "${save_traps}" | sed "s/$/;/g")
-
-		#eval $(echo '${save_traps}')
 	fi
 	decho "on set trap retrun, the following traps are set"
 	if [ -z "$(trap -p)" ]; then
@@ -255,7 +256,6 @@ function set_traps() {
 function unset_traps() {
 	decho -e "${cyan}\E[7mun-set traps${NORMAL}"
 	decho "setting shell options..."
-	#	set +eET
 	set +eE
 
 	decho "the current traps are set"
@@ -264,8 +264,9 @@ function unset_traps() {
 		decho "${fTAB}none"
 	else
 		decho $(trap -p | sed "s/^/${fTAB}/")
+
 		# save traps
-		save_traps=$(trap -p | sed 's/-- //g')
+		export save_traps=$(trap -p | sed 's/-- //g')
 
 		if [ ! -z "${save_traps}" ]; then
 			decho "the current traps are saved"
