@@ -32,6 +32,14 @@ magenta='\E[35m'
    gray='\E[90m'
   white='\E[1;37m'
 
+# conditional debug echo
+decho() {
+	if [ -z ${DEBUG:+dummy} ] || [ $DEBUG -gt 0 ]; then
+		# if DEBUG is (unset or null) or greater than 0
+		echo "$@"
+	fi
+}
+
 # set tab
 if [ -z ${TAB+dummy} ]; then
 	i=0
@@ -45,7 +53,6 @@ if [ $i -ne $j ]; then
 	echo -e "${TAB}TAB = \E[106m${TAB}${NORMAL} length $j"
 fi
 : ${fTAB:='   '}
-
 
 # define horizontal line
 hline() {
@@ -88,26 +95,30 @@ cbar() {
 	echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
 }
 
-
 function timestamp() {
 	echo "$(date +"%a %b %-d at %-l:%M %p %Z")"
 }
 
 function print_elap() {
 	declare -i end_time=$(date +%s%N)
-	declare -i elap_time=$((${end_time} - ${start_time}))
+	if [ -n "${start_time}" ]; then
+	declare elap_time=$((${end_time} - ${start_time}))
 	if command -v bc &>/dev/null; then
 		dT_sec=$(bc <<<"scale=9;$elap_time/10^9" | sed 's/^\./0./')
 	else
 		dT_sec=${elap_time::-9}.${elap_time:$((${#elap_time}-9))}
-			if [ ${#elap_time} -eq 9 ];then
-				dT_sec=$(echo "0.$elap_time")
-			fi
+		if [ ${#elap_time} -eq 9 ];then
+			dT_sec=$(echo "0.$elap_time")
+		fi
 	fi
 	# set scale
 	declare -ir nd=3
 	fmt="%.${nd}f"
-	dT_sec=$(printf "$fmt" $dT_sec)	
+	dT_sec=$(printf "$fmt" $dT_sec)
+	else
+		echo -ne "${yellow}start_time not defined${NORMAL} "
+		dT_sec=-1
+	fi
 	
 	if command -v sec2elap &>/dev/null; then
 		bash sec2elap $dT_sec | tr -d "\n"
@@ -201,8 +212,8 @@ function print_int() {
 	start_new_line
 	echo -e "${yellow}\E[7m INT ${NORMAL} ${0##*/}"
 	echo " Ctrl-C pressed"
-#	echo -e "breaking..."
-#	break
+	#	echo -e "breaking..."
+	#	break
 }
 
 function print_return() {
@@ -210,25 +221,27 @@ function print_return() {
 	echo -e "${yellow}\E[7m RETURN ${NORMAL} ${0##*/}"
 }
 
-# conditional debug echo
-decho() {
-	if [ -z ${DEBUG:+dummy} ] || [ $DEBUG -gt 0 ]; then
-		# if DEBUG is (unset or null) or greater than 0
-		echo "$@"
-	fi
-}
-
 # define traps
 function set_traps() {
 	decho -e "${magenta}\E[7mset traps${NORMAL}"
-	decho -n "setting shell options... "
+
+	# determine if script is being sourced or executed and add conditional behavior
+	decho -n "setting shell options for... "
+	# trace RETURN and DEBUG traps
+	#		set -T
 	if (return 0 2>/dev/null); then
-		decho -e "\E[7mreturn flags${NORMAL}"
-		#		set -TE +e
+		export RUN_TYPE="sourcing"
+		# do NOT exit on errors
+		#		set +e
+		# trace RETURN and DEBUG traps
+		#		set -T
 	else
-		decho -e "\E[7mexit flags${NORMAL}"
+		export RUN_TYPE="executing"
+		# exit on errors
 		set -e
 	fi
+	decho -e "\E[7m${RUN_TYPE}${NORMAL}"
+	# trace ERR traps
 	set -E
 	decho "the following traps are saved"
 	if [ -z "${save_traps+default}" ]; then
@@ -236,6 +249,7 @@ function set_traps() {
 		decho -n "setting traps... "
 		trap 'print_error $LINENO $? $BASH_COMMAND' ERR
 		trap 'print_exit $?' EXIT
+		trap print_int INT
 		decho "done"
 	else
 		decho "${save_traps}" | sed "s/^/${fTAB}/"
