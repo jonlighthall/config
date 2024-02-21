@@ -114,8 +114,19 @@ function print_elap() {
 }
 
 function print_exit() {
+	# parse arguments
+	if [ $# -gt 0 ]; then
+		EXIT_RETVAL=$1
+	fi
+
 	start_new_line
-	echo -e "${yellow}\E[7m EXIT ${NORMAL} ${0##*/}"
+	echo -ne "${yellow}\E[7m EXIT ${NORMAL} "
+	# print exit code
+	if [ ! -z ${EXIT_RETVAL+alt} ]; then
+		echo -ne "${gray}RETVAL=${EXIT_RETVAL}${NORMAL} "
+	fi
+	echo -e "${0##*/}"
+	
 	print_elap
 	echo -n " on "
 	timestamp
