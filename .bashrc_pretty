@@ -114,6 +114,10 @@ function print_elap() {
 }
 
 function print_exit() {
+	# optional argument is $?
+	# e.g.
+	# trap 'print_exit $?' EXIT
+
 	# parse arguments
 	if [ $# -gt 0 ]; then
 		EXIT_RETVAL=$1
@@ -208,5 +212,77 @@ decho() {
 	if [ -z ${DEBUG:+dummy} ] || [ $DEBUG -gt 0 ]; then
 		# if DEBUG is (unset or null) or greater than 0
 		echo "$@"
+	fi
+}
+
+# define traps
+function set_traps() {
+	decho -e "${magenta}\E[7mset traps${NORMAL}"
+	decho "setting shell options..."
+	if (return 0 2>/dev/null); then
+		decho -e "${magenta}\E[7mreturn flags${NORMAL}"
+		#		set -TE +e
+	else
+		decho -e "${magenta}\E[7mexit flags${NORMAL}"
+		set -e
+	fi
+	set -E
+	decho "the following traps are saved"
+	if [ -z "${save_traps+default}" ]; then
+		decho "${fTAB}none"
+
+		decho "setting traps..."
+		trap 'print_error $LINENO $? $BASH_COMMAND' ERR
+		trap 'print_exit $?' EXIT
+		trap 'echo -e "${yellow}RETURN${NORMAL}: ${0##*/} $LINENO $? $BASH_COMMAND"' RETURN
+
+	else
+		decho "${save_traps}" | sed "s/^/${fTAB}/"
+		decho "setting saved traps..."
+		eval $(echo "${save_traps}" | sed "s/$/;/g")
+
+		#eval $(echo '${save_traps}')
+	fi
+	decho "on set trap retrun, the following traps are set"
+	if [ -z "$(trap -p)" ]; then
+		decho "${fTAB}none"
+		exit
+	else
+		decho $(trap -p | sed "s/^/${fTAB}/")
+	fi
+}
+
+function unset_traps() {
+	decho -e "${cyan}\E[7mun-set traps${NORMAL}"
+	decho "setting shell options..."
+	#	set +eET
+	set +eE
+
+	decho "the current traps are set"
+
+	if [ -z "$(trap -p)" ]; then
+		decho "${fTAB}none"
+	else
+		decho $(trap -p | sed "s/^/${fTAB}/")
+		# save traps
+		save_traps=$(trap -p | sed 's/-- //g')
+
+		if [ ! -z "${save_traps}" ]; then
+			decho "the current traps are saved"
+			decho "${save_traps}" | sed "s/^/${fTAB}/"
+		fi
+
+		trap - ERR
+		trap - EXIT
+		trap - RETURN
+
+	fi
+
+	decho "on unset trap retrun, the following traps are set"
+	if [ -z $(trap -p) ]; then
+		decho "${fTAB}none"
+	else
+		decho $(trap -p)
+		exit
 	fi
 }
