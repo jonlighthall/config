@@ -223,33 +223,33 @@ function set_traps() {
 	decho -e "${magenta}\E[7mset traps${NORMAL}"
 	decho -n "setting shell options... "
 	if (return 0 2>/dev/null); then
-		decho -e "${magenta}\E[7mreturn flags${NORMAL}"
+		decho -e "\E[7mreturn flags${NORMAL}"
 		#		set -TE +e
 	else
-		decho -e "${magenta}\E[7mexit flags${NORMAL}"
+		decho -e "\E[7mexit flags${NORMAL}"
 		set -e
 	fi
 	set -E
 	decho "the following traps are saved"
 	if [ -z "${save_traps+default}" ]; then
 		decho "${fTAB}none"
-
-		decho "setting traps..."
+		decho -n "setting traps... "
 		trap 'print_error $LINENO $? $BASH_COMMAND' ERR
 		trap 'print_exit $?' EXIT
-		trap 'print_return; echo -e "$LINENO $? $BASH_COMMAND"' RETURN
-
+		decho "done"
 	else
 		decho "${save_traps}" | sed "s/^/${fTAB}/"
 		decho "setting saved traps..."
 		eval $(echo "${save_traps}" | sed "s/$/;/g")
 	fi
-	decho "on set trap retrun, the following traps are set"
+
+	# print summary
+	decho -n "on set trap retrun, the following traps are set"
 	if [ -z "$(trap -p)" ]; then
-		decho "${fTAB}none"
+		decho -e "\n${fTAB}none"
 		exit
 	else
-		decho $(trap -p | sed "s/^/${fTAB}/")
+		decho $(trap -p) | sed "s/^/${fTAB}/;s/ \(trap\)/\n${fTAB}\1/g" | sed 's/^[ ]*$//g'
 	fi
 }
 
@@ -258,27 +258,26 @@ function unset_traps() {
 	decho "setting shell options..."
 	set +eE
 
-	decho "the current traps are set"
-
+	decho -n "the current traps are set"
 	if [ -z "$(trap -p)" ]; then
-		decho "${fTAB}none"
+		decho -e "\n${fTAB}none"
 	else
-		decho $(trap -p | sed "s/^/${fTAB}/")
+		decho $(trap -p) | sed "s/^/${fTAB}/;s/ \(trap\)/\n${fTAB}\1/g" | sed 's/^[ ]*$//g'
 
 		# save traps
 		export save_traps=$(trap -p | sed 's/-- //g')
-
 		if [ ! -z "${save_traps}" ]; then
 			decho "the current traps are saved"
 			decho "${save_traps}" | sed "s/^/${fTAB}/"
 		fi
 
+		# clear traps
 		trap - ERR
 		trap - EXIT
 		trap - RETURN
-
 	fi
 
+	# print summary
 	decho "on unset trap retrun, the following traps are set"
 	if [ -z $(trap -p) ]; then
 		decho "${fTAB}none"
