@@ -191,3 +191,11 @@ function print_return() {
 	start_new_line
 	echo -e "${yellow}\E[7m RETURN ${NORMAL} ${0##*/}"
 }
+
+# conditional debug echo
+decho() {
+	if [ -z ${DEBUG:+dummy} ] || [ $DEBUG -gt 0 ]; then
+		# if DEBUG is (unset or null) or greater than 0
+		echo "$@"
+	fi
+}
