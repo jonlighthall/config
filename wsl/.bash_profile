@@ -7,6 +7,7 @@
 # get starting time in nanoseconds
 declare -i start_time=$(date +%s%N)
 
+# clear terminal
 clear -x
 
 # Verbose bash prints?
@@ -90,6 +91,7 @@ if $VB; then
 	print_elap
 fi
 
+# clear terminal
 clear -x
 
 # print welcome message
