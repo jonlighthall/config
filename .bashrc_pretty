@@ -102,19 +102,19 @@ function timestamp() {
 function print_elap() {
 	declare -i end_time=$(date +%s%N)
 	if [ -n "${start_time}" ]; then
-	declare elap_time=$((${end_time} - ${start_time}))
-	if command -v bc &>/dev/null; then
-		dT_sec=$(bc <<<"scale=9;$elap_time/10^9" | sed 's/^\./0./')
-	else
-		dT_sec=${elap_time::-9}.${elap_time:$((${#elap_time}-9))}
-		if [ ${#elap_time} -eq 9 ];then
-			dT_sec=$(echo "0.$elap_time")
+		declare -i elap_time=$((${end_time} - ${start_time}))
+		if command -v bc &>/dev/null; then
+			dT_sec=$(bc <<<"scale=9;$elap_time/10^9" | sed 's/^\./0./')
+		else
+			dT_sec=${elap_time::-9}.${elap_time:$((${#elap_time}-9))}
+			if [ ${#elap_time} -eq 9 ];then
+				dT_sec=$(echo "0.$elap_time")
+			fi
 		fi
-	fi
-	# set scale
-	declare -ir nd=3
-	fmt="%.${nd}f"
-	dT_sec=$(printf "$fmt" $dT_sec)
+		# set scale
+		declare -ir nd=3
+		fmt="%.${nd}f"
+		dT_sec=$(printf "$fmt" $dT_sec)
 	else
 		echo -ne "${yellow}start_time not defined${NORMAL} "
 		dT_sec=-1
@@ -249,7 +249,6 @@ function set_traps() {
 		decho -n "setting traps... "
 		trap 'print_error $LINENO $? $BASH_COMMAND' ERR
 		trap 'print_exit $?' EXIT
-		trap print_int INT
 		decho "done"
 	else
 		decho "${save_traps}" | sed "s/^/${fTAB}/"
