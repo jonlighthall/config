@@ -101,7 +101,7 @@ function timestamp() {
 
 function print_elap() {
 	declare -i end_time=$(date +%s%N)
-	if [ -n "${start_time}" ]; then
+	if [ -n "${start_time+alt}" ]; then
 		declare -i elap_time=$((${end_time} - ${start_time}))
 		if command -v bc &>/dev/null; then
 			dT_sec=$(bc <<<"scale=9;$elap_time/10^9" | sed 's/^\./0./')
@@ -223,6 +223,9 @@ function print_return() {
 
 # define traps
 function set_traps() {
+	if [ -z "${DEBUG+alt}" ]; then
+		DEBUG=0
+	fi
 	decho -e "${magenta}\E[7mset traps${NORMAL}"
 
 	# determine if script is being sourced or executed and add conditional behavior
