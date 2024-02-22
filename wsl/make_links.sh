@@ -7,10 +7,10 @@ if [ -e $fpretty ]; then
     source $fpretty
 else
     bar() {
-	echo "$2"
+		echo "$2"
     }
     hline () {
-	echo "---"
+		echo "---"
     }
 fi
 
@@ -48,23 +48,23 @@ else
     echo "does not exist"
     mkdir -pv $link_dir
     if [ $link_dir = $HOME ]; then
-	echo "this should never be true! $link_dir is HOME"
+		echo "this should never be true! $link_dir is HOME"
     else
-	echo "$link_dir != $HOME"
+		echo "$link_dir != $HOME"
     fi
 fi
 
 bar 38 "------ Start Linking Repo Files ------"
 
 # list of files to be linked
-for my_link in .bash_logout .bash_profile .emacs.d .gitconfig .hushlogin .inputrc .rootrc .bash_aliases
+for my_link in .bash_aliases .bash_logout .bash_profile .emacs.d .gitconfig .hushlogin .inputrc .rootrc
 do
     # define target (source)
     target=${target_dir}/${my_link}
     # strip target subdirectory from link name
     sub_dir=$(dirname "$my_link")
     if [ ! $sub_dir = "." ]; then
-	my_link=$(basename "$my_link")
+		my_link=$(basename "$my_link")
     fi
     # define link (destination)
     link=${link_dir}/${my_link}
@@ -72,39 +72,39 @@ do
     # check if target exists
     echo -n "target file ${target}... "
     if [ -e "${target}" ]; then
-	echo "exists "
-	echo -n "${TAB}link $link... "
-	TAB+=${fTAB:='   '}
-	# first, check for existing copy
-	if [ -L ${link} ] || [ -f ${link} ] || [ -d ${link} ]; then
-	    echo -n "exists and "
-	    if [[ "${target}" -ef ${link} ]]; then
+		echo "exists "
+		echo -n "${TAB}link $link... "
+		TAB+=${fTAB:='   '}
+		# first, check for existing copy
+		if [ -L ${link} ] || [ -f ${link} ] || [ -d ${link} ]; then
+			echo -n "exists and "
+			if [[ "${target}" -ef ${link} ]]; then
                 echo "already points to ${my_link}"
-		echo -n "${TAB}"
-		ls -lhG --color=auto ${link}
-		echo "${TAB}skipping..."
-		TAB=${TAB%$fTAB}
-		continue
-	    else
-		# next, delete or backup existing copy
-		if [ $(diff -ebwB "${target}" ${link} | wc -c) -eq 0 ]; then
-		    echo "has the same contents"
-		    echo -n "${TAB}deleting... "
-		    rm -v ${link}
+				echo -n "${TAB}"
+				ls -lhG --color=auto ${link}
+				echo "${TAB}skipping..."
+				TAB=${TAB%$fTAB}
+				continue
+			else
+				# next, delete or backup existing copy
+				if [ $(diff -ebwB "${target}" ${link} | wc -c) -eq 0 ]; then
+					echo "has the same contents"
+					echo -n "${TAB}deleting... "
+					rm -v ${link}
+				else
+					echo "will be backed up..."
+					mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
+				fi
+			fi
 		else
-		    echo "will be backed up..."
-		    mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
+			echo "does not exist"
 		fi
-	    fi
-	else
-	    echo "does not exist"
-	fi
         # then link
-	echo -en "${TAB}${GRH}";hline 72;
-	echo "${TAB}making link... "
-	ln -sv "${target}" ${link} 2>&1 | sed "s/^/${TAB}/"
-	echo -ne "${TAB}";hline 72;echo -en "${NORMAL}"
-	TAB=${TAB%$fTAB}
+		echo -en "${TAB}${GRH}";hline 72;
+		echo "${TAB}making link... "
+		ln -sv "${target}" ${link} 2>&1 | sed "s/^/${TAB}SYM: /"
+		echo -ne "${TAB}";hline 72;echo -en "${NORMAL}"
+		TAB=${TAB%$fTAB}
     else
         echo -e "${BAD}does not exist${NORMAL}"
     fi
