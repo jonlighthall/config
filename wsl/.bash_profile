@@ -13,8 +13,15 @@ clear -x
 # Verbose bash prints?
 export VB=true
 if $VB; then
-    # set tab
-    TAB+=${TAB+${fTAB:='   '}}
+	# set tab
+	called_by=$(ps -o comm= $PPID)
+	echo "called by ${called_by}"
+	if [ "${called_by}" = "bash" ] || [ "${called_by}" = "SessionLeader" ] || [[ "${called_by}" == "Relay"* ]] ; then
+		TAB=''
+		: ${fTAB:='   '}
+	else
+		TAB+=${TAB+${fTAB:='   '}}
+	fi
     # load formatting
     fpretty=${HOME}/utils/bash/.bashrc_pretty
     if [ -e $fpretty ]; then
