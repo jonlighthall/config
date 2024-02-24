@@ -2,20 +2,20 @@
 # Note: this file must use Unix line endings (LF)!
 
 # If not running interactively, don't do anything
-[[ "$-" != *i* ]] && return
+[[ "$-" != *i* ]] && return || echo -n "running ${BASH_SOURCE##*/}... "
 
 # get starting time in nanoseconds
 declare -i start_time=$(date +%s%N)
 
 # clear terminal
+called_by=$(ps -o comm= $PPID)
+echo "called by ${called_by}"
 clear -x
 
 # Verbose bash prints?
 export VB=true
 if $VB; then
 	# set tab
-	called_by=$(ps -o comm= $PPID)
-	echo "called by ${called_by}"
 	if [ "${called_by}" = "bash" ] || [ "${called_by}" = "SessionLeader" ] || [[ "${called_by}" == "Relay"* ]] ; then
 		TAB=''
 		: ${fTAB:='   '}
