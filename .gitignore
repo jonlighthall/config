@@ -16,3 +16,6 @@
 !mingw/
 !windows/
 !wsl/
+
+#Markdown list
+ls2md.md
