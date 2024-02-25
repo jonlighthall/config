@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -u
 # set tab
 :${TAB:=''}
 # load formatting
@@ -80,7 +80,7 @@ if command -v wsl.exe >/dev/null; then
 		if command -v lsb_release; then
 			distro=$(lsb_release -a 2>&1 | sed '/Distributor/!d;s/^.*:[ \t]*//')
 		else
-			sed '/^NAME/!d' /etc/*release | awk -F\" '{print $2}'
+			distro=$(sed '/^NAME/!d' /etc/*release | awk -F\" '{print $2}')
 		fi
 	fi
 
@@ -88,8 +88,9 @@ if command -v wsl.exe >/dev/null; then
 	distro=$(echo "$distro" | tr '[:upper:]' '[:lower:]')
 	echo "${TAB}distro: $distro"
 
-	rdir=${HOME}/home/$distro/repos
+	ln -s ${HOME}/home/$distro ${HOME}/sync
 
+	rdir=${HOME}/home/$distro/repos
 else
 	echo "WSL not defined."
 	rdir=${HOME}/repos
