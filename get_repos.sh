@@ -62,202 +62,211 @@ if [ $# -eq 1 ]; then
 	fi
 fi
 
-# get distro name
-if [ -f /etc/os-release ]; then
-	distro=$(sed '/^NAME/!d' /etc/os-release | awk -F \" '{print $2}')
-else
-	if command -v lsb_release; then
-		distro=$(lsb_release -a 2>&1 | sed '/Distributor/!d;s/^.*:[ \t]*//')
-	else
-		sed '/^NAME/!d' /etc/*release | awk -F\" '{print $2}'
-	fi
-fi
-
-# convert to lower case
-distro=$(echo "$distro" | tr '[:upper:]' '[:lower:]')
-echo "distro: $distro"
-
-exit
-
 # check if git is defined
-if command -v git; then
+if command -v git >/dev/null; then
 	echo "proceeding with Git commands..."
-
-	# define directory names
-	rdir=${HOME}/repos
-	udir=${HOME}/utils
-	edir=${HOME}/examp
-
-	echo "creating repository directories..."
-	for my_dir in $rdir $udir $edir; do
-		if [ ! -d ${my_dir} ]; then
-			mkdir -vp ${my_dir}
-		else
-			echo "${TAB}directory ${my_dir} already exists"
-		fi
-	done
-
-	echo "--------------------------------------"
-	echo "------ Start Cloning Repo Files-------"
-	echo "--------------------------------------"
-
-	github_user=jonlighthall
-	github_https=https://github.com/${github_user}/
-	github_ssh=git@github.com:${github_user}/
-	github_auth=${github_ssh}
-
-	cd ${rdir}
-	# list of utility repos to be cloned
-	gname="utility"
-	echo "cloning ${gname} repos..."
-	for my_repo in bash batch fortran_utilities powershell; do
-		if [ ! -d ${my_repo} ]; then
-			echo "cloning $my_repo..."
-			git clone ${github_auth}${my_repo}.git
-		else
-			echo "dirctory $my_repo already exits"
-		fi
-
-		# define link (destination)
-		link=${udir}/${my_repo}
-
-		# create link
-		if [ ! -e ${link} ]; then
-			ln -sv ${rdir}/${my_repo} ${link}
-		fi
-
-		# run make_links
-		fname="${link}/make_links.sh"
-		if [ -e "${fname}" ]; then
-			cd ${link}
-			bash ${fname}
-			cd ${rdir}
-		fi
-	done
-	echo -e "done cloning ${gname} repos"
-
-	# load formatting
-	if [ -e $fpretty ]; then
-		source $fpretty
-		cbar "${magenta}pretty print enabled${NORMAL}"
-	fi
-
-	# reset TAB
-	TAB=''
-
-	# list of example repos to be cloned
-	gname="example"
-	echo "cloning ${gname} repos..."
-	TAB+=${fTAB:='   '}
-	for my_repo in cpp fortran hello nrf python; do
-
-		# define target (source)
-		target=${rdir}/${my_repo}
-		# define link (destination)
-		link=${edir}/${my_repo}
-
-		# check if target exists
-		echo -ne "${TAB}target dirctory ${yellow}${target}${NORMAL}... "
-		if [ -e "${target}" ]; then
-			echo "exits"
-		else
-			echo "does not exist"
-			echo "${TAB}cloning $my_repo..."
-			git clone ${github_auth}$my_repo
-		fi
-		# begin linking...
-		TAB+=${fTAB}
-		echo -n "${TAB}link ${link}... "
-
-		# first, check for existing copy
-		if [ -L ${link} ] || [ -d ${link} ]; then
-			TAB+=${fTAB}
-			echo -n "exits and "
-			if [[ "${target}" -ef ${link} ]]; then
-				echo "already points to ${my_repo}"
-				echo -n "${TAB}"
-				ls -lhG --color=auto ${link}
-				echo "${TAB}skipping..."
-				TAB=${TAB%$fTAB}
-				TAB=${TAB%$fTAB}
-				continue
-			else
-				# next, delete or backup existing copy
-				if [ $(\diff --suppress-common-lines -r ${rdir}/${my_repo} ${link} | wc -c) -eq 0 ]; then
-					echo "has the same contents"
-					echo -n "${TAB}deleting..."
-					rm -rfd ${link}
-				else
-					echo "will be backed up..."
-					mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
-				fi
-				TAB=${TAB%$fTAB}
-				TAB=${TAB%$fTAB}
-			fi
-			TAB=${TAB%$fTAB}
-		else
-			echo "does not exist"
-		fi
-		# then link
-		echo -en "${TAB}${GRH}"
-		hline 72
-		echo "${TAB}making link... "
-		ln -sv "${target}" ${link} | sed "s/^/${TAB}/"
-		echo -ne "${TAB}"
-		hline 72
-		echo -en "${NORMAL}"
-		TAB=${TAB%$fTAB}
-	done
-	TAB=${TAB%$fTAB}
-	echo -e "done cloning ${gname} repos"
-
-	# list of other repos to be cloned
-	gname="other"
-	echo "cloning ${gname} repos..."
-	TAB+=${fTAB:='   '}
-	for my_repo in matlab; do
-		if [ ! -d ${my_repo} ]; then
-			echo "cloning $my_repo..."
-			git clone ${github_auth}$my_repo
-		else
-			echo -e "${TAB}dirctory ${yellow}$PWD/$my_repo${NORMAL} already exits"
-		fi
-	done
-	TAB=${TAB%$fTAB}
-	echo -e "done cloning ${gname} repos"
-
-	# list of private repos to be cloned
-	if [[ ! ("$(hostname -f)" == *"navy.mil") ]]; then
-		gname="private"
-		echo "cloning ${gname} repos..."
-		TAB+=$fTAB
-		cd ${HOME}/config
-		dname=private
-		for my_repo in config_private; do
-			if [ ! -d $dname ]; then
-				echo "cloning $dname..."
-				echo "see ${github_https}$my_repo/blob/master/.git-credentials"
-				git clone ${github_auth}$my_repo $dname
-
-				# run make_links
-				fname=make_links.sh
-				fpath="${dname}/make_links.sh"
-				echo -n "${TAB}$fpath... "
-				if [ -f "${fpath}" ]; then
-					echo "found"
-					cd $dname
-					bash $fname
-				else
-					echo "not found"
-				fi
-			else
-				echo "${TAB}dirctory $PWD$my_repo already exits"
-			fi
-		done
-		TAB=${TAB%$fTAB}
-		echo -e "done cloning ${gname} repos"
-	fi
-	echo "done cloning all repos"
 else
 	echo "Git not defined."
+	exit
 fi
+
+# define directory names
+if command -v wsl.exe >/dev/null; then
+	echo "WSL defined... "
+	# get distro name
+	if [ -f /etc/os-release ]; then
+		distro=$(sed '/^NAME/!d' /etc/os-release | awk -F \" '{print $2}')
+	else
+		if command -v lsb_release; then
+			distro=$(lsb_release -a 2>&1 | sed '/Distributor/!d;s/^.*:[ \t]*//')
+		else
+			sed '/^NAME/!d' /etc/*release | awk -F\" '{print $2}'
+		fi
+	fi
+
+	# convert to lower case
+	distro=$(echo "$distro" | tr '[:upper:]' '[:lower:]')
+	echo "${TAB}distro: $distro"
+
+	rdir=${HOME}/home/$distro/repos
+
+else
+	echo "WSL not defined."
+	rdir=${HOME}/repos
+fi
+
+echo -e "saving repsoitories to \e[33m$rdir\e[0m..."
+
+udir=${HOME}/utils
+edir=${HOME}/examp
+
+echo "creating repository directories..."
+for my_dir in $rdir $udir $edir; do
+	if [ ! -d ${my_dir} ]; then
+		mkdir -vp ${my_dir}
+	else
+		echo "${TAB}directory ${my_dir} already exists"
+	fi
+done
+
+echo "--------------------------------------"
+echo "------ Start Cloning Repo Files-------"
+echo "--------------------------------------"
+
+github_user=jonlighthall
+github_https=https://github.com/${github_user}/
+github_ssh=git@github.com:${github_user}/
+github_auth=${github_ssh}
+
+cd ${rdir}
+# list of utility repos to be cloned
+gname="utility"
+echo "cloning ${gname} repos..."
+for my_repo in bash batch fortran_utilities powershell; do
+	if [ ! -d ${my_repo} ]; then
+		echo "cloning $my_repo..."
+		git clone ${github_auth}${my_repo}.git
+	else
+		echo "dirctory $my_repo already exits"
+	fi
+
+	# define link (destination)
+	link=${udir}/${my_repo}
+
+	# create link
+	if [ ! -e ${link} ]; then
+		ln -sv ${rdir}/${my_repo} ${link}
+	fi
+
+	# run make_links
+	fname="${link}/make_links.sh"
+	if [ -e "${fname}" ]; then
+		cd ${link}
+		bash ${fname}
+		cd ${rdir}
+	fi
+done
+echo -e "done cloning ${gname} repos"
+
+# load formatting
+if [ -e $fpretty ]; then
+	source $fpretty
+	cbar "${magenta}pretty print enabled${NORMAL}"
+fi
+
+# reset TAB
+TAB=''
+
+# list of example repos to be cloned
+gname="example"
+echo "cloning ${gname} repos..."
+TAB+=${fTAB:='   '}
+for my_repo in cpp fortran hello nrf python; do
+
+	# define target (source)
+	target=${rdir}/${my_repo}
+	# define link (destination)
+	link=${edir}/${my_repo}
+
+	# check if target exists
+	echo -ne "${TAB}target dirctory ${yellow}${target}${NORMAL}... "
+	if [ -e "${target}" ]; then
+		echo "exits"
+	else
+		echo "does not exist"
+		echo "${TAB}cloning $my_repo..."
+		git clone ${github_auth}$my_repo
+	fi
+	# begin linking...
+	TAB+=${fTAB}
+	echo -n "${TAB}link ${link}... "
+
+	# first, check for existing copy
+	if [ -L ${link} ] || [ -d ${link} ]; then
+		TAB+=${fTAB}
+		echo -n "exits and "
+		if [[ "${target}" -ef ${link} ]]; then
+			echo "already points to ${my_repo}"
+			echo -n "${TAB}"
+			ls -lhG --color=auto ${link}
+			echo "${TAB}skipping..."
+			TAB=${TAB%$fTAB}
+			TAB=${TAB%$fTAB}
+			continue
+		else
+			# next, delete or backup existing copy
+			if [ $(\diff --suppress-common-lines -r ${rdir}/${my_repo} ${link} | wc -c) -eq 0 ]; then
+				echo "has the same contents"
+				echo -n "${TAB}deleting..."
+				rm -rfd ${link}
+			else
+				echo "will be backed up..."
+				mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
+			fi
+			TAB=${TAB%$fTAB}
+			TAB=${TAB%$fTAB}
+		fi
+		TAB=${TAB%$fTAB}
+	else
+		echo "does not exist"
+	fi
+	# then link
+	echo -en "${TAB}${GRH}"
+	hline 72
+	echo "${TAB}making link... "
+	ln -sv "${target}" ${link} | sed "s/^/${TAB}/"
+	echo -ne "${TAB}"
+	hline 72
+	echo -en "${NORMAL}"
+	TAB=${TAB%$fTAB}
+done
+TAB=${TAB%$fTAB}
+echo -e "done cloning ${gname} repos"
+
+# list of other repos to be cloned
+gname="other"
+echo "cloning ${gname} repos..."
+TAB+=${fTAB:='   '}
+for my_repo in matlab; do
+	if [ ! -d ${my_repo} ]; then
+		echo "cloning $my_repo..."
+		git clone ${github_auth}$my_repo
+	else
+		echo -e "${TAB}dirctory ${yellow}$PWD/$my_repo${NORMAL} already exits"
+	fi
+done
+TAB=${TAB%$fTAB}
+echo -e "done cloning ${gname} repos"
+
+# list of private repos to be cloned
+if [[ ! ("$(hostname -f)" == *"navy.mil") ]]; then
+	gname="private"
+	echo "cloning ${gname} repos..."
+	TAB+=$fTAB
+	cd ${HOME}/config
+	dname=private
+	for my_repo in config_private; do
+		if [ ! -d $dname ]; then
+			echo "cloning $dname..."
+			echo "see ${github_https}$my_repo/blob/master/.git-credentials"
+			git clone ${github_auth}$my_repo $dname
+
+			# run make_links
+			fname=make_links.sh
+			fpath="${dname}/make_links.sh"
+			echo -n "${TAB}$fpath... "
+			if [ -f "${fpath}" ]; then
+				echo "found"
+				cd $dname
+				bash $fname
+			else
+				echo "not found"
+			fi
+		else
+			echo "${TAB}dirctory $PWD$my_repo already exits"
+		fi
+	done
+	TAB=${TAB%$fTAB}
+	echo -e "done cloning ${gname} repos"
+fi
+echo "done cloning all repos"
