@@ -100,7 +100,7 @@ echo -e "saving repsoitories to \e[33m$rdir\e[0m..."
 udir=${HOME}/utils
 edir=${HOME}/examp
 
-echo "creating repository directories..."
+echo "creating repository directory..."
 for my_dir in $rdir $udir $edir; do
 	if [ ! -d ${my_dir} ]; then
 		mkdir -vp ${my_dir}
@@ -113,29 +113,72 @@ echo "--------------------------------------"
 echo "------ Start Cloning Repo Files-------"
 echo "--------------------------------------"
 
+# set github user and authentication method
 github_user=jonlighthall
 github_https=https://github.com/${github_user}/
 github_ssh=git@github.com:${github_user}/
 github_auth=${github_ssh}
 
-cd ${rdir}
 # list of utility repos to be cloned
 gname="utility"
 echo "cloning ${gname} repos..."
 for my_repo in bash batch fortran_utilities powershell; do
 	if [ ! -d ${my_repo} ]; then
-		echo "cloning $my_repo..."
+		echo -e "${TAB}cloning \e[33m$my_repo\e[0m..."
 		git clone ${github_auth}${my_repo}.git
 	else
-		echo "dirctory $my_repo already exits"
+		echo -e "${TAB}dirctory \e[33m$my_repo\e[0m already exits"
+		TAB+=${fTAB:='   '}
+		echo -n "${TAB}pulling... "
+		git -C ${my_repo} pull
+		echo -n "${TAB}pushing... "
+		git -C ${my_repo} push
 	fi
 
 	# define link (destination)
 	link=${udir}/${my_repo}
 
-	# create link
-	if [ ! -e ${link} ]; then
-		ln -sv ${rdir}/${my_repo} ${link}
+	# check if target exists
+	target=${rdir}/${my_repo}
+	echo -n "${TAB}target file ${target}... "
+	if [ -e "${target}" ]; then
+		echo "exists "
+		TAB+=${fTAB:='   '}
+		echo -n "${TAB}link $link... "
+		TAB+=${fTAB:='   '}
+		# first, check for existing copy
+		if [ -L ${link} ] || [ -f ${link} ] || [ -d ${link} ]; then
+			echo -n "exists and "
+			if [[ "${target}" -ef ${link} ]]; then
+				echo "already points to ${my_link}"
+				echo -n "${TAB}"
+				ls -lhG --color=auto ${link}
+				echo "${TAB}skipping..."
+				TAB=${TAB%$fTAB}
+				TAB=${TAB%$fTAB}
+				TAB=${TAB%$fTAB}
+				continue
+			else
+				# next, delete or backup existing copy
+				if [ $(diff -ebwB "${target}" ${link} | wc -c) -eq 0 ]; then
+					echo "has the same contents"
+					echo -n "${TAB}deleting... "
+					rm -v ${link}
+				else
+					echo "will be backed up..."
+					mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
+				fi
+			fi
+		else
+			echo "does not exist"
+		fi
+
+		# create link
+		if [ ! -e ${link} ]; then
+			ln -sv ${rdir}/${my_repo} ${link} 2>&1 | sed "s/^/${TAB}SYM: /"
+		fi
+	else
+		echo -e "\e[31mdoes not exist\e[0m"
 	fi
 
 	# run make_links
@@ -247,7 +290,7 @@ if [[ ! ("$(hostname -f)" == *"navy.mil") ]]; then
 	dname=private
 	for my_repo in config_private; do
 		if [ ! -d $dname ]; then
-			echo "cloning $dname..."
+			echo -e "cloning \e[33m$dname\e[0m..."
 			echo "see ${github_https}$my_repo/blob/master/.git-credentials"
 			git clone ${github_auth}$my_repo $dname
 
@@ -263,7 +306,13 @@ if [[ ! ("$(hostname -f)" == *"navy.mil") ]]; then
 				echo "not found"
 			fi
 		else
-			echo "${TAB}dirctory $PWD$my_repo already exits"
+			echo -e "${TAB}dirctory \e[33m$PWD$my_repo\e[0m already exits"
+			TAB+=${fTAB}
+			echo -n "${TAB}pulling... "
+			git -C ${dname} pull
+			echo -n "${TAB}pushing... "
+			git -C ${dname} push
+			TAB=${TAB%$fTAB}
 		fi
 	done
 	TAB=${TAB%$fTAB}
