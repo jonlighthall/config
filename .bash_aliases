@@ -29,6 +29,7 @@ alias gitd='git diff'
 alias gitdn='git diff --name-only'
 alias gitr='git remote -v'
 alias gits='git status'
+alias gitsi='git status --ignored'
 
 # grep
 alias g='gr'
