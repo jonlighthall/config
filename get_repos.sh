@@ -88,7 +88,52 @@ if command -v wsl.exe >/dev/null; then
 	distro=$(echo "$distro" | tr '[:upper:]' '[:lower:]')
 	echo "${TAB}distro: $distro"
 
-	ln -s ${HOME}/home/$distro ${HOME}/sync
+	# make sync directory
+	link=${HOME}/sync
+
+	# check if target exists
+	target=${HOME}/home/$distro
+	echo -n "${TAB}target directory ${target}... "
+	if [ -e "${target}" ]; then
+		echo "exists "
+	else
+		echo "does not exist"
+		mkdir -pv ${target}
+	fi
+
+	TAB+=${fTAB:='   '}
+	echo -n "${TAB}link $link... "
+	TAB+=${fTAB:='   '}
+	# first, check for existing copy
+	if [ -L ${link} ] || [ -f ${link} ] || [ -d ${link} ]; then
+		echo -n "exists and "
+		if [[ "${target}" -ef ${link} ]]; then
+			echo "already points to ${my_link}"
+			echo -n "${TAB}"
+			ls -lhG --color=auto ${link}
+			echo "${TAB}skipping..."
+			TAB=${TAB%$fTAB}
+			TAB=${TAB%$fTAB}
+		else
+			# next, delete or backup existing copy
+			exit
+			if [ $(diff -ebwB "${target}" ${link} 2>&1 | wc -c) -eq 0 ]; then
+				echo "has the same contents"
+				echo -n "${TAB}deleting... "
+				rm -vd ${link}
+			else
+				echo "will be backed up..."
+				mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
+			fi
+		fi
+
+		# create link
+		if [ ! -e ${link} ]; then
+			ln -sv ${target} ${link} 2>&1 | sed "s/^/${TAB}SYM: /"
+		fi
+	else
+		echo -e "\e[31mdoes not exist\e[0m"
+	fi
 
 	rdir=${HOME}/home/$distro/repos
 else
