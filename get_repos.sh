@@ -7,7 +7,7 @@ if [ -e $fpretty ]; then
     source $fpretty
 fi
 
-# print source name at start
+# determine if sourcing or executing
 if (return 0 2>/dev/null); then
     RUN_TYPE="sourcing"
 else
@@ -15,32 +15,39 @@ else
     # exit on errors
     set -e
 fi
+# print source name at start
 echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
 src_name=$(readlink -f $BASH_SOURCE)
 if [ ! "$BASH_SOURCE" = "$src_name" ]; then
     echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
 fi
+# set tab
 TAB='   '
 if [ $# -eq 0 ]; then
     echo "No system specified"
 fi
 # set file name to be run in system directory
 fname=make_links.sh
+# check if configuration is specified
 if [ $# -eq 1 ]; then
     echo "Loading configuration options for $1"
     echo -n "${TAB}$1... "
+	# check if directory exists
     if [ -d ${HOME}/config/$1 ]; then
 		echo "found"
 		cd ${HOME}/config/$1
 		echo -n "${TAB}$fname... "
+		# check if file exists
 		if [ -f $fname ]; then
 			echo "found"
 			bash $fname
-			src_name2=${HOME}/.bash_profile
-			echo -n "$src_name2... "
-			if [ -f $src_name2 ]; then
+			# define profile name
+			profie_name=${HOME}/.bash_profile
+			echo -n "$profie_name... "
+			# check if file exists
+			if [ -f $profie_name ]; then
 				echo "found"
-				source $src_name2
+				source $profie_name
 				echo
 				echo "configuration applied for $1"
 				echo
@@ -158,7 +165,7 @@ if  command -v git ; then
 				ls -lhG --color=auto ${link}
 				echo "${TAB}skipping..."
 				TAB=${TAB%$fTAB}
-				TAB=${TAB%$fTAB}						
+				TAB=${TAB%$fTAB}
 				continue
 			else
 				# next, delete or backup existing copy
@@ -171,7 +178,7 @@ if  command -v git ; then
 					mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
 				fi
 				TAB=${TAB%$fTAB}
-				TAB=${TAB%$fTAB}						
+				TAB=${TAB%$fTAB}
 			fi
 			TAB=${TAB%$fTAB}
 		else
@@ -186,7 +193,7 @@ if  command -v git ; then
     done
 	TAB=${TAB%$fTAB}
 	echo -e "done cloning ${gname} repos"
-	
+
     # list of other repos to be cloned
 	gname="other"
 	echo "cloning ${gname} repos..."
@@ -207,7 +214,7 @@ if  command -v git ; then
     if [[ ! ("$(hostname -f)"  == *"navy.mil") ]]; then
 		gname="private"
 		echo "cloning ${gname} repos..."
-		TAB+=$fTAB	
+		TAB+=$fTAB
 		cd ${HOME}/config
 		dname=private
 		for my_repo in config_private
@@ -235,7 +242,7 @@ if  command -v git ; then
 		TAB=${TAB%$fTAB}
 		echo -e "done cloning ${gname} repos"
     fi
-	echo "done cloning all repos" 	
+	echo "done cloning all repos"
 else
     echo "Git not defined."
 fi

@@ -14,7 +14,7 @@ else
     }
 fi
 
-# print source name at start
+# determine if sourcing or executing
 if (return 0 2>/dev/null); then
     RUN_TYPE="sourcing"
 else
@@ -22,6 +22,7 @@ else
     # exit on errors
     set -e
 fi
+# print source name at start
 echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
 src_name=$(readlink -f $BASH_SOURCE)
 if [ ! "$BASH_SOURCE" = "$src_name" ]; then
