@@ -29,6 +29,20 @@ if [ ! "$BASH_SOURCE" = "$src_name" ]; then
     echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
 fi
 
+# it is assumed that the fisrt command to be run after cloning the parent
+# repository is make_links.sh (this file)
+
+# runn the following configureation files
+for prog in install_packages.sh make_links_personal.sh; do
+    echo -n "${TAB}${prog}... "
+    if [ -f $prog ]; then
+        echo "found"
+        bash $prog
+    else
+        echo "not found"
+    fi
+done
+
 # set target and link directories
 target_dir=$(dirname "$src_name")
 link_dir=$HOME
