@@ -20,7 +20,8 @@ if [ ! "$BASH_SOURCE" = "$src_name" ]; then
 fi
 
 # set target and link directories
-target_dir=/mnt/c/Users/jonli/OneDrive/Documents/home
+windows_user=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+target_dir=/mnt/c/Users/$windows_user/OneDrive/Documents/home
 link_dir=$HOME
 
 # check directories
@@ -107,7 +108,7 @@ bar 38 "- Start Linking External Directories -"
 
 # define winhome
 if [ ! -e ${HOME}/winhome ]; then
-    ln -sv /mnt/c/Users/jonli ${HOME}/winhome
+    ln -sv /mnt/c/Users/${windows_user} ${HOME}/winhome
 else
     echo "winhome is already a link"
 fi
