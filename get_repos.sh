@@ -108,7 +108,7 @@ if command -v wsl.exe >/dev/null; then
 	if [ -L ${link} ] || [ -f ${link} ] || [ -d ${link} ]; then
 		echo -n "exists and "
 		if [[ "${target}" -ef ${link} ]]; then
-			echo "already points to ${my_link}"
+			echo "already points to ${link}"
 			echo -n "${TAB}"
 			ls -lhG --color=auto ${link}
 			echo "${TAB}skipping..."
@@ -116,7 +116,6 @@ if command -v wsl.exe >/dev/null; then
 			TAB=${TAB%$fTAB}
 		else
 			# next, delete or backup existing copy
-			exit
 			if [ $(diff -ebwB "${target}" ${link} 2>&1 | wc -c) -eq 0 ]; then
 				echo "has the same contents"
 				echo -n "${TAB}deleting... "
@@ -169,62 +168,64 @@ github_auth=${github_ssh}
 gname="utility"
 echo "cloning ${gname} repos..."
 for my_repo in bash batch fortran_utilities powershell; do
-	if [ ! -d ${my_repo} ]; then
-		echo -e "${TAB}cloning \e[33m$my_repo\e[0m..."
-		git clone ${github_auth}${my_repo}.git
-	else
-		echo -e "${TAB}dirctory \e[33m$my_repo\e[0m already exits"
-		TAB+=${fTAB:='   '}
-		echo -n "${TAB}pulling... "
-		git -C ${my_repo} pull
-		echo -n "${TAB}pushing... "
-		git -C ${my_repo} push
-	fi
-
+	#define target (source)
+	target=${rdir}/${my_repo}
 	# define link (destination)
 	link=${udir}/${my_repo}
 
 	# check if target exists
-	target=${rdir}/${my_repo}
-	echo -n "${TAB}target file ${target}... "
+	echo -ne "${TAB}target dirctory ${yellow}${target}${NORMAL}... "
 	if [ -e "${target}" ]; then
 		echo "exists "
 		TAB+=${fTAB:='   '}
-		echo -n "${TAB}link $link... "
-		TAB+=${fTAB:='   '}
-		# first, check for existing copy
-		if [ -L ${link} ] || [ -f ${link} ] || [ -d ${link} ]; then
-			echo -n "exists and "
-			if [[ "${target}" -ef ${link} ]]; then
-				echo "already points to ${my_link}"
-				echo -n "${TAB}"
-				ls -lhG --color=auto ${link}
-				echo "${TAB}skipping..."
-				TAB=${TAB%$fTAB}
-				TAB=${TAB%$fTAB}
-				TAB=${TAB%$fTAB}
-				continue
-			else
-				# next, delete or backup existing copy
-				if [ $(diff -ebwB "${target}" ${link} | wc -c) -eq 0 ]; then
-					echo "has the same contents"
-					echo -n "${TAB}deleting... "
-					rm -v ${link}
-				else
-					echo "will be backed up..."
-					mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
-				fi
-			fi
-		else
-			echo "does not exist"
-		fi
-
-		# create link
-		if [ ! -e ${link} ]; then
-			ln -sv ${rdir}/${my_repo} ${link} 2>&1 | sed "s/^/${TAB}SYM: /"
-		fi
+		echo -n "${TAB}pulling... "
+		git -C ${target} pull
+		echo -n "${TAB}pushing... "
+		git -C ${target} push
+		TAB=${TAB%$fTAB}
 	else
 		echo -e "\e[31mdoes not exist\e[0m"
+		echo "${TAB}cloning $my_repo..."
+		git clone ${github_auth}$my_repo ${target}
+	fi
+
+	# begin linking...
+	TAB+=${fTAB:='   '}
+	echo -n "${TAB}link $link... "
+
+	# first, check for existing copy
+	if [ -L ${link} ] || [ -d ${link} ]; then
+		TAB+=${fTAB:='   '}
+		echo -n "exists and "
+		if [[ "${target}" -ef ${link} ]]; then
+			echo "already points to ${my_repo}"
+			echo -n "${TAB}"
+			ls -lhG --color=auto ${link}
+			echo "${TAB}skipping..."
+			TAB=${TAB%$fTAB}
+			TAB=${TAB%$fTAB}
+			continue
+		else
+			# next, delete or backup existing copy
+			if [ $(\diff --suppress-common-lines -r ${target} ${link} 2>&1 | wc -c) -eq 0 ]; then
+				echo "has the same contents"
+				echo -n "${TAB}deleting... "
+				rm -vfd ${link}
+			else
+				echo "will be backed up..."
+				mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
+			fi
+			TAB=${TAB%$fTAB}
+			TAB=${TAB%$fTAB}
+		fi
+		TAB=${TAB%$fTAB}
+	else
+		echo "does not exist"
+	fi
+
+	# then link
+	if [ ! -e ${link} ]; then
+		ln -sv "${target}" ${link} 2>&1 | sed "s/^/${TAB}SYM: /"
 	fi
 
 	# run make_links
@@ -251,7 +252,6 @@ gname="example"
 echo "cloning ${gname} repos..."
 TAB+=${fTAB:='   '}
 for my_repo in cpp fortran hello nrf python; do
-
 	# define target (source)
 	target=${rdir}/${my_repo}
 	# define link (destination)
@@ -264,7 +264,7 @@ for my_repo in cpp fortran hello nrf python; do
 	else
 		echo "does not exist"
 		echo "${TAB}cloning $my_repo..."
-		git clone ${github_auth}$my_repo
+		git clone ${github_auth}$my_repo ${target}
 	fi
 	# begin linking...
 	TAB+=${fTAB}
@@ -284,7 +284,7 @@ for my_repo in cpp fortran hello nrf python; do
 			continue
 		else
 			# next, delete or backup existing copy
-			if [ $(\diff --suppress-common-lines -r ${rdir}/${my_repo} ${link} | wc -c) -eq 0 ]; then
+			if [ $(\diff --suppress-common-lines -r ${target} ${link} 2>&1 | wc -c) -eq 0 ]; then
 				echo "has the same contents"
 				echo -n "${TAB}deleting..."
 				rm -rfd ${link}
@@ -303,7 +303,7 @@ for my_repo in cpp fortran hello nrf python; do
 	echo -en "${TAB}${GRH}"
 	hline 72
 	echo "${TAB}making link... "
-	ln -sv "${target}" ${link} | sed "s/^/${TAB}/"
+	ln -sv "${target}" ${link} 2>&1 | sed "s/^/${TAB}/"
 	echo -ne "${TAB}"
 	hline 72
 	echo -en "${NORMAL}"
@@ -317,12 +317,63 @@ gname="other"
 echo "cloning ${gname} repos..."
 TAB+=${fTAB:='   '}
 for my_repo in matlab; do
-	if [ ! -d ${my_repo} ]; then
-		echo "cloning $my_repo..."
-		git clone ${github_auth}$my_repo
+	# define target (source)
+	target=${rdir}/${my_repo}
+	# define link (destination)
+	link=~/${my_repo}
+
+	# check if target exists
+	echo -ne "${TAB}target dirctory ${yellow}${target}${NORMAL}... "
+	if [ -e "${target}" ]; then
+		echo "exits"
 	else
-		echo -e "${TAB}dirctory ${yellow}$PWD/$my_repo${NORMAL} already exits"
+		echo "does not exist"
+		echo "${TAB}cloning $my_repo..."
+		git clone ${github_auth}$my_repo ${target}
 	fi
+	# begin linking...
+	TAB+=${fTAB}
+	echo -n "${TAB}link ${link}... "
+
+	# first, check for existing copy
+	if [ -L ${link} ] || [ -d ${link} ]; then
+		TAB+=${fTAB}
+		echo -n "exits and "
+		if [[ "${target}" -ef ${link} ]]; then
+			echo "already points to ${my_repo}"
+			echo -n "${TAB}"
+			ls -lhG --color=auto ${link}
+			echo "${TAB}skipping..."
+			TAB=${TAB%$fTAB}
+			TAB=${TAB%$fTAB}
+			continue
+		else
+			# next, delete or backup existing copy
+			if [ $(\diff --suppress-common-lines -r ${target} ${link} 2>&1 | wc -c) -eq 0 ]; then
+				echo "has the same contents"
+				echo -n "${TAB}deleting..."
+				rm -rfd ${link}
+			else
+				echo "will be backed up..."
+				mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
+			fi
+			TAB=${TAB%$fTAB}
+			TAB=${TAB%$fTAB}
+		fi
+		TAB=${TAB%$fTAB}
+	else
+		echo "does not exist"
+	fi
+
+	# then link
+	echo -en "${TAB}${GRH}"
+	hline 72
+	echo "${TAB}making link... "
+	ln -sv "${target}" ${link} 2>&1 | sed "s/^/${TAB}/"
+	echo -ne "${TAB}"
+	hline 72
+	echo -en "${NORMAL}"
+	TAB=${TAB%$fTAB}
 done
 TAB=${TAB%$fTAB}
 echo -e "done cloning ${gname} repos"
