@@ -5,8 +5,6 @@
 fpretty=${HOME}/utils/bash/.bashrc_pretty
 if [ -e $fpretty ]; then
 	source $fpretty
-	else
-	set +u
 fi
 
 # determine if sourcing or executing
@@ -18,48 +16,53 @@ else
 	set -e
 fi
 # print source name at start
-echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
+echo -e "${TAB}${RUN_TYPE} \E[0;33m$BASH_SOURCE\E[0m..."
 src_name=$(readlink -f $BASH_SOURCE)
 if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-	echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
+	echo -e "${TAB}\E[1;36mlink\E[0m -> $src_name"
 fi
 # set tab
 TAB='   '
 if [ $# -eq 0 ]; then
 	echo "No system specified"
 fi
+
 # set file name to be run in system directory
-fname=make_links.sh
+make_links_file=make_links.sh
 # check if configuration is specified
 if [ $# -eq 1 ]; then
 	echo "Loading configuration options for $1"
 	echo -n "${TAB}$1... "
-	# check if directory exists
+	# check if specified directory exists
 	if [ -d ${HOME}/config/$1 ]; then
 		echo "found"
 		cd ${HOME}/config/$1
-		echo -n "${TAB}$fname... "
-		# check if file exists
-		if [ -f $fname ]; then
+		echo -n "${TAB}$make_links_file... "
+		# check if make links file exists
+		if [ -f $make_links_file ]; then
 			echo "found"
-			bash $fname
+			bash $make_links_file
 			# define profile name
 			profie_name=${HOME}/.bash_profile
 			echo -n "$profie_name... "
 			# check if file exists
 			if [ -f $profie_name ]; then
 				echo "found"
+				echo "sourcing $profie_name..."
 				source $profie_name
 				echo
 				echo "configuration applied for $1"
 				echo
 			else
+				# profile...
 				echo "not found"
 			fi
 		else
+			# make links file...
 			echo "not found"
 		fi
 	else
+		# system name...
 		echo "not found"
 	fi
 fi
@@ -77,8 +80,7 @@ if command -v wsl.exe >/dev/null; then
 	echo "WSL defined... "
 	# get host name
 	host_name=$(hostname)
-	echo "${TAB}host name: $host_name
-
+	echo "${TAB}host name: $host_name"
 
 	# get distro name
 	if [ -f /etc/os-release ]; then
@@ -93,12 +95,16 @@ if command -v wsl.exe >/dev/null; then
 
 	# convert to lower case
 	distro=$(echo "$distro" | tr '[:upper:]' '[:lower:]')
-	echo "${TAB}distro: $distro"
+	echo "${TAB}distro: .. $distro"
 
 	# create sync directory
 	hdir=${HOME}/home/$host_name
-	ddir=${ddir}/$distro
+	echo "${TAB}host dir:   $hdir"
 
+	ddir=${hdir}/$distro
+	echo "${TAB}distro dir: $ddir"
+
+exit
 	#define target (source)
 	target=${ddir}
 	# define link (destination)
@@ -146,9 +152,9 @@ if command -v wsl.exe >/dev/null; then
 	fi
 
 	# create link
-		if [ ! -e ${link} ] && [ $do_link -eq true ]; then
-			ln -sv ${target} ${link} 2>&1 | sed "s/^/${TAB}SYM: /"
-		fi
+	if [ ! -e ${link} ] && [ $do_link -eq true ]; then
+		ln -sv ${target} ${link} 2>&1 | sed "s/^/${TAB}SYM: /"
+	fi
 
 	# define repository directory
 	rdir=${ddir}/repos
@@ -236,14 +242,14 @@ github_auth=${github_ssh}
 # list of utility repos to be cloned
 gname="utility"
 echo "cloning ${gname} repos..."
-for my_repo in bash batch fortran_utilities powershell; do
+for my_repo in bash fortran_utilities; do
 	#define target (source)
 	target=${rdir}/${my_repo}
 	# define link (destination)
 	link=${udir}/${my_repo}
 
 	# check if target exists
-	echo -ne "${TAB}target dirctory ${yellow}${target}${NORMAL}... "
+	echo -ne "${TAB}target dirctory \e[33m${target}\e[0m... "
 	if [ -e "${target}" ]; then
 		echo "exists "
 		TAB+=${fTAB:='   '}
@@ -298,15 +304,106 @@ for my_repo in bash batch fortran_utilities powershell; do
 	fi
 
 	# run make_links
-	fname="${link}/make_links.sh"
-	if [ -e "${fname}" ]; then
+	make_links_file="${link}/make_links.sh"
+	if [ -e "${make_links_file}" ]; then
 		cd ${link}
-		bash ${fname}
+		bash ${make_links_file}
 		cd ${rdir}
 	else
-		echo -e "${TAB}${BAD}${fname} not found${NORMAL}"
+		echo -e "${TAB}${BAD}${make_links_file} not found${NORMAL}"
 	fi
 done
+
+# clone Win32 repos
+if [[ "$(hostname -f)" =~ *"navy.mil" ]]; then
+	echo -n "creating links inside Onedrive..."
+	wdir=$rdir
+else
+	echo -n "creating links outside of Onedrive..."
+	wdir="${HOME}/winhome/Documents/repos"
+	target=${wdir}
+	echo -ne "${TAB}target directory \e[33m${target}\e[0m... "
+	if [ -e "${target}" ]; then
+		echo "exists "
+	else
+		echo "does not exist"
+		mkdir -pv ${target} | sed "s/^/${TAB}/"
+	fi
+fi
+
+for my_repo in batch powershell; do
+	#define target (source)
+
+	target=${wdir}/${my_repo}
+	# define link (destination)
+	link=${udir}/${my_repo}
+
+	# check if target exists
+	echo -ne "${TAB}target dirctory \e[33m${target}\e[0m... "
+	if [ -e "${target}" ]; then
+		echo "exists "
+		TAB+=${fTAB:='   '}
+		echo -n "${TAB}pulling... "
+		git -C ${target} pull
+		echo -n "${TAB}pushing... "
+		git -C ${target} push
+		TAB=${TAB%$fTAB}
+	else
+		echo -e "\e[31mdoes not exist\e[0m"
+		echo "${TAB}cloning $my_repo..."
+		git clone ${github_auth}$my_repo ${target}
+	fi
+
+	# begin linking...
+	TAB+=${fTAB:='   '}
+	echo -n "${TAB}link $link... "
+
+	# first, check for existing copy
+	if [ -L ${link} ] || [ -d ${link} ]; then
+		TAB+=${fTAB:='   '}
+		echo -n "exists and "
+		if [[ "${target}" -ef ${link} ]]; then
+			echo "already points to ${my_repo}"
+			echo -n "${TAB}"
+			ls -lhG --color=auto ${link}
+			echo "${TAB}skipping..."
+			TAB=${TAB%$fTAB}
+			TAB=${TAB%$fTAB}
+			continue
+		else
+			# next, delete or backup existing copy
+			if [ $(\diff --suppress-common-lines -r ${target} ${link} 2>&1 | wc -c) -eq 0 ]; then
+				echo "has the same contents"
+				echo -n "${TAB}deleting... "
+				rm -vfd ${link}
+			else
+				echo "will be backed up..."
+				mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
+			fi
+			TAB=${TAB%$fTAB}
+			TAB=${TAB%$fTAB}
+		fi
+		TAB=${TAB%$fTAB}
+	else
+		echo "does not exist"
+	fi
+
+	# then link
+	if [ ! -e ${link} ]; then
+		ln -sv "${target}" ${link} 2>&1 | sed "s/^/${TAB}SYM: /"
+	fi
+
+	# run make_links
+	make_links_file="${link}/make_links.sh"
+	if [ -e "${make_links_file}" ]; then
+		cd ${link}
+		bash ${make_links_file}
+		cd ${wdir}
+	else
+		echo -e "${TAB}${BAD}${make_links_file} not found${NORMAL}"
+	fi
+done
+
 echo -e "done cloning ${gname} repos"
 
 # load formatting
@@ -379,17 +476,6 @@ for my_repo in cpp fortran hello nrf python; do
 	hline 72
 	echo -en "${NORMAL}"
 	TAB=${TAB%$fTAB}
-
-	# run make_links
-	fname="${link}/make_links.sh"
-	if [ -e "${fname}" ]; then
-		cd ${link}
-		bash ${fname}
-		cd ${rdir}
-	else
-		echo -e "${TAB}${BAD}${fname} not found${NORMAL}"
-	fi
-
 done
 TAB=${TAB%$fTAB}
 echo -e "done cloning ${gname} repos"
@@ -458,13 +544,13 @@ for my_repo in matlab; do
 	TAB=${TAB%$fTAB}
 
 	# run make_links
-	fname="${link}/make_links.sh"
-	if [ -e "${fname}" ]; then
+	make_links_file="${link}/make_links.sh"
+	if [ -e "${make_links_file}" ]; then
 		cd ${link}
-		bash ${fname}
+		bash ${make_links_file}
 		cd ${rdir}
 	else
-		echo -e "${TAB}${BAD}${fname} not found${NORMAL}"
+		echo -e "${TAB}${BAD}${make_links_file} not found${NORMAL}"
 	fi
 done
 TAB=${TAB%$fTAB}
@@ -484,13 +570,13 @@ if [[ ! ("$(hostname -f)" == *"navy.mil") ]]; then
 			git clone ${github_auth}$my_repo $dname
 
 			# run make_links
-			fname=make_links.sh
+			make_links_file=make_links.sh
 			fpath="${dname}/make_links.sh"
 			echo -n "${TAB}$fpath... "
 			if [ -f "${fpath}" ]; then
 				echo "found"
 				cd $dname
-				bash $fname
+				bash $make_links_file
 			else
 				echo "not found"
 			fi
