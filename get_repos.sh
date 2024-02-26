@@ -5,6 +5,8 @@
 fpretty=${HOME}/utils/bash/.bashrc_pretty
 if [ -e $fpretty ]; then
 	source $fpretty
+	else
+	set +u
 fi
 
 # determine if sourcing or executing
@@ -73,6 +75,11 @@ fi
 # define directory names
 if command -v wsl.exe >/dev/null; then
 	echo "WSL defined... "
+	# get host name
+	host_name=$(hostname)
+	echo "${TAB}host name: $host_name
+
+
 	# get distro name
 	if [ -f /etc/os-release ]; then
 		distro=$(sed '/^NAME/!d' /etc/os-release | awk -F \" '{print $2}')
@@ -89,9 +96,11 @@ if command -v wsl.exe >/dev/null; then
 	echo "${TAB}distro: $distro"
 
 	# create sync directory
+	hdir=${HOME}/home/$host_name
+	ddir=${ddir}/$distro
 
 	#define target (source)
-	target=${HOME}/home/$distro
+	target=${ddir}
 	# define link (destination)
 	link=${HOME}/sync
 
@@ -101,11 +110,13 @@ if command -v wsl.exe >/dev/null; then
 		echo "exists "
 	else
 		echo "does not exist"
-		mkdir -pv ${target}
+		mkdir -pv ${target} | sed "s/^/${TAB}/"
 	fi
 
+	# check if link exists
 	TAB+=${fTAB:='   '}
 	echo -n "${TAB}link $link... "
+	do_link=false
 	TAB+=${fTAB:='   '}
 	# first, check for existing copy
 	if [ -L ${link} ] || [ -f ${link} ] || [ -d ${link} ]; then
@@ -118,6 +129,7 @@ if command -v wsl.exe >/dev/null; then
 			TAB=${TAB%$fTAB}
 			TAB=${TAB%$fTAB}
 		else
+			do_link=true
 			# next, delete or backup existing copy
 			if [ $(diff -ebwB "${target}" ${link} 2>&1 | wc -c) -eq 0 ]; then
 				echo "has the same contents"
@@ -128,17 +140,18 @@ if command -v wsl.exe >/dev/null; then
 				mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
 			fi
 		fi
-
-		# create link
-		if [ ! -e ${link} ]; then
-			ln -sv ${target} ${link} 2>&1 | sed "s/^/${TAB}SYM: /"
-		fi
 	else
 		echo -e "\e[31mdoes not exist\e[0m"
+		do_link=true
 	fi
 
+	# create link
+		if [ ! -e ${link} ] && [ $do_link -eq true ]; then
+			ln -sv ${target} ${link} 2>&1 | sed "s/^/${TAB}SYM: /"
+		fi
+
 	# define repository directory
-	rdir=${HOME}/home/$distro/repos
+	rdir=${ddir}/repos
 
 	# link repo directory to HOME
 	#define target (source)
@@ -152,8 +165,7 @@ if command -v wsl.exe >/dev/null; then
 		echo "exists "
 	else
 		echo "does not exist"
-		echo "didn't you just make this directory?"
-		exit 1
+		mkdir -pv ${target} | sed "s/^/${TAB}/"
 	fi
 
 	TAB+=${fTAB:='   '}
