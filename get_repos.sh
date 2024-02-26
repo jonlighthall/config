@@ -104,7 +104,6 @@ if command -v wsl.exe >/dev/null; then
 	ddir=${hdir}/$distro
 	echo "${TAB}distro dir: $ddir"
 
-exit
 	#define target (source)
 	target=${ddir}
 	# define link (destination)
@@ -403,7 +402,6 @@ for my_repo in batch powershell; do
 		echo -e "${TAB}${BAD}${make_links_file} not found${NORMAL}"
 	fi
 done
-
 echo -e "done cloning ${gname} repos"
 
 # load formatting
