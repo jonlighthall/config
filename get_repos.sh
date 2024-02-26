@@ -88,12 +88,15 @@ if command -v wsl.exe >/dev/null; then
 	distro=$(echo "$distro" | tr '[:upper:]' '[:lower:]')
 	echo "${TAB}distro: $distro"
 
-	# make sync directory
+	# create sync directory
+
+	#define target (source)
+	target=${HOME}/home/$distro
+	# define link (destination)
 	link=${HOME}/sync
 
 	# check if target exists
-	target=${HOME}/home/$distro
-	echo -n "${TAB}target directory ${target}... "
+	echo -ne "${TAB}target directory \e[33m${target}\e[0m... "
 	if [ -e "${target}" ]; then
 		echo "exists "
 	else
@@ -134,7 +137,61 @@ if command -v wsl.exe >/dev/null; then
 		echo -e "\e[31mdoes not exist\e[0m"
 	fi
 
+	# define repository directory
 	rdir=${HOME}/home/$distro/repos
+
+	# link repo directory to HOME
+	#define target (source)
+	target=${rdir}
+	# define link (destination)
+	link=${HOME}/repos
+
+	# check if target exists
+	echo -ne "${TAB}target directory \e[33m${target}\e[0m... "
+	if [ -e "${target}" ]; then
+		echo "exists "
+	else
+		echo "does not exist"
+		echo "didn't you just make this directory?"
+		exit 1
+	fi
+
+	TAB+=${fTAB:='   '}
+	echo -n "${TAB}link $link... "
+	TAB+=${fTAB:='   '}
+	# first, check for existing copy
+	if [ -L ${link} ] || [ -f ${link} ] || [ -d ${link} ]; then
+		echo -n "exists and "
+		if [[ "${target}" -ef ${link} ]]; then
+			echo "already points to ${link}"
+			echo -n "${TAB}"
+			ls -lhG --color=auto ${link}
+			echo "${TAB}skipping..."
+			TAB=${TAB%$fTAB}
+			TAB=${TAB%$fTAB}
+		else
+			# next, delete or backup existing copy
+			if [ $(diff -ebwB "${target}" ${link} 2>&1 | wc -c) -eq 0 ]; then
+				echo "has the same contents"
+				echo -n "${TAB}deleting... "
+				rm -vd ${link}
+			else
+				echo "will be backed up..."
+				mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
+			fi
+		fi
+
+		# create link
+		if [ ! -e ${link} ]; then
+			ln -sv ${target} ${link} 2>&1 | sed "s/^/${TAB}SYM: /"
+		fi
+	else
+		echo -e "\e[31mdoes not exist\e[0m"
+		# create link
+		if [ ! -e ${link} ]; then
+			ln -sv ${target} ${link} 2>&1 | sed "s/^/${TAB}SYM: /"
+		fi
+	fi
 else
 	echo "WSL not defined."
 	rdir=${HOME}/repos
