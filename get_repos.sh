@@ -80,7 +80,6 @@ if command -v wsl.exe >/dev/null; then
 	echo "WSL defined... "
 	# get host name
 	host_name=$(hostname)
-	echo "${TAB}host name: $host_name"
 
 	# get distro name
 	if [ -f /etc/os-release ]; then
@@ -95,14 +94,18 @@ if command -v wsl.exe >/dev/null; then
 
 	# convert to lower case
 	distro=$(echo "$distro" | tr '[:upper:]' '[:lower:]')
-	echo "${TAB}distro: .. $distro"
 
-	# create sync directory
+	# set sync directory
 	hdir=${HOME}/home/$host_name
-	echo "${TAB}host dir:   $hdir"
-
 	ddir=${hdir}/$distro
-	echo "${TAB}distro dir: $ddir"
+
+	# print summary
+	(
+		echo "${TAB}host name: $host_name"
+		echo "${TAB}distro: $distro"
+		echo "${TAB}host dir: $hdir"
+		echo "${TAB}distro dir: $ddir"
+	) | column -t -s : -o : -R 1
 
 	#define target (source)
 	target=${ddir}
