@@ -33,7 +33,23 @@ fi
 # repository is make_links.sh (this file)
 
 # runn the following configureation files
-for prog in install_packages.sh make_links_personal.sh; do
+prog=install_packages.sh
+if [ -f $prog ]; then
+    echo "found"
+    echo "${prog requires}"
+    echo "${TAB}elevation"
+    echo "${TAB}access to  archive.ubuntu.com, security.ubuntu.com, etc"
+    read -p "Proceed with ${prog}? (y/n) " -n 1 -r
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        bash $prog
+    else
+        continue
+    fi
+else
+    echo "not found"
+fi
+
+for prog in make_links_personal.sh; do
     echo -n "${TAB}${prog}... "
     if [ -f $prog ]; then
         echo "found"
