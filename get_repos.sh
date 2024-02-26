@@ -234,6 +234,8 @@ for my_repo in bash batch fortran_utilities powershell; do
 		cd ${link}
 		bash ${fname}
 		cd ${rdir}
+	else
+		echo -e "${TAB}${BAD}${fname} not found${NORMAL}"
 	fi
 done
 echo -e "done cloning ${gname} repos"
@@ -308,6 +310,17 @@ for my_repo in cpp fortran hello nrf python; do
 	hline 72
 	echo -en "${NORMAL}"
 	TAB=${TAB%$fTAB}
+
+	# run make_links
+	fname="${link}/make_links.sh"
+	if [ -e "${fname}" ]; then
+		cd ${link}
+		bash ${fname}
+		cd ${rdir}
+	else
+		echo -e "${TAB}${BAD}${fname} not found${NORMAL}"
+	fi
+
 done
 TAB=${TAB%$fTAB}
 echo -e "done cloning ${gname} repos"
@@ -374,6 +387,16 @@ for my_repo in matlab; do
 	hline 72
 	echo -en "${NORMAL}"
 	TAB=${TAB%$fTAB}
+
+	# run make_links
+	fname="${link}/make_links.sh"
+	if [ -e "${fname}" ]; then
+		cd ${link}
+		bash ${fname}
+		cd ${rdir}
+	else
+		echo -e "${TAB}${BAD}${fname} not found${NORMAL}"
+	fi
 done
 TAB=${TAB%$fTAB}
 echo -e "done cloning ${gname} repos"
