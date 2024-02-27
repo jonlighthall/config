@@ -44,7 +44,7 @@ else
     exit 1
 fi
 
-onedrive_docs="${onedrive_dir_wsl}Documents/"
+onedrive_docs="${onedrive_dir_wsl}Documents"
 
 echo -n "${TAB}onedrive docs: ${onedrive_docs}..."
 if [ -e "${onedrive_docs}" ]; then
@@ -54,13 +54,13 @@ else
     exit 1
 fi
 
-target_dir="${onedrive_dir_wsl}/Documents/home"
+home_dir="${onedrive_docs}/home"
 
 link_dir=$HOME
 
 # check directories
-echo -n "${TAB}target directory ${target_dir}... "
-if [ -e "${target_dir}" ]; then
+echo -n "${TAB}target directory ${home_dir}... "
+if [ -e "${home_dir}" ]; then
     echo "exists"
 else
     echo -e "${BAD}does not exist${NORMAL}"
@@ -85,7 +85,7 @@ bar 38 "---- Start Linking External Files ----" | sed "s/^/${TAB}/"
 # list of files to be linked
 for my_link in .bash_history; do
     # define target (source)
-    target=${target_dir}/${my_link}
+    target=${home_dir}/${my_link}
     # strip target subdirectory from link name
     sub_dir=$(dirname "$my_link")
     if [ ! $sub_dir = "." ]; then
@@ -147,14 +147,14 @@ bar 38 "- Start Linking External Directories -" | sed "s/^/${TAB}/"
 
 # define winhome
 if [ ! -e ${HOME}/winhome ]; then
-    ln -sv /mnt/c/Users/${windows_user} ${HOME}/winhome
+    ln -sv ${win_home_dir} ${HOME}/winhome
 else
     echo -e "${TAB}${yellow}winhome${NORMAL} is already a link"
 fi
 
 # define links within winhome
 if [ ! -e ${HOME}/downloads ]; then
-    ln -sv ${HOME}/winhome/Downloads/ ${HOME}/downloads
+    ln -sv ${win_home_dir}/Downloads/ ${HOME}/downloads
 else
     echo -e "${TAB}${yellow}downloads${NORMAL} is already a link"
 fi
@@ -168,13 +168,13 @@ fi
 
 # define links within onedrive
 if [ ! -e ${HOME}/home ]; then
-    ln -sv ${HOME}/ondrive/Documents/home/ ${HOME}/home
+    ln -sv ${home_dir} ${HOME}/home
 else
     echo -e "${TAB}${yellow}home${NORMAL} already a link"
 fi
 
 if [ ! -e ${HOME}/matlab ]; then
-    ln -sv ${HOME}/ondrive/Documents/MATLAB/ ${HOME}/matlab
+    ln -sv ${onedrive_docs}/MATLAB/ ${HOME}/matlab
 else
     echo -e "${TAB}${yellow}matlab${NORMAL} already a link"
 fi
