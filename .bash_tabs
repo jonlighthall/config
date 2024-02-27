@@ -5,14 +5,11 @@ function set_ftab () {
 
 function ctab() {
 	# clear tab
-	~/utils/bash/test/print_tab.sh
 	export TAB=''
-	~/utils/bash/test/print_tab.sh
 }
 
 function itab() {
 	# increment tab
-	~/utils/bash/test/print_tab.sh
 	set_ftab
 	if [ $# -eq 0 ]; then
 		N=1
@@ -24,12 +21,10 @@ function itab() {
 		TAB+=${fTAB}
 	done
 	export TAB
-	~/utils/bash/test/print_tab.sh
 }
 
 function dtab() {
 	# decrement tab
-	~/utils/bash/test/print_tab.sh
 	set_ftab
 	if [ $# -eq 0 ]; then
 		N=1
@@ -41,7 +36,6 @@ function dtab() {
 		TAB=${TAB%$fTAB}
 	done
 	export TAB
-	~/utils/bash/test/print_tab.sh
 }
 
 # set tab
