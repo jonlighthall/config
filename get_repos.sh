@@ -43,14 +43,15 @@ if [ $# -eq 1 ]; then
 			echo "found"
 			bash $make_links_file
 			# define profile name
-			profie_name=${HOME}/.bash_profile
+			profie_name=.bash_profile
 			echo -n "${TAB}$profie_name... "
 			# check if file exists
 			if [ -f $profie_name ]; then
-				echo "found"
-				set +u
+				echo -n "found: "
+				readlink -f $profie_name
+				set +ue
 				source ${profie_name}
-				set -u
+				set -ue
 				echo "${TAB}configuration applied for $1"
 			else
 				# profile...
@@ -65,6 +66,8 @@ if [ $# -eq 1 ]; then
 		echo "not found"
 	fi
 fi
+
+exit
 
 # check if git is defined
 if command -v git >/dev/null; then
@@ -254,10 +257,10 @@ for my_repo in bash fortran_utilities; do
 	if [ -e "${target}" ]; then
 		echo "exists "
 		TAB+=${fTAB:='   '}
-		echo -n "${TAB}pulling... "
-		git -C ${target} pull
-		echo -n "${TAB}pushing... "
-		git -C ${target} push
+		#echo -n "${TAB}pulling... "
+		#git -C ${target} pull
+		#echo -n "${TAB}pushing... "
+		#git -C ${target} push
 		TAB=${TAB%$fTAB}
 	else
 		echo -e "\e[31mdoes not exist\e[0m"
@@ -345,10 +348,10 @@ for my_repo in batch powershell; do
 	if [ -e "${target}" ]; then
 		echo "exists "
 		TAB+=${fTAB:='   '}
-		echo -n "${TAB}pulling... "
-		git -C ${target} pull
-		echo -n "${TAB}pushing... "
-		git -C ${target} push
+		#echo -n "${TAB}pulling... "
+		#git -C ${target} pull
+		#echo -n "${TAB}pushing... "
+		#git -C ${target} push
 		TAB=${TAB%$fTAB}
 	else
 		echo -e "\e[31mdoes not exist\e[0m"
@@ -486,10 +489,21 @@ gname="other"
 echo "cloning ${gname} repos..."
 TAB+=${fTAB:='   '}
 for my_repo in matlab; do
+	matlab_dir=${HOME}/onedrive/Documents/MATLAB
+	echo "${matlab_dir}..."
+	if [ -d ${matlab_dir} ]; then
+		echo "found"
+
+	else
+		echo "not found"
+		echo "aborting clone ${matlab}"
+		continue
+	fi
+
 	# define target (source)
-	target=${rdir}/${my_repo}
+	target=${matlab_dir}/macros
 	# define link (destination)
-	link=~/${my_repo}
+	link=${rdir}/matlab
 
 	# check if target exists
 	echo -ne "${TAB}target dirctory ${yellow}${target}${NORMAL}... "
@@ -584,10 +598,10 @@ if [[ ! ("$(hostname -f)" == *"navy.mil") ]]; then
 		else
 			echo -e "${TAB}dirctory \e[33m$PWD$my_repo\e[0m already exits"
 			TAB+=${fTAB}
-			echo -n "${TAB}pulling... "
-			git -C ${dname} pull
-			echo -n "${TAB}pushing... "
-			git -C ${dname} push
+			#echo -n "${TAB}pulling... "
+			#git -C ${dname} pull
+			#echo -n "${TAB}pushing... "
+			#git -C ${dname} push
 			TAB=${TAB%$fTAB}
 		fi
 	done
