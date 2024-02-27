@@ -4,8 +4,13 @@
 # with WSL, Debian derivatives (Ubuntu), Red Hat-based distros (Centos, Rock Linux), MinGW (MSYS,
 # GitBash), Cygwin, PGI Bash, etc.
 
+echo "${TAB}------------------------------------"
+echo "${TAB}this file is ~/config/.bash_aliases!"
+echo "${TAB}------------------------------------"
+
 # Aliases
 alias close='source ${HOME}/.bash_logout;killall -9 -v -u $USER$USERNAME; exit'
+alias hello='echo "hello, world"'
 alias ping='ping -c 4 -W 1'
 alias pkill='pkill -9 -u ${USER}'
 alias pwd='pwd -L;pwd -P'
