@@ -5,7 +5,7 @@
 if [[ "$-" != *i* ]]; then
     return
 else
-    echo -n "${TAB}running ${BASH_SOURCE##*/}... "
+    echo -n "${TAB}${BASH_SOURCE##*/}... "
 fi
 
 # get starting time in nanoseconds
@@ -13,7 +13,7 @@ declare -i start_time=$(date +%s%N)
 
 # clear terminal
 called_by=$(ps -o comm= $PPID)
-echo "called by ${called_by}"
+echo "invoked by ${called_by}"
 clear -x
 
 # Verbose bash prints?
