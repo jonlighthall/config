@@ -3,6 +3,8 @@
 
 # If not running interactively, don't do anything
 if [[ "$-" != *i* ]]; then
+    echo -e "${TAB}\E[7mnot interactive\e[0m"
+    echo "${TAB}exiting ${BASH_SOURCE##*/}..."
     return
 else
     echo -n "${TAB}${BASH_SOURCE##*/}... "
@@ -31,12 +33,13 @@ if $VB; then
     if [ -e $fpretty ]; then
         source $fpretty
     fi
-    # print source name at start
+    # determine if being sourced or executed
     if (return 0 2>/dev/null); then
         RUN_TYPE="sourcing"
     else
         RUN_TYPE="executing"
     fi
+    # print source name at start
     echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
     src_name=$(readlink -f $BASH_SOURCE)
     if [ ! "$BASH_SOURCE" = "$src_name" ]; then
@@ -83,7 +86,7 @@ fi
 
 # source the user's .bashrc if it exists
 fname=${HOME}/config/${SYS_NAME}/.bashrc
-vecho "${TAB}loading $fname... "
+vecho -e "${TAB}loading $fname... "
 if [ -f $fname ]; then
     source $fname
     RETVAL=$?
@@ -99,7 +102,7 @@ vecho
 # print runtime duration
 if $VB; then
     TAB=${TAB%$fTAB}
-    print_elap
+    print_exit
 fi
 
 # clear terminal
