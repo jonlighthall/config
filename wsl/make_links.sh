@@ -43,7 +43,9 @@ if [ -f $prog ]; then
     echo "${TAB}* elevation"
     echo "${TAB}* access to archive.ubuntu.com, security.ubuntu.com, etc"
     TAB=${TAB%$fTAB}
-    read -p "${TAB}Proceed with ${prog}? (y/n) " -n 1 -r
+    set +e
+    read -p "${TAB}Proceed with ${prog}? (y/n) " -n 1 -r -t 3
+    set -e
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         bash $prog
