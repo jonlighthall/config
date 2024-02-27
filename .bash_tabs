@@ -53,4 +53,3 @@ j=${#TAB}
 if [ $i -ne $j ]; then
 	decho -e "${TAB}TAB = \E[106m${TAB}${NORMAL} length $j"
 fi
-export fTAB=${fTAB:='   '}
