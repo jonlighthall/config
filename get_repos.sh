@@ -67,8 +67,6 @@ if [ $# -eq 1 ]; then
 	fi
 fi
 
-exit
-
 # check if git is defined
 if command -v git >/dev/null; then
 	echo "proceeding with Git commands..."
