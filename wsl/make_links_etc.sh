@@ -26,7 +26,7 @@ target_dir=$(dirname "$src_name")
 link_dir=/etc
 
 # check directories
-echo -n "target directory ${target_dir}... "
+echo -n "${TAB}target directory ${target_dir}... "
 if [ -d "$target_dir" ]; then
     echo "exists"
 else
@@ -34,7 +34,7 @@ else
     exit 1
 fi
 
-echo -n "link directory ${link_dir}... "
+echo -n "${TAB}link directory ${link_dir}... "
 if [ -d $link_dir ]; then
     echo "exists"
 else
@@ -47,7 +47,7 @@ else
     fi
 fi
 
-bar 38 "------ Start Linking Repo Files ------"
+bar 38 "------ Start Linking Repo Files ------" | sed "s/^/${TAB}/"
 
 # list of files to be linked
 for my_link in wsl.conf
@@ -63,11 +63,12 @@ do
     link=${link_dir}/${my_link}
 
     # check if target exists
-    echo -n "target file ${target}... "
+    echo -n "${TAB}target file ${target}... "
     if [ -e "${target}" ]; then
 	echo "exists "
-	echo -n "${TAB}link $link... "
 	TAB+=${fTAB:='   '}
+	echo -n "${TAB}link $link... "
+	TAB+=${fTAB}
 	# first, check for existing copy
 	if [ -L ${link} ] || [ -f ${link} ] || [ -d ${link} ]; then
 	    echo -n "exists and "
@@ -76,6 +77,7 @@ do
 		echo -n "${TAB}"
 		ls -lhG --color=auto ${link}
 		echo "${TAB}skipping..."
+		TAB=${TAB%$fTAB}
 		TAB=${TAB%$fTAB}
 		continue
 	    else
@@ -111,14 +113,15 @@ do
 	sudo ln -sv "${target}" ${link} 2>&1 | sed "s/^/${TAB}/"
 	echo -ne "${TAB}";hline 72;echo -en "${NORMAL}"
 	TAB=${TAB%$fTAB}
+	TAB=${TAB%$fTAB}
     else
         echo -e "${BAD}does not exist${NORMAL}"
     fi
 done
-bar 38 "------- Done Linking Repo Files ------"
+bar 38 "------- Done Linking Repo Files ------" | sed "s/^/${TAB}/"
 
 # print time at exit
-echo -en "\n$(date +"%a %b %-d %-l:%M %p %Z") ${BASH_SOURCE##*/} "
+echo -en "${TAB}$(date +"%a %b %-d %-l:%M %p %Z") ${BASH_SOURCE##*/} "
 if command -v sec2elap &>/dev/null; then
     bash sec2elap ${SECONDS}
 else

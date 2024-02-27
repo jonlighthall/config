@@ -22,7 +22,7 @@ if [ ! "$BASH_SOURCE" = "$src_name" ]; then
 	echo -e "${TAB}\E[1;36mlink\E[0m -> $src_name"
 fi
 # set tab
-TAB='   '
+export TAB='   '
 if [ $# -eq 0 ]; then
 	echo "No system specified"
 fi
@@ -44,15 +44,14 @@ if [ $# -eq 1 ]; then
 			bash $make_links_file
 			# define profile name
 			profie_name=${HOME}/.bash_profile
-			echo -n "$profie_name... "
+			echo -n "${TAB}$profie_name... "
 			# check if file exists
 			if [ -f $profie_name ]; then
 				echo "found"
-				echo "sourcing $profie_name..."
-				source $profie_name
-				echo
-				echo "configuration applied for $1"
-				echo
+				set +u
+				source ${profie_name}
+				set -u
+				echo "${TAB}configuration applied for $1"
 			else
 				# profile...
 				echo "not found"
@@ -317,6 +316,7 @@ for my_repo in bash fortran_utilities; do
 done
 
 # clone Win32 repos
+echo -e "\ncloning Win32 utilities..."
 if [[ "$(hostname -f)" =~ *"navy.mil" ]]; then
 	echo -n "creating links inside Onedrive..."
 	wdir=$rdir
