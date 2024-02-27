@@ -1,0 +1,43 @@
+# set tab
+if [ -z ${TAB+dummy} ]; then
+	i=0
+	decho -e "TAB ${yellow}unset${NORMAL}"
+else
+	i=${#TAB}
+fi
+
+export TAB=${TAB=''}
+export fTAB=${fTAB:='   '}
+
+j=${#TAB}
+if [ $i -ne $j ]; then
+	decho -e "${TAB}TAB = \E[106m${TAB}${NORMAL} length $j"
+fi
+export fTAB=${fTAB:='   '}
+
+function ctab() {
+	# clear tab
+	~/utils/bash/test/print_tab.sh
+	export TAB=''
+	~/utils/bash/test/print_tab.sh
+}
+
+function itab() {
+	# increment tab
+	~/utils/bash/test/print_tab.sh
+	# if fTAB is unset, assign default value
+	export fTAB=${fTAB='   '}
+	# increment TAB by fTAB
+	export TAB+=${fTAB}
+	~/utils/bash/test/print_tab.sh
+}
+
+function dtab() {
+	# decrement tab
+	~/utils/bash/test/print_tab.sh
+	# if fTAB is unset, assign default value
+	export fTAB=${fTAB='   '}
+	# decrement TAB by fTAB
+    export TAB=${TAB%$fTAB}
+	~/utils/bash/test/print_tab.sh
+}
