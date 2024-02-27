@@ -47,15 +47,18 @@ declare -i DEBUG=${DEBUG+0}
 if [ -z ${TAB+dummy} ]; then
 	i=0
 	decho -e "TAB ${yellow}unset${NORMAL}"
-	export TAB=''
 else
 	i=${#TAB}
 fi
+
+export TAB=${TAB=''}
+export fTAB=${fTAB:='   '}
+
 j=${#TAB}
 if [ $i -ne $j ]; then
-	echo -e "${TAB}TAB = \E[106m${TAB}${NORMAL} length $j"
+	decho -e "${TAB}TAB = \E[106m${TAB}${NORMAL} length $j"
 fi
-: ${fTAB:='   '}
+export fTAB=${fTAB:='   '}
 
 # define horizontal line
 hline() {
