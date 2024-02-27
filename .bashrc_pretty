@@ -40,6 +40,9 @@ decho() {
 	fi
 }
 
+# set default debug level
+declare -i DEBUG=${DEBUG+0}
+
 # set tab
 if [ -z ${TAB+dummy} ]; then
 	i=0
