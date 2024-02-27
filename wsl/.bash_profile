@@ -2,7 +2,11 @@
 # Note: this file must use Unix line endings (LF)!
 
 # If not running interactively, don't do anything
-[[ "$-" != *i* ]] && return || echo -n "running ${BASH_SOURCE##*/}... "
+if [[ "$-" != *i* ]]; then
+    return
+else
+    echo -n "${TAB}running ${BASH_SOURCE##*/}... "
+fi
 
 # get starting time in nanoseconds
 declare -i start_time=$(date +%s%N)
@@ -15,17 +19,17 @@ clear -x
 # Verbose bash prints?
 export VB=true
 if $VB; then
-	# set tab
-	if [ "${called_by}" = "bash" ] || [ "${called_by}" = "SessionLeader" ] || [[ "${called_by}" == "Relay"* ]] ; then
-		TAB=''
-		: ${fTAB:='   '}
-	else
-		TAB+=${TAB+${fTAB:='   '}}
-	fi
+    # set tab
+    if [ "${called_by}" = "bash" ] || [ "${called_by}" = "SessionLeader" ] || [[ "${called_by}" == "Relay"* ]]; then
+        TAB=''
+        : ${fTAB:='   '}
+    else
+        TAB+=${TAB+${fTAB:='   '}}
+    fi
     # load formatting
     fpretty=${HOME}/utils/bash/.bashrc_pretty
     if [ -e $fpretty ]; then
-	source $fpretty
+        source $fpretty
     fi
     # print source name at start
     if (return 0 2>/dev/null); then
@@ -36,7 +40,7 @@ if $VB; then
     echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
     src_name=$(readlink -f $BASH_SOURCE)
     if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-	echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
+        echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
     fi
     echo "${TAB}verbose bash printing is... $VB"
 fi
@@ -44,8 +48,8 @@ fi
 # define conditional echo
 vecho() {
     if [ ! -z ${VB:+dummy} ] && ${VB}; then
-	# [not (unset or null)] or true -> print if true or null or unset
-	echo "$@"
+        # [not (unset or null)] or true -> print if true or null or unset
+        echo "$@"
     fi
 }
 
@@ -58,35 +62,35 @@ vecho -e "${TAB}applying ${SYS_NAME} settings on ${PSHOST}${HOST_NAME}${NORMAL}"
 hist_file=${HOME}/.bash_history
 vecho -n "${TAB}appending login timestamp to $hist_file... "
 if [ -f $hist_file ]; then
-    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from ${HOST_NAME}" >> $hist_file
+    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from ${HOST_NAME}" >>$hist_file
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
-	vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+        vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
     else
-	if $VB; then
-	    echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-	else
-	    echo "echo to $hist_file failed"
-	fi
+        if $VB; then
+            echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+        else
+            echo "echo to $hist_file failed"
+        fi
     fi
 else
     if $VB; then
-	echo "${BAD}NOT FOUND{NORMAL}"
+        echo "${BAD}NOT FOUND{NORMAL}"
     else
-	echo "$hist_file not found"
+        echo "$hist_file not found"
     fi
 fi
 
 # source the user's .bashrc if it exists
 fname=${HOME}/config/${SYS_NAME}/.bashrc
 vecho "${TAB}loading $fname... "
-if [ -f $fname ] ; then
+if [ -f $fname ]; then
     source $fname
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
-	vecho -e "${TAB}$fname ${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+        vecho -e "${TAB}$fname ${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
     else
-	echo -e "${TAB}$fname ${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+        echo -e "${TAB}$fname ${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
     fi
 else
     echo "${TAB}$fname not found"
@@ -95,7 +99,7 @@ vecho
 # print runtime duration
 if $VB; then
     TAB=${TAB%$fTAB}
-	print_elap
+    print_elap
 fi
 
 # clear terminal
