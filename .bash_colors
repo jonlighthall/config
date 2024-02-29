@@ -1,0 +1,33 @@
+# define highligt colors
+   BAD='\E[0;31m' # red
+  GOOD='\E[0;32m' # green
+# define accents
+NORMAL='\E[0m'    # reset
+  BOLD='\E[1m'    # bold
+    UL='\E[4m'    # underline
+INVERT='\E[7m'    # invert
+# define 'ls' colors
+BROKEN='\E[1;31m' # bold red    : broken link
+   TGT='\E[1;32m' # bold green  : target
+   DIR='\E[1;34m' # bold blue   : directory
+ VALID='\E[1;36m' # bold cyan   : valid link
+# define PS1 colors
+PSTIME='\E[0;37m' # light gray  : time
+PSUSER='\E[0;32m' # green       : user name, prompt
+PSHOST='\E[1;34m' # bold blue   : host name
+ PSDIR='\E[0;33m' # yellow      : directory
+  PSBR='\E[0;36m' # blue        : branch
+# define 'grep' colors
+   GRH='\E[1;31m' # bold red    : pattern match
+   GRF='\E[0;35m' # magenta     : file match
+# define primary colors	(foreground)
+   red='\E[31m'
+ green='\E[32m'
+  blue='\E[34m'
+# define secondary colors (foreground)
+ yellow='\E[33m'
+   cyan='\E[36m'
+magenta='\E[35m'
+# define monochrome colors
+   gray='\E[90m'
+  white='\E[1;37m'
