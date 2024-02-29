@@ -4,6 +4,10 @@
 #
 # Note: this file must use unix line endings (LF)!
 
+msg=$(echo "this file is $(readlink -f ${BASH_SOURCE[0]})!")
+ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
+echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
+
 # since ~/.bashrc usually calls ~/.bash_aliases, a conditional could be added in .bash_aliases
 # (linked to repo) and have all the functionality of this script, but for subshells.
 

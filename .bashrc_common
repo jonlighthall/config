@@ -5,6 +5,11 @@
 # GitBash), Cygwin, PGI Bash, etc.
 #
 # Note: this file must use UNIX line endings (LF)!
+
+msg=$(echo "this file is $(readlink -f ${BASH_SOURCE[0]})!")
+ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
+echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
+
 if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
