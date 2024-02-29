@@ -50,34 +50,59 @@ if [ ! "$BASH_SOURCE" = "$src_name" ]; then
 	echo -e "${TAB}\E[1;36mlink\e[0m -> $src_name"
 fi
 
+# get length of stack
 N=${#BASH_SOURCE[@]}
-vecho "${TAB}N=$N"
+vecho "${TAB}stack size: N=$N"
 vecho "${TAB}BASH_SOURCE = ${BASH_SOURCE[@]}"
 
-echo "${TAB}list of sources:"
+# resolve symbolic links
 for ((i = 0; i < $N; i++)); do
-	vecho "${TAB}${fTAB}$i: ${BASH_SOURCE[$i]}"
+	BASH_LINK[$i]=$(readlink -f ${BASH_SOURCE[$i]})
 done
 
-echo "${TAB}list of invocations:"
+echo "${TAB}list of sources:"
+(
+	for ((i = 0; i < $N; i++)); do
+		vecho -ne "$i:+${BASH_SOURCE[$i]}"
+		if [[ "${BASH_SOURCE[$i]}" != "${BASH_LINK[$i]}" ]]; then
+			vecho -e "+->+${BASH_LINK[$i]}"
+		else
+			vecho
+		fi
+	done
+) | column -t -s + | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
+
+echo "${TAB}list of invocations (links):"
 (
 	if [ $N -gt 1 ]; then
 		for ((i = 1; i < $N; i++)); do
-			vecho "${TAB}${fTAB}$((i - 1))+${BASH_SOURCE[$((i - 1))]}+invoked by+${BASH_SOURCE[$i]}"
+			vecho "$((i - 1)):+${BASH_SOURCE[$((i - 1))]}+invoked by+${BASH_SOURCE[$i]}"
 		done
 	else
 		called_by=$(ps -o comm= $PPID)
-		echo "${TAB}${fTAB}0+${BASH_SOURCE[0]}+invoked by+${called_by}"
+		echo "0:+${BASH_SOURCE[0]}+invoked by+${called_by}"
 	fi
-) | column -t -s +
+) | column -t -s + -o " " | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
+
+echo "${TAB}list of invocations (canonicalized):"
+(
+	if [ $N -gt 1 ]; then
+		for ((i = 1; i < $N; i++)); do
+			vecho "$((i - 1)):+${BASH_LINK[$((i - 1))]}+invoked by+${BASH_LINK[$i]}"
+		done
+	else
+		called_by=$(ps -o comm= $PPID)
+		echo "0:+${BASH_LINK[0]}+invoked by+${called_by}"
+	fi
+) | column -t -s + -o " " | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
 
 echo "${TAB}check invoking scripts:"
 for ((i = 1; i <= $N; i++)); do
 	vecho -n "${TAB}${fTAB}$((i - 1)): ${BASH_SOURCE[$((i - 1))]}... "
-	fref=${HOME}/.bashrc
-	if [[ "${BASH_SOURCE[$((i - 1))]}" == "${fref}" ]]; then
+	fref=$(readlink -f ${HOME}/.bashrc)
+	if [[ "${BASH_LINK[$((i - 1))]}" == "${fref}" ]]; then
 		echo -e "\e[31mBREAK\e[0m - is ${fref}"
-		vecho -ne "${TAB}\E[0;35minvoked by ${BASH_SOURCE[$((i - 1))]}\e[0m: "
+		vecho -ne "${TAB}\E[0;35minvoked by ${BASH_LINK[$((i - 1))]}\e[0m: "
 		vecho "${TAB}excluding ${fref} from file list"
 		run_home=false
 		break
@@ -106,6 +131,9 @@ for ((i = 1; i <= $N; i++)); do
 		echo -e "\e[32mOK\e[0m - not in ${dref}*"
 	fi
 done
+
+vecho "run_list = $run_list"
+vecho "run_home = $run_home"
 
 set +e
 unset_traps
