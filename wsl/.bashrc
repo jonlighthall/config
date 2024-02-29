@@ -11,6 +11,17 @@ echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
 # since ~/.bashrc usually calls ~/.bash_aliases, a conditional could be added in .bash_aliases
 # (linked to repo) and have all the functionality of this script, but for subshells.
 
+# set tab
+TAB+=${TAB+${fTAB:='   '}}
+
+fpretty=${HOME}/utils/bash/.bashrc_pretty
+if [ -e $fpretty ]; then
+	source $fpretty
+	set_traps
+	set -e
+	rtab
+fi
+
 if [ -f ${HOME}/.bashrc ]; then
 	run_home=true
 else
@@ -95,6 +106,9 @@ for ((i = 1; i <= $N; i++)); do
 		echo -e "\e[32mOK\e[0m - not in ${dref}*"
 	fi
 done
+
+set +e
+unset_traps
 
 if [ "${run_home}" = true ]; then
 	LIST="$HOME/.bashrc  "
