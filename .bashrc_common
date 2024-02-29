@@ -14,7 +14,9 @@ else
 	# load formatting
 	fpretty=${HOME}/utils/bash/.bashrc_pretty
 	if [ -e $fpretty ]; then
-	    source $fpretty
+	    if [ -z ${fpretty_loaded+dummy} ]; then
+	       source $fpretty
+	    fi
 	fi
 	# print source name at start
 	if (return 0 2>/dev/null); then
@@ -99,7 +101,7 @@ fi
 # list paths to append to PATH
 appPATH="${HOME}/bin"
 if [ ! -z ${appPATH} ]; then
-    for path in $appPATH; do 
+    for path in $appPATH; do
 	if [[ ":$PATH" != *":${path}"*  ]]; then
 	    if [ -d "${path}" ] ; then
 		vecho -n "${TAB} appending ${path} to PATH... "
@@ -117,7 +119,7 @@ fi
 # list paths to prepend to PATH
 prePATH=""
 if [ ! -z "${prePATH}" ]; then
-    for path in $prePATH; do 
+    for path in $prePATH; do
 	if [[ ":$PATH" != *":${path}"*  ]]; then
 	    if [ -d "${path}" ] ; then
 		vecho -n "${TAB}prepending ${path} to PATH... "

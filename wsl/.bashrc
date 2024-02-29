@@ -13,9 +13,7 @@ else
 	run_home=false
 fi
 run_list=true
-N=${#BASH_SOURCE[@]}
-# set tab
-TAB+=${TAB+${fTAB:='   '}}
+
 # define conditional echo
 vecho() {
 	if [ ! -z ${VB:+dummy} ] && ${VB}; then
@@ -30,15 +28,14 @@ else
 	RUN_TYPE="executing"
 fi
 # print source name at start
-echo "${TAB}----------------------------------"
-echo "${TAB}this file is ~/config/wsl/.bashrc!"
-echo "${TAB}----------------------------------"
+
 echo -e "${TAB}${RUN_TYPE} \E[0;33m$BASH_SOURCE\e[0m..."
 src_name=$(readlink -f $BASH_SOURCE)
 if [ ! "$BASH_SOURCE" = "$src_name" ]; then
 	echo -e "${TAB}\E[1;36mlink\e[0m -> $src_name"
 fi
 
+N=${#BASH_SOURCE[@]}
 vecho "${TAB}N=$N"
 vecho "${TAB}BASH_SOURCE = ${BASH_SOURCE[@]}"
 
@@ -49,14 +46,14 @@ done
 
 echo "${TAB}list of invocations:"
 (
-if [ $N -gt 1 ]; then
-	for ((i = 1; i < $N; i++)); do
-		vecho "${TAB}${fTAB}$((i - 1))+${BASH_SOURCE[$((i - 1))]}+invoked by+${BASH_SOURCE[$i]}"
-	done
-else
-	called_by=$(ps -o comm= $PPID)
-	echo "${TAB}${fTAB}0+${BASH_SOURCE[0]}+invoked by+${called_by}"
-fi
+	if [ $N -gt 1 ]; then
+		for ((i = 1; i < $N; i++)); do
+			vecho "${TAB}${fTAB}$((i - 1))+${BASH_SOURCE[$((i - 1))]}+invoked by+${BASH_SOURCE[$i]}"
+		done
+	else
+		called_by=$(ps -o comm= $PPID)
+		echo "${TAB}${fTAB}0+${BASH_SOURCE[0]}+invoked by+${called_by}"
+	fi
 ) | column -t -s +
 
 echo "${TAB}check invoking scripts:"
@@ -95,9 +92,6 @@ for ((i = 1; i <= $N; i++)); do
 	fi
 done
 
-#vecho "run_list = $run_list"
-#vecho "run_home = $run_home"
-
 if [ "${run_home}" = true ]; then
 	LIST="$HOME/.bashrc  "
 else
@@ -114,7 +108,9 @@ else
 			# load formatting
 			fpretty=${HOME}/utils/bash/.bashrc_pretty
 			if [ -e $fpretty ]; then
-				source $fpretty
+				if [ -z ${fpretty_loaded+dummy} ]; then
+					source $fpretty
+				fi
 			fi
 			# print source name at start
 			if (return 0 2>/dev/null); then
