@@ -103,8 +103,8 @@ function print_elap() {
 		if command -v bc &>/dev/null; then
 			dT_sec=$(bc <<<"scale=9;$elap_time/10^9" | sed 's/^\./0./')
 		else
-			dT_sec=${elap_time::-9}.${elap_time:$((${#elap_time}-9))}
-			if [ ${#elap_time} -eq 9 ];then
+			dT_sec=${elap_time::-9}.${elap_time:$((${#elap_time} - 9))}
+			if [ ${#elap_time} -eq 9 ]; then
 				dT_sec=$(echo "0.$elap_time")
 			fi
 		fi
@@ -299,3 +299,10 @@ function unset_traps() {
 		exit
 	fi
 }
+
+# add read-only variable to check if this file has already been loaded
+if [ -z ${fpretty_loaded+dummy} ]; then
+	declare -r fpretty_loaded=true
+else
+	echo -e "${yellow}${BASH_SOURCE[0]##*/} already loaded${NORMAL}"
+fi
