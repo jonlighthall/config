@@ -1,8 +1,26 @@
+#!/bin/bash -u
+
+# add read-only variable to check if this file has already been loaded
+if [ -z ${fpretty_loaded+dummy} ]; then
+	declare -grx fpretty_loaded=true
+else
+	echo -e "${yellow}${BASH_SOURCE[0]##*/} already loaded${NORMAL}"
+fi
+
+src_name=$(readlink -f ${BASH_SOURCE[0]})
+src_dir_logi=${BASH_SOURCE%/*}
+
+msg=$(echo "this file is ${src_name}!")
+ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
+echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
+
 # load colors
-f_colors=${HOME}/config/.bash_colors
+f_colors=${src_dir_logi}/.bash_colors
 if [ -f $f_colors ]; then
 	if [ -z ${GOOD+dummy} ]; then
 		source $f_colors
+	else
+		echo -e "${yellow}$f_colors already loaded${NORMAL}"
 	fi
 fi
 
@@ -18,8 +36,6 @@ decho() {
 declare -i DEBUG=${DEBUG+0}
 
 # set tabs
-src_name=$(readlink -f $BASH_SOURCE)
-src_dir_logi=${BASH_SOURCE%/*}
 f_tabs=${src_dir_logi}/.bash_tabs
 if [ -e $f_tabs ]; then
 	source $f_tabs
@@ -273,10 +289,3 @@ function unset_traps() {
 		exit
 	fi
 }
-
-# add read-only variable to check if this file has already been loaded
-if [ -z ${fpretty_loaded+dummy} ]; then
-	declare -r fpretty_loaded=true
-else
-	echo -e "${yellow}${BASH_SOURCE[0]##*/} already loaded${NORMAL}"
-fi
