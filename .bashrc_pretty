@@ -10,7 +10,7 @@ fi
 src_name=$(readlink -f ${BASH_SOURCE[0]})
 src_dir_logi=${BASH_SOURCE%/*}
 
-msg=$(echo "this file is ${src_name}!")
+msg=$(echo "this file is ${src_name##*/}!")
 ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
 echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
 
