@@ -53,7 +53,13 @@ fi
 # get length of stack
 N=${#BASH_SOURCE[@]}
 vecho "${TAB}stack size: N=$N"
-vecho "${TAB}BASH_SOURCE = ${BASH_SOURCE[@]}"
+vecho "${TAB}There are N=$N entries in the call stack"
+
+echo "${TAB} full bash source"
+echo "${TAB}BASH_SOURCE = ${BASH_SOURCE[@]}"
+
+echo "${TAB} this bash source"
+echo "${BASH_SOURCE[0]}"
 
 # resolve symbolic links
 for ((i = 0; i < $N; i++)); do
