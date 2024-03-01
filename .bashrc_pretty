@@ -17,13 +17,15 @@ if [[ "$-" == *i* ]]; then
 fi
 
 # set default debug level
-declare -i DEBUG=${DEBUG+0}
+declare -i DEBUG=${DEBUG:=1}
 
 # conditional debug echo
 decho() {
 	if [ -z ${DEBUG:+dummy} ] || [ $DEBUG -gt 0 ]; then
 		# if DEBUG is (unset or null) or greater than 0
+		echo -ne "\e[38;5;14m"
 		echo "$@"
+		echo -ne "\e[0m"
 	fi
 }
 
