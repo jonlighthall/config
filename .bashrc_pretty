@@ -29,6 +29,8 @@ decho() {
 	fi
 }
 
+decho "DEBUG = $DEBUG"
+
 # load colors
 f_colors=${src_dir_logi}/.bash_colors
 if [ -f $f_colors ]; then
