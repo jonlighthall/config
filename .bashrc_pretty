@@ -217,9 +217,9 @@ function set_traps() {
 	if [ -z "${DEBUG+alt}" ]; then
 		DEBUG=0
 	fi
-	start_new_line
+	[ $DEBUG -gt 0 ] && start_new_line
 	decho -e "${magenta}\E[7mset traps${NORMAL}"
-
+	
 	# determine if script is being sourced or executed and add conditional behavior
 	decho -n "setting shell options for... "
 	# trace RETURN and DEBUG traps
@@ -257,13 +257,13 @@ function set_traps() {
 		decho -e "\n${fTAB}none"
 		exit
 	else
-		echo
+		decho
 		decho $(trap -p) | sed "$ ! s/^/${fTAB}/;s/ \(trap\)/\n${fTAB}\1/g" | sed 's/^[ ]*$//g'
 	fi
 }
 
 function unset_traps() {
-	start_new_line
+	[ $DEBUG -gt 0 ] && start_new_line
 	decho -e "${cyan}\E[7mun-set traps${NORMAL}"
 	decho "setting shell options..."
 	set +eE
@@ -272,7 +272,7 @@ function unset_traps() {
 	if [ -z "$(trap -p)" ]; then
 		decho -e "\n${fTAB}none"
 	else
-		echo
+		decho
 		decho $(trap -p) | sed "$ ! s/^/${fTAB}/;s/ \(trap\)/\n${fTAB}\1/g" | sed 's/^[ ]*$//g'
 
 		# save traps
