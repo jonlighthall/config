@@ -118,6 +118,19 @@ function print_elap() {
 	fi
 }
 
+function start_new_line() {
+	# get the cursor position
+	echo -en "\E[6n"
+	read -sdR CURPOS
+	CURPOS=${CURPOS#*[}
+	# get the x-position of the cursor
+	x_pos=${CURPOS#*;}
+	# if the cursor is not at the start of a line, then create a new line
+	if [ ${x_pos} -gt 1 ]; then
+		echo
+	fi
+}
+
 function print_exit() {
 	# optional argument is $?
 	# e.g.
@@ -139,19 +152,6 @@ function print_exit() {
 	print_elap
 	echo -n " on "
 	timestamp
-}
-
-function start_new_line() {
-	# get the cursor position
-	echo -en "\E[6n"
-	read -sdR CURPOS
-	CURPOS=${CURPOS#*[}
-	# get the x-position of the cursor
-	x_pos=${CURPOS#*;}
-	# if the cursor is not at the start of a line, then create a new line
-	if [ ${x_pos} -gt 1 ]; then
-		echo
-	fi
 }
 
 function print_error() {
@@ -217,6 +217,7 @@ function set_traps() {
 	if [ -z "${DEBUG+alt}" ]; then
 		DEBUG=0
 	fi
+	start_new_line
 	decho -e "${magenta}\E[7mset traps${NORMAL}"
 
 	# determine if script is being sourced or executed and add conditional behavior
@@ -245,7 +246,7 @@ function set_traps() {
 		trap 'print_exit $?' EXIT
 		decho "done"
 	else
-		decho "${save_traps}" | sed "s/^/${fTAB}/"
+		decho "${save_traps}" | sed "$ ! s/^/${fTAB}/"
 		decho "setting saved traps..."
 		eval $(echo "${save_traps}" | sed "s/$/;/g")
 	fi
@@ -256,11 +257,13 @@ function set_traps() {
 		decho -e "\n${fTAB}none"
 		exit
 	else
-		decho $(trap -p) | sed "s/^/${fTAB}/;s/ \(trap\)/\n${fTAB}\1/g" | sed 's/^[ ]*$//g'
+		echo
+		decho $(trap -p) | sed "$ ! s/^/${fTAB}/;s/ \(trap\)/\n${fTAB}\1/g" | sed 's/^[ ]*$//g'
 	fi
 }
 
 function unset_traps() {
+	start_new_line
 	decho -e "${cyan}\E[7mun-set traps${NORMAL}"
 	decho "setting shell options..."
 	set +eE
@@ -269,13 +272,14 @@ function unset_traps() {
 	if [ -z "$(trap -p)" ]; then
 		decho -e "\n${fTAB}none"
 	else
-		decho $(trap -p) | sed "s/^/${fTAB}/;s/ \(trap\)/\n${fTAB}\1/g" | sed 's/^[ ]*$//g'
+		echo
+		decho $(trap -p) | sed "$ ! s/^/${fTAB}/;s/ \(trap\)/\n${fTAB}\1/g" | sed 's/^[ ]*$//g'
 
 		# save traps
 		export save_traps=$(trap -p | sed 's/-- //g')
 		if [ ! -z "${save_traps}" ]; then
 			decho "the current traps are saved"
-			decho "${save_traps}" | sed "s/^/${fTAB}/"
+			decho "${save_traps}" | sed "$ ! s/^/${fTAB}/"
 		fi
 
 		# clear traps
