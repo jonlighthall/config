@@ -21,9 +21,9 @@ function check_target() {
     # get the cursor position
     echo -en "\E[6n"
     read -sdR CURPOS
-    CURPOS=${CURPOS#*[}
+    local CURPOS=${CURPOS#*[}
     # get the x-position of the cursor
-    declare -i x_pos=${CURPOS#*;}
+    local -i x_pos=${CURPOS#*;}
     #echo "${TAB}x_pos=${x_pos}"
     if [ ${x_pos} -eq 1 ]; then
         echo -n "${TAB}"
@@ -64,6 +64,7 @@ function do_link() {
     # define link (destination)
     local link="$2"
 
+    # check if target exists
     if [ ${#FUNCNAME[@]} -gt 1 ]; then
         if [[ ! ${FUNCNAME[1]} =~ "do_link" ]]; then
             check_target "$target" || return 1
@@ -72,6 +73,73 @@ function do_link() {
         fi
 
     fi
+
+    local target_dir=$(dirname "$target")
+    if [[ "${target_dir}" == *".ssh" ]]; then
+        echo "${TAB}Applying options for SSH configuration files..."
+
+        # before linking, check parent directory permissions
+        echo -n "${TAB}${target_dir} requires specific permissions: "
+        local -i permOK=700
+        echo "${permOK}"
+        itab
+        echo -n "${TAB}checking permissions... "
+        local -i perm=$(stat -c "%a" ${target_dir})
+        echo ${perm}
+        if [[ ${perm} -gt ${permOK} ]]; then
+            echo -en "${TAB}${GRH}changing permissions${NORMAL} to ${permOK}... "
+            chmod ${permOK} ${target_dir}
+            local RETVAL=$?
+            if [ $RETVAL -eq 0 ]; then
+                echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+            else
+                echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+            fi
+        else
+            echo -e "${TAB}permissions ${GOOD}OK${NORMAL}"
+        fi
+        dtab
+
+        # ...and file permissions
+        if [[ ${target##*/} = id* || ${target##*/} = config || ${target##*/} = authorized_keys* ]]; then
+            echo -n "${TAB}${target##*/} requires specific permissions: "
+            if [[ "${target}" == *"pub"* ]]; then
+                local -i permOK=644
+                echo -n "PUB "
+            else
+                local -i permOK=600
+                echo -n "PRIV "
+            fi
+            echo "${permOK}"
+            itab
+            echo -n "${TAB}checking permissions... "
+            local -i perm=$(stat -c "%a" ${target})
+            echo ${perm}
+            if [[ ${perm} -gt ${permOK} ]]; then
+                echo -en "${TAB}${GRH}changing permissions${NORMAL} to ${permOK}... "
+                chmod ${permOK} ${target}
+                local RETVAL=$?
+                if [ $RETVAL -eq 0 ]; then
+                    echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+                else
+                    echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+                fi
+            else
+                echo -e "${TAB}permissions ${GOOD}OK${NORMAL}"
+            fi
+            dtab
+        fi
+
+        # check exclusions
+        for fname in keys2 pub. \~ id_dsa; do
+            if [[ ${target##*/} == *"$fname"* ]]; then
+                echo -e "${TAB}${GRH}exclude${NORMAL} $fname: ${target##*/}"
+                dtab
+                retrun 0
+            fi
+        done
+
+    fi # done with SSH settings
 
     # begin linking...
     echo -n "${TAB}link ${link}... "
@@ -89,7 +157,7 @@ function do_link() {
             return 0
         else
             # next, delete or backup existing copy
-            link_dir=$(dirname "${link}")
+            local link_dir=$(dirname "${link}")
             if [ -w ${link} ] && [ -w ${link_dir} ]; then
                 if [ $(diff -ebwB "${target}" "${link}" 2>&1 | wc -c) -eq 0 ]; then
                     echo "has the same contents"
@@ -98,12 +166,12 @@ function do_link() {
                 else
                     if [ -e "${link}" ]; then
                         echo "will be backed up..."
-                        mdate=$(date -r "${link}" +'%Y-%m-%d-t%H%M')
+                        local mdate=$(date -r "${link}" +'%Y-%m-%d-t%H%M')
                     else
                         echo -n "is a broken link..."
-                        mdate=$(stat -c '%y' ${link} | sed 's/\(^[0-9-]*\) \([0-9:]*\)\..*$/\1-t\2/' | sed 's/://g')
+                        local mdate=$(stat -c '%y' ${link} | sed 's/\(^[0-9-]*\) \([0-9:]*\)\..*$/\1-t\2/' | sed 's/://g')
                     fi
-                    link_copy="${link}_${mdate}"
+                    local link_copy="${link}_${mdate}"
                     mv -v "${link}" "${link_copy}" | sed "s/^/${TAB}/"
                 fi
             else
@@ -124,7 +192,11 @@ function do_link() {
     echo -en "${TAB}${GRH}"
     hline 72
     echo "${TAB}making link... "
-    ln -sv "${target}" "${link}" | sed "s/^/${TAB}/"
+    if [[ "${target}" == *"_keys"* ]]; then
+        ln -Pv "${target}" ${link} | sed "s/^/${TAB}PHYS: /"
+    else
+        ln -sv "${target}" ${link} | sed "s/^/${TAB}SYM: /"
+    fi
     echo -ne "${TAB}"
     hline 72
     echo -en "${NORMAL}"
@@ -161,17 +233,17 @@ function do_link_exe() {
     # next, check file permissions
     if true; then
         echo -n "${TAB}${target##*/} requires specific permissions: "
-        permOK=500
+        local permOK=500
         echo "${permOK}"
         itab
         echo -n "${TAB}checking permissions... "
-        perm=$(stat -c "%a" "${target}")
+        local perm=$(stat -c "%a" "${target}")
         echo ${perm}
         # the target files will have the required permissions added to the existing permissions
         if [[ ${perm} -le ${permOK} ]] || [[ ! (-f "${target}" && -x "${target}") ]]; then
             echo -en "${TAB}${GRH}adding permissions${NORMAL} to ${permOK}... "
             chmod +${permOK} "${target}" || chmod u+rx "${target}"
-            RETVAL=$?
+            local RETVAL=$?
             if [ $RETVAL -eq 0 ]; then
                 echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
             else
