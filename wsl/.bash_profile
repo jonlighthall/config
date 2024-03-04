@@ -92,7 +92,7 @@ fi
 
 # source the user's .bashrc if it exists
 fname=${HOME}/config/${SYS_NAME}/.bashrc
-vecho -e "${TAB}loading $fname... "
+vecho -e "\x1b[7m${TAB}loading $fname... \x1b[m"
 if [ -f $fname ]; then
     source $fname
     RETVAL=$?
@@ -108,7 +108,7 @@ vecho
 # print runtime duration
 if $VB; then
     TAB=${TAB%$fTAB}
-    print_exit
+    print_done
 fi
 
 # clear terminal
