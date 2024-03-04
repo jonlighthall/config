@@ -1,13 +1,26 @@
-#!/bin/bash
+#!/bin/bash -u
+
+# get starting time in nanoseconds
+start_time=$(date +%s%N)
+
+utils_dir="${HOME}/utils"
+bash_utils_dir="${utils_dir}/bash"
+
 # load formatting
-fpretty=${HOME}/utils/bash/.bashrc_pretty
-if [ -e $fpretty ]; then
-    source $fpretty
+fpretty="${bash_utils_dir}/.bashrc_pretty"
+if [ -e "$fpretty" ]; then
+    source "$fpretty"
 fi
 # set tab
 export TAB+=${TAB+${fTAB:='   '}}
 
-# print source name at start
+# load linking scripts
+flink="${bash_utils_dir}/.bash_links"
+if [ -e "$flink" ]; then
+    source "$flink"
+fi
+
+# determine if script is being sourced or executed
 if (return 0 2>/dev/null); then
     RUN_TYPE="sourcing"
 else
@@ -15,66 +28,45 @@ else
     # exit on errors
     set -e
 fi
+# print source name at start
 echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
-src_name=$(readlink -f $BASH_SOURCE)
+src_name=$(readlink -f "$BASH_SOURCE")
 if [ ! "$BASH_SOURCE" = "$src_name" ]; then
     echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
 fi
 
-# set target and link directories
+# define directory names
 windows_user=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
 win_home_dir="/mnt/c/Users/$windows_user/"
-echo -n "${TAB}win home: ${win_home_dir}..."
-if [ -e "${win_home_dir}" ]; then
-    echo "exists"
-else
-    echo -e "${BAD}does not exist${NORMAL}"
-    exit 1
-fi
-
 onedirve_dir=$(cmd.exe /c "echo %OneDrive%" 2>/dev/null | tr -d '\r')
 onedrive_name=$(echo "${onedirve_dir##*\\}")
 onedrive_dir_wsl="${win_home_dir}${onedrive_name}/"
-
-echo -n "${TAB}onedrive: ${onedrive_dir_wsl}..."
-if [ -e "${onedrive_dir_wsl}" ]; then
-    echo "exists"
-else
-    echo -e "${BAD}does not exist${NORMAL}"
-    exit 1
-fi
-
 onedrive_docs="${onedrive_dir_wsl}Documents"
-
-echo -n "${TAB}onedrive docs: ${onedrive_docs}..."
-if [ -e "${onedrive_docs}" ]; then
-    echo "exists"
-else
-    echo -e "${BAD}does not exist${NORMAL}"
-    exit 1
-fi
-
 home_dir="${onedrive_docs}/home"
+target_dir=${home_dir}
 
+# test directories
+for dir in $win_home_dir $onedrive_dir_wsl $onedrive_docs $home_dir $target_dir; do
+    echo -n "${TAB}directory $dir... "
+    if [ -e $dir ]; then
+        echo -e "${GOOD}exists${NORMAL}"
+    else
+        echo -e "${BAD}does not exist${NORMAL}"
+        exit 1
+    fi
+done
+
+# set link directory
 link_dir=$HOME
-
-# check directories
-echo -n "${TAB}target directory ${home_dir}... "
-if [ -e "${home_dir}" ]; then
-    echo "exists"
-else
-    echo -e "${BAD}does not exist${NORMAL}"
-    exit 1
-fi
-
 echo -n "${TAB}link directory ${link_dir}... "
-if [ -d $link_dir ]; then
-    echo "exists"
+if [ -d "$link_dir" ]; then
+    echo -e "${GOOD}exists${NORMAL}"
 else
-    echo "does not exist"
-    mkdir -pv $link_dir
+    echo -e "${yellow}does not exist${NORMAL}"
+    mkdir -pv "$link_dir"
     if [ $link_dir = $HOME ]; then
-        echo "this should never be true! $link_dir is HOME"
+        echo -e "${BAD}this should never be true! $link_dir is HOME${NORMAL}"
+        exit 1
     else
         echo "$link_dir != $HOME"
     fi
@@ -85,60 +77,15 @@ bar 38 "---- Start Linking External Files ----" | sed "s/^/${TAB}/"
 # list of files to be linked
 for my_link in .bash_history; do
     # define target (source)
-    target=${home_dir}/${my_link}
-    # strip target subdirectory from link name
+    target=${target_dir}/${my_link}
+    # define link (destination)
     sub_dir=$(dirname "$my_link")
     if [ ! $sub_dir = "." ]; then
+        # strip target subdirectory from link name
         my_link=$(basename "$my_link")
     fi
-    # define link (destination)
     link=${link_dir}/${my_link}
-
-    # check if target exists
-    echo -ne "${TAB}target file ${yellow}${target}${NORMAL}... "
-    if [ -e "${target}" ]; then
-        echo "exists "
-        TAB+=${fTAB:='   '}
-        echo -n "${TAB}link $link... "
-        TAB+=${fTAB:='   '}
-        # first, check for existing copy
-        if [ -L ${link} ] || [ -f ${link} ] || [ -d ${link} ]; then
-            echo -n "exists and "
-            if [[ "${target}" -ef ${link} ]]; then
-                echo "already points to ${my_link}"
-                echo -n "${TAB}"
-                ls -lhG --color=auto ${link}
-                echo "${TAB}skipping..."
-                TAB=${TAB%$fTAB}
-                TAB=${TAB%$fTAB}
-                continue
-            else
-                # next, delete or backup existing copy
-                if [ $(diff -ebwB "${target}" ${link} | wc -c) -eq 0 ]; then
-                    echo "has the same contents"
-                    echo -n "${TAB}deleting... "
-                    rm -v ${link}
-                else
-                    echo "will be backed up..."
-                    mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
-                fi
-            fi
-        else
-            echo "does not exist"
-        fi
-        # then link
-        echo -en "${TAB}${GRH}"
-        hline 72
-        echo "${TAB}making link... "
-        ln -sv "${target}" ${link} 2>&1 | sed "s/^/${TAB}/"
-        echo -ne "${TAB}"
-        hline 72
-        echo -en "${NORMAL}"
-        TAB=${TAB%$fTAB}
-        TAB=${TAB%$fTAB}
-    else
-        echo -e "${BAD}does not exist${NORMAL}"
-    fi
+    do_link "$target" "$link"
 done
 bar 38 "----- Done Linking External Files ----" | sed "s/^/${TAB}/"
 
@@ -146,38 +93,24 @@ bar 38 "- Start Linking External Directories -" | sed "s/^/${TAB}/"
 # Create default directory links in ~
 
 # define winhome
-if [ ! -e ${HOME}/winhome ]; then
-    ln -sv ${win_home_dir} ${HOME}/winhome
-else
-    echo -e "${TAB}${yellow}winhome${NORMAL} is already a link"
-fi
+echo -n "${TAB}winhome: "
+do_link "${win_home_dir}" "${HOME}/winhome"
 
 # define links within winhome
-if [ ! -e ${HOME}/downloads ]; then
-    ln -sv ${win_home_dir}/Downloads/ ${HOME}/downloads
-else
-    echo -e "${TAB}${yellow}downloads${NORMAL} is already a link"
-fi
+echo -n "${TAB}downloads: "
+do_link "${win_home_dir}/Downloads/" "${HOME}/downloads"
 
 # define onedrive
-if [ ! -e ${HOME}/onedrive ]; then
-    ln -sv ${onedirve_dir_wsl} ${HOME}/onedrive
-else
-    echo -e "${TAB}${yellow}onedrive${NORMAL} is already a link"
-fi
+echo -n "${TAB}onedrive: "
+do_link "${onedrive_dir_wsl}" "${HOME}/onedrive"
 
 # define links within onedrive
-if [ ! -e ${HOME}/home ]; then
-    ln -sv ${home_dir} ${HOME}/home
-else
-    echo -e "${TAB}${yellow}home${NORMAL} already a link"
-fi
+echo -n "${TAB}home: "
+do_link "${home_dir}" "${HOME}/home"
 
-if [ ! -e ${HOME}/matlab ]; then
-    ln -sv ${onedrive_docs}/MATLAB/ ${HOME}/matlab
-else
-    echo -e "${TAB}${yellow}matlab${NORMAL} already a link"
-fi
+# define matlab
+echo -n "${TAB}matlab: "
+do_link ${onedrive_docs}/MATLAB/ ${HOME}/matlab
 
 bar 38 "- Done Linking External Directories --" | sed "s/^/${TAB}/"
 #       12345678901234567890123456789012345678

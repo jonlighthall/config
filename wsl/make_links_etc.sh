@@ -1,15 +1,25 @@
-#!/bin/bash
-# set tab
-TAB+=${TAB+${fTAB:='   '}}
+#!/bin/bash -u
+
+# get starting time in nanoseconds
+start_time=$(date +%s%N)
+
+utils_dir="${HOME}/utils"
+bash_utils_dir="${utils_dir}/bash"
+
 # load formatting
-fpretty=${HOME}/utils/bash/.bashrc_pretty
-if [ -e $fpretty ]; then
-    if [ -z ${fpretty_loaded+dummy} ]; then
-       source $fpretty
-    fi
+fpretty="${bash_utils_dir}/.bashrc_pretty"
+if [ -e "$fpretty" ]; then
+    source "$fpretty"
+    set_traps
 fi
 
-# print source name at start
+# load linking scripts
+flink="${bash_utils_dir}/.bash_links"
+if [ -e "$flink" ]; then
+    source "$flink"
+fi
+
+# determine if script is being sourced or executed
 if (return 0 2>/dev/null); then
     RUN_TYPE="sourcing"
 else
@@ -17,14 +27,23 @@ else
     # exit on errors
     set -e
 fi
+# print source name at start
 echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
-src_name=$(readlink -f $BASH_SOURCE)
+src_name=$(readlink -f "$BASH_SOURCE")
 if [ ! "$BASH_SOURCE" = "$src_name" ]; then
     echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
 fi
 
+start_dir=$PWD
+echo "${TAB}starting directory = ${start_dir}"
+src_dir_logi=$(dirname "$src_name")
+cd $src_dir_logi
+
+
 # set target and link directories
-target_dir=$(dirname "$src_name")
+sys_name=$(basename "$src_dir_logi")
+config_dir="${HOME}/config"
+target_dir="${config_dir}/${sys_name}"
 link_dir=/etc
 
 # check directories
@@ -41,12 +60,9 @@ if [ -d $link_dir ]; then
     echo "exists"
 else
     echo "does not exist"
-    mkdir -pv $link_dir
-    if [ $link_dir = $HOME ]; then
-	echo "this should never be true! $link_dir is HOME"
-    else
-	echo "$link_dir != $HOME"
-    fi
+    echo "this should never be true! $link_dir is /etc"
+    exit 1
+
 fi
 
 bar 38 "------ Start Linking Repo Files ------" | sed "s/^/${TAB}/"
@@ -56,76 +72,14 @@ for my_link in wsl.conf
 do
     # define target (source)
     target=${target_dir}/${my_link}
-    # strip target subdirectory from link name
+    # define link name (destination)
     sub_dir=$(dirname "$my_link")
     if [ ! $sub_dir = "." ]; then
-	my_link=$(basename "$my_link")
+	# strip target subdirectory from link name
+    my_link=$(basename "$my_link")
     fi
-    # define link (destination)
     link=${link_dir}/${my_link}
-
-    # check if target exists
-    echo -n "${TAB}target file ${target}... "
-    if [ -e "${target}" ]; then
-	echo "exists "
-	TAB+=${fTAB:='   '}
-	echo -n "${TAB}link $link... "
-	TAB+=${fTAB}
-	# first, check for existing copy
-	if [ -L ${link} ] || [ -f ${link} ] || [ -d ${link} ]; then
-	    echo -n "exists and "
-	    if [[ "${target}" -ef ${link} ]]; then
-                echo "already points to ${my_link}"
-		echo -n "${TAB}"
-		ls -lhG --color=auto ${link}
-		echo "${TAB}skipping..."
-		TAB=${TAB%$fTAB}
-		TAB=${TAB%$fTAB}
-		continue
-	    else
-		if [ "$EUID" -ne 0 ]; then
-		    echo -e "\E[1D..."
-		    echo -e "${TAB}${GRH}This command must be run as root!"
-		    echo -en "${NORMAL}"
-		    echo -n "${TAB}${link} "
-		fi
-		# next, delete or backup existing copy
-		if [ $(diff -ebwB "${target}" ${link} | wc -c) -eq 0 ]; then
-		    echo "has the same contents"
-		    echo -n "${TAB}deleting... "
-		    # define remove command
-		    rmcom="rm -v ${link}"
-		    # check for write permissions and remove as sudo if necessary
-		    if [ -w ${link} ] && [ -w ${link_dir} ]; then
-			${rmcom}
-		    else
-			sudo ${rmcom}
-		    fi
-		else
-		    echo "will be backed up..."
-		    sudo mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
-		fi
-	    fi
-	else
-	    echo "does not exist"
-	fi
-        # then link
-	echo -en "${TAB}${GRH}";hline 72;
-	echo "${TAB}making link... "
-	sudo ln -sv "${target}" ${link} 2>&1 | sed "s/^/${TAB}/"
-	echo -ne "${TAB}";hline 72;echo -en "${NORMAL}"
-	TAB=${TAB%$fTAB}
-	TAB=${TAB%$fTAB}
-    else
-        echo -e "${BAD}does not exist${NORMAL}"
-    fi
+    # make link
+    do_link "$target" "$link"
 done
 bar 38 "------- Done Linking Repo Files ------" | sed "s/^/${TAB}/"
-
-# print time at exit
-echo -en "${TAB}$(date +"%a %b %-d %-l:%M %p %Z") ${BASH_SOURCE##*/} "
-if command -v sec2elap &>/dev/null; then
-    bash sec2elap ${SECONDS}
-else
-    echo "elapsed time is ${white}${SECONDS} sec${NORMAL}"
-fi
