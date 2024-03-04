@@ -15,9 +15,6 @@ else
     bar() {
         echo "$2"
     }
-    hline() {
-        echo "---"
-    }
 fi
 
 # set tab
