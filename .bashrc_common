@@ -6,6 +6,9 @@
 #
 # Note: this file must use UNIX line endings (LF)!
 
+# set tab
+TAB+=${TAB+${fTAB:='   '}}
+
 msg=$(echo "this file is $(readlink -f ${BASH_SOURCE[0]##*/})!")
 ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
 echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
@@ -14,26 +17,24 @@ if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
     if $VB; then
-	# set tab
-	TAB+=${TAB+${fTAB:='   '}}
-	# load formatting
-	fpretty=${HOME}/utils/bash/.bashrc_pretty
-	if [ -e $fpretty ]; then
-	    if [ -z ${fpretty_loaded+dummy} ]; then
-	       source $fpretty
-	    fi
-	fi
-	# print source name at start
-	if (return 0 2>/dev/null); then
-	    RUN_TYPE="sourcing"
-	else
-	    RUN_TYPE="executing"
-	fi
-	echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
-	src_name=$(readlink -f $BASH_SOURCE)
-	if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-	    echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
-	fi
+        # load formatting
+        fpretty=${HOME}/utils/bash/.bashrc_pretty
+        if [ -e $fpretty ]; then
+            if [ -z ${fpretty_loaded+dummy} ]; then
+                source $fpretty
+            fi
+        fi
+        # print source name at start
+        if (return 0 2>/dev/null); then
+            RUN_TYPE="sourcing"
+        else
+            RUN_TYPE="executing"
+        fi
+        echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
+        src_name=$(readlink -f $BASH_SOURCE)
+        if [ ! "$BASH_SOURCE" = "$src_name" ]; then
+            echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
+        fi
     fi
 fi
 
@@ -78,11 +79,11 @@ femacs="${HOME}/config/emacs_all.el"
 # define options
 emacs_args="-Q --batch -l $fsilent -l $femacs -l $fface -l $fe2ansi"
 e2ansi_args="--theme misterioso"
-if [ -f $fface ] && [ -f $fe2ansi ] ; then
+if [ -f $fface ] && [ -f $fe2ansi ]; then
     vecho -n "${TAB}configuring e2ansi..."
     export "LESSOPEN=|emacs $emacs_args $e2ansi_args %s"
     export "LESS=-RF --mouse --wheel-lines=3"
-    alias cat='less -EX 2>/dev/null' # redefine cat as less
+    alias cat='less -EX 2>/dev/null'  # redefine cat as less
     alias more='less -EX 2>/dev/null' # redefine more as less
     vecho "done"
 fi
@@ -93,6 +94,7 @@ alias lessn='less -N' # add line numbers to less
 # ----------------------
 falias="${HOME}/config/.bash_aliases"
 if [ -f $falias ]; then
+    vecho "${TAB}loading ${falias}..."
     source $falias
 fi
 
@@ -107,17 +109,17 @@ fi
 appPATH="${HOME}/bin"
 if [ ! -z ${appPATH} ]; then
     for path in $appPATH; do
-	if [[ ":$PATH" != *":${path}"*  ]]; then
-	    if [ -d "${path}" ] ; then
-		vecho -n "${TAB} appending ${path} to PATH... "
-		export PATH=$PATH:$path
-		vecho "done"
-	    else
-		echo -e "${TAB}${path} ${UL}not found${NORMAL}"
-	    fi
-	else
-	    vecho "${TAB}${path} already in PATH"
-	fi
+        if [[ ":$PATH" != *":${path}"* ]]; then
+            if [ -d "${path}" ]; then
+                vecho -n "${TAB} appending ${path} to PATH... "
+                export PATH=$PATH:$path
+                vecho "done"
+            else
+                echo -e "${TAB}${path} ${UL}not found${NORMAL}"
+            fi
+        else
+            vecho "${TAB}${path} already in PATH"
+        fi
     done
 fi
 
@@ -125,17 +127,17 @@ fi
 prePATH=""
 if [ ! -z "${prePATH}" ]; then
     for path in $prePATH; do
-	if [[ ":$PATH" != *":${path}"*  ]]; then
-	    if [ -d "${path}" ] ; then
-		vecho -n "${TAB}prepending ${path} to PATH... "
-		export PATH=$path:$PATH
-		vecho "done"
-	    else
-		echo -e "${TAB}${path} ${UL}not found${NORMAL}"
-	    fi
-	else
-	    vecho "${TAB}${path} already in PATH"
-	fi
+        if [[ ":$PATH" != *":${path}"* ]]; then
+            if [ -d "${path}" ]; then
+                vecho -n "${TAB}prepending ${path} to PATH... "
+                export PATH=$path:$PATH
+                vecho "done"
+            else
+                echo -e "${TAB}${path} ${UL}not found${NORMAL}"
+            fi
+        else
+            vecho "${TAB}${path} already in PATH"
+        fi
     done
 fi
 
