@@ -3,7 +3,9 @@
 # Interactive shell settings for Linux Subsystem for Windows
 #
 # Note: this file must use unix line endings (LF)!
+echo -e "${TAB}\x1b[7;33mstart\x1b[m"
 
+TAB+=${TAB+${fTAB:='   '}}
 msg=$(echo "this file is $(readlink -f ${BASH_SOURCE[0]##*/})!")
 ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
 echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
@@ -11,15 +13,11 @@ echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
 # since ~/.bashrc usually calls ~/.bash_aliases, a conditional could be added in .bash_aliases
 # (linked to repo) and have all the functionality of this script, but for subshells.
 
-# set tab
-TAB+=${TAB+${fTAB:='   '}}
-
 fpretty=${HOME}/utils/bash/.bashrc_pretty
 if [ -e $fpretty ]; then
 	source $fpretty
 	set_traps
 	set -e
-	rtab
 fi
 
 if [ -f ${HOME}/.bashrc ]; then
@@ -42,8 +40,8 @@ if (return 0 2>/dev/null); then
 else
 	RUN_TYPE="executing"
 fi
-# print source name at start
 
+# print source name at start
 echo -e "${TAB}${RUN_TYPE} \E[0;33m$BASH_SOURCE\e[0m..."
 src_name=$(readlink -f $BASH_SOURCE)
 if [ ! "$BASH_SOURCE" = "$src_name" ]; then
@@ -52,14 +50,13 @@ fi
 
 # get length of stack
 N=${#BASH_SOURCE[@]}
-vecho "${TAB}stack size: N=$N"
 vecho "${TAB}There are N=$N entries in the call stack"
 
-echo "${TAB} full bash source"
-echo "${TAB}BASH_SOURCE = ${BASH_SOURCE[@]}"
+echo "${TAB}full bash source:"
+echo "${TAB}${fTAB}BASH_SOURCE[@] = ${BASH_SOURCE[@]}"
 
-echo "${TAB} this bash source"
-echo "${BASH_SOURCE[0]}"
+echo "${TAB}this bash source:"
+echo "${TAB}${fTAB}BASH_SOURCE[0] = ${BASH_SOURCE[0]}"
 
 # resolve symbolic links
 for ((i = 0; i < $N; i++)); do
@@ -104,22 +101,22 @@ echo "${TAB}list of invocations (canonicalized):"
 
 echo "${TAB}check invoking scripts:"
 for ((i = 1; i <= $N; i++)); do
-	vecho -n "${TAB}${fTAB}$((i - 1)): ${BASH_SOURCE[$((i - 1))]}... "
+	vecho "${TAB}${fTAB}$((i - 1)): ${BASH_SOURCE[$((i - 1))]}... "
 	fref=$(readlink -f ${HOME}/.bashrc)
+	itab
 	if [[ "${BASH_LINK[$((i - 1))]}" == "${fref}" ]]; then
-		echo -e "\e[31mBREAK\e[0m - is ${fref}"
-		vecho -ne "${TAB}\E[0;35minvoked by ${BASH_LINK[$((i - 1))]}\e[0m: "
-		vecho "${TAB}excluding ${fref} from file list"
+		echo -e "${TAB}${fTAB}\e[31mBREAK\e[0m ${BASH_SOURCE[$((i - 2))]##*/} is ${fref}"
+		vecho -ne "${TAB}${fTAB}\E[0;35minvoked by ${BASH_LINK[$((i - 1))]}\e[0m: "
+		vecho "excluding ${fref##*/} from file list"
 		run_home=false
 		break
 	else
-		echo -e "\e[32mOK\e[0m - not ${fref}"
+		echo -e "${TAB}${fTAB}\e[32mOK\e[0m - not ${fref}"
 	fi
 
-	vecho -n "${TAB}${fTAB}$((i - 1)): ${BASH_SOURCE[$((i - 1))]}... "
 	dref=${HOME}/config/
 	if [[ "${BASH_SOURCE[$((i - 1))]}" == "${dref}"* ]]; then
-		echo -e "\e[33mCHECK\e[0m - is within ${dref}"
+		echo -e "${TAB}\e[33mCHECK\e[0m - is within ${dref}"
 		vecho -en "${TAB}\x1b[35minvoked by ${BASH_SOURCE[$((i - 1))]}\x1b[0m: "
 		echo -e "wrong!"
 		vecho -ne "${TAB}\E[0;36minvoked by ${BASH_SOURCE[$i]}\e[0m: "
@@ -127,19 +124,20 @@ for ((i = 1; i <= $N; i++)); do
 		if [ -L ${check_link} ]; then
 			run_list=false
 			vecho "not running list..."
-			echo -e "\e[31mBREAK\e[0m ${check_link} is link"
+			echo -e "${TAB}${fTAB}\e[31mBREAK\e[0m ${check_link} is link"
 			break
 		else
 			echo -e "\e[32mOK\e[0m - ${check_link} not link*"
 			vecho "continuing..."
 		fi
 	else
-		echo -e "\e[32mOK\e[0m - not in ${dref}*"
+		echo -e "${TAB}${fTAB}\e[32mOK\e[0m - not in ${dref}*"
 	fi
 done
+dtab
 
-vecho "run_list = $run_list"
-vecho "run_home = $run_home"
+vecho "${TAB}run_list = $run_list" | sed 's/true/\x1b[32m&\x1b[m/;s/false/\x1b[31m&\x1b[m/'
+vecho "${TAB}run_home = $run_home" | sed 's/true/\x1b[32m&\x1b[m/;s/false/\x1b[31m&\x1b[m/'
 
 set +e
 unset_traps
@@ -153,29 +151,6 @@ else
 	unset LIST
 	if [ -z ${VB:+dummy} ]; then
 		export VB=false
-	else
-		if $VB; then
-			# set tab
-			TAB+=${TAB+${fTAB:='   '}}
-			# load formatting
-			fpretty=${HOME}/utils/bash/.bashrc_pretty
-			if [ -e $fpretty ]; then
-				if [ -z ${fpretty_loaded+dummy} ]; then
-					source $fpretty
-				fi
-			fi
-			# print source name at start
-			if (return 0 2>/dev/null); then
-				RUN_TYPE="sourcing"
-			else
-				RUN_TYPE="executing"
-			fi
-			echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
-			src_name=$(readlink -f $BASH_SOURCE)
-			if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-				echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
-			fi
-		fi
 	fi
 	if [ ! -z ${oldVB:+dummy} ]; then
 		export VB=$oldVB
@@ -233,10 +208,12 @@ if $VB; then
 fi
 
 if [[ "${BASH_SOURCE}" == "${HOME}/.bash_aliases" ]]; then
-	vecho -e "${TAB}${BASH_SOURCE[0]} ${GOOD}done\x1b[0m"
+	vecho -e "${TAB}-> ${BASH_SOURCE[0]} ${GOOD}done\x1b[0m"
 fi
 
 if [ ! -z ${oldFILE+dummy} ]; then
-	FILE=$oldFILE
-	TAB=${TAB%$fTAB}
+ 	FILE=$oldFILE
+	# 	TAB=${TAB%$fTAB}
+	echo "${TAB}Y"
 fi
+echo -e "${TAB}\x1b[7;32mdone\x1b[m"
