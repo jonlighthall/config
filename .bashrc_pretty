@@ -17,7 +17,7 @@ if [[ "$-" == *i* ]]; then
 fi
 
 # set default debug level
-declare -i DEBUG=${DEBUG:=1}
+declare -i DEBUG=${DEBUG:=0}
 
 # conditional debug echo
 decho() {
