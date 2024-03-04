@@ -19,7 +19,8 @@ else
 fi
 # print source name at start
 echo -e "${TAB}${RUN_TYPE} \E[0;33m$BASH_SOURCE\E[0m..."
-src_name=$(readlink -f $BASH_SOURCE)
+src_name=$(readlink -f ${BASH_SOURCE[0]})
+src_dir_logi=${BASH_SOURCE%/*}
 if [ ! "$BASH_SOURCE" = "$src_name" ]; then
 	echo -e "${TAB}\E[1;36mlink\E[0m -> $src_name"
 fi
@@ -36,13 +37,62 @@ if [ $# -eq 1 ]; then
 	echo "Loading configuration options for $1"
 	echo -n "${TAB}$1... "
 	# check if specified directory exists
-	if [ -d ${HOME}/config/$1 ]; then
+	sys_dir=${src_dir_logi}/$1
+	if [ -d "${sys_dir}" ]; then
 		echo "found"
-		cd ${HOME}/config/$1
+		cd "${sys_dir}"
 		echo -n "${TAB}$make_links_file... "
 		# check if make links file exists
 		if [ -f $make_links_file ]; then
 			echo "found"
+			# link make_links to conig dir
+
+			#-------------------------------------------------------------
+			#define target (source)
+			target=$(readlink -f ${make_links_file})
+			# define link (destination)
+			link=${HOME}/config/${make_links_file}
+
+			# begin linking...
+			TAB+=${fTAB:='   '}
+			echo -n "${TAB}link $link... "
+
+			# first, check for existing copy
+			if [ -e ${link} ] || [ -f ${link} ] || [ -L ${link} ]; then
+				TAB+=${fTAB:='   '}
+				echo -n "exists and "
+				if [[ "${target}" -ef ${link} ]]; then
+					echo "already points to ${target##*/}"
+					echo -n "${TAB}"
+					ls -lhG --color=auto ${link}
+					echo "${TAB}skipping..."
+					TAB=${TAB%$fTAB}
+					TAB=${TAB%$fTAB}
+				else
+					# next, delete or backup existing copy
+					if [ $(\diff --suppress-common-lines -r ${target} ${link} 2>&1 | wc -c) -eq 0 ]; then
+						echo "has the same contents"
+						echo -n "${TAB}deleting... "
+						rm -vf ${link}
+					else
+						echo "will be backed up..."
+						mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
+					fi
+					TAB=${TAB%$fTAB}
+					TAB=${TAB%$fTAB}
+				fi
+				TAB=${TAB%$fTAB}
+			else
+				echo "does not exist"
+			fi
+
+			# then link
+			if [ ! -e ${link} ]; then
+				ln -sv "${target}" ${link} 2>&1 | sed "s/^/${TAB}SYM: /"
+			fi
+
+			#-------------------------------------------------------------
+
 			bash $make_links_file
 			# define profile name
 			profie_name=.bash_profile

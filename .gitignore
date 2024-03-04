@@ -2,7 +2,7 @@
 *~
 \#*#
 
-# Git 
+# Git
 *.~*~
 
 # directories
@@ -16,6 +16,9 @@
 !mingw/
 !windows/
 !wsl/
+
+# links
+make_links.sh
 
 #Markdown list
 ls2md.md
