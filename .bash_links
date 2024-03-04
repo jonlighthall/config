@@ -1,5 +1,5 @@
 function check_target() {
-# print invocoking source or function
+    # print invocoking source or function
     decho "${TAB}BASH_SOURCE=${BASH_SOURCE[@]}"
     decho "${TAB}FUNCNAME=${FUNCNAME[@]}"
     if [ ${#FUNCNAME[@]} -gt 1 ]; then
@@ -18,10 +18,21 @@ function check_target() {
     # define target (source)
     local target=$(readlink -f "$1")
 
+    # get the cursor position
+    echo -en "\E[6n"
+    read -sdR CURPOS
+    CURPOS=${CURPOS#*[}
+    # get the x-position of the cursor
+    declare -i x_pos=${CURPOS#*;}
+    #echo "${TAB}x_pos=${x_pos}"
+    if [ ${x_pos} -eq 1 ]; then
+        echo -n "${TAB}"
+    fi
+
     # check if target exists
-    echo -en "${TAB}target file ${yellow}${target}${NORMAL}... "
+    echo -en "target file ${yellow}${target}${NORMAL}... "
     if [ -e "${target}" ]; then
-        echo "exists "
+        echo -e "${GOOD}exists${NORMAL}"
         itab
     else
         echo -e "${BAD}does not exist${NORMAL}"
@@ -78,20 +89,30 @@ function do_link() {
             return 0
         else
             # next, delete or backup existing copy
-            if [ $(diff -ebwB "${target}" "${link}" 2>&1 | wc -c) -eq 0 ]; then
-                echo "has the same contents"
-                echo -n "${TAB}deleting... "
-                rm -v "${link}"
-            else
-                if [ -e "${link}" ]; then
-                    echo "will be backed up..."
-                    mdate=$(date -r "${link}" +'%Y-%m-%d-t%H%M')
+            link_dir=$(dirname "${link}")
+            if [ -w ${link} ] && [ -w ${link_dir} ]; then
+                if [ $(diff -ebwB "${target}" "${link}" 2>&1 | wc -c) -eq 0 ]; then
+                    echo "has the same contents"
+                    echo -n "${TAB}deleting... "
+                    rm -v "${link}"
                 else
-                    echo -n "is a broken link..."
-                    mdate=$(stat -c '%y' ${link} | sed 's/\(^[0-9-]*\) \([0-9:]*\)\..*$/\1-t\2/' | sed 's/://g')
+                    if [ -e "${link}" ]; then
+                        echo "will be backed up..."
+                        mdate=$(date -r "${link}" +'%Y-%m-%d-t%H%M')
+                    else
+                        echo -n "is a broken link..."
+                        mdate=$(stat -c '%y' ${link} | sed 's/\(^[0-9-]*\) \([0-9:]*\)\..*$/\1-t\2/' | sed 's/://g')
+                    fi
+                    link_copy="${link}_${mdate}"
+                    mv -v "${link}" "${link_copy}" | sed "s/^/${TAB}/"
                 fi
-                link_copy="${link}_${mdate}"
-                mv -v "${link}" "${link_copy}" | sed "s/^/${TAB}/"
+            else
+                echo -n "${TAB}${BAD}cannot be written to"
+                if [ "$EUID" -ne 0 ]; then
+                    echo -e "${TAB}${GRH}This command must be run as root!${NORMAL}"
+                fi
+                dtab 2
+                return 1
             fi
             dtab 2
         fi
@@ -164,6 +185,5 @@ function do_link_exe() {
 
     # then link
     do_link "$target" "$link" || return 1
-    dtab
     return 0
 }
