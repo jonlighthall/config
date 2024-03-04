@@ -106,7 +106,7 @@ function print_done() {
         decho "${TAB}${fTAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]}"
     fi
 
-    echo -en "${yellow}${BASH_SOURCE[1]##*/}${NORMAL} "
+    echo -en "${BASH_SOURCE[1]##*/}${NORMAL} "
     print_elap
     echo -n " on "
     timestamp
@@ -195,7 +195,7 @@ function print_error() {
     ERR_PRINT=$(echo -e "\E[37;41m ERROR ${NORMAL} ")
     echo -n ${ERR_PRINT}
     # print grep-like line match
-    echo -ne " \E[35m${0##*/}\E[m\E[36m:\E[m\E[32m${ERR_LINENO}\E[m\E[36m:\E[m"
+    echo -ne " \E[35m${BASH_SOURCE[1]##*/}\E[m\E[36m:\E[m\E[32m${ERR_LINENO}\E[m\E[36m:\E[m"
 
     # get the cursor position
     echo -en "\E[6n"
@@ -241,7 +241,7 @@ function print_error() {
 
 function print_int() {
     start_new_line
-    echo -e "${yellow}\E[7m INT ${NORMAL} ${0##*/}"
+    echo -e "${yellow}\E[7m INT ${NORMAL} ${BASH_SOURCE[1]##*/}"
     echo " Ctrl-C pressed"
     #	echo -e "breaking..."
     #	break
@@ -249,7 +249,7 @@ function print_int() {
 
 function print_return() {
     start_new_line
-    echo -e "${yellow}\E[7m RETURN ${NORMAL} ${0##*/}"
+    echo -e "${yellow}\E[7m RETURN ${NORMAL} ${BASH_SOURCE[1]##*/}"
 }
 
 # define traps
