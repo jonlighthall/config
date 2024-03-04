@@ -1,0 +1,150 @@
+function do_link() {
+    # print invocoking source or function
+    decho "${TAB}BASH_SOURCE=${BASH_SOURCE[@]}"
+    decho "${TAB}FUNCNAME=${FUNCNAME[@]}"
+    if [ ${#FUNCNAME[@]} -gt 1 ]; then
+        decho "${TAB}FUNCNAME[1]=${FUNCNAME[1]}"
+    fi
+
+    # check number of arguments
+    if [ $# -lt 2 ]; then
+        echo "number of arguments = $#"
+        echo "Two arguments are required"
+        echo "Please provide a target and a link name"
+        echo "$FUNCNAME TARGET LINK_NAME"
+        echo "where TARGET is the source file and LINK_NAME is the destination file"
+        exit 1
+    fi
+    # define target (source)
+    local target=$(readlink -f "$1")
+
+    # define link (destination)
+    local link=$(readlink -f "$2")
+
+    if [ ${#FUNCNAME[@]} -gt 1 ]; then
+        if [[ ! ${FUNCNAME[1]} =~ "do_link" ]]; then
+            # check if target exists
+            echo -en "${TAB}target file ${yellow}${target}${NORMAL}... "
+            if [ -e "${target}" ]; then
+                echo "exists "
+                itab
+            else
+                echo -e "${BAD}does not exist${NORMAL}"
+                return 1
+            fi
+        fi
+    fi
+
+    # begin linking...
+    echo -n "${TAB}link ${link}... "
+
+    # first, check for existing copy
+    if [ -L "${link}" ] || [ -f "${link}" ] || [ -d "${link}" ]; then
+        itab
+        echo -n "exists and "
+        if [[ "${target}" -ef "${link}" ]]; then
+            echo "already points to ${link##*/}"
+            echo -n "${TAB}"
+            ls -lhG --color=auto "${link}"
+            echo "${TAB}skipping..."
+            dtab 2
+            return 0
+        else
+            # next, delete or backup existing copy
+            if [ $(diff -ebwB "${target}" "${link}" 2>&1 | wc -c) -eq 0 ]; then
+                echo "has the same contents"
+                echo -n "${TAB}deleting... "
+                rm -v "${link}"
+            else
+                if [ -e "${link}" ]; then
+                    echo "will be backed up..."
+                    mdate=$(date -r "${link}" +'%Y-%m-%d-t%H%M')
+                else
+                    echo -n "is a broken link..."
+                    mdate=$(stat -c '%y' ${link} | sed 's/\(^[0-9-]*\) \([0-9:]*\)\..*$/\1-t\2/' | sed 's/://g')
+                fi
+                link_copy="${link}_${mdate}"
+                mv -v "${link}" "${link_copy}" | sed "s/^/${TAB}/"
+            fi
+            dtab 2
+        fi
+        dtab
+    else
+        echo "does not exist"
+    fi
+    # then link
+    echo -en "${TAB}${GRH}"
+    hline 72
+    echo "${TAB}making link... "
+    ln -sv "${target}" "${link}" | sed "s/^/${TAB}/"
+    echo -ne "${TAB}"
+    hline 72
+    echo -en "${NORMAL}"
+    dtab
+    return 0
+
+}
+
+function do_link_exe() {
+    # print invocoking source or function
+    decho "${TAB}BASH_SOURCE=${BASH_SOURCE[@]}"
+    decho "${TAB}FUNCNAME=${FUNCNAME[@]}"
+    if [ ${#FUNCNAME[@]} -gt 1 ]; then
+        decho "${TAB}FUNCNAME[1]=${FUNCNAME[1]}"
+    fi
+
+    # check number of arguments
+    if [ $# -lt 2 ]; then
+        echo "number of arguments = $#"
+        echo "Two arguments are required"
+        echo "Please provide a target and a link name"
+        echo "$FUNCNAME TARGET LINK_NAME"
+        echo "where TARGET is the source file and LINK_NAME is the destination file"
+        exit 1
+    fi
+    # define target (source)
+    local target=$(readlink -f "$1")
+
+    # define link (destination)
+    local link=$(readlink -f "$2")
+
+    # check if target exists
+    echo -en "target file ${yellow}${target}${NORMAL}... "
+    if [ -e "${target}" ]; then
+        echo "exists "
+        itab
+        # next, check file permissions
+        if true; then
+            echo -n "${TAB}${target##*/} requires specific permissions: "
+            permOK=500
+            echo "${permOK}"
+            itab
+            echo -n "${TAB}checking permissions... "
+            perm=$(stat -c "%a" "${target}")
+            echo ${perm}
+            # the target files will have the required permissions added to the existing permissions
+            if [[ ${perm} -le ${permOK} ]] || [[ ! (-f "${target}" && -x "${target}") ]]; then
+                echo -en "${TAB}${GRH}adding permissions${NORMAL} to ${permOK}... "
+                chmod +${permOK} "${target}" || chmod u+rx "${target}"
+                RETVAL=$?
+                if [ $RETVAL -eq 0 ]; then
+                    echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+                else
+                    echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+                fi
+            else
+                echo -e "${TAB}permissions ${GOOD}OK${NORMAL}"
+            fi
+            dtab
+        fi
+
+        # then link
+        do_link "$target" "$link"
+        dtab
+        return 0
+    else
+        echo -e "${BAD}does not exist${NORMAL}"
+        dtab
+        return 1
+    fi
+}
