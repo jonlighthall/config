@@ -1,3 +1,35 @@
+function check_target() {
+# print invocoking source or function
+    decho "${TAB}BASH_SOURCE=${BASH_SOURCE[@]}"
+    decho "${TAB}FUNCNAME=${FUNCNAME[@]}"
+    if [ ${#FUNCNAME[@]} -gt 1 ]; then
+        decho "${TAB}FUNCNAME[1]=${FUNCNAME[1]}"
+    fi
+
+    # check number of arguments
+    if [ $# -lt 1 ]; then
+        echo "number of arguments = $#"
+        echo "One argument is required"
+        echo "Please provide a target name"
+        echo "$FUNCNAME TARGET"
+        echo "where TARGET is the source file to be linked"
+        exit 1
+    fi
+    # define target (source)
+    local target=$(readlink -f "$1")
+
+    # check if target exists
+    echo -en "${TAB}target file ${yellow}${target}${NORMAL}... "
+    if [ -e "${target}" ]; then
+        echo "exists "
+        itab
+    else
+        echo -e "${BAD}does not exist${NORMAL}"
+        dtab
+        return 1
+    fi
+}
+
 function do_link() {
     # print invocoking source or function
     decho "${TAB}BASH_SOURCE=${BASH_SOURCE[@]}"
@@ -16,23 +48,18 @@ function do_link() {
         exit 1
     fi
     # define target (source)
-    local target=$(readlink -f "$1")
+    local target="$1"
 
     # define link (destination)
-    local link=$(readlink -f "$2")
+    local link="$2"
 
     if [ ${#FUNCNAME[@]} -gt 1 ]; then
         if [[ ! ${FUNCNAME[1]} =~ "do_link" ]]; then
-            # check if target exists
-            echo -en "${TAB}target file ${yellow}${target}${NORMAL}... "
-            if [ -e "${target}" ]; then
-                echo "exists "
-                itab
-            else
-                echo -e "${BAD}does not exist${NORMAL}"
-                return 1
-            fi
+            check_target "$target" || return 1
+        else
+            decho "${TAB}${target##*/} alread checked"
         fi
+
     fi
 
     # begin linking...
@@ -103,48 +130,40 @@ function do_link_exe() {
         exit 1
     fi
     # define target (source)
-    local target=$(readlink -f "$1")
+    local target="$1"
 
     # define link (destination)
-    local link=$(readlink -f "$2")
+    local link="$2"
 
-    # check if target exists
-    echo -en "target file ${yellow}${target}${NORMAL}... "
-    if [ -e "${target}" ]; then
-        echo "exists "
+    check_target "$target" || return 1
+
+    # next, check file permissions
+    if true; then
+        echo -n "${TAB}${target##*/} requires specific permissions: "
+        permOK=500
+        echo "${permOK}"
         itab
-        # next, check file permissions
-        if true; then
-            echo -n "${TAB}${target##*/} requires specific permissions: "
-            permOK=500
-            echo "${permOK}"
-            itab
-            echo -n "${TAB}checking permissions... "
-            perm=$(stat -c "%a" "${target}")
-            echo ${perm}
-            # the target files will have the required permissions added to the existing permissions
-            if [[ ${perm} -le ${permOK} ]] || [[ ! (-f "${target}" && -x "${target}") ]]; then
-                echo -en "${TAB}${GRH}adding permissions${NORMAL} to ${permOK}... "
-                chmod +${permOK} "${target}" || chmod u+rx "${target}"
-                RETVAL=$?
-                if [ $RETVAL -eq 0 ]; then
-                    echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-                else
-                    echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-                fi
+        echo -n "${TAB}checking permissions... "
+        perm=$(stat -c "%a" "${target}")
+        echo ${perm}
+        # the target files will have the required permissions added to the existing permissions
+        if [[ ${perm} -le ${permOK} ]] || [[ ! (-f "${target}" && -x "${target}") ]]; then
+            echo -en "${TAB}${GRH}adding permissions${NORMAL} to ${permOK}... "
+            chmod +${permOK} "${target}" || chmod u+rx "${target}"
+            RETVAL=$?
+            if [ $RETVAL -eq 0 ]; then
+                echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
             else
-                echo -e "${TAB}permissions ${GOOD}OK${NORMAL}"
+                echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
             fi
-            dtab
+        else
+            echo -e "${TAB}permissions ${GOOD}OK${NORMAL}"
         fi
-
-        # then link
-        do_link "$target" "$link"
         dtab
-        return 0
-    else
-        echo -e "${BAD}does not exist${NORMAL}"
-        dtab
-        return 1
     fi
+
+    # then link
+    do_link "$target" "$link" || return 1
+    dtab
+    return 0
 }
