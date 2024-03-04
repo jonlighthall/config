@@ -1,15 +1,17 @@
 #!/bin/bash -u
 # set tab
 :${TAB:=''}
+
+utils_dir="${HOME}/utils"
+bash_utils_dir="${utils_dir}/bash"
+
 # load formatting
-fpretty=${HOME}/utils/bash/.bashrc_pretty
-if [ -e $fpretty ]; then
-	if [ -z ${fpretty_loaded+dummy} ]; then
-		source $fpretty
-	fi
+fpretty="${bash_utils_dir}/.bashrc_pretty"
+if [ -e "$fpretty" ]; then
+    source "$fpretty"
 fi
 
-# determine if sourcing or executing
+# determine if script is being sourced or executed
 if (return 0 2>/dev/null); then
 	RUN_TYPE="sourcing"
 else
@@ -266,8 +268,8 @@ if command -v wsl.exe >/dev/null; then
 	fi
 else
 	echo "WSL not defined."
-	rdir=${HOME}/repos
 fi
+rdir=${HOME}/repos
 
 echo -e "saving repsoitories to \e[33m$rdir\e[0m..."
 
