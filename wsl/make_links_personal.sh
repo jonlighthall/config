@@ -2,9 +2,7 @@
 # load formatting
 fpretty=${HOME}/utils/bash/.bashrc_pretty
 if [ -e $fpretty ]; then
-    if [ -z ${fpretty_loaded+dummy} ]; then
-       source $fpretty
-    fi
+    source $fpretty
 fi
 # set tab
 export TAB+=${TAB+${fTAB:='   '}}

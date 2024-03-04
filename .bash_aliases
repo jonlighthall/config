@@ -4,9 +4,12 @@
 # with WSL, Debian derivatives (Ubuntu), Red Hat-based distros (Centos, Rock Linux), MinGW (MSYS,
 # GitBash), Cygwin, PGI Bash, etc.
 
+# set tab
+TAB+=${TAB+${fTAB:='   '}}
 msg=$(echo "this file is $(readlink -f ${BASH_SOURCE[0]##*/})!")
 ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
 echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
+TAB=${TAB%$fTAB} 
 
 # Aliases
 alias close='source ${HOME}/.bash_logout;killall -9 -v -u $USER$USERNAME; exit'

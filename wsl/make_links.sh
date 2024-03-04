@@ -3,9 +3,7 @@
 # load formatting
 fpretty=${HOME}/utils/bash/.bashrc_pretty
 if [ -e $fpretty ]; then
-    if [ -z ${fpretty_loaded+dummy} ]; then
-       source $fpretty
-    fi
+    source $fpretty
 else
     bar() {
         echo "$2"
@@ -40,11 +38,12 @@ prog=install_packages.sh
 echo -n "${TAB}$prog..."
 if [ -f $prog ]; then
     echo "found"
+	itab
     echo "${TAB}${prog} requires"
-    TAB+=${fTAB:='   '}
+    itab
     echo "${TAB}* elevation"
     echo "${TAB}* access to archive.ubuntu.com, security.ubuntu.com, etc"
-    TAB=${TAB%$fTAB}
+	dtab	
     set +e
     read -p "${TAB}Proceed with ${prog}? (y/n) " -n 1 -r -t 3
     set -e
@@ -52,6 +51,7 @@ if [ -f $prog ]; then
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         bash $prog
     fi
+	dtab
 else
     echo "not found"
 fi
