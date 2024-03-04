@@ -5,7 +5,7 @@
 fpretty=${HOME}/utils/bash/.bashrc_pretty
 if [ -e $fpretty ]; then
 	if [ -z ${fpretty_loaded+dummy} ]; then
-	   source $fpretty
+		source $fpretty
 	fi
 fi
 
@@ -156,7 +156,7 @@ if command -v wsl.exe >/dev/null; then
 	fi
 
 	# create link
-	if [ ! -e ${link} ] && [ $do_link -eq true ]; then
+	if [ ! -e ${link} ] && [[ $do_link == true ]]; then
 		ln -sv ${target} ${link} 2>&1 | sed "s/^/${TAB}SYM: /"
 	fi
 
@@ -412,9 +412,7 @@ echo -e "done cloning ${gname} repos"
 
 # load formatting
 if [ -e $fpretty ]; then
-	if [ -z ${fpretty_loaded+dummy} ]; then
-	   source $fpretty
-	fi
+	source $fpretty
 	cbar "${magenta}pretty print enabled${NORMAL}"
 fi
 
@@ -559,16 +557,6 @@ for my_repo in matlab; do
 	hline 72
 	echo -en "${NORMAL}"
 	TAB=${TAB%$fTAB}
-
-	# run make_links
-	make_links_file="${link}/make_links.sh"
-	if [ -e "${make_links_file}" ]; then
-		cd ${link}
-		bash ${make_links_file}
-		cd ${rdir}
-	else
-		echo -e "${TAB}${BAD}${make_links_file} not found${NORMAL}"
-	fi
 done
 TAB=${TAB%$fTAB}
 echo -e "done cloning ${gname} repos"
