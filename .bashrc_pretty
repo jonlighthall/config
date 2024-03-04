@@ -3,15 +3,15 @@
 src_name=$(readlink -f ${BASH_SOURCE[0]})
 src_dir_logi=${BASH_SOURCE%/*}
 
+# set tabs
+f_tabs=${src_dir_logi}/.bash_tabs
+if [ -e $f_tabs ]; then
+    source $f_tabs
+fi
+
 # If not running interactively, reduce prints
 if [[ "$-" == *i* ]]; then
-	# set tabs
-	f_tabs=${src_dir_logi}/.bash_tabs
-	if [ -e $f_tabs ]; then
-		source $f_tabs
-	fi
-
-	itab
+    itab
     msg=$(echo "this file is ${src_name##*/}!")
     ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
     echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
@@ -21,7 +21,7 @@ if [[ "$-" == *i* ]]; then
     else
         echo -e "${TAB}${yellow}${BASH_SOURCE[0]##*/} already loaded${NORMAL}"
     fi
-	dtab
+    dtab
 fi
 
 # set default debug level
@@ -91,27 +91,26 @@ cbar() {
 }
 
 function print_done() {
-	# get length of stack
-	N=${#BASH_SOURCE[@]}
-	decho "${TAB}There are N=$N entries in the call stack"
+    # get length of stack
+    N=${#BASH_SOURCE[@]}
+    decho "${TAB}There are N=$N entries in the call stack"
 
-	decho "${TAB}full bash source:"
-	decho "${TAB}${fTAB}BASH_SOURCE[@] = ${BASH_SOURCE[@]}"
+    decho "${TAB}full bash source:"
+    decho "${TAB}${fTAB}BASH_SOURCE[@] = ${BASH_SOURCE[@]}"
 
-	decho "${TAB}this source:"
-	decho "${TAB}${fTAB}BASH_SOURCE[0] = ${BASH_SOURCE[0]}"
+    decho "${TAB}this source:"
+    decho "${TAB}${fTAB}BASH_SOURCE[0] = ${BASH_SOURCE[0]}"
 
-	if [ $N -gt 1 ]; then
-		decho "${TAB}invoking source source:"
-		decho "${TAB}${fTAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]}"
-	fi
-	
-	echo -en "${yellow}${BASH_SOURCE[1]##*/}${NORMAL} "
-	print_elap
-	echo -n " on "
-	timestamp
+    if [ $N -gt 1 ]; then
+        decho "${TAB}invoking source source:"
+        decho "${TAB}${fTAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]}"
+    fi
+
+    echo -en "${yellow}${BASH_SOURCE[1]##*/}${NORMAL} "
+    print_elap
+    echo -n " on "
+    timestamp
 }
-
 
 function timestamp() {
     echo "$(date +"%a %b %-d at %-l:%M %p %Z")"
@@ -149,192 +148,192 @@ function start_new_line() {
     # get the cursor position
     echo -en "\E[6n"
     read -sdR CURPOS
-    CURPOS=${CURPOS#*[} 
+    CURPOS=${CURPOS#*[}
     # get the x-position of the cursor
-	x_pos=${CURPOS#*;}
-	# if the cursor is not at the start of a line, then create a new line
-	if [ ${x_pos} -gt 1 ]; then
-		echo
-	fi
+    x_pos=${CURPOS#*;}
+    # if the cursor is not at the start of a line, then create a new line
+    if [ ${x_pos} -gt 1 ]; then
+        echo
+    fi
 }
 
 function print_exit() {
-	# optional argument is $?
-	# e.g.
-	# trap 'print_exit $?' EXIT
-	
-	# parse arguments
-	if [ $# -gt 0 ]; then
-		EXIT_RETVAL=$1
-	fi
-	
-	start_new_line
-	echo -ne "${yellow}\E[7m EXIT ${NORMAL} "
-	# print exit code
-	if [ ! -z ${EXIT_RETVAL+alt} ]; then
-		echo -ne "${gray}RETVAL=${EXIT_RETVAL}${NORMAL} "
-	fi
-	
-	print_done
-	
+    # optional argument is $?
+    # e.g.
+    # trap 'print_exit $?' EXIT
+
+    # parse arguments
+    if [ $# -gt 0 ]; then
+        EXIT_RETVAL=$1
+    fi
+
+    start_new_line
+    echo -ne "${yellow}\E[7m EXIT ${NORMAL} "
+    # print exit code
+    if [ ! -z ${EXIT_RETVAL+alt} ]; then
+        echo -ne "${gray}RETVAL=${EXIT_RETVAL}${NORMAL} "
+    fi
+
+    print_done
+
 }
 
 function print_error() {
-	# expected arguments are $LINENO $? $BASH_COMMAND
-	# e.g.
-	# trap 'print_error $LINENO $? $BASH_COMMAND' ERR
-	
-	# parse arguments
-	ERR_LINENO=$1
-	shift
-	ERR_RETVAL=$1
-	shift
-	ERR_CMD="$@"
-	
-	# print summary
-	start_new_line
-	ERR_PRINT=$(echo -e "\E[37;41m ERROR ${NORMAL} ")
-	echo -n ${ERR_PRINT}
-	# print grep-like line match
-	echo -ne " \E[35m${0##*/}\E[m\E[36m:\E[m\E[32m${ERR_LINENO}\E[m\E[36m:\E[m"
-	
-	# get the cursor position
-	echo -en "\E[6n"
-	read -sdR CURPOS
-	CURPOS=${CURPOS#*[}
+    # expected arguments are $LINENO $? $BASH_COMMAND
+    # e.g.
+    # trap 'print_error $LINENO $? $BASH_COMMAND' ERR
+
+    # parse arguments
+    ERR_LINENO=$1
+    shift
+    ERR_RETVAL=$1
+    shift
+    ERR_CMD="$@"
+
+    # print summary
+    start_new_line
+    ERR_PRINT=$(echo -e "\E[37;41m ERROR ${NORMAL} ")
+    echo -n ${ERR_PRINT}
+    # print grep-like line match
+    echo -ne " \E[35m${0##*/}\E[m\E[36m:\E[m\E[32m${ERR_LINENO}\E[m\E[36m:\E[m"
+
+    # get the cursor position
+    echo -en "\E[6n"
+    read -sdR CURPOS
+    CURPOS=${CURPOS#*[}
     # get the x-position of the cursor
     declare -i x_pos=${CURPOS#*;}
-	((--x_pos))
-	((--x_pos))
-	# define indent
-	spx=$(echo -ne "\E[${x_pos}C")
-	
-	ERR_LINE=$(sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}" | sed "s/^\s*//")
-	echo "${ERR_LINE}"
-	eva='eval'
-	declare -i evl=${#eva}
-	declare -i etab=$((x_pos - evl))
-	
-	if [[ "$ERR_CMD" != "$ERR_LINE" ]]; then
-		echo -ne "\E[${etab}C${yellow} cmd\E[36m:\E[m"
-		echo "${ERR_CMD}"
-	fi
-	
-	# if command contains vairables, evaluate expression
-	if [[ "$ERR_CMD" =~ '$' ]]; then
-		decho -e "${spx}${gray}expanding variables...${NORMAL}"
-		# print 'eval' set back from cmd
-		echo -ne "\E[${etab}C${VALID}${eva}\E[m\E[36m:\E[m"
-		# print evaluated command and remove leading whitespace
-		eval echo $ERR_CMD | sed "s/^\s*//"
-		if [[ "$ERR_CMD" =~ "/dev/null" ]]; then
-			# remove redirect
-			NCMD=$(echo $ERR_CMD | sed 's|/dev/null||')
-			NCMD=$(echo $NCMD | sed 's/[12>&\s]*$//')
-			# print evaluated ouput
-			echo -en "\E[${spx}C"
-			eval echo $NCMD
-			echo -e "$ {gray}redirect (no output)${NORMAL}"
-		fi
-	fi
-	echo -e "${spx} ${gray}RETVAL=${ERR_RETVAL}${NORMAL}"
+    ((--x_pos))
+    ((--x_pos))
+    # define indent
+    spx=$(echo -ne "\E[${x_pos}C")
+
+    ERR_LINE=$(sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}" | sed "s/^\s*//")
+    echo "${ERR_LINE}"
+    eva='eval'
+    declare -i evl=${#eva}
+    declare -i etab=$((x_pos - evl))
+
+    if [[ "$ERR_CMD" != "$ERR_LINE" ]]; then
+        echo -ne "\E[${etab}C${yellow} cmd\E[36m:\E[m"
+        echo "${ERR_CMD}"
+    fi
+
+    # if command contains vairables, evaluate expression
+    if [[ "$ERR_CMD" =~ '$' ]]; then
+        decho -e "${spx}${gray}expanding variables...${NORMAL}"
+        # print 'eval' set back from cmd
+        echo -ne "\E[${etab}C${VALID}${eva}\E[m\E[36m:\E[m"
+        # print evaluated command and remove leading whitespace
+        eval echo $ERR_CMD | sed "s/^\s*//"
+        if [[ "$ERR_CMD" =~ "/dev/null" ]]; then
+            # remove redirect
+            NCMD=$(echo $ERR_CMD | sed 's|/dev/null||')
+            NCMD=$(echo $NCMD | sed 's/[12>&\s]*$//')
+            # print evaluated ouput
+            echo -en "\E[${spx}C"
+            eval echo $NCMD
+            echo -e "$ {gray}redirect (no output)${NORMAL}"
+        fi
+    fi
+    echo -e "${spx} ${gray}RETVAL=${ERR_RETVAL}${NORMAL}"
 }
-	
+
 function print_int() {
-	start_new_line
-	echo -e "${yellow}\E[7m INT ${NORMAL} ${0##*/}"
-	echo " Ctrl-C pressed"
-	#	echo -e "breaking..."
-	#	break
+    start_new_line
+    echo -e "${yellow}\E[7m INT ${NORMAL} ${0##*/}"
+    echo " Ctrl-C pressed"
+    #	echo -e "breaking..."
+    #	break
 }
 
 function print_return() {
-	start_new_line
-	echo -e "${yellow}\E[7m RETURN ${NORMAL} ${0##*/}"
+    start_new_line
+    echo -e "${yellow}\E[7m RETURN ${NORMAL} ${0##*/}"
 }
 
 # define traps
 function set_traps() {
-	if [ -z "${DEBUG+alt}" ]; then
-		DEBUG=0
-	fi
-	[ $DEBUG -gt 0 ] && start_new_line
-	decho -e "${magenta}\E[7mset traps${NORMAL}"
-	
-	# determine if script is being sourced or executed and add conditional behavior
-	decho -n "setting shell options for... "
-	# trace RETURN and DEBUG traps
-	#		set -T
-	if (return 0 2>/dev/null); then
-		export RUN_TYPE="sourcing"
-		# do NOT exit on errors
-		#		set +e
-		# trace RETURN and DEBUG traps
-		#		set -T
-	else
-		export RUN_TYPE="executing"
-		# exit on errors
-		set -e
-	fi
-	decho -e "\E[7m${RUN_TYPE}${NORMAL}"
-	# trace ERR traps
-	set -E
-	decho "the following traps are saved"
-	if [ -z "${save_traps+default}" ]; then
-		decho "${fTAB}none"
-		decho -n "setting traps... "
-		trap 'print_error $LINENO $? $BASH_COMMAND' ERR
-		trap 'print_exit $?' EXIT
-		decho "done"
-	else
-		decho "${save_traps}" | sed "$ ! s/^/${fTAB}/"
-		decho "setting saved traps..."
-		eval $(echo "${save_traps}" | sed "s/$/;/g")
-	fi
+    if [ -z "${DEBUG+alt}" ]; then
+        DEBUG=0
+    fi
+    [ $DEBUG -gt 0 ] && start_new_line
+    decho -e "${magenta}\E[7mset traps${NORMAL}"
 
-	# print summary
-	decho -n "on set trap retrun, the following traps are set"
-	if [ -z "$(trap -p)" ]; then
-		decho -e "\n${fTAB}none"
-		exit
-	else
-		decho
-		decho $(trap -p) | sed "$ ! s/^/${fTAB}/;s/ \(trap\)/\n${fTAB}\1/g" | sed 's/^[ ]*$//g'
-	fi
+    # determine if script is being sourced or executed and add conditional behavior
+    decho -n "setting shell options for... "
+    # trace RETURN and DEBUG traps
+    #		set -T
+    if (return 0 2>/dev/null); then
+        export RUN_TYPE="sourcing"
+        # do NOT exit on errors
+        #		set +e
+        # trace RETURN and DEBUG traps
+        #		set -T
+    else
+        export RUN_TYPE="executing"
+        # exit on errors
+        set -e
+    fi
+    decho -e "\E[7m${RUN_TYPE}${NORMAL}"
+    # trace ERR traps
+    set -E
+    decho "the following traps are saved"
+    if [ -z "${save_traps+default}" ]; then
+        decho "${fTAB}none"
+        decho -n "setting traps... "
+        trap 'print_error $LINENO $? $BASH_COMMAND' ERR
+        trap 'print_exit $?' EXIT
+        decho "done"
+    else
+        decho "${save_traps}" | sed "$ ! s/^/${fTAB}/"
+        decho "setting saved traps..."
+        eval $(echo "${save_traps}" | sed "s/$/;/g")
+    fi
+
+    # print summary
+    decho -n "on set trap retrun, the following traps are set"
+    if [ -z "$(trap -p)" ]; then
+        decho -e "\n${fTAB}none"
+        exit
+    else
+        decho
+        decho $(trap -p) | sed "$ ! s/^/${fTAB}/;s/ \(trap\)/\n${fTAB}\1/g" | sed 's/^[ ]*$//g'
+    fi
 }
 
 function unset_traps() {
-	[ $DEBUG -gt 0 ] && start_new_line
-	decho -e "${cyan}\E[7mun-set traps${NORMAL}"
-	decho "setting shell options..."
-	set +eE
+    [ $DEBUG -gt 0 ] && start_new_line
+    decho -e "${cyan}\E[7mun-set traps${NORMAL}"
+    decho "setting shell options..."
+    set +eE
 
-	decho -n "the current traps are set"
-	if [ -z "$(trap -p)" ]; then
-		decho -e "\n${fTAB}none"
-	else
-		decho
-		decho $(trap -p) | sed "$ ! s/^/${fTAB}/;s/ \(trap\)/\n${fTAB}\1/g" | sed 's/^[ ]*$//g'
+    decho -n "the current traps are set"
+    if [ -z "$(trap -p)" ]; then
+        decho -e "\n${fTAB}none"
+    else
+        decho
+        decho $(trap -p) | sed "$ ! s/^/${fTAB}/;s/ \(trap\)/\n${fTAB}\1/g" | sed 's/^[ ]*$//g'
 
-		# save traps
-		export save_traps=$(trap -p | sed 's/-- //g')
-		if [ ! -z "${save_traps}" ]; then
-			decho "the current traps are saved"
-			decho "${save_traps}" | sed "$ ! s/^/${fTAB}/"
-		fi
+        # save traps
+        export save_traps=$(trap -p | sed 's/-- //g')
+        if [ ! -z "${save_traps}" ]; then
+            decho "the current traps are saved"
+            decho "${save_traps}" | sed "$ ! s/^/${fTAB}/"
+        fi
 
-		# clear traps
-		trap - ERR
-		trap - EXIT
-		trap - RETURN
-	fi
+        # clear traps
+        trap - ERR
+        trap - EXIT
+        trap - RETURN
+    fi
 
-	# print summary
-	decho "on unset trap retrun, the following traps are set"
-	if [ -z $(trap -p) ]; then
-		decho "${fTAB}none"
-	else
-		decho $(trap -p)
-		exit
-	fi
+    # print summary
+    decho "on unset trap retrun, the following traps are set"
+    if [ -z $(trap -p) ]; then
+        decho "${fTAB}none"
+    else
+        decho $(trap -p)
+        exit
+    fi
 }
