@@ -106,7 +106,7 @@ function print_done() {
         decho "${TAB}${fTAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]}"
     fi
 
-    echo -en "${BASH_SOURCE[1]##*/}${NORMAL} "
+    echo -en "${BASH_SOURCE[(($N - 1))]##*/}${NORMAL} "
     print_elap
     echo -n " on "
     timestamp
@@ -168,7 +168,7 @@ function print_exit() {
     fi
 
     start_new_line
-    echo -ne "${yellow}\E[7m EXIT ${NORMAL} "
+    echo -ne "${TAB}${yellow}\E[7m EXIT ${NORMAL} "
     # print exit code
     if [ ! -z ${EXIT_RETVAL+alt} ]; then
         echo -ne "${gray}RETVAL=${EXIT_RETVAL}${NORMAL} "
