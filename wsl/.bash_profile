@@ -35,9 +35,9 @@ if $VB; then
     # load formatting
     fpretty=${HOME}/utils/bash/.bashrc_pretty
     if [ -e $fpretty ]; then
-		if [ -z ${fpretty_loaded+dummy} ]; then
-			source $fpretty
-		fi
+        if [ -z ${fpretty_loaded+dummy} ]; then
+            source $fpretty
+        fi
     fi
     # determine if being sourced or executed
     if (return 0 2>/dev/null); then

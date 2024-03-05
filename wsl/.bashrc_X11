@@ -2,37 +2,37 @@
 #
 # Note: this file must use unix line endings (LF)!
 if [ -z ${VB:+dummy} ]; then
-    export VB=false
+  export VB=false
 else
-    if $VB; then
-	# set tab
-	TAB+=${TAB+${fTAB:='   '}}
-	# load formatting
-	fpretty=${HOME}/utils/bash/.bashrc_pretty
-	if [ -e $fpretty ]; then
-	    if [ -z ${fpretty_loaded+dummy} ]; then
-	       source $fpretty
-	    fi
-	fi
-	# print source name at start
-	if (return 0 2>/dev/null); then
-	    RUN_TYPE="sourcing"
-	else
-	    RUN_TYPE="executing"
-	fi
-	echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
-	src_name=$(readlink -f $BASH_SOURCE)
-	if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-	    echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
-	fi
+  if $VB; then
+    # set tab
+    TAB+=${TAB+${fTAB:='   '}}
+    # load formatting
+    fpretty=${HOME}/utils/bash/.bashrc_pretty
+    if [ -e $fpretty ]; then
+      if [ -z ${fpretty_loaded+dummy} ]; then
+        source $fpretty
+      fi
     fi
+    # print source name at start
+    if (return 0 2>/dev/null); then
+      RUN_TYPE="sourcing"
+    else
+      RUN_TYPE="executing"
+    fi
+    echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
+    src_name=$(readlink -f $BASH_SOURCE)
+    if [ ! "$BASH_SOURCE" = "$src_name" ]; then
+      echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
+    fi
+  fi
 fi
 
 # define conditional echo
 vecho() {
-    if [ ! -z ${VB:+dummy} ] && ${VB}; then
-	echo "$@"
-    fi
+  if [ ! -z ${VB:+dummy} ] && ${VB}; then
+    echo "$@"
+  fi
 }
 
 # NB: The X11 server must be lauchded first, before setting dispaly; otherwise the xdpyinfo tests
@@ -49,189 +49,186 @@ PROG="vcxsrv.exe"
 xPID=$(pgrep -x $PROG)
 xOK=false
 if [ ! -z $xPID ]; then
-    xOK=true
-    vecho "${TAB}${PROG} already running with PID ${xPID}"
+  xOK=true
+  vecho "${TAB}${PROG} already running with PID ${xPID}"
 else
-    if $VB; then
-	echo "${TAB}attemping to launch ${PROG}..."
-	TAB+=$fTAB
-    fi
-    DIR=/mnt/c/Program\ Files/VcXsrv
-    if [ -d "$DIR" ]; then
-	vecho -e "${TAB}found $DIR"
-	if [ -f "$DIR/$PROG" ]; then
-	    vecho -e "${TAB}Launching $PROG... \c"
-	    (vcx)
-	    RETVAL=$?
-	    if [[ $RETVAL == 0 ]]; then
-		xOK=true
-		if $VB; then
-		    echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-		    xPID=$(pgrep -x $PROG)
-		    if [ ! -z $xPID ]; then
-			echo "${TAB}$PROG running with PID ${xPID}"
-		    fi
-		fi
-	    else
-		vecho -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-		vecho "${TAB}unaliasing $PROG..."
-		unalias vcx 2>/dev/null
-	    fi
-	else
-	    vecho -e "${TAB}$PROG ${UL}not found${NORMAL}"
-	    vecho "${TAB}unaliasing $PROG..."
-	    unalias vcx 2>/dev/null
-	fi
+  if $VB; then
+    echo "${TAB}attemping to launch ${PROG}..."
+    TAB+=$fTAB
+  fi
+  DIR=/mnt/c/Program\ Files/VcXsrv
+  if [ -d "$DIR" ]; then
+    vecho -e "${TAB}found $DIR"
+    if [ -f "$DIR/$PROG" ]; then
+      vecho -e "${TAB}Launching $PROG... \c"
+      (vcx)
+      RETVAL=$?
+      if [[ $RETVAL == 0 ]]; then
+        xOK=true
+        if $VB; then
+          echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+          xPID=$(pgrep -x $PROG)
+          if [ ! -z $xPID ]; then
+            echo "${TAB}$PROG running with PID ${xPID}"
+          fi
+        fi
+      else
+        vecho -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+        vecho "${TAB}unaliasing $PROG..."
+        unalias vcx 2>/dev/null
+      fi
     else
-	vecho -e "${TAB}$DIR ${UL}not found${NORMAL}"
-	vecho "${TAB}unaliasing $PROG..."
-	unalias vcx 2>/dev/null
+      vecho -e "${TAB}$PROG ${UL}not found${NORMAL}"
+      vecho "${TAB}unaliasing $PROG..."
+      unalias vcx 2>/dev/null
     fi
-    if $VB; then
-	TAB=${TAB%$fTAB}
-    fi
+  else
+    vecho -e "${TAB}$DIR ${UL}not found${NORMAL}"
+    vecho "${TAB}unaliasing $PROG..."
+    unalias vcx 2>/dev/null
+  fi
+  if $VB; then
+    TAB=${TAB%$fTAB}
+  fi
 fi
 
 if ! $xOK; then
-    PROG="Xming.exe"
-    xPID=$(pgrep -x $PROG)
-    xOK=false
-    if [ ! -z $xPID ]; then
-	xOK=true
-	vecho "${TAB}${PROG} already running with PID ${xPID}"
-    else
-	if $VB; then
-	    echo "${TAB}attemping to launch ${PROG}..."
-	    TAB+=$fTAB
-	fi
-	DIR=/mnt/c/Program\ Files\ \(x86\)/Xming
-	if [ -d "$DIR" ]; then
-	    vecho -e "${TAB}found $DIR"
-	    if [ -f "$DIR/$PROG" ]; then
-		vecho -e "${TAB}Launching $PROG... \c"
-		(xming)
-		RETVAL=$?
-		if [[ $RETVAL == 0 ]]; then
-		    xOK=true
-		    if $VB; then
-			echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-			xPID=$(pgrep -x $PROG)
-			if [ ! -z $xPID ]; then
-			    echo "${TAB}$PROG running with PID ${xPID}"
-			fi
-		    fi
-		else
-		    vecho -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-		    vecho "${TAB}unaliasing $PROG..."
-		    unalias xming 2>/dev/null
-		fi
-	    else
-		vecho -e "${TAB}$PROG ${UL}not found${NORMAL}"
-		vecho "${TAB}unaliasing $PROG..."
-		unalias xming 2>/dev/null
-	    fi
-	else
-	    vecho -e "${TAB}$DIR ${UL}not found${NORMAL}"
-	    vecho "${TAB}unaliasing $PROG..."
-	    unalias xming 2>/dev/null
-	fi
-	if $VB; then
-	    TAB=${TAB%$fTAB}
-	fi
+  PROG="Xming.exe"
+  xPID=$(pgrep -x $PROG)
+  xOK=false
+  if [ ! -z $xPID ]; then
+    xOK=true
+    vecho "${TAB}${PROG} already running with PID ${xPID}"
+  else
+    if $VB; then
+      echo "${TAB}attemping to launch ${PROG}..."
+      TAB+=$fTAB
     fi
+    DIR=/mnt/c/Program\ Files\ \(x86\)/Xming
+    if [ -d "$DIR" ]; then
+      vecho -e "${TAB}found $DIR"
+      if [ -f "$DIR/$PROG" ]; then
+        vecho -e "${TAB}Launching $PROG... \c"
+        (xming)
+        RETVAL=$?
+        if [[ $RETVAL == 0 ]]; then
+          xOK=true
+          if $VB; then
+            echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+            xPID=$(pgrep -x $PROG)
+            if [ ! -z $xPID ]; then
+              echo "${TAB}$PROG running with PID ${xPID}"
+            fi
+          fi
+        else
+          vecho -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+          vecho "${TAB}unaliasing $PROG..."
+          unalias xming 2>/dev/null
+        fi
+      else
+        vecho -e "${TAB}$PROG ${UL}not found${NORMAL}"
+        vecho "${TAB}unaliasing $PROG..."
+        unalias xming 2>/dev/null
+      fi
+    else
+      vecho -e "${TAB}$DIR ${UL}not found${NORMAL}"
+      vecho "${TAB}unaliasing $PROG..."
+      unalias xming 2>/dev/null
+    fi
+    if $VB; then
+      TAB=${TAB%$fTAB}
+    fi
+  fi
 fi
 
 if $xOK; then
-    dispOK=false
-    if [ -z $DISPLAY ];then
-	vecho "${TAB}DISPLAY not set"
+  dispOK=false
+  if [ -z $DISPLAY ]; then
+    vecho "${TAB}DISPLAY not set"
+  else
+    vecho -n "${TAB}DISPLAY set to $DISPLAY... "
+    xdpyinfo -display $DISPLAY &>/dev/null
+    RETVAL=$?
+    if [[ $RETVAL == 0 ]]; then
+      dispOK=true
+      vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
     else
-	vecho -n "${TAB}DISPLAY set to $DISPLAY... "
-	xdpyinfo -display $DISPLAY &>/dev/null
-	RETVAL=$?
-	if [[ $RETVAL == 0 ]]; then
-	    dispOK=true
-	    vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-	else
-	    vecho -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-	    unset DISPLAY
-	fi
+      vecho -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+      unset DISPLAY
     fi
+  fi
 
-    if ! $dispOK; then
-	TAB+=$fTAB
-	# try to determine WSL version
-	WSL_ver=$(wsl.exe -l -v | \grep -a \* | sed 's/[^[:print:]]//g;s/  */ /g' | cut -d ' ' -f 4)
-	vecho "${TAB}applying default DISPLAY for WSL version $WSL_ver"
-	if [[ $WSL_ver == 2 ]]; then
-	    # set default display for WSLg
-	    export DISPLAY=:0
-	else
-	    export DISPLAY=localhost:0.0
-	fi
-	vecho -n "${TAB}setting DISPLAY to $DISPLAY... "
-	xdpyinfo -display $DISPLAY &>/dev/null
-	RETVAL=$?
-	if [[ $RETVAL == 0 ]]; then
-	    vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-	else
-	    if $VB; then
-		echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-		# check other values if FAIL
-		echo "${TAB}building candidate DISPLAY list..."
-		TAB+=$fTAB
-	    fi
-	    display_list="localhost "
-	    name_list=$(\grep nameserver /etc/resolv.conf | awk '{print $2}')
-	    for name in $name_list
-	    do
-		display_list+="$name "
-	    done
-	    command_name="route.exe"
-	    vecho -n "${TAB}${command_name}... "
-	    if command -v ${command_name} &>/dev/null; then
-		vecho "found"
-		route_list=$(route.exe print | \grep -E '(0.0.0.0\s*){2}' | awk '{print $4}')
-		for route in $route_list
-		do
-		    display_list+="$route "
-		done
-	    else
-		vecho "${UL}not found${NORMAL}"
-	    fi
-	    for disp in $display_list
-	    do
-		export DISPLAY="${disp}:0.0"
-		vecho -n "${TAB}setting DISPLAY to $DISPLAY... "
-		xdpyinfo -display $DISPLAY &>/dev/null
-		RETVAL=$?
-		if [[ $RETVAL == 0 ]]; then
-		    vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-		    break
-		else
-		    vecho -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-		    unset DISPLAY
-		fi
-	    done
-	    TAB=${TAB%$fTAB}
-
-	    if [ -z "${DISPLAY}" ]; then
-		echo -e "${TAB}${BAD}ERROR: ${NORMAL}DISPLAY not set"
-	    else
-		vecho "${TAB}DISPLAY set to $DISPLAY"
-	    fi
-	fi
-	if $VB; then
-	    TAB=${TAB%$fTAB}
-	fi
+  if ! $dispOK; then
+    TAB+=$fTAB
+    # try to determine WSL version
+    WSL_ver=$(wsl.exe -l -v | \grep -a \* | sed 's/[^[:print:]]//g;s/  */ /g' | cut -d ' ' -f 4)
+    vecho "${TAB}applying default DISPLAY for WSL version $WSL_ver"
+    if [[ $WSL_ver == 2 ]]; then
+      # set default display for WSLg
+      export DISPLAY=:0
+    else
+      export DISPLAY=localhost:0.0
     fi
+    vecho -n "${TAB}setting DISPLAY to $DISPLAY... "
+    xdpyinfo -display $DISPLAY &>/dev/null
+    RETVAL=$?
+    if [[ $RETVAL == 0 ]]; then
+      vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+    else
+      if $VB; then
+        echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+        # check other values if FAIL
+        echo "${TAB}building candidate DISPLAY list..."
+        TAB+=$fTAB
+      fi
+      display_list="localhost "
+      name_list=$(\grep nameserver /etc/resolv.conf | awk '{print $2}')
+      for name in $name_list; do
+        display_list+="$name "
+      done
+      command_name="route.exe"
+      vecho -n "${TAB}${command_name}... "
+      if command -v ${command_name} &>/dev/null; then
+        vecho "found"
+        route_list=$(route.exe print | \grep -E '(0.0.0.0\s*){2}' | awk '{print $4}')
+        for route in $route_list; do
+          display_list+="$route "
+        done
+      else
+        vecho "${UL}not found${NORMAL}"
+      fi
+      for disp in $display_list; do
+        export DISPLAY="${disp}:0.0"
+        vecho -n "${TAB}setting DISPLAY to $DISPLAY... "
+        xdpyinfo -display $DISPLAY &>/dev/null
+        RETVAL=$?
+        if [[ $RETVAL == 0 ]]; then
+          vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+          break
+        else
+          vecho -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+          unset DISPLAY
+        fi
+      done
+      TAB=${TAB%$fTAB}
+
+      if [ -z "${DISPLAY}" ]; then
+        echo -e "${TAB}${BAD}ERROR: ${NORMAL}DISPLAY not set"
+      else
+        vecho "${TAB}DISPLAY set to $DISPLAY"
+      fi
+    fi
+    if $VB; then
+      TAB=${TAB%$fTAB}
+    fi
+  fi
 else
-    echo -e "${TAB}${BAD}ERROR: ${NORMAL}no X11 program running"
-    echo "${TAB}DISPLAY not set by $BASH_SOURCE"
-    echo "${TAB}DISPLAY set to to $DISPLAY"
+  echo -e "${TAB}${BAD}ERROR: ${NORMAL}no X11 program running"
+  echo "${TAB}DISPLAY not set by $BASH_SOURCE"
+  echo "${TAB}DISPLAY set to to $DISPLAY"
 fi
 
 if $VB; then
-    # reset tab
-    TAB=${TAB%$fTAB}
+  # reset tab
+  TAB=${TAB%$fTAB}
 fi

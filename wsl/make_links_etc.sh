@@ -39,7 +39,6 @@ echo "${TAB}starting directory = ${start_dir}"
 src_dir_logi=$(dirname "$src_name")
 cd $src_dir_logi
 
-
 # set target and link directories
 sys_name=$(basename "$src_dir_logi")
 config_dir="${HOME}/config"
@@ -68,15 +67,14 @@ fi
 bar 38 "------ Start Linking Repo Files ------" | sed "s/^/${TAB}/"
 
 # list of files to be linked
-for my_link in wsl.conf
-do
+for my_link in wsl.conf; do
     # define target (source)
     target=${target_dir}/${my_link}
     # define link name (destination)
     sub_dir=$(dirname "$my_link")
     if [ ! $sub_dir = "." ]; then
-	# strip target subdirectory from link name
-    my_link=$(basename "$my_link")
+        # strip target subdirectory from link name
+        my_link=$(basename "$my_link")
     fi
     link=${link_dir}/${my_link}
     # make link
