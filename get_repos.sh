@@ -269,6 +269,9 @@ if command -v wsl.exe >/dev/null; then
 else
 	echo "WSL not defined."
 fi
+# TODO there shold be an online (synced) repos dir, as defined; and a local repos dir. For
+# onedrive conflicts, there should be an offline (un-synced) repo dir. All fo the repos should be
+# linked to in the local repos dir; then examps and utils should link the the local repos dir
 rdir=${HOME}/repos
 
 echo -e "saving repsoitories to \e[33m$rdir\e[0m..."
@@ -378,7 +381,14 @@ if [[ "$(hostname -f)" =~ *"navy.mil" ]]; then
 else
 	echo -n "creating links outside of Onedrive..."
 	wdir="${HOME}/winhome/Documents/${distro}/repos"
-	target=${wdir}
+
+  odir="${HOME}/offline"
+# then link
+	if [ ! -e ${odir} ]; then
+		ln -sv "${wdir}" ${odir} 2>&1 | sed "s/^/${TAB}SYM: /"
+	fi
+  
+	target=${odir}
 	echo -ne "${TAB}target directory \e[33m${target}\e[0m... "
 	if [ -e "${target}" ]; then
 		echo "exists "
