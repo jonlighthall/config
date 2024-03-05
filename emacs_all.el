@@ -20,9 +20,13 @@
 (set 'ncols 97)
 
 ;; Tab settings
+;; MATLAB tab size 
 (set 'mtab 4)
-(setq-default tab-width 4)
-;;(setq-default indent-tabs-mode t)
+;; general/global tab size
+(set 'gtab 2)
+(setq-default tab-width gtab)
+;; use spaces, not tabs
+(setq-default indent-tabs-mode nil)
 
 (custom-set-variables
  '(ediff-split-window-function (quote split-window-horizontally))
