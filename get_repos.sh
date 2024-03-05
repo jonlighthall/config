@@ -377,7 +377,7 @@ if [[ "$(hostname -f)" =~ *"navy.mil" ]]; then
 	wdir=$rdir
 else
 	echo -n "creating links outside of Onedrive..."
-	wdir="${HOME}/winhome/Documents/repos"
+	wdir="${HOME}/winhome/Documents/${distro}/repos"
 	target=${wdir}
 	echo -ne "${TAB}target directory \e[33m${target}\e[0m... "
 	if [ -e "${target}" ]; then
