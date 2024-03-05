@@ -1,55 +1,55 @@
-function set_ftab () {
-	# if fTAB is unset, assign default value
-	export fTAB=${fTAB='   '}
+function set_ftab() {
+    # if fTAB is unset, assign default value
+    export fTAB=${fTAB='   '}
 }
 
 function ctab() {
-	# clear tab
-	export TAB=''
+    # clear tab
+    export TAB=''
 }
 
 function rtab() {
-	# reset tab
-	set_ftab
-	ctab
+    # reset tab
+    set_ftab
+    ctab
 }
 
 function itab() {
-	# increment tab
-	set_ftab
-	if [ $# -eq 0 ]; then
-		N=1
-	else
-		N=$1
-	fi
-	for ((i=1;i<=$N;i++)); do
-		# increment TAB by fTAB
-		TAB+=${fTAB}
-	done
-	export TAB
+    # increment tab
+    set_ftab
+    if [ $# -eq 0 ]; then
+        N=1
+    else
+        N=$1
+    fi
+    for ((i = 1; i <= $N; i++)); do
+        # increment TAB by fTAB
+        TAB+=${fTAB}
+    done
+    export TAB
 }
 
 function dtab() {
-	# decrement tab
-	set_ftab
-	if [ $# -eq 0 ]; then
-		N=1
-	else
-		N=$1
-	fi
-	for ((i=1;i<=$N;i++)); do
-		# decrement TAB by fTAB
-		TAB=${TAB%$fTAB}
-	done
-	export TAB
+    # decrement tab
+    set_ftab
+    if [ $# -eq 0 ]; then
+        N=1
+    else
+        N=$1
+    fi
+    for ((i = 1; i <= $N; i++)); do
+        # decrement TAB by fTAB
+        TAB=${TAB%$fTAB}
+    done
+    export TAB
 }
 
 # set tab
 if [ -z ${TAB+dummy} ]; then
-	i=0
-	decho -e "TAB ${yellow}unset${NORMAL}"
+    i=0
+    decho -e "TAB ${yellow}unset${NORMAL}"
 else
-	i=${#TAB}
+    i=${#TAB}
 fi
 
 export TAB=${TAB=''}
@@ -57,5 +57,5 @@ export fTAB=${fTAB:='   '}
 
 j=${#TAB}
 if [ $i -ne $j ]; then
-	decho -e "${TAB}TAB = \E[106m${TAB}${NORMAL} length $j"
+    decho -e "${TAB}TAB = \E[106m${TAB}${NORMAL} length $j"
 fi
