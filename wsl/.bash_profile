@@ -33,7 +33,7 @@ if $VB; then
         TAB+=${TAB+${fTAB:='   '}}
     fi
     # load formatting
-    fpretty=${HOME}/utils/bash/.bashrc_pretty
+    fpretty=${HOME}/config/.bashrc_pretty
     if [ -e $fpretty ]; then
         if [ -z ${fpretty_loaded+dummy} ]; then
             source $fpretty

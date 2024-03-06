@@ -13,7 +13,7 @@ echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
 # since ~/.bashrc usually calls ~/.bash_aliases, a conditional could be added in .bash_aliases
 # (linked to repo) and have all the functionality of this script, but for subshells.
 
-fpretty=${HOME}/utils/bash/.bashrc_pretty
+fpretty=${HOME}/config/.bashrc_pretty
 if [ -e $fpretty ]; then
 	source $fpretty
 	set_traps
