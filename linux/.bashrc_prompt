@@ -12,9 +12,7 @@ else
 	# load formatting
 	fpretty=${HOME}/utils/bash/.bashrc_pretty
 	if [ -e $fpretty ]; then
-	    if [ -z ${fpretty_loaded+dummy} ]; then
-	       source $fpretty
-	    fi
+	    source $fpretty
 	fi
 	# print source name at start
 	if (return 0 2>/dev/null); then
@@ -77,7 +75,7 @@ tmux_ses() {
 
 sh_lvl() {
     if [ "$SHLVL" -gt 1 ]; then
-	echo -en " \x1B[1;31mSHLVL${SHLVL}\x1B[0m"
+	echo -en " \x1B[1;31mLVL${SHLVL}\x1B[0m"
     else
 	:
     fi
