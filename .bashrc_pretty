@@ -1,19 +1,18 @@
 #!/bin/bash -u
 
+# define source directory
 src_name=$(readlink -f ${BASH_SOURCE[0]})
 src_dir_logi=${BASH_SOURCE%/*}
 
-# load colors
-f_colors=${src_dir_logi}/.bash_colors
-if [ -f $f_colors ]; then
-    if [ -z ${GOOD+dummy} ]; then
-        source $f_colors
+# load bash utils
+for util in .bash_color .bash_tabs .bash_links; do
+    fname="${src_dir_logi}/${util}"
+    if [ -e "${fname}" ]; then
+        source ${fname}
     else
-        if [[ "$-" == *i* ]]; then
-            decho -e "${yellow}$f_colors already loaded${NORMAL}"
-        fi
+        echo "${fname} not found"
     fi
-fi
+done
 
 # set default debug level
 declare -i DEBUG=${DEBUG:=0}
@@ -29,16 +28,6 @@ decho() {
 }
 
 decho "DEBUG = $DEBUG"
-
-# load bash utils
-for util in .bash_color .bash_tabs .bash_links; do
-    fname="${src_dir_logi}/${util}"
-    if [ -e "${fname}" ]; then
-        source ${fname}
-    else
-        echo "${fname} not found"
-    fi
-done
 
 # If not running interactively, reduce prints
 if [[ "$-" == *i* ]]; then
