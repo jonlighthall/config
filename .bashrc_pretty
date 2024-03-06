@@ -3,6 +3,33 @@
 src_name=$(readlink -f ${BASH_SOURCE[0]})
 src_dir_logi=${BASH_SOURCE%/*}
 
+# load colors
+f_colors=${src_dir_logi}/.bash_colors
+if [ -f $f_colors ]; then
+    if [ -z ${GOOD+dummy} ]; then
+        source $f_colors
+    else
+        if [[ "$-" == *i* ]]; then
+            decho -e "${yellow}$f_colors already loaded${NORMAL}"
+        fi
+    fi
+fi
+
+# set default debug level
+declare -i DEBUG=${DEBUG:=0}
+
+# conditional debug echo
+decho() {
+    if [ -z ${DEBUG:+dummy} ] || [ $DEBUG -gt 0 ]; then
+        # if DEBUG is (unset or null) or greater than 0
+        echo -ne "\e[38;5;14m"
+        echo "$@"
+        echo -ne "\e[0m"
+    fi
+}
+
+decho "DEBUG = $DEBUG"
+
 # set tabs
 f_tabs=${src_dir_logi}/.bash_tabs
 if [ -e $f_tabs ]; then
@@ -22,39 +49,6 @@ if [[ "$-" == *i* ]]; then
         echo -e "${TAB}${yellow}${BASH_SOURCE[0]##*/} already loaded${NORMAL}"
     fi
     dtab
-fi
-
-# set default debug level
-declare -i DEBUG=${DEBUG:=0}
-
-# conditional debug echo
-decho() {
-    if [ -z ${DEBUG:+dummy} ] || [ $DEBUG -gt 0 ]; then
-        # if DEBUG is (unset or null) or greater than 0
-        echo -ne "\e[38;5;14m"
-        echo "$@"
-        echo -ne "\e[0m"
-    fi
-}
-
-decho "DEBUG = $DEBUG"
-
-# load colors
-f_colors=${src_dir_logi}/.bash_colors
-if [ -f $f_colors ]; then
-    if [ -z ${GOOD+dummy} ]; then
-        source $f_colors
-    else
-        if [[ "$-" == *i* ]]; then
-            decho -e "${yellow}$f_colors already loaded${NORMAL}"
-        fi
-    fi
-fi
-
-# set tabs
-f_tabs=${src_dir_logi}/.bash_tabs
-if [ -e $f_tabs ]; then
-    source $f_tabs
 fi
 
 # define horizontal line
@@ -140,15 +134,17 @@ function print_elap() {
         declare -ir nd=3
         fmt="%.${nd}f"
         dT_sec=$(printf "$fmt" $dT_sec)
-    else
-        echo -ne "${yellow}start_time not defined${NORMAL} "
-        dT_sec=-1
-    fi
 
-    if command -v sec2elap &>/dev/null; then
-        bash sec2elap $dT_sec | tr -d "\n"
+        # print output
+        if command -v sec2elap &>/dev/null; then
+            bash sec2elap $dT_sec | tr -d "\n"
+        else
+            echo -ne "elapsed time is ${white}${dT_sec} sec${NORMAL}"
+        fi
+
     else
-        echo -ne "elapsed time is ${white}${dT_sec} sec${NORMAL}"
+        decho -ne "${yellow}start_time not defined${NORMAL} "
+        echo -en "\x1b[1D"
     fi
 }
 
