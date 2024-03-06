@@ -34,12 +34,8 @@ if [ ! "$BASH_SOURCE" = "$src_name" ]; then
     echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
 fi
 
-start_dir=$PWD
-echo "${TAB}starting directory = ${start_dir}"
-src_dir_logi=$(dirname "$src_name")
-cd $src_dir_logi
-
 # set target and link directories
+src_dir_logi=$(dirname "$src_name")
 sys_name=$(basename "$src_dir_logi")
 config_dir="${HOME}/config"
 target_dir="${config_dir}/${sys_name}"
