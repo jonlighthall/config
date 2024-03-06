@@ -30,11 +30,15 @@ decho() {
 
 decho "DEBUG = $DEBUG"
 
-# set tabs
-f_tabs=${src_dir_logi}/.bash_tabs
-if [ -e $f_tabs ]; then
-    source $f_tabs
-fi
+# load bash utils
+for util in .bash_color .bash_tabs .bash_links; do
+    fname="${src_dir_logi}/${util}"
+    if [ -e "${fname}" ]; then
+        source ${fname}
+    else
+        echo "${fname} not found"
+    fi
+done
 
 # If not running interactively, reduce prints
 if [[ "$-" == *i* ]]; then
