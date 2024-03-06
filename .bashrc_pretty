@@ -5,7 +5,7 @@ src_name=$(readlink -f ${BASH_SOURCE[0]})
 src_dir_logi=${BASH_SOURCE%/*}
 
 # load bash utils
-for util in .bash_color .bash_tabs .bash_links; do
+for util in .bash_colors .bash_tabs .bash_links; do
     fname="${src_dir_logi}/${util}"
     if [ -e "${fname}" ]; then
         source ${fname}
