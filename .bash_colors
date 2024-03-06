@@ -1,0 +1,33 @@
+# define highligt colors
+export     BAD='\E[0;31m' # red
+export    GOOD='\E[0;32m' # green
+# define accents
+export  NORMAL='\E[0m'    # reset
+export    BOLD='\E[1m'    # bold
+export      UL='\E[4m'    # underline
+export  INVERT='\E[7m'    # invert
+# define 'ls' colors
+export  BROKEN='\E[1;31m' # bold red    : broken link
+export     TGT='\E[1;32m' # bold green  : target
+export     DIR='\E[1;34m' # bold blue   : directory
+export   VALID='\E[1;36m' # bold cyan   : valid link
+# define PS1 colors
+export  PSTIME='\E[0;37m' # light gray  : time
+export  PSUSER='\E[0;32m' # green       : user name, prompt
+export  PSHOST='\E[1;34m' # bold blue   : host name
+export   PSDIR='\E[0;33m' # yellow      : directory
+export    PSBR='\E[0;36m' # blue        : branch
+# define 'grep' colors
+export     GRH='\E[1;31m' # bold red    : pattern match
+export     GRF='\E[0;35m' # magenta     : file match
+# define primary colors	(foreground)
+export     red='\E[31m'
+export   green='\E[32m'
+export    blue='\E[34m'
+# define secondary colors (foreground)
+export  yellow='\E[33m'
+export    cyan='\E[36m'
+export magenta='\E[35m'
+# define monochrome colors
+export    gray='\E[90m'
+export   white='\E[1;37m'
