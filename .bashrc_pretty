@@ -172,7 +172,6 @@ function print_exit() {
     fi
 
     print_done
-
 }
 
 function print_error() {
@@ -245,8 +244,36 @@ function print_int() {
 }
 
 function print_return() {
+    RETURN_RETVAL=$1
+    
     start_new_line
-    echo -e "${yellow}\E[7m RETURN ${NORMAL} ${BASH_SOURCE[1]##*/}"
+
+    # get length of stack
+    local NB=${#BASH_SOURCE[@]}
+    decho "${TAB}There are N=$NB entries in the call stack"
+
+    decho "${TAB}full bash source:"
+    decho "${TAB}${fTAB}BASH_SOURCE[@] = ${BASH_SOURCE[@]}"
+
+    decho "${TAB}this source:"
+    decho "${TAB}${fTAB}BASH_SOURCE[0] = ${BASH_SOURCE[0]}"
+
+    if [ $NB -gt 1 ]; then
+        decho "${TAB}invoking source source:"
+        decho "${TAB}${fTAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]}"
+        decho "${TAB}${fTAB}BASH_SOURCE[$((NB-1))] = ${BASH_SOURCE[$((NB-1))]}"
+        
+    fi
+
+    local -i NF=${#FUNCNAME[@]}
+    decho "${TAB}There are N=$NF entries in the function stack"
+    decho "${TAB}FUNCNAME=${FUNCNAME[@]}"
+
+    if [ ${#FUNCNAME[@]} -gt 1 ]; then
+        decho "${TAB}FUNCNAME[$((NF-2))]=${FUNCNAME[$((NF-2))]}"
+    fi   
+    
+    echo -e "${yellow}\E[7m RETURN ${NORMAL} ${gray}RETVAL=${RETURN_RETVAL}${NORMAL} ${FUNCNAME[$((NF-2))]}"
 }
 
 # define traps
