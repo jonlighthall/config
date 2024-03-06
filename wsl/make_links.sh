@@ -3,27 +3,13 @@
 # get starting time in nanoseconds
 start_time=$(date +%s%N)
 
-utils_dir="${HOME}/utils"
-bash_utils_dir="${utils_dir}/bash"
-
 # load formatting
-fpretty="${bash_utils_dir}/.bashrc_pretty"
+fpretty="${HOME}/config/.bashrc_pretty"
 if [ -e "$fpretty" ]; then
     source "$fpretty"
     set_traps
-else
-    bar() {
-        echo "$2"
-    }
-fi
-
-# set tab
-export TAB+=${TAB+${fTAB:='   '}}
-
-# load linking scripts
-flink="${bash_utils_dir}/.bash_links"
-if [ -e "$flink" ]; then
-    source "$flink"
+    # set tab
+    itab
 fi
 
 # determine if script is being sourced or executed

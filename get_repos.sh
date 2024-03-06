@@ -2,11 +2,8 @@
 # set tab
 :${TAB:=''}
 
-utils_dir="${HOME}/utils"
-bash_utils_dir="${utils_dir}/bash"
-
 # load formatting
-fpretty="${bash_utils_dir}/.bashrc_pretty"
+fpretty="${HOME}/config/.bashrc_pretty"
 if [ -e "$fpretty" ]; then
     source "$fpretty"
 fi
@@ -387,7 +384,7 @@ else
 	if [ ! -e ${odir} ]; then
 		ln -sv "${wdir}" ${odir} 2>&1 | sed "s/^/${TAB}SYM: /"
 	fi
-  
+
 	target=${odir}
 	echo -ne "${TAB}target directory \e[33m${target}\e[0m... "
 	if [ -e "${target}" ]; then
