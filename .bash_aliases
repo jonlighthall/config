@@ -38,6 +38,7 @@ alias gitdn='git diff --name-status'
 alias gitr='git remote -v'
 alias gits='git status'
 alias gitsi='git status --ignored'
+alias gitsl='git stash list --date=local'
 
 # grep
 alias g='gr'
@@ -78,7 +79,7 @@ function gitl {
     if [ $# -ne 1 ]; then
 	git log
     else
-	git log --follow $@
+	(git log --follow $@) && git log --follow $@ || git log $@
     fi
 }
 
