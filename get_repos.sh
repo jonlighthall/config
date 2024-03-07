@@ -371,7 +371,8 @@ echo -e "cloning Win32 utilities..."
 # OneDrive is defined, clone the repositories into an offline directory.
 wdir=$rdir
 # check if host is Navy
-if [[ "$(hostname -f)" =~ *"navy.mil" ]]; then
+if [[ "$(hostname -f)" == *".mil" ]]; then
+    echo -e "host: \x1b[31m$(hostname -f)\x1b[m"
 # check if WSL is defined
     if command -v wsl.exe >/dev/null; then
 	      echo "WSL defined."
@@ -396,7 +397,7 @@ if [[ "$(hostname -f)" =~ *"navy.mil" ]]; then
         echo "WSL not defined."
     fi
 else
-	  echo -n "creating links inside Onedrive..."
+	  echo "${TAB}creating links in ${wdir}..."
 fi
 
 for my_repo in batch powershell; do
@@ -558,10 +559,9 @@ for my_repo in matlab; do
 	echo "${matlab_dir}..."
 	if [ -d ${matlab_dir} ]; then
 		echo "found"
-
 	else
 		echo "not found"
-		echo "aborting clone ${matlab}"
+		echo "aborting clone ${my_repo}"
 		continue
 	fi
 
@@ -631,7 +631,7 @@ dtab
 echo -e "done cloning ${group_name} repos"
 
 # list of private repos to be cloned
-if [[ ! ("$(hostname -f)" == *"navy.mil") ]]; then
+if [[ ! "$(hostname -f)" == *".mil" ]]; then
 	group_name="private"
 	echo -e "cloning \x1b[1;32m${group_name}\x1b[m repos..."
 	TAB+=$fTAB
@@ -667,7 +667,7 @@ if [[ ! ("$(hostname -f)" == *"navy.mil") ]]; then
 	dtab
 	echo -e "done cloning ${group_name} repos"
 else
-    echo "${TAB}host: $(hostname -f)"
+    echo -e "host: \x1b[31m$(hostname -f)\x1b[m"
 	  echo -e "${TAB}${fTAB}\x1b[33mexcluding ${group_name} repos\x1b[m"
 fi
 echo "done cloning all repos"
