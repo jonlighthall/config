@@ -31,10 +31,9 @@ function check_target() {
     fi
 
     # determine 
-    local type=''
-    [ -L "${link}" ] && type="link "
-    [ -f "${link}" ] && type="file "
-    [ -d "${link}" ] && type="directory "
+    [ -L "${target}" ] && type="link "
+    [ -f "${target}" ] && type="file "
+    [ -d "${target}" ] && type="directory "
 
     # check if target exists
     echo -en "target ${type}${yellow}${target}${NORMAL}... "
