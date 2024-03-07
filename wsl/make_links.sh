@@ -3,13 +3,18 @@
 # get starting time in nanoseconds
 start_time=$(date +%s%N)
 
-# load formatting
+# load bash utilities
 fpretty="${HOME}/config/.bashrc_pretty"
 if [ -e "$fpretty" ]; then
     source "$fpretty"
     set_traps
     # set tab
-    itab
+    N=${#BASH_SOURCE[@]}
+    if [ $N -gt 1 ]; then
+        itab
+    else
+        rtab
+    fi
 fi
 
 # determine if script is being sourced or executed
@@ -18,7 +23,7 @@ if (return 0 2>/dev/null); then
 else
     RUN_TYPE="executing"
     # exit on errors
-    set -e
+    set -eE
 fi
 # print source name at start
 echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
@@ -83,20 +88,7 @@ else
     exit 1
 fi
 
-echo -n "${TAB}link directory ${link_dir}... "
-if [ -d $link_dir ]; then
-    echo "exists"
-else
-    echo "does not exist"
-    if [ $link_dir = $HOME ]; then
-        echo "this should never be true! $link_dir is HOME"
-        exit 1
-    else
-        decho "$link_dir != $HOME"
-        mkdir -pv $link_dir
-
-    fi
-fi
+do_make_dir "$link_dir"
 
 bar 38 "------ Start Linking Repo Files ------" | sed "s/^/${TAB}/"
 
@@ -111,6 +103,7 @@ for my_link in .bash_aliases .bash_logout .bash_profile .emacs.d .gitconfig .hus
         my_link=$(basename "$my_link")
     fi
     link=${link_dir}/${my_link}
+    # create link
     do_link "${target}" "${link}"
 done
 bar 38 "------- Done Linking Repo Files ------" | sed "s/^/${TAB}/"
