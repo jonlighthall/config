@@ -108,8 +108,7 @@ for my_link in .bash_aliases .bash_logout .bash_profile .emacs.d .gitconfig .hus
 done
 bar 38 "------- Done Linking Repo Files ------" | sed "s/^/${TAB}/"
 
-# run make_linnks in /etc
-
+# run make_links in /etc
 for prog in make_links_etc.sh; do
     echo -n "${TAB}${prog}... "
     if [ -f $prog ]; then
@@ -120,5 +119,6 @@ for prog in make_links_etc.sh; do
     fi
 done
 
+# return to starting directory
 cd $start_dir
 dtab
