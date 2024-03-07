@@ -111,7 +111,7 @@ for my_link in .bash_aliases .bash_logout .bash_profile .emacs.d .gitconfig .hus
         my_link=$(basename "$my_link")
     fi
     link=${link_dir}/${my_link}
-    do_link "$target" "$link"
+    do_link "${target}" "${link}"
 done
 bar 38 "------- Done Linking Repo Files ------" | sed "s/^/${TAB}/"
 
