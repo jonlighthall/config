@@ -45,13 +45,14 @@ function check_target() {
     check_arg1 $@
 
     # define target (source)
-    local target=$(readlink -f "$1")
+    local target="$1"
+    local target_canon=$(readlink -f "${target}")
 
     # get the cursor position
     echo -en "\E[6n"
     read -sdR CURPOS
     local CURPOS=${CURPOS#*[}
-          #} # dummy bracket for emacs indenting
+          #}# dummy bracket for emacs indenting
     # get the x-position of the cursor
     local -i x_pos=${CURPOS#*;}
     #echo "${TAB}x_pos=${x_pos}"
@@ -64,20 +65,20 @@ function check_target() {
     [ -f "${target}" ] && type="file "
     [ -d "${target}" ] && type="directory "
 
-    if [[ "${target}" == ${HOME} ]]; then
+    if [[ "${target_canon}" == ${HOME} ]]; then
         echo -e "target ${yellow}$1${NORMAL} is ${red}HOME${NORMAL}"
     fi    
     
     # check if target exists
     echo -en "target ${type}${yellow}$1${NORMAL}... "
-    if [ -e "${target}" ]; then
+    if [ -e "${target_canon}" ]; then
         echo -e "${GOOD}exists${NORMAL}"
         itab
         return 0
     else
         echo -e "${BAD}does not exist${NORMAL}"
         dtab
-        if [[ "${target}" == ${HOME} ]]; then
+        if [[ "${target_canon}" == ${HOME} ]]; then
             echo -e "target ${yellow}$1${NORMAL} is ${red}HOME${NORMAL}"
             exit 1
         else 
@@ -158,8 +159,9 @@ function do_link() {
         itab
         echo -n "${TAB}checking permissions... "
         local -i perm=$(stat -c "%a" ${target_dir})
-        echo ${perm}
+        echo -n "${perm} "
         if [[ ${perm} -gt ${permOK} ]]; then
+            echo -e "${BAD}FAIL${NORMAL}"
             echo -en "${TAB}${GRH}changing permissions${NORMAL} to ${permOK}... "
             chmod ${permOK} ${target_dir}
             local RETVAL=$?
@@ -169,7 +171,7 @@ function do_link() {
                 echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
             fi
         else
-            echo -e "${TAB}permissions ${GOOD}OK${NORMAL}"
+            echo -e "${GOOD}OK${NORMAL}"
         fi
         dtab
 
@@ -189,14 +191,16 @@ function do_link() {
             # check existing permissions
             itab
             echo -n "${TAB}checking permissions... "
-            local -i perm=$(stat -c "%a" ${target})
-            echo ${perm}
+            local target_canon=$(readlink -f "${target}")
+            local -i perm=$(stat -c "%a" "${target_canon}")
+            echo -n "${perm} "
 
             # if necessary, the target files will have their existing permissions replaced with
             # the required permissions
             if [[ ${perm} -gt ${permOK} ]]; then
+                echo -e "${BAD}FAIL${NORMAL}"
                 echo -en "${TAB}${GRH}changing permissions${NORMAL} to ${permOK}... "
-                chmod ${permOK} ${target}
+                chmod ${permOK} ${target_cannon}
                 local RETVAL=$?
                 if [ $RETVAL -eq 0 ]; then
                     echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
@@ -204,7 +208,7 @@ function do_link() {
                     echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
                 fi
             else
-                echo -e "${TAB}permissions ${GOOD}OK${NORMAL}"
+                echo -e "${GOOD}OK${NORMAL}"
             fi
             dtab
         fi
@@ -230,6 +234,7 @@ function do_link() {
         if [[ "${target}" -ef "${link_name}" ]]; then
             echo "already points to ${link_name##*/}"
             echo -n "${TAB}"
+            #TODO print only link and target
             ls -lhG --color=auto "${link_name}"
             echo "${TAB}skipping..."
             dtab 2 # reset status and link tab
