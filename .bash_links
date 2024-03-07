@@ -36,7 +36,7 @@ function check_target() {
     [ -d "${target}" ] && type="directory "
 
     # check if target exists
-    echo -en "target ${type}${yellow}${target}${NORMAL}... "
+    echo -en "target ${type}${yellow}$1${NORMAL}... "
     if [ -e "${target}" ]; then
         echo -e "${GOOD}exists${NORMAL}"
         itab
@@ -329,7 +329,11 @@ function do_make_dir() {
     # define target (source)
     local target="$1"
 
-    check_target "$target" || mkdir -pv ${target} 1> >(sed "s/^/${TAB}/")
+    check_target "$target" || {
+        itab 2
+        mkdir -pv ${target} &> >(sed "s/^/${TAB}/")
+        dtab
+        }
     return $?
 }
 
