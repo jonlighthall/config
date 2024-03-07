@@ -64,6 +64,10 @@ function check_target() {
     [ -f "${target}" ] && type="file "
     [ -d "${target}" ] && type="directory "
 
+    if [[ "${target}" == ${HOME} ]]; then
+        echo "target ${yellow}$1${NORMAL} is ${red}HOME${NORMAL}"
+    fi    
+    
     # check if target exists
     echo -en "target ${type}${yellow}$1${NORMAL}... "
     if [ -e "${target}" ]; then
@@ -73,7 +77,12 @@ function check_target() {
     else
         echo -e "${BAD}does not exist${NORMAL}"
         dtab
-        return 1
+        if [[ "${target}" == ${HOME} ]]; then
+            echo "target ${yellow}$1${NORMAL} is ${red}HOME${NORMAL}"
+            exit 1
+        else 
+            return 1
+        fi
     fi
 }
 
@@ -137,6 +146,7 @@ function do_link() {
         fi
     fi
 
+    # check if target is an SSH configuration file
     local target_dir=$(dirname "$target")
     if [[ "${target_dir}" == *".ssh" ]]; then
         echo "${TAB}Applying options for SSH configuration files..."
@@ -165,6 +175,7 @@ function do_link() {
 
         # ...and file permissions
         if [[ ${target##*/} = id* || ${target##*/} = config || ${target##*/} = authorized_keys* ]]; then
+            # determine permission requirements
             echo -n "${TAB}${target##*/} requires specific permissions: "
             if [[ "${target}" == *"pub"* ]]; then
                 local -i permOK=644
@@ -174,10 +185,15 @@ function do_link() {
                 echo -n "PRIV "
             fi
             echo "${permOK}"
+            
+            # check existing permissions
             itab
             echo -n "${TAB}checking permissions... "
             local -i perm=$(stat -c "%a" ${target})
             echo ${perm}
+
+            # if necessary, the target files will have their existing permissions replaced with
+            # the required permissions
             if [[ ${perm} -gt ${permOK} ]]; then
                 echo -en "${TAB}${GRH}changing permissions${NORMAL} to ${permOK}... "
                 chmod ${permOK} ${target}
@@ -216,17 +232,21 @@ function do_link() {
             echo -n "${TAB}"
             ls -lhG --color=auto "${link_name}"
             echo "${TAB}skipping..."
-            dtab 2
+            dtab 2 # reset status and link tab
             return 0
         else
-            # next, delete or backup existing copy
+            # next, check write permissions
             local link_dir=$(dirname "${link_name}")
             if [ -w ${link_name} ] && [ -w ${link_dir} ]; then
+                # then, delete or backup existing copy
+
+                # check file contents
                 if [ $(diff -ebwB "${target}" "${link_name}" 2>&1 | wc -c) -eq 0 ]; then
                     echo "has the same contents"
                     echo -n "${TAB}deleting... "
                     rm -v "${link_name}"
                 else
+                    # get file/link modification date
                     if [ -e "${link_name}" ]; then
                         echo "will be backed up..."
                         local mdate=$(date -r "${link_name}" +'%Y-%m-%d-t%H%M')
@@ -234,10 +254,12 @@ function do_link() {
                         echo -n "is a broken link..."
                         local mdate=$(stat -c '%y' ${link_name} | sed 's/\(^[0-9-]*\) \([0-9:]*\)\..*$/\1-t\2/' | sed 's/://g')
                     fi
+                    # backup/rename existing file
                     local link_copy="${link_name}_${mdate}"
                     mv -v "${link_name}" "${link_copy}" | sed "s/^/${TAB}/"
                 fi
             else
+                # issue warning
                 echo -n "${TAB}${BAD}cannot be written to"
                 if [ "$EUID" -ne 0 ]; then
                     echo -e "${TAB}${GRH}This command must be run as root!${NORMAL}"
@@ -251,13 +273,16 @@ function do_link() {
     else
         echo "does not exist"
     fi
-    # then link
+    # finally, link target to link_name
     echo -en "${TAB}${GRH}"
     hline 72
     echo "${TAB}making link... "
+    # check if target file is authorized_keys
     if [[ "${target}" == *"_keys"* ]]; then
+        # make a physical link
         ln -Pv "${target}" ${link_name} | sed "s/^/${TAB}PHYS: /"
     else
+        # make a symbolic link
         ln -sv "${target}" ${link_name} | sed "s/^/${TAB}SYM: /"
     fi
     echo -ne "${TAB}"
