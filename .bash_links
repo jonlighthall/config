@@ -65,7 +65,7 @@ function check_target() {
     [ -d "${target}" ] && type="directory "
 
     if [[ "${target}" == ${HOME} ]]; then
-        echo "target ${yellow}$1${NORMAL} is ${red}HOME${NORMAL}"
+        echo -e "target ${yellow}$1${NORMAL} is ${red}HOME${NORMAL}"
     fi    
     
     # check if target exists
@@ -78,7 +78,7 @@ function check_target() {
         echo -e "${BAD}does not exist${NORMAL}"
         dtab
         if [[ "${target}" == ${HOME} ]]; then
-            echo "target ${yellow}$1${NORMAL} is ${red}HOME${NORMAL}"
+            echo -e "target ${yellow}$1${NORMAL} is ${red}HOME${NORMAL}"
             exit 1
         else 
             return 1
@@ -214,7 +214,7 @@ function do_link() {
             if [[ ${target##*/} == *"$fname"* ]]; then
                 echo -e "${TAB}${GRH}exclude${NORMAL} $fname: ${target##*/}"
                 dtab
-                retrun 0
+                return 0
             fi
         done
 
