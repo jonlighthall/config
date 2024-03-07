@@ -61,16 +61,16 @@ function do_link() {
     #     check the public/private premission of individual files
     #     exclude linking of certain files
     #   LINK
-    #     check if link name exits
-    #       + check if link points to target
-    #           + already done, LS link and RETURN
-    #           - check if link name is writable
-    #               + check if link and target have the same conents
+    #     check if link_name exits
+    #       + check if link_name points to target
+    #           + already done, LS link_name and RETURN
+    #           - check if link_name is writable
+    #               + check if link_name and target have the same conents
     #                   + DELETE
     #                   - check if exists
     #                       + get date from date
     #                       - get date from stat
-    #                     RENAME the existing file occupying the link name
+    #                     RENAME the existing file occupying the link_name
     #               - issue error and RETURN
     #       - proceed with linking
     #     LINK
@@ -99,8 +99,8 @@ function do_link() {
     # define target (source)
     local target="$1"
 
-    # define link (destination)
-    local link="$2"
+    # define link name (destination)
+    local link_name="$2"
 
     # check if target exists
     if [ ${#FUNCNAME[@]} -gt 1 ]; then
@@ -179,37 +179,37 @@ function do_link() {
     fi # done with SSH settings
 
     # begin linking...
-    echo -n "${TAB}link ${link}... "
+    echo -n "${TAB}link name ${link_name}... "
 
     # first, check for existing copy
-    if [ -L "${link}" ] || [ -f "${link}" ] || [ -d "${link}" ]; then
+    if [ -L "${link_name}" ] || [ -f "${link_name}" ] || [ -d "${link_name}" ]; then
         itab
         echo -n "exists and "
-        if [[ "${target}" -ef "${link}" ]]; then
-            echo "already points to ${link##*/}"
+        if [[ "${target}" -ef "${link_name}" ]]; then
+            echo "already points to ${link_name##*/}"
             echo -n "${TAB}"
-            ls -lhG --color=auto "${link}"
+            ls -lhG --color=auto "${link_name}"
             echo "${TAB}skipping..."
             dtab 2
             return 0
         else
             # next, delete or backup existing copy
-            local link_dir=$(dirname "${link}")
-            if [ -w ${link} ] && [ -w ${link_dir} ]; then
-                if [ $(diff -ebwB "${target}" "${link}" 2>&1 | wc -c) -eq 0 ]; then
+            local link_dir=$(dirname "${link_name}")
+            if [ -w ${link_name} ] && [ -w ${link_dir} ]; then
+                if [ $(diff -ebwB "${target}" "${link_name}" 2>&1 | wc -c) -eq 0 ]; then
                     echo "has the same contents"
                     echo -n "${TAB}deleting... "
-                    rm -v "${link}"
+                    rm -v "${link_name}"
                 else
-                    if [ -e "${link}" ]; then
+                    if [ -e "${link_name}" ]; then
                         echo "will be backed up..."
-                        local mdate=$(date -r "${link}" +'%Y-%m-%d-t%H%M')
+                        local mdate=$(date -r "${link_name}" +'%Y-%m-%d-t%H%M')
                     else
                         echo -n "is a broken link..."
-                        local mdate=$(stat -c '%y' ${link} | sed 's/\(^[0-9-]*\) \([0-9:]*\)\..*$/\1-t\2/' | sed 's/://g')
+                        local mdate=$(stat -c '%y' ${link_name} | sed 's/\(^[0-9-]*\) \([0-9:]*\)\..*$/\1-t\2/' | sed 's/://g')
                     fi
-                    local link_copy="${link}_${mdate}"
-                    mv -v "${link}" "${link_copy}" | sed "s/^/${TAB}/"
+                    local link_copy="${link_name}_${mdate}"
+                    mv -v "${link_name}" "${link_copy}" | sed "s/^/${TAB}/"
                 fi
             else
                 echo -n "${TAB}${BAD}cannot be written to"
@@ -230,9 +230,9 @@ function do_link() {
     hline 72
     echo "${TAB}making link... "
     if [[ "${target}" == *"_keys"* ]]; then
-        ln -Pv "${target}" ${link} | sed "s/^/${TAB}PHYS: /"
+        ln -Pv "${target}" ${link_name} | sed "s/^/${TAB}PHYS: /"
     else
-        ln -sv "${target}" ${link} | sed "s/^/${TAB}SYM: /"
+        ln -sv "${target}" ${link_name} | sed "s/^/${TAB}SYM: /"
     fi
     echo -ne "${TAB}"
     hline 72
@@ -273,7 +273,7 @@ function do_link_exe() {
     local target="$1"
 
     # define link (destination)
-    local link="$2"
+    local link_name="$2"
 
     check_target "$target" || return 1
 
@@ -303,7 +303,7 @@ function do_link_exe() {
     fi
 
     # then link
-    do_link "$target" "$link" || return 1
+    do_link "$target" "$link_name" || return 1
     return 0
 }
 
@@ -337,7 +337,6 @@ function do_make_dir() {
     return $?
 }
 
-
 function do_make_link() {
     # check if target directory exists
     # if not, make the directory
@@ -362,11 +361,11 @@ function do_make_link() {
     local target="$1"
 
     # define link (destination)
-    local link="$2"
+    local link_name="$2"
 
     do_make_dir "$target" || return 1
 
-    do_link "$target" "$link" || return 1
+    do_link "$target" "$link_name" || return 1
     return 0
 
 }

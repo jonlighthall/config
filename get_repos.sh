@@ -49,11 +49,11 @@ if [ $# -eq 1 ]; then
 			      #-------------------------------------------------------------
 			      #define target (source)
 			      target=$(readlink -f ${make_links_file})
-			      # define link (destination)
-			      link=${HOME}/config/${make_links_file}
+			      # define link name (destination)
+			      link_name=${HOME}/config/${make_links_file}
 
 			      # begin linking...
-			      do_link "${target}" "${link}"
+			      do_link "${target}" "${link_name}"
 
 			      #-------------------------------------------------------------
 
@@ -125,11 +125,11 @@ if command -v wsl.exe >/dev/null; then
 
 	  #define target (source)
 	  target=${ddir}
-	  # define link (destination)
-	  link=${HOME}/sync
+	  # define link name (destination)
+	  link_name=${HOME}/sync
 
-	  # make $target and link to $link
-	  do_make_link "${target}" "${link}"
+	  # make $target and link to $link_name
+	  do_make_link "${target}" "${link_name}"
 
 	  # define repository directory
 	  rdir=${ddir}/repos
@@ -137,8 +137,8 @@ if command -v wsl.exe >/dev/null; then
 	  # link repo directory to HOME
 	  #define target (source)
 	  target=${rdir}
-	  # define link (destination)
-	  link=${HOME}/repos
+	  # define link name (destination)
+	  link_name=${HOME}/repos
 
 	  # check if target exists
 	  echo -ne "${TAB}target directory \e[33m${target}\e[0m... "
@@ -150,7 +150,7 @@ if command -v wsl.exe >/dev/null; then
 	  fi
 
     # TODO this is backwards
-    do_link "${target}" "${link}"
+    do_link "${target}" "${link_name}"
 else
 	  echo "WSL not defined."
 fi
@@ -189,8 +189,8 @@ echo -e "cloning \x1b[1;32m${group_name}\x1b[m repos..."
 for my_repo in bash fortran_utilities; do
 	  #define target (source)
 	  target=${rdir}/${my_repo}
-	  # define link (destination)
-	  link=${udir}/${my_repo}
+	  # define link name (destination)
+	  link_name=${udir}/${my_repo}
 
 	  # check if target exists
 	  echo -ne "${TAB}target dirctory \e[33m${target}\e[0m... "
@@ -209,12 +209,12 @@ for my_repo in bash fortran_utilities; do
 	  fi
 
 	  # begin linking...
-    do_link "${target}" "${link}"
+    do_link "${target}" "${link_name}"
     
 	  # run make_links
-	  make_links_file="${link}/make_links.sh"
+	  make_links_file="${link_name}/make_links.sh"
 	  if [ -e "${make_links_file}" ]; then
-		    cd ${link}
+		    cd ${link_name}
 		    bash ${make_links_file}
 		    cd ${rdir}
 	  else
@@ -235,8 +235,7 @@ if [[ "$(hostname -f)" == *".mil" ]]; then
     if command -v wsl.exe >/dev/null; then
 	      echo "${TAB}WSL defined."
         echo "${TAB}creating links outside of Onedrive..."
-        # define the offline direcotry and link ame
-        # TODO the distro dir was not made
+        # define the offline direcotry and link name
         
 	      wdir="${HOME}/winhome/Documents/${distro}/repos"
         echo "${TAB}creating ${wdir}..."
@@ -256,8 +255,8 @@ for my_repo in batch powershell; do
 	  #define target (source)
 
 	  target=${wdir}/${my_repo}
-	  # define link (destination)
-	  link=${udir}/${my_repo}
+	  # define link name (destination)
+	  link_name=${udir}/${my_repo}
 
 	  # check if target exists
 	  echo -ne "${TAB}target dirctory \e[33m${target}\e[0m... "
@@ -276,12 +275,12 @@ for my_repo in batch powershell; do
 	  fi
 
 	  # begin linking...
-    do_link "${target}" "${link}"
+    do_link "${target}" "${link_name}"
 
 	  # run make_links
-	  make_links_file="${link}/make_links.sh"
+	  make_links_file="${link_name}/make_links.sh"
 	  if [ -e "${make_links_file}" ]; then
-		    cd ${link}
+		    cd ${link_name}
 		    bash ${make_links_file}
 		    cd ${wdir}
 	  else
@@ -306,8 +305,8 @@ itab
 for my_repo in cpp fortran hello nrf python; do
 	  # define target (source)
 	  target=${rdir}/${my_repo}
-	  # define link (destination)
-	  link=${edir}/${my_repo}
+	  # define link name (destination)
+	  link_name=${edir}/${my_repo}
 
 	  # check if target exists
 	  echo -ne "${TAB}target dirctory ${yellow}${target}${NORMAL}... "
@@ -325,7 +324,7 @@ for my_repo in cpp fortran hello nrf python; do
 		    git clone ${github_auth}$my_repo ${target}
 	  fi
 	  # begin linking...
-    do_link "${target}" "${link}"
+    do_link "${target}" "${link_name}"
 done
 dtab
 echo -e "done cloning ${group_name} repos"
@@ -348,7 +347,7 @@ for my_repo in matlab; do
 	  # define target (source)
 	  target=${matlab_dir}/macros
 	  # define link (destination)
-	  link=${rdir}/matlab
+	  link_name=${rdir}/matlab
 
 	  # check if target exists
 	  echo -ne "${TAB}target dirctory ${yellow}${target}${NORMAL}... "
@@ -366,7 +365,7 @@ for my_repo in matlab; do
 		    git clone ${github_auth}$my_repo ${target}
 	  fi
 	  # begin linking...
-    do_link "${target}" "${link}"
+    do_link "${target}" "${link_name}"
 done
 dtab
 echo -e "done cloning ${group_name} repos"
