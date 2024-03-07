@@ -286,7 +286,17 @@ function print_return() {
 
     if [ ${#FUNCNAME[@]} -gt 1 ]; then
         decho "${TAB}FUNCNAME[$((NF-2))]=${FUNCNAME[$((NF-2))]}"
-    fi   
+    fi
+
+    local -i NL=${#BASH_LINENO[@]}
+    decho "${TAB}There are N=$NL entries in the line number stack"
+    echo "${TAB}line no stack:"
+    itab
+    for ((i = 0; i < $NL; i++)); do
+        echo "${TAB}$i: line ${BASH_LINENO[$i]}"
+    done    
+    dtab
+    echo "lineno $LINENO"
     
     echo -e "${yellow}\E[7m RETURN ${NORMAL} ${gray}RETVAL=${RETURN_RETVAL}${NORMAL} ${FUNCNAME[$((NF-2))]}"
 }
