@@ -128,20 +128,8 @@ if command -v wsl.exe >/dev/null; then
 	  # define link (destination)
 	  link=${HOME}/sync
 
-    # TODO make a function that takes two arguments, and amkes the sedond one if it doesn't exit
-    # then pass the arugments to do_link
-    
-	  # check if target exists
-	  echo -ne "${TAB}target directory \e[33m${target}\e[0m... "
-	  if [ -e "${target}" ]; then
-		    echo "exists "
-	  else
-		    echo "does not exist"
-		    mkdir -pv ${target} | sed "s/^/${TAB}/"
-	  fi
-
-	  # check if link exists
-	  do_link "${target}" "${link}"
+	  # make $target and link to $link
+	  do_make_link "${target}" "${link}"
 
 	  # define repository directory
 	  rdir=${ddir}/repos
@@ -246,26 +234,17 @@ if [[ "$(hostname -f)" == *".mil" ]]; then
     # check if WSL is defined
     if command -v wsl.exe >/dev/null; then
 	      echo "${TAB}WSL defined."
-        echo -n "creating links outside of Onedrive..."
+        echo "${TAB}creating links outside of Onedrive..."
         # define the offline direcotry and link ame
         # TODO the distro dir was not made
         
 	      wdir="${HOME}/winhome/Documents/${distro}/repos"
-        odir="${HOME}/offline"
-        #TODO this is broken or backwards. THe offline dir shoudl be made when linking
+        echo "${TAB}creating ${wdir}..."
         
-        # create the offline directory
-	      target=${odir}
-	      echo -ne "${TAB}target directory \e[33m${target}\e[0m... "
-	      if [ -e "${target}" ]; then
-		        echo "exists "
-	      else
-		        echo "does not exist"
-		        mkdir -pv ${target} | sed "s/^/${TAB}/"
-	      fi
-        # then link
+        odir="${HOME}/offline"
+        echo "${TAB}linking to ${odir}..."
 
-        do_link "${wdir}" "${odir}" 2>&1 | sed "s/^/${TAB}SYM: /"
+        do_make_link "${wdir}" "${odir}"
     else
         echo "${TAB}WSL not defined."
     fi
