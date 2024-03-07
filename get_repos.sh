@@ -296,8 +296,8 @@ github_ssh=git@github.com:${github_user}/
 github_auth=${github_ssh}
 
 # list of utility repos to be cloned
-gname="utility"
-echo "cloning ${gname} repos..."
+group_name="utility"
+echo "cloning ${group_name} repos..."
 for my_repo in bash fortran_utilities; do
 	#define target (source)
 	target=${rdir}/${my_repo}
@@ -467,7 +467,7 @@ for my_repo in batch powershell; do
 		echo -e "${TAB}${BAD}${make_links_file} not found${NORMAL}"
 	fi
 done
-echo -e "done cloning ${gname} repos"
+echo -e "done cloning ${group_name} repos"
 
 # load formatting
 if [ -e $fpretty ]; then
@@ -479,8 +479,8 @@ fi
 TAB=''
 
 # list of example repos to be cloned
-gname="example"
-echo "cloning ${gname} repos..."
+group_name="example"
+echo "cloning ${group_name} repos..."
 TAB+=${fTAB:='   '}
 for my_repo in cpp fortran hello nrf python; do
 	# define target (source)
@@ -541,11 +541,11 @@ for my_repo in cpp fortran hello nrf python; do
 	TAB=${TAB%$fTAB}
 done
 TAB=${TAB%$fTAB}
-echo -e "done cloning ${gname} repos"
+echo -e "done cloning ${group_name} repos"
 
 # list of other repos to be cloned
-gname="other"
-echo "cloning ${gname} repos..."
+group_name="other"
+echo "cloning ${group_name} repos..."
 TAB+=${fTAB:='   '}
 for my_repo in matlab; do
 	matlab_dir=${HOME}/onedrive/Documents/MATLAB
@@ -618,12 +618,12 @@ for my_repo in matlab; do
 	TAB=${TAB%$fTAB}
 done
 TAB=${TAB%$fTAB}
-echo -e "done cloning ${gname} repos"
+echo -e "done cloning ${group_name} repos"
 
 # list of private repos to be cloned
 if [[ ! ("$(hostname -f)" == *"navy.mil") ]]; then
-	gname="private"
-	echo "cloning ${gname} repos..."
+	group_name="private"
+	echo "cloning ${group_name} repos..."
 	TAB+=$fTAB
 	cd ${HOME}/config
 	dname=private
@@ -646,15 +646,11 @@ if [[ ! ("$(hostname -f)" == *"navy.mil") ]]; then
 			fi
 		else
 			echo -e "${TAB}dirctory \e[33m$PWD$my_repo\e[0m already exits"
-			TAB+=${fTAB}
-			#echo -n "${TAB}pulling... "
-			#git -C ${dname} pull
-			#echo -n "${TAB}pushing... "
-			#git -C ${dname} push
-			TAB=${TAB%$fTAB}
 		fi
 	done
 	TAB=${TAB%$fTAB}
 	echo -e "done cloning ${gname} repos"
+else
+	echo "excluding ${group_name} repos"
 fi
 echo "done cloning all repos"
