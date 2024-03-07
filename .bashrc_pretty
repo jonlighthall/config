@@ -256,6 +256,12 @@ function print_return() {
     
     start_new_line
 
+    DEBUG=1
+    decho "BASH_ARGC = $BASH_ARGC"
+    decho "BASH_ARGV = $BASH_ARGV"
+    decho "BASH_COMMAND = $BASH_COMMAND"
+    decho "BASH_SUBSHELL = $BASH_SUBSHELL"
+    
     # get length of stack
     local NB=${#BASH_SOURCE[@]}
     decho "${TAB}There are N=$NB entries in the call stack"
