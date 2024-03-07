@@ -42,6 +42,38 @@ function check_target() {
 }
 
 function do_link() {
+    # create a link to a target
+    # two arguments are required
+    # the syntaxt is the same as the 'ln' intrinsic
+    # DEPENDENCIES
+    #   check_target
+    # METHOD - 
+    #   FIND check if the target (source) exists
+    #   SSH handling - applies when files are in .ssh/
+    #     check premission of the parent directory
+    #     check the public/private premission of individual files
+    #     exclude linking of certain files
+    #   LINK
+    #     check if link name exits
+    #       + check if link points to target
+    #           + already done, LS link and RETURN
+    #           - check if link name is writable
+    #               + check if link and target have the same conents
+    #                   + DELETE
+    #                   - check if exists
+    #                       + get date from date
+    #                       - get date from stat
+    #                     RENAME the existing file occupying the link name
+    #               - issue error and RETURN
+    #       - proceed with linking
+    #     LINK
+    #       check if target is authorized_keys
+    #         + PHYSICAL LINK
+    #         - SYM LINK
+    # CALLED BY
+    #   do_link_exe
+
+
     # print invocoking source or function
     decho "${TAB}BASH_SOURCE=${BASH_SOURCE[@]}"
     decho "${TAB}FUNCNAME=${FUNCNAME[@]}"
@@ -71,7 +103,6 @@ function do_link() {
         else
             decho "${TAB}${target##*/} alread checked"
         fi
-
     fi
 
     local target_dir=$(dirname "$target")
@@ -202,10 +233,20 @@ function do_link() {
     echo -en "${NORMAL}"
     dtab
     return 0
-
 }
 
 function do_link_exe() {
+    # create a link to an executable file
+    # two arguments are required
+    # the syntaxt is the same to the 'ln' intrinsic
+    # DEPENDENCIES
+    #   check_target
+    #   do_link
+    # METHOD - 
+    #   FIND check if the target (source) exists
+    #   PERM check the target is executable
+    #   LINK pass arguments to do_link
+    
     # print invocoking source or function
     decho "${TAB}BASH_SOURCE=${BASH_SOURCE[@]}"
     decho "${TAB}FUNCNAME=${FUNCNAME[@]}"
@@ -259,3 +300,6 @@ function do_link_exe() {
     do_link "$target" "$link" || return 1
     return 0
 }
+
+function do_make_link() {
+    }
