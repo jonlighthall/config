@@ -268,13 +268,14 @@ function print_return() {
 
     if [ $NB -gt 1 ]; then
         decho "${TAB}invoking source source:"
-        decho "${TAB}${fTAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]}"
-        decho "${TAB}${fTAB}BASH_SOURCE[$((NB-1))] = ${BASH_SOURCE[$((NB-1))]}"
-        
+        itab
+        decho "${TAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]##*/}"
+        decho "${TAB}BASH_SOURCE[(($NB-1))] = ${BASH_SOURCE[$NB-1]##*/}"
+        dtab
     fi
 
     local -i NF=${#FUNCNAME[@]}
-    decho "${TAB}There are N=$NF entries in the function stack"
+    decho "${TAB}There are N=$NF entries in the execution call stack"
     decho "${TAB}FUNCNAME=${FUNCNAME[@]}"
 
     if [ ${#FUNCNAME[@]} -gt 1 ]; then
@@ -286,9 +287,7 @@ function print_return() {
 
 # define traps
 function set_traps() {
-    if [ -z "${DEBUG+alt}" ]; then
-        DEBUG=0
-    fi
+    DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${magenta}\E[7mset traps${NORMAL}"
 
