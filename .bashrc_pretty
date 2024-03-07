@@ -246,6 +246,12 @@ function print_int() {
 }
 
 function print_return() {
+    decho "setting shell options..."
+    # trace ERR (inherit ERR trap from shell)
+    set -E
+    # trace RETURN and DEBUG traps
+    set -T
+
     RETURN_RETVAL=$1
     
     start_new_line
@@ -286,8 +292,11 @@ function set_traps() {
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${magenta}\E[7mset traps${NORMAL}"
 
-    # exit on errors
-    set -e
+    decho "setting shell options..."
+    # trace ERR (inherit ERR trap from shell)
+    set -E
+    # trace RETURN and DEBUG traps
+    set -T
     
     decho "the following traps are saved"
     if [ -z "${save_traps+default}" ]; then
@@ -317,7 +326,10 @@ function unset_traps() {
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${cyan}\E[7mun-set traps${NORMAL}"
     decho "setting shell options..."
-    set +eE
+    # trace ERR (inherit ERR trap from shell)
+    set -E
+    # trace RETURN and DEBUG traps
+    set -T
 
     decho -n "the current traps are set"
     if [ -z "$(trap -p)" ]; then
