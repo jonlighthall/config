@@ -71,11 +71,18 @@
   "mark whole buffer and indent region, delete trailing whitespace, delete repeated blank lines"
   (interactive "*")
   (push-mark) ; save position
+  (goto-char 1)
+  (replace-regexp "^\s*#}#" "}##") ; un-comment dummy brackets
+  (pop-mark) ; pop mark position saved by regexp
   (indent-region (point-min) (point-max)) ; select all
   ;;  (delete-trailing-whitespace)
   (goto-char 1)
   (replace-regexp "^\n\\{2,\\}" "\n") ; delete repeated blank lines
   (pop-mark) ; pop mark position saved by regexp
+  (goto-char 1)
+  (replace-regexp "}##" "#}#") ; comment dummy brackets
+  (pop-mark) ; pop mark position saved by regexp
+
   (goto-char (mark-marker)) ; go back to starting position
   (prin1 "done indenting")
   )
