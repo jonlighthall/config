@@ -284,6 +284,23 @@ function print_return() {
     decho "${TAB}There are N=$NF entries in the execution call stack"
     decho "${TAB}FUNCNAME=${FUNCNAME[@]}"
 
+    echo "${TAB}call stack:"
+    itab
+    (
+        for ((i = 0; i < $NF; i++)); do
+            echo -n "${TAB}$i: ${FUNCNAME[$i]} "
+            echo -n ":defined in: ${BASH_SOURCE[$i]##*/} "
+            echo -n ":called by: "
+            if [ -z "${BASH_SOURCE[$i+1]}" ]; then
+                echo -n "NULL " 
+            else
+                echo -n "${BASH_SOURCE[$i+1]##*/} "
+            fi
+            echo ":on line: ${BASH_LINENO[$i]}"
+        done
+    ) | column -t -s : -o ""
+    dtab
+    
     if [ ${#FUNCNAME[@]} -gt 1 ]; then
         decho "${TAB}FUNCNAME[$((NF-2))]=${FUNCNAME[$((NF-2))]}"
     fi
