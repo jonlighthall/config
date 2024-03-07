@@ -53,20 +53,19 @@ if [ $# -eq 1 ]; then
 			link=${HOME}/config/${make_links_file}
 
 			# begin linking...
-			TAB+=${fTAB:='   '}
+			itab
 			echo -n "${TAB}link $link... "
 
 			# first, check for existing copy
 			if [ -e ${link} ] || [ -f ${link} ] || [ -L ${link} ]; then
-				TAB+=${fTAB:='   '}
+				itab
 				echo -n "exists and "
 				if [[ "${target}" -ef ${link} ]]; then
 					echo "already points to ${target##*/}"
 					echo -n "${TAB}"
 					ls -lhG --color=auto ${link}
 					echo "${TAB}skipping..."
-					TAB=${TAB%$fTAB}
-					TAB=${TAB%$fTAB}
+					dtab 2
 				else
 					# next, delete or backup existing copy
 					if [ $(\diff --suppress-common-lines -r ${target} ${link} 2>&1 | wc -c) -eq 0 ]; then
@@ -77,10 +76,9 @@ if [ $# -eq 1 ]; then
 						echo "will be backed up..."
 						mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
 					fi
-					TAB=${TAB%$fTAB}
-					TAB=${TAB%$fTAB}
+					dtab 2
 				fi
-				TAB=${TAB%$fTAB}
+				dtab
 			else
 				echo "does not exist"
 			fi
@@ -173,10 +171,10 @@ if command -v wsl.exe >/dev/null; then
 	fi
 
 	# check if link exists
-	TAB+=${fTAB:='   '}
+	itab
 	echo -n "${TAB}link $link... "
 	do_link=false
-	TAB+=${fTAB:='   '}
+	itab
 	# first, check for existing copy
 	if [ -L ${link} ] || [ -f ${link} ] || [ -d ${link} ]; then
 		echo -n "exists and "
@@ -185,8 +183,7 @@ if command -v wsl.exe >/dev/null; then
 			echo -n "${TAB}"
 			ls -lhG --color=auto ${link}
 			echo "${TAB}skipping..."
-			TAB=${TAB%$fTAB}
-			TAB=${TAB%$fTAB}
+			dtab 2
 		else
 			do_link=true
 			# next, delete or backup existing copy
@@ -227,9 +224,9 @@ if command -v wsl.exe >/dev/null; then
 		mkdir -pv ${target} | sed "s/^/${TAB}/"
 	fi
 
-	TAB+=${fTAB:='   '}
+	itab
 	echo -n "${TAB}link $link... "
-	TAB+=${fTAB:='   '}
+	itab
 	# first, check for existing copy
 	if [ -L ${link} ] || [ -f ${link} ] || [ -d ${link} ]; then
 		echo -n "exists and "
@@ -238,8 +235,7 @@ if command -v wsl.exe >/dev/null; then
 			echo -n "${TAB}"
 			ls -lhG --color=auto ${link}
 			echo "${TAB}skipping..."
-			TAB=${TAB%$fTAB}
-			TAB=${TAB%$fTAB}
+			dtab 2
 		else
 			# next, delete or backup existing copy
 			if [ $(diff -ebwB "${target}" ${link} 2>&1 | wc -c) -eq 0 ]; then
@@ -297,7 +293,7 @@ github_auth=${github_ssh}
 
 # list of utility repos to be cloned
 group_name="utility"
-echo "cloning ${group_name} repos..."
+echo -e "cloning \x1b[1;32m${group_name}\x1b[m repos..."
 for my_repo in bash fortran_utilities; do
 	#define target (source)
 	target=${rdir}/${my_repo}
@@ -308,12 +304,12 @@ for my_repo in bash fortran_utilities; do
 	echo -ne "${TAB}target dirctory \e[33m${target}\e[0m... "
 	if [ -e "${target}" ]; then
 		echo "exists "
-		TAB+=${fTAB:='   '}
+		itab
 		#echo -n "${TAB}pulling... "
 		#git -C ${target} pull
 		#echo -n "${TAB}pushing... "
 		#git -C ${target} push
-		TAB=${TAB%$fTAB}
+		dtab
 	else
 		echo -e "\e[31mdoes not exist\e[0m"
 		echo "${TAB}cloning $my_repo..."
@@ -321,20 +317,19 @@ for my_repo in bash fortran_utilities; do
 	fi
 
 	# begin linking...
-	TAB+=${fTAB:='   '}
+	itab
 	echo -n "${TAB}link $link... "
 
 	# first, check for existing copy
 	if [ -L ${link} ] || [ -d ${link} ]; then
-		TAB+=${fTAB:='   '}
+		itab
 		echo -n "exists and "
 		if [[ "${target}" -ef ${link} ]]; then
 			echo "already points to ${my_repo}"
 			echo -n "${TAB}"
 			ls -lhG --color=auto ${link}
 			echo "${TAB}skipping..."
-			TAB=${TAB%$fTAB}
-			TAB=${TAB%$fTAB}
+			dtab 2
 			continue
 		else
 			# next, delete or backup existing copy
@@ -346,10 +341,9 @@ for my_repo in bash fortran_utilities; do
 				echo "will be backed up..."
 				mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
 			fi
-			TAB=${TAB%$fTAB}
-			TAB=${TAB%$fTAB}
+			dtab 2
 		fi
-		TAB=${TAB%$fTAB}
+		dtab
 	else
 		echo "does not exist"
 	fi
@@ -371,7 +365,7 @@ for my_repo in bash fortran_utilities; do
 done
 
 # clone Win32 repos
-echo -e "\ncloning Win32 utilities..."
+echo -e "cloning Win32 utilities..."
 # The directory for Win32 repos should default to the repo directory. However, OneDrive on Navy
 # systems will not allow syncing of .bat or .ps1 files. Therefore, if it is a Navy host and
 # OneDrive is defined, clone the repositories into an offline directory.
@@ -416,12 +410,12 @@ for my_repo in batch powershell; do
 	echo -ne "${TAB}target dirctory \e[33m${target}\e[0m... "
 	if [ -e "${target}" ]; then
 		echo "exists "
-		TAB+=${fTAB:='   '}
+		itab
 		#echo -n "${TAB}pulling... "
 		#git -C ${target} pull
 		#echo -n "${TAB}pushing... "
 		#git -C ${target} push
-		TAB=${TAB%$fTAB}
+		dtab
 	else
 		echo -e "\e[31mdoes not exist\e[0m"
 		echo "${TAB}cloning $my_repo..."
@@ -429,20 +423,19 @@ for my_repo in batch powershell; do
 	fi
 
 	# begin linking...
-	TAB+=${fTAB:='   '}
+	itab
 	echo -n "${TAB}link $link... "
 
 	# first, check for existing copy
 	if [ -L ${link} ] || [ -d ${link} ]; then
-		TAB+=${fTAB:='   '}
+		itab
 		echo -n "exists and "
 		if [[ "${target}" -ef ${link} ]]; then
 			echo "already points to ${my_repo}"
 			echo -n "${TAB}"
 			ls -lhG --color=auto ${link}
 			echo "${TAB}skipping..."
-			TAB=${TAB%$fTAB}
-			TAB=${TAB%$fTAB}
+			dtab 2
 			continue
 		else
 			# next, delete or backup existing copy
@@ -454,10 +447,9 @@ for my_repo in batch powershell; do
 				echo "will be backed up..."
 				mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
 			fi
-			TAB=${TAB%$fTAB}
-			TAB=${TAB%$fTAB}
+			dtab 2
 		fi
-		TAB=${TAB%$fTAB}
+		dtab
 	else
 		echo "does not exist"
 	fi
@@ -490,8 +482,8 @@ TAB=''
 
 # list of example repos to be cloned
 group_name="example"
-echo "cloning ${group_name} repos..."
-TAB+=${fTAB:='   '}
+echo -e "cloning \x1b[1;32m${group_name}\x1b[m repos..."
+itab
 for my_repo in cpp fortran hello nrf python; do
 	# define target (source)
 	target=${rdir}/${my_repo}
@@ -502,6 +494,12 @@ for my_repo in cpp fortran hello nrf python; do
 	echo -ne "${TAB}target dirctory ${yellow}${target}${NORMAL}... "
 	if [ -e "${target}" ]; then
 		echo "exits"
+    itab
+    #echo -n "${TAB}pulling... "
+		#git -C ${target} pull
+		#echo -n "${TAB}pushing... "
+		#git -C ${target} push
+    dtab
 	else
 		echo "does not exist"
 		echo "${TAB}cloning $my_repo..."
@@ -520,8 +518,7 @@ for my_repo in cpp fortran hello nrf python; do
 			echo -n "${TAB}"
 			ls -lhG --color=auto ${link}
 			echo "${TAB}skipping..."
-			TAB=${TAB%$fTAB}
-			TAB=${TAB%$fTAB}
+			dtab 2
 			continue
 		else
 			# next, delete or backup existing copy
@@ -533,10 +530,9 @@ for my_repo in cpp fortran hello nrf python; do
 				echo "will be backed up..."
 				mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
 			fi
-			TAB=${TAB%$fTAB}
-			TAB=${TAB%$fTAB}
+			dtab 2
 		fi
-		TAB=${TAB%$fTAB}
+		dtab
 	else
 		echo "does not exist"
 	fi
@@ -548,15 +544,15 @@ for my_repo in cpp fortran hello nrf python; do
 	echo -ne "${TAB}"
 	hline 72
 	echo -en "${NORMAL}"
-	TAB=${TAB%$fTAB}
+	dtab
 done
-TAB=${TAB%$fTAB}
+dtab
 echo -e "done cloning ${group_name} repos"
 
 # list of other repos to be cloned
 group_name="other"
-echo "cloning ${group_name} repos..."
-TAB+=${fTAB:='   '}
+echo -e "cloning \x1b[1;32m${group_name}\x1b[m repos..."
+itab
 for my_repo in matlab; do
 	matlab_dir=${HOME}/onedrive/Documents/MATLAB
 	echo "${matlab_dir}..."
@@ -578,6 +574,12 @@ for my_repo in matlab; do
 	echo -ne "${TAB}target dirctory ${yellow}${target}${NORMAL}... "
 	if [ -e "${target}" ]; then
 		echo "exits"
+    itab
+    #echo -n "${TAB}pulling... "
+		#git -C ${target} pull
+		#echo -n "${TAB}pushing... "
+		#git -C ${target} push
+    dtab
 	else
 		echo "does not exist"
 		echo "${TAB}cloning $my_repo..."
@@ -596,8 +598,7 @@ for my_repo in matlab; do
 			echo -n "${TAB}"
 			ls -lhG --color=auto ${link}
 			echo "${TAB}skipping..."
-			TAB=${TAB%$fTAB}
-			TAB=${TAB%$fTAB}
+			dtab 2
 			continue
 		else
 			# next, delete or backup existing copy
@@ -609,10 +610,9 @@ for my_repo in matlab; do
 				echo "will be backed up..."
 				mv -v ${link} ${link}_$(date -r ${link} +'%Y-%m-%d-t%H%M') | sed "s/^/${TAB}/"
 			fi
-			TAB=${TAB%$fTAB}
-			TAB=${TAB%$fTAB}
+			dtab 2
 		fi
-		TAB=${TAB%$fTAB}
+		dtab
 	else
 		echo "does not exist"
 	fi
@@ -625,15 +625,15 @@ for my_repo in matlab; do
 	echo -ne "${TAB}"
 	hline 72
 	echo -en "${NORMAL}"
-	TAB=${TAB%$fTAB}
+	dtab
 done
-TAB=${TAB%$fTAB}
+dtab
 echo -e "done cloning ${group_name} repos"
 
 # list of private repos to be cloned
 if [[ ! ("$(hostname -f)" == *"navy.mil") ]]; then
 	group_name="private"
-	echo "cloning ${group_name} repos..."
+	echo -e "cloning \x1b[1;32m${group_name}\x1b[m repos..."
 	TAB+=$fTAB
 	cd ${HOME}/config
 	dname=private
@@ -656,10 +656,16 @@ if [[ ! ("$(hostname -f)" == *"navy.mil") ]]; then
 			fi
 		else
 			echo -e "${TAB}dirctory \e[33m$PWD$my_repo\e[0m already exits"
+      itab
+      #echo -n "${TAB}pulling... "
+		  #git -C ${target} pull
+		  #echo -n "${TAB}pushing... "
+		  #git -C ${target} push
+      dtab
 		fi
 	done
-	TAB=${TAB%$fTAB}
-	echo -e "done cloning ${gname} repos"
+	dtab
+	echo -e "done cloning ${group_name} repos"
 else
     echo "${TAB}host: $(hostname -f)"
 	  echo -e "${TAB}${fTAB}\x1b[33mexcluding ${group_name} repos\x1b[m"
