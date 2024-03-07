@@ -372,27 +372,37 @@ done
 
 # clone Win32 repos
 echo -e "\ncloning Win32 utilities..."
+# The directory for Win32 repos should default to the repo directory. However, OneDrive on Navy
+# systems will not allow syncing of .bat or .ps1 files. Therefore, if it is a Navy host and
+# OneDrive is defined, clone the repositories into an offline directory.
+wdir=$rdir
+# check if host is Navy
 if [[ "$(hostname -f)" =~ *"navy.mil" ]]; then
-	echo -n "creating links inside Onedrive..."
-	wdir=$rdir
+# check if WSL is defined
+    if command -v wsl.exe >/dev/null; then
+	      echo "WSL defined."
+        echo -n "creating links outside of Onedrive..."
+        # define the offline direcotry and link name
+	      wdir="${HOME}/winhome/Documents/${distro}/repos"
+        odir="${HOME}/offline"
+        # create the offline directory
+	      target=${odir}
+	      echo -ne "${TAB}target directory \e[33m${target}\e[0m... "
+	      if [ -e "${target}" ]; then
+		        echo "exists "
+	      else
+		        echo "does not exist"
+		        mkdir -pv ${target} | sed "s/^/${TAB}/"
+	      fi
+        # then link
+	      if [ ! -e ${odir} ]; then
+		        ln -sv "${wdir}" ${odir} 2>&1 | sed "s/^/${TAB}SYM: /"
+	      fi        
+    else
+        echo "WSL not defined."
+    fi
 else
-	echo -n "creating links outside of Onedrive..."
-	wdir="${HOME}/winhome/Documents/${distro}/repos"
-
-  odir="${HOME}/offline"
-# then link
-	if [ ! -e ${odir} ]; then
-		ln -sv "${wdir}" ${odir} 2>&1 | sed "s/^/${TAB}SYM: /"
-	fi
-
-	target=${odir}
-	echo -ne "${TAB}target directory \e[33m${target}\e[0m... "
-	if [ -e "${target}" ]; then
-		echo "exists "
-	else
-		echo "does not exist"
-		mkdir -pv ${target} | sed "s/^/${TAB}/"
-	fi
+	  echo -n "creating links inside Onedrive..."
 fi
 
 for my_repo in batch powershell; do
@@ -651,6 +661,7 @@ if [[ ! ("$(hostname -f)" == *"navy.mil") ]]; then
 	TAB=${TAB%$fTAB}
 	echo -e "done cloning ${gname} repos"
 else
-	echo "excluding ${group_name} repos"
+    echo "${TAB}host: $(hostname -f)"
+	  echo -e "${TAB}${fTAB}\x1b[33mexcluding ${group_name} repos\x1b[m"
 fi
 echo "done cloning all repos"
