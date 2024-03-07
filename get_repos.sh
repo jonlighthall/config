@@ -365,17 +365,17 @@ for my_repo in bash fortran_utilities; do
 done
 
 # clone Win32 repos
-echo -e "cloning Win32 utilities..."
+echo -e "cloning \x1b[1;32mWin32 utility\x1b[m repos..."
 # The directory for Win32 repos should default to the repo directory. However, OneDrive on Navy
 # systems will not allow syncing of .bat or .ps1 files. Therefore, if it is a Navy host and
 # OneDrive is defined, clone the repositories into an offline directory.
 wdir=$rdir
 # check if host is Navy
 if [[ "$(hostname -f)" == *".mil" ]]; then
-    echo -e "host: \x1b[31m$(hostname -f)\x1b[m"
+    echo -e "${TAB}host: \x1b[31m$(hostname -f)\x1b[m"
 # check if WSL is defined
     if command -v wsl.exe >/dev/null; then
-	      echo "WSL defined."
+	      echo "${TAB}WSL defined."
         echo -n "creating links outside of Onedrive..."
         # define the offline direcotry and link name
 	      wdir="${HOME}/winhome/Documents/${distro}/repos"
@@ -394,10 +394,10 @@ if [[ "$(hostname -f)" == *".mil" ]]; then
 		        ln -sv "${wdir}" ${odir} 2>&1 | sed "s/^/${TAB}SYM: /"
 	      fi        
     else
-        echo "WSL not defined."
+        echo "${TAB}WSL not defined."
     fi
 else
-	  echo "${TAB}creating links in ${wdir}..."
+	  echo "${TAB}cloning in ${wdir}..."
 fi
 
 for my_repo in batch powershell; do
@@ -507,12 +507,12 @@ for my_repo in cpp fortran hello nrf python; do
 		git clone ${github_auth}$my_repo ${target}
 	fi
 	# begin linking...
-	TAB+=${fTAB}
+	itab
 	echo -n "${TAB}link ${link}... "
 
 	# first, check for existing copy
 	if [ -L ${link} ] || [ -d ${link} ]; then
-		TAB+=${fTAB}
+		itab
 		echo -n "exits and "
 		if [[ "${target}" -ef ${link} ]]; then
 			echo "already points to ${my_repo}"
@@ -556,12 +556,12 @@ echo -e "cloning \x1b[1;32m${group_name}\x1b[m repos..."
 itab
 for my_repo in matlab; do
 	matlab_dir=${HOME}/onedrive/Documents/MATLAB
-	echo "${matlab_dir}..."
+	echo -n "${TAB}${matlab_dir}..."
 	if [ -d ${matlab_dir} ]; then
 		echo "found"
 	else
 		echo "not found"
-		echo "aborting clone ${my_repo}"
+	  echo -e "${TAB}\x1b[33mexcluding ${my_repo}\x1b[m"
 		continue
 	fi
 
@@ -586,12 +586,12 @@ for my_repo in matlab; do
 		git clone ${github_auth}$my_repo ${target}
 	fi
 	# begin linking...
-	TAB+=${fTAB}
+	itab
 	echo -n "${TAB}link ${link}... "
 
 	# first, check for existing copy
 	if [ -L ${link} ] || [ -d ${link} ]; then
-		TAB+=${fTAB}
+		itab
 		echo -n "exits and "
 		if [[ "${target}" -ef ${link} ]]; then
 			echo "already points to ${my_repo}"
@@ -631,10 +631,10 @@ dtab
 echo -e "done cloning ${group_name} repos"
 
 # list of private repos to be cloned
+group_name="private"
+echo -e "cloning \x1b[1;32m${group_name}\x1b[m repos..."
 if [[ ! "$(hostname -f)" == *".mil" ]]; then
-	group_name="private"
-	echo -e "cloning \x1b[1;32m${group_name}\x1b[m repos..."
-	TAB+=$fTAB
+  itab
 	cd ${HOME}/config
 	dname=private
 	for my_repo in config_private; do
@@ -667,7 +667,9 @@ if [[ ! "$(hostname -f)" == *".mil" ]]; then
 	dtab
 	echo -e "done cloning ${group_name} repos"
 else
-    echo -e "host: \x1b[31m$(hostname -f)\x1b[m"
-	  echo -e "${TAB}${fTAB}\x1b[33mexcluding ${group_name} repos\x1b[m"
+    itab
+    echo -e "${TAB}host: \x1b[31m$(hostname -f)\x1b[m"
+	  echo -e "${TAB}\x1b[33mexcluding ${group_name} repos\x1b[m"
+    dtab
 fi
 echo "done cloning all repos"
