@@ -146,6 +146,7 @@ function start_new_line() {
     echo -en "\E[6n"
     read -sdR CURPOS
     CURPOS=${CURPOS#*[}
+          #}# dummy bracket for emacs indenting
     # get the x-position of the cursor
     x_pos=${CURPOS#*;}
     # if the cursor is not at the start of a line, then create a new line
@@ -188,7 +189,7 @@ function print_error() {
 
     # print summary
     start_new_line
-    ERR_PRINT=$(echo -e "\E[37;41m ERROR ${NORMAL} ")
+    ERR_PRINT=$(echo -e "${TAB}\E[37;41m ERROR ${NORMAL} ")
     echo -n ${ERR_PRINT}
     # print grep-like line match
     echo -ne " \E[35m${BASH_SOURCE[1]##*/}\E[m\E[36m:\E[m\E[32m${ERR_LINENO}\E[m\E[36m:\E[m"
@@ -197,6 +198,7 @@ function print_error() {
     echo -en "\E[6n"
     read -sdR CURPOS
     CURPOS=${CURPOS#*[}
+          #}# dummy bracket for emacs indenting
     # get the x-position of the cursor
     declare -i x_pos=${CURPOS#*;}
     ((--x_pos))
@@ -284,24 +286,9 @@ function set_traps() {
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${magenta}\E[7mset traps${NORMAL}"
 
-    # determine if script is being sourced or executed and add conditional behavior
-    decho -n "setting shell options for... "
-    # trace RETURN and DEBUG traps
-    #		set -T
-    if (return 0 2>/dev/null); then
-        export RUN_TYPE="sourcing"
-        # do NOT exit on errors
-        #		set +e
-        # trace RETURN and DEBUG traps
-        #		set -T
-    else
-        export RUN_TYPE="executing"
-        # exit on errors
-        set -e
-    fi
-    decho -e "\E[7m${RUN_TYPE}${NORMAL}"
-    # trace ERR traps
-    set -E
+    # exit on errors
+    set -e
+    
     decho "the following traps are saved"
     if [ -z "${save_traps+default}" ]; then
         decho "${fTAB}none"
