@@ -18,7 +18,7 @@ done
 declare -i DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
 
 # conditional debug echo
-decho() {
+function decho() {
     if [ -z ${DEBUG:+dummy} ] || [ $DEBUG -gt 0 ]; then
         # if DEBUG is (unset or null) or greater than 0
         echo -ne "\e[38;5;14m"
@@ -44,8 +44,11 @@ if [[ "$-" == *i* ]]; then
     dtab
 fi
 
-# define horizontal line
-hline() {
+# print horizontal line
+function hline() {
+    # SYNTAX
+    #   hline [length] [style]
+    
     # number of characters in line (length)
     local -i N
     if [ "$#" -lt 1 ]; then
@@ -64,8 +67,11 @@ hline() {
     echo
 }
 
-# define bar
-bar() {
+# print text between two bars
+function bar() {
+    # SYNTAX
+    #   bar [length] [text]
+
     # number of characters in line (length)
     local -i N
     # text to print between bars
@@ -83,8 +89,11 @@ bar() {
 }
 
 # define centered bar print
-cbar() {    
-    # get text
+function cbar() {
+    # SYNTAX
+    #   cbar [text]
+
+    # get text and add whitespace
     local msg=$(echo " $@ ")
     # remove escape characters
     local msgne=$(echo -e " $@ " | sed "s/$(echo -e "\E")[^m]*m//g")
@@ -94,6 +103,7 @@ cbar() {
     echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
 }
 
+# print source name, elapsed time, and timestamp
 function print_done() {
     # set local debug value
     local DEBUG=${DEBUG:=0}  # default value if DEBUG is unset or null
@@ -119,13 +129,13 @@ function print_done() {
     timestamp
 }
 
+# format timestamp
 function timestamp() {
     echo "$(date +"%a %b %-d at %-l:%M %p %Z")"
 }
 
+# print elapsed time
 function print_elap() {
-    # print elapsed time
-
     # get current time (end time)
     local -i end_time=$(date +%s%N)
 
@@ -162,6 +172,8 @@ function print_elap() {
     fi
 }
 
+# start a new line only if not already on a new line
+# i.e., carriage return with conditional line feed
 function start_new_line() {
     # get the cursor position
     echo -en "\E[6n"
