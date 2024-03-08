@@ -14,8 +14,8 @@ for util in .bash_colors .bash_tabs .bash_links; do
     fi
 done
 
-# set default debug level
-declare -i DEBUG=${DEBUG:=0}
+# set debug level
+declare -i DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
 
 # conditional debug echo
 decho() {
@@ -46,13 +46,15 @@ fi
 
 # define horizontal line
 hline() {
+    # number of characters in line (length)
     local -i N
-    local m
     if [ "$#" -lt 1 ]; then
         N=38
     else
         N=$1
     fi
+    # marker used to create line (style)
+    local m
     if [ "$#" -lt 2 ]; then
         m="-"
     else
@@ -64,7 +66,9 @@ hline() {
 
 # define bar
 bar() {
+    # number of characters in line (length)
     local -i N
+    # text to print between bars
     local TXT
     if [ "$#" -lt 2 ]; then
         N=69
@@ -80,16 +84,20 @@ bar() {
 
 # define centered bar print
 cbar() {    
+    # get text
     local msg=$(echo " $@ ")
     # remove escape characters
     local msgne=$(echo -e " $@ " | sed "s/$(echo -e "\E")[^m]*m//g")
     # get length of text
     local ln=$(for ((i = 1; i <= ${#msgne}; i++)); do echo -n "-"; done)
-    # print with TAB
+    # print text with TAB
     echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
 }
 
 function print_done() {
+    # set local debug value
+    local DEBUG=${DEBUG:=0}  # default value if DEBUG is unset or null
+
     # get length of stack
     local -i N=${#BASH_SOURCE[@]}
     decho "${TAB}There are N=$N entries in the call stack"
@@ -116,9 +124,16 @@ function timestamp() {
 }
 
 function print_elap() {
+    # print elapsed time
+
+    # get current time (end time)
     local -i end_time=$(date +%s%N)
+
+    # check if start time is defined
     if [ -n "${start_time+alt}" ]; then
+        # calculate interval (in ns)
         local -i elap_time=$((${end_time} - ${start_time}))
+        # convert to seconds
         local dT_sec
         if command -v bc &>/dev/null; then
             dT_sec=$(bc <<<"scale=9;$elap_time/10^9" | sed 's/^\./0./')
@@ -128,8 +143,9 @@ function print_elap() {
                 dT_sec=$(echo "0.$elap_time")
             fi
         fi
-        # set scale
+        # set precision
         local -ir nd=3
+        # format interval
         local fmt="%.${nd}f"
         dT_sec=$(printf "$fmt" $dT_sec)
 
@@ -139,9 +155,9 @@ function print_elap() {
         else
             echo -ne "elapsed time is ${white}${dT_sec} sec${NORMAL}"
         fi
-
     else
         decho -ne "${yellow}start_time not defined${NORMAL} "
+        # reset cursor position for print_done, etc.
         echo -en "\x1b[1D"
     fi
 }
@@ -251,7 +267,9 @@ function print_int() {
 }
 
 function print_return() {
-    local DEBUG=0
+    # set local debug value
+    local DEBUG=${DEBUG:=0}  # default value if DEBUG is unset or null
+
     RETURN_RETVAL=$1
     
     start_new_line
@@ -286,14 +304,14 @@ function print_return() {
 
 # define traps
 function set_traps() {
-    local DEBUG=0
+    # set local debug value
+    local DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
 
-    if [ -z "${DEBUG+alt}" ]; then
-        DEBUG=0
-    fi
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${magenta}\E[7mset traps${NORMAL}"
 
+    # set shell options
+    decho "setting shell options..."
     # exit on errors
     set -e
     
@@ -322,11 +340,18 @@ function set_traps() {
 }
 
 function unset_traps() {
-    local DEBUG=0
+    # set local debug value
+    local DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
+
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${cyan}\E[7mun-set traps${NORMAL}"
+
+    # set shell options
     decho "setting shell options..."
-    set +eE
+    # trace ERR (inherit ERR trap from shell)
+    set -E
+    set +e
+#    set +eE
 
     decho -n "the current traps are set"
     if [ -z "$(trap -p)" ]; then
