@@ -14,8 +14,8 @@ for util in .bash_colors .bash_tabs .bash_links; do
     fi
 done
 
-# set default debug level
-declare -i DEBUG=${DEBUG:=0}
+# set debug level
+declare -i DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
 
 # conditional debug echo
 decho() {
@@ -86,6 +86,9 @@ cbar() {
 }
 
 function print_done() {
+    # set local debug value
+    local DEBUG=${DEBUG:=0}  # default value if DEBUG is unset or null
+
     # get length of stack
     N=${#BASH_SOURCE[@]}
     decho "${TAB}There are N=$N entries in the call stack"
@@ -246,6 +249,10 @@ function print_int() {
 }
 
 function print_return() {
+    # set local debug value
+    local DEBUG=${DEBUG:=0}  # default value if DEBUG is unset or null
+
+    # set shell options
     decho "setting shell options..."
     # trace ERR (inherit ERR trap from shell)
     set -E
@@ -256,7 +263,6 @@ function print_return() {
     
     start_new_line
 
-    DEBUG=1
     decho "BASH_ARGC = $BASH_ARGC"
     decho "BASH_ARGV = $BASH_ARGV"
     decho "BASH_COMMAND = $BASH_COMMAND"
@@ -284,19 +290,19 @@ function print_return() {
     decho "${TAB}There are N=$NF entries in the execution call stack"
     decho "${TAB}FUNCNAME=${FUNCNAME[@]}"
 
-    echo "${TAB}call stack:"
+    decho "${TAB}call stack:"
     itab
     (
         for ((i = 0; i < $NF; i++)); do
-            echo -n "${TAB}$i: ${FUNCNAME[$i]} "
-            echo -n ":defined in: ${BASH_SOURCE[$i]##*/} "
-            echo -n ":called by: "
+            decho -n "${TAB}$i: ${FUNCNAME[$i]} "
+            decho -n ":defined in: ${BASH_SOURCE[$i]##*/} "
+            decho -n ":called by: "
             if [ -z "${BASH_SOURCE[$i+1]}" ]; then
-                echo -n "NULL " 
+                decho -n "NULL " 
             else
-                echo -n "${BASH_SOURCE[$i+1]##*/} "
+                decho -n "${BASH_SOURCE[$i+1]##*/} "
             fi
-            echo ":on line: ${BASH_LINENO[$i]}"
+            decho ":on line: ${BASH_LINENO[$i]}"
         done
     ) | column -t -s : -o ""
     dtab
@@ -307,23 +313,26 @@ function print_return() {
 
     local -i NL=${#BASH_LINENO[@]}
     decho "${TAB}There are N=$NL entries in the line number stack"
-    echo "${TAB}line no stack:"
+    decho "${TAB}line no stack:"
     itab
     for ((i = 0; i < $NL; i++)); do
-        echo "${TAB}$i: line ${BASH_LINENO[$i]}"
+        decho "${TAB}$i: line ${BASH_LINENO[$i]}"
     done    
     dtab
-    echo "lineno $LINENO"
+    decho "lineno $LINENO"
     
-    echo -e "${yellow}\E[7m RETURN ${NORMAL} ${gray}RETVAL=${RETURN_RETVAL}${NORMAL} ${FUNCNAME[$((NF-2))]}"
+    decho -e "${yellow}\E[7m RETURN ${NORMAL} ${gray}RETVAL=${RETURN_RETVAL}${NORMAL} ${FUNCNAME[$((NF-2))]}"
 }
 
 # define traps
 function set_traps() {
-    DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
+    # set local debug value
+    local DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
+
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${magenta}\E[7mset traps${NORMAL}"
 
+    # set shell options
     decho "setting shell options..."
     # trace ERR (inherit ERR trap from shell)
     set -E
@@ -355,8 +364,13 @@ function set_traps() {
 }
 
 function unset_traps() {
+    # set local debug value
+    local DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
+
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${cyan}\E[7mun-set traps${NORMAL}"
+
+    # set shell options
     decho "setting shell options..."
     # trace ERR (inherit ERR trap from shell)
     set -E
