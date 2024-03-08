@@ -224,7 +224,7 @@ function print_error() {
 
     # if command contains vairables, evaluate expression
     if [[ "$ERR_CMD" =~ '$' ]]; then
-        decho -e "${spx}${gray}expanding variables...${NORMAL}"
+        decho -e "${spx} ${gray}expanding variables...${NORMAL}"
         # print 'eval' set back from cmd
         echo -ne "\E[${etab}C${VALID}${eva}\E[m\E[36m:\E[m"
         # print evaluated command and remove leading whitespace
@@ -251,6 +251,7 @@ function print_int() {
 }
 
 function print_return() {
+    local DEBUG=0
     RETURN_RETVAL=$1
     
     start_new_line
@@ -285,6 +286,8 @@ function print_return() {
 
 # define traps
 function set_traps() {
+    local DEBUG=0
+
     if [ -z "${DEBUG+alt}" ]; then
         DEBUG=0
     fi
@@ -319,6 +322,7 @@ function set_traps() {
 }
 
 function unset_traps() {
+    local DEBUG=0
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${cyan}\E[7mun-set traps${NORMAL}"
     decho "setting shell options..."
