@@ -56,14 +56,25 @@ export dcolor=( '\E[38;5;131m' '\E[38;5;137m' '\E[38;5;143m' '\E[38;5;107m' '\E[
 
 # reset shell options
 function reset_shell() {
+    if [ $# -lt 1 ]; then
+        return 0
+    fi
+
     local TAB=${TAB:='   '}
     local -r old_opts=$1
     shift
+    if [ $# -lt 1 ]; then
+        return 0
+    fi
 
     decho -n "resetting shell options... "
     (        
         for opt in $@; do          
             decho
+            if [[ "${opt::1}" == "+" ]]; then                
+                opt=${opt:1}
+            fi
+
             if [ $(echo ${old_opts} | grep ${opt}) ]; then
                 decho "${opt} was set:${old_opts}"
                 if [ $(echo $- | grep ${opt}) ]; then
@@ -87,7 +98,7 @@ function reset_shell() {
             fi
         done
         echo
-    ) | sed '1d' | column -t -s':' -o': ' -R 1 | sed '1 s/^/\n/'
+    ) | sed '1d' | column -t -s':' -o': ' -R 1 | sed '1 s/^/\n/' | sed "s/^/${TAB}/"
     decho "done"
 }
 
@@ -106,7 +117,7 @@ function print_colors() {
     # add shell options if not alraedy set
     old_opts=$(echo "$-")
     set -u
-    
+
     # get length of array
     local -ir N_cols=${#dcolor[@]}
     echo "$N_cols in array ${!dcolor@}"
@@ -124,7 +135,7 @@ function print_dcolors() {
     # add shell options if not alraedy set
     old_opts=$(echo "$-")
     set -u
-    
+
     # get length of array
     local -ir N_cols=${#dcolor[@]}
     echo "$N_cols in array ${!dcolor@}"
@@ -198,9 +209,9 @@ function dbg2idx() {
     #define array index
     local -i indx=$(( (${N_max} + $direction * ($dbg_in) + $start + 1 ) % ${N_cols} ))
     #printf '%2d:%2d:' $dbg_in $indx
-    
+
     #printf "${dcolor[$indx]}%2d\x1b[m\n" $indx
-    
+
     # reset shell options
     #reset_shell ${old_opts} u
 
@@ -249,13 +260,12 @@ function print_fcolors() {
     fi
 
     #    set_dbg2idx
-    
+
     echo "OK"
 
     set -ET +e
     echo "start = $start"
 
-    
     (
         for ((i=0;i<$N_cols;i++));do
             #i=0
@@ -273,7 +283,6 @@ function print_fcolors() {
 
     # reset shell options
     reset_shell ${old_opts} u e
-    
 
     trap 'echo "exit ' EXIT
 
