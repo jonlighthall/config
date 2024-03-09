@@ -182,7 +182,7 @@ function dum() {
     set -uETe
     # get input DEBUG value
     local -i dbg_in=$1
-    decho "dbg_in = $db_in"
+    decho "dbg_in = $dbg_in"
     #define array index
     local -i indx=$(( ( ${N_max} + $direction * ($dbg_in) + $start + 1 ) % ${N_cols} ))
     decho "indx = $indx"
