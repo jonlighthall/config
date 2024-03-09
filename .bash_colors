@@ -171,10 +171,12 @@ function dbg2idx() {
 
     # since DEBUG=0 does not print and DEBUG=1 corresponds to starting color, or array index 0,
     # decrement input value
-    #    ((dbg_in--))
+    local -ir offset=-1
+    local -i dbg_idx=$(( ( $dbg_in + ${offset} ) % ${N_cols} ))
+    decho "dbg_idx = $dbg_idx"
     
     #define array index
-    idx=$(( ( ${N_max} + $direction * ($dbg_in) + $start + 1 ) % ${N_cols} ))
+    idx=$(( ( ${N_max} + $direction * ($dbg_idx) + $start + 1 ) % ${N_cols} ))
     decho "idx = $idx"
 
     return 0
@@ -207,11 +209,14 @@ function print_fcolors() {
 
     local -i idx
     (
-        for ((i=0;i<$N_cols;i++));do
+        # loop over valid non-zero values of debug
+        for ((i=1;i<=$N_cols;i++));do
             #define array index
             unset idx
             dbg2idx $i
+            # print indices
             printf '%2d:%2d:' $i $idx
+            # print color
             printf "${dcolor[$idx]}%2d\x1b[m\n" $idx
         done
     ) | column -t -s: -N order,index,color | sed "s/^/${TAB}/"
