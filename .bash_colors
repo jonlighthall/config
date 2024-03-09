@@ -55,13 +55,18 @@ export col00='\E[38;5;102m' # 12:   0 Grey              mon - GRAY
 export dcolor=( '\E[38;5;131m' '\E[38;5;137m' '\E[38;5;143m' '\E[38;5;107m' '\E[38;5;71m'  '\E[38;5;72m'  '\E[38;5;73m'  '\E[38;5;67m'  '\E[38;5;61m'  '\E[38;5;97m'  '\E[38;5;133m' '\E[38;5;132m' )
 
 # print dcolor array in rainbow-order
-function print_colors() {    
-    if [ $(echo $- | grep u) ]; then
+function print_colors() {
+    local -i DEBUG=1
+    # add shell options if not alraedy set
+    old_opts=$(echo "$-")
+
+    if [ $(echo ${old_opts} | grep u) ]; then
         decho -n "u is set: "
         decho "$-"
     else
         decho -n "u is not set: "
-        decho "$-"
+
+        decho ${old_opts}
         decho "setting u..."
         set -u
         decho "$-"
@@ -73,10 +78,56 @@ function print_colors() {
     for ((i=0;i<$N_cols;i++));do
         echo -e "${dcolor[$i]}$i"
     done
+
+    # reset shell options
+    if [ $(echo ${old_opts} | grep u) ]; then
+        decho -n "u was set: "
+        decho "${old_opts}"
+        if [ $(echo $- | grep u) ]; then
+            decho -n "u is set: "
+            decho "$-"
+        else
+            decho -n "u is not set: "
+            decho "$-"
+            decho "setting u..."
+            set -u
+            decho "$-"
+        fi
+    else
+        decho -n "u was not set: "
+        if [ $(echo $- | grep u) ]; then
+            decho -n "u is set: "
+            decho "$-"
+            decho "unsetting u..."
+            set +u
+        else
+            decho -n "u is not set: "
+            decho "$-"
+        fi
+    fi
+    
 }
 
 # print dcolor array in debug order
 function print_dcolors() {
+
+ # add shell options if not alraedy set
+    old_opts=$(echo "$-")
+
+    if [ $(echo ${old_opts} | grep u) ]; then
+        decho -n "u is set: "
+        decho "$-"
+    else
+        decho -n "u is not set: "
+
+        decho ${old_opts}
+        decho "setting u..."
+        set -u
+        decho "$-"
+    fi
+
+
+    
     # get length of array
     local -ir N_cols=${#dcolor[@]}
     echo "$N_cols in array ${!dcolor@}"
@@ -84,7 +135,7 @@ function print_dcolors() {
     local -ir N_max=$((N_cols-1))
     echo "$N_max max index of array ${!dcolor@}"
     # set starting color (using array indices 0-11, specified above)
-    local -ir start=7
+    local -ir start=5
     echo -e "staring with index ${dcolor[$start]}${start}\x1b[m\n"
     local indx
     local -ir direction=-1
@@ -92,10 +143,39 @@ function print_dcolors() {
     (
         for ((i=0;i<$N_cols;i++));do
             #define array index
-            indx=$(( (${N_max} - $i + $start + 1 ) % ${N_cols} ))
+            indx=$(( (${N_max} + $direction * ($i) + $start + 1 ) % ${N_cols} ))
             printf '%2d:%2d:' $i $indx
 
             printf "${dcolor[$indx]}%2d\x1b[m\n" $indx
         done
     ) | column -t -s: -N order,index,color
+
+
+ # reset shell options
+    if [ $(echo ${old_opts} | grep u) ]; then
+        decho -n "u was set: "
+        decho "${old_opts}"
+        if [ $(echo $- | grep u) ]; then
+            decho -n "u is set: "
+            decho "$-"
+        else
+            decho -n "u is not set: "
+            decho "$-"
+            decho "setting u..."
+            set -u
+            decho "$-"
+        fi
+    else
+        decho -n "u was not set: "
+        if [ $(echo $- | grep u) ]; then
+            decho -n "u is set: "
+            decho "$-"
+            decho "unsetting u..."
+            set +u
+        else
+            decho -n "u is not set: "
+            decho "$-"
+        fi
+    fi
+    
 }
