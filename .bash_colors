@@ -85,6 +85,7 @@ function print_dcolors() {
     echo "$N_max max index of array ${!dcolor@}"
     # set starting color (using array indices 0-11, specified above)
     local -ir start=7
+    echo -e "staring with index ${dcolor[$start]}${start}\x1b[m"
     local indx
     local -ir direction=-1
     for ((i=0;i<$N_cols;i++));do
@@ -92,7 +93,7 @@ function print_dcolors() {
         indx=$(( (${N_max} - $i + $start + 1 ) % ${N_cols} ))
         printf '%2d ' $indx
         
-        echo -e "${dcolor[(${N_max}-$i+8)%${N_cols}]}$i $(((${N_max}-i+8)%${N_cols}))"
+        echo -e "${dcolor[$indx]}$i $indx"
         echo -en "\x1b[m"
     done    
 }
