@@ -54,23 +54,58 @@ export col00='\E[38;5;102m' # 12:   0 Grey              mon - GRAY
 # create rainbow-ordered (hue order) of 12 colors
 export dcolor=( '\E[38;5;131m' '\E[38;5;137m' '\E[38;5;143m' '\E[38;5;107m' '\E[38;5;71m'  '\E[38;5;72m'  '\E[38;5;73m'  '\E[38;5;67m'  '\E[38;5;61m'  '\E[38;5;97m'  '\E[38;5;133m' '\E[38;5;132m' )
 
+# reset shell options
+function reset_shell() {
+    local TAB=${TAB:='   '}
+    local -r old_opts=$1
+    shift
+
+    decho -n "resetting shell options... "
+    (        
+        for opt in $@; do          
+            decho
+            if [ $(echo ${old_opts} | grep ${opt}) ]; then
+                decho "${opt} was set:${old_opts}"
+                if [ $(echo $- | grep ${opt}) ]; then
+                    decho -n "${opt} is set:"
+                else
+                    decho "${opt} is not set:$-"
+                    decho -n "setting ${opt}:"
+                    set -${opt}
+                fi
+                decho -n "$-"
+            else
+                decho "${opt} was not set:${old_opts}"
+                if [ $(echo $- | grep ${opt}) ]; then
+                    decho "${opt} is set:$-"
+                    decho -n "unsetting ${opt}:"
+                    set +${opt}
+                else
+                    decho -n "${opt} is not set:"
+                fi
+                decho -n "$-"
+            fi
+        done
+        echo
+    ) | sed '1d' | column -t -s':' -o': ' -R 1 | sed '1 s/^/\n/'
+    decho "done"
+}
+
+function test_shell() {
+    echo "shell settings: $-"
+    print_shell
+}
+
+function print_shell() {
+    echo "shell settings: $-"
+}
+
 # print dcolor array in rainbow-order
 function print_colors() {
     local -i DEBUG=1
     # add shell options if not alraedy set
     old_opts=$(echo "$-")
-
-    if [ $(echo ${old_opts} | grep u) ]; then
-        decho -n "u is set: "
-        decho "$-"
-    else
-        decho -n "u is not set: "
-
-        decho ${old_opts}
-        decho "setting u..."
-        set -u
-        decho "$-"
-    fi
+    set -u
     
     # get length of array
     local -ir N_cols=${#dcolor[@]}
@@ -80,53 +115,15 @@ function print_colors() {
     done
 
     # reset shell options
-    if [ $(echo ${old_opts} | grep u) ]; then
-        decho -n "u was set: "
-        decho "${old_opts}"
-        if [ $(echo $- | grep u) ]; then
-            decho -n "u is set: "
-            decho "$-"
-        else
-            decho -n "u is not set: "
-            decho "$-"
-            decho "setting u..."
-            set -u
-            decho "$-"
-        fi
-    else
-        decho -n "u was not set: "
-        if [ $(echo $- | grep u) ]; then
-            decho -n "u is set: "
-            decho "$-"
-            decho "unsetting u..."
-            set +u
-        else
-            decho -n "u is not set: "
-            decho "$-"
-        fi
-    fi
-    
+    reset_shell ${old_opts} u
 }
 
 # print dcolor array in debug order
 function print_dcolors() {
-
- # add shell options if not alraedy set
+    local -i DEBUG=2
+    # add shell options if not alraedy set
     old_opts=$(echo "$-")
-
-    if [ $(echo ${old_opts} | grep u) ]; then
-        decho -n "u is set: "
-        decho "$-"
-    else
-        decho -n "u is not set: "
-
-        decho ${old_opts}
-        decho "setting u..."
-        set -u
-        decho "$-"
-    fi
-
-
+    set -u
     
     # get length of array
     local -ir N_cols=${#dcolor[@]}
@@ -134,12 +131,22 @@ function print_dcolors() {
     # calculate maximum array index
     local -ir N_max=$((N_cols-1))
     echo "$N_max max index of array ${!dcolor@}"
+    #---------------------------------------------------------------
     # set starting color (using array indices 0-11, specified above)
-    local -ir start=5
-    echo -e "staring with index ${dcolor[$start]}${start}\x1b[m\n"
-    local indx
+    local -ir start=7
+    # set increment direction
     local -ir direction=-1
-
+    #---------------------------------------------------------------
+    echo -e "staring with index ${dcolor[$start]}${start}\x1b[m\n"
+    if [ $direction -gt 0 ]; then
+        echo "incrementing array indicies"
+    elif [ $direction -lt 0 ]; then
+        echo "decrementing array indicies"
+    else
+        echo "something else..."
+    fi
+    # declare array index variable
+    local -i indx
     (
         for ((i=0;i<$N_cols;i++));do
             #define array index
@@ -150,32 +157,141 @@ function print_dcolors() {
         done
     ) | column -t -s: -N order,index,color
 
+    # reset shell options
+    reset_shell ${old_opts} u
+}
 
- # reset shell options
-    if [ $(echo ${old_opts} | grep u) ]; then
-        decho -n "u was set: "
-        decho "${old_opts}"
-        if [ $(echo $- | grep u) ]; then
-            decho -n "u is set: "
-            decho "$-"
-        else
-            decho -n "u is not set: "
-            decho "$-"
-            decho "setting u..."
-            set -u
-            decho "$-"
-        fi
+function set_dbg2idx() {
+    local -i DEBUG=1
+    set_traps
+    # get length of array
+    local -ir N_cols=${#dcolor[@]}
+    echo "$N_cols in array ${!dcolor@}"
+    # calculate maximum array index
+    local -ir N_max=$((N_cols-1))
+    echo "$N_max max index of array ${!dcolor@}"
+    #---------------------------------------------------------------
+    # set starting color (using array indices 0-11, specified above)
+    local -ir start=7
+    # set increment direction
+    local -ir direction=-1
+    #---------------------------------------------------------------
+    echo -e "staring with index ${dcolor[$start]}${start}\x1b[m"
+    if [ $direction -gt 0 ]; then
+        echo "incrementing array indicies"
+    elif [ $direction -lt 0 ]; then
+        echo "decrementing array indicies"
     else
-        decho -n "u was not set: "
-        if [ $(echo $- | grep u) ]; then
-            decho -n "u is set: "
-            decho "$-"
-            decho "unsetting u..."
-            set +u
-        else
-            decho -n "u is not set: "
-            decho "$-"
-        fi
+        echo "something else..."
     fi
+}
+
+function dbg2idx() {
+    # get input DEBUG value
+    local -i dbg_in=$1
+    #echo "input:  DEBUG:$dbg_in"
+    # since DEBUG=0 does not print and DEBUG=1 corresponds to starting color, or array index 0,
+    # decrement input value
+    #((dbg_in--))
+    #echo "color index is $dbg_in"
+
+    #define array index
+    local -i indx=$(( (${N_max} + $direction * ($dbg_in) + $start + 1 ) % ${N_cols} ))
+    #printf '%2d:%2d:' $dbg_in $indx
     
+    #printf "${dcolor[$indx]}%2d\x1b[m\n" $indx
+    
+    # reset shell options
+    #reset_shell ${old_opts} u
+
+    return $indx
+}
+
+function dum() {
+    local -i DEBUG=0
+    set -uETe 
+    local -i dbg_in=$1
+    decho "dbg_in = $dbg_in"
+    local -i indx=$(( ( ${N_max} + $direction * ($dbg_in) + $start + 1 ) % ${N_cols} ))
+    decho "indx = $indx"
+    set +e
+    return $indx
+}
+
+# print dcolor array in debug order
+function print_fcolors() {
+
+    local -i DEBUG=2
+    #    set_traps
+    # add shell options if not alraedy set
+    old_opts=$(echo "$-")
+    set -u -ET +e
+
+    # get length of array
+    local -ir N_cols=${#dcolor[@]}
+    echo "$N_cols in array ${!dcolor@}"
+    # calculate maximum array index
+    local -ir N_max=$((N_cols-1))
+    echo "$N_max max index of array ${!dcolor@}"
+    #---------------------------------------------------------------
+    # set starting color (using array indices 0-11, specified above)
+    local -ir start=7
+    # set increment direction
+    local -ir direction=-1
+    #---------------------------------------------------------------
+    echo -e "staring with index ${dcolor[$start]}${start}\x1b[m"
+    if [ $direction -gt 0 ]; then
+        echo "incrementing array indicies"
+    elif [ $direction -lt 0 ]; then
+        echo "decrementing array indicies"
+    else
+        echo "something else..."
+    fi
+
+    #    set_dbg2idx
+    
+    echo "OK"
+
+    set -ET +e
+    echo "start = $start"
+
+    
+    (
+        for ((i=0;i<$N_cols;i++));do
+            #i=0
+            #define array index
+            #            dbg2idx $i #>/dev/null
+            set +e
+            dum $i
+            indx=$?
+            set -e
+
+            printf '%2d:%2d:' $i $indx
+            printf "${dcolor[$indx]}%2d\x1b[m\n" $indx
+        done
+    ) | column -t -s: -N order,index,color
+
+    # reset shell options
+    reset_shell ${old_opts} u e
+    
+
+    trap 'echo "exit ' EXIT
+
+}
+
+function test_vart() {
+    echo "${FUNCNAME}"
+    local -i N=1
+    echo "N = $N"
+    local -ir b=2
+    set_var $N
+    echo "N = $N"
+
+}
+function set_var() {
+    echo "${FUNCNAME}"
+    echo "N = $N"
+    echo "b = $b"
+    N=$(( $N * $b ))
+
 }
