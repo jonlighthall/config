@@ -86,9 +86,10 @@ function print_dcolors() {
     # set starting color (using array indices 0-11, specified above)
     local -ir start=7
     local indx
+    local -ir direction=-1
     for ((i=0;i<$N_cols;i++));do
         #define array index
-        indx=$(( (${N_max} - $i + 8 ) % ${N_cols} ))
+        indx=$(( (${N_max} - $i + $start + 1 ) % ${N_cols} ))
         printf '%2d ' $indx
         
         echo -e "${dcolor[(${N_max}-$i+8)%${N_cols}]}$i $(((${N_max}-i+8)%${N_cols}))"
