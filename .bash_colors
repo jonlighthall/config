@@ -102,15 +102,6 @@ function reset_shell() {
     decho "done"
 }
 
-function test_shell() {
-    echo "shell settings: $-"
-    print_shell
-}
-
-function print_shell() {
-    echo "shell settings: $-"
-}
-
 # print dcolor array in rainbow-order
 function print_colors() {
     local -i DEBUG=1
@@ -172,39 +163,10 @@ function print_dcolors() {
     reset_shell ${old_opts} u
 }
 
-function set_dbg2idx() {
-    local -i DEBUG=1
-    set_traps
-    # get length of array
-    local -ir N_cols=${#dcolor[@]}
-    echo "$N_cols in array ${!dcolor@}"
-    # calculate maximum array index
-    local -ir N_max=$((N_cols-1))
-    echo "$N_max max index of array ${!dcolor@}"
-    #---------------------------------------------------------------
-    # set starting color (using array indices 0-11, specified above)
-    local -ir start=7
-    # set increment direction
-    local -ir direction=-1
-    #---------------------------------------------------------------
-    echo -e "staring with index ${dcolor[$start]}${start}\x1b[m"
-    if [ $direction -gt 0 ]; then
-        echo "incrementing array indicies"
-    elif [ $direction -lt 0 ]; then
-        echo "decrementing array indicies"
-    else
-        echo "something else..."
-    fi
-}
-
 function dbg2idx() {
-    # get input DEBUG value
-    local -i dbg_in=$1
-    #echo "input:  DEBUG:$dbg_in"
     # since DEBUG=0 does not print and DEBUG=1 corresponds to starting color, or array index 0,
     # decrement input value
     #((dbg_in--))
-    #echo "color index is $dbg_in"
 
     #define array index
     local -i indx=$(( (${N_max} + $direction * ($dbg_in) + $start + 1 ) % ${N_cols} ))
@@ -212,17 +174,16 @@ function dbg2idx() {
 
     #printf "${dcolor[$indx]}%2d\x1b[m\n" $indx
 
-    # reset shell options
-    #reset_shell ${old_opts} u
-
     return $indx
 }
 
 function dum() {
     local -i DEBUG=0
-    set -uETe 
+    set -uETe
+    # get input DEBUG value
     local -i dbg_in=$1
-    decho "dbg_in = $dbg_in"
+    decho "dbg_in = $db_in"
+    #define array index
     local -i indx=$(( ( ${N_max} + $direction * ($dbg_in) + $start + 1 ) % ${N_cols} ))
     decho "indx = $indx"
     set +e
@@ -259,13 +220,7 @@ function print_fcolors() {
         echo "something else..."
     fi
 
-    #    set_dbg2idx
-
-    echo "OK"
-
-    set -ET +e
-    echo "start = $start"
-
+    set -ET
     (
         for ((i=0;i<$N_cols;i++));do
             #i=0
@@ -283,24 +238,5 @@ function print_fcolors() {
 
     # reset shell options
     reset_shell ${old_opts} u e
-
     trap 'echo "exit ' EXIT
-
-}
-
-function test_vart() {
-    echo "${FUNCNAME}"
-    local -i N=1
-    echo "N = $N"
-    local -ir b=2
-    set_var $N
-    echo "N = $N"
-
-}
-function set_var() {
-    echo "${FUNCNAME}"
-    echo "N = $N"
-    echo "b = $b"
-    N=$(( $N * $b ))
-
 }
