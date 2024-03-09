@@ -87,7 +87,7 @@ sh_lvl() {
 
 if $VB; then
     echo "${TAB}Setting prompt..."
-    TAB+=${fTAB:='   '}
+    itab
 fi
 
 vecho -n "${TAB}Checking Git... "
@@ -183,7 +183,7 @@ if $do_test_git; then
     fi
 fi
 if $VB; then
-    TAB=${TAB%$fTAB}
+    dtab
 fi
 
 # Test ls color
@@ -203,7 +203,7 @@ fi
 # Path additions
 if $VB; then
     echo "${TAB}Path additions..."
-    TAB+=${fTAB:='   '}
+    itab
 fi
 
 # PGI
@@ -263,6 +263,5 @@ fi
 
 if $VB; then
     # reset tab
-    TAB=${TAB%$fTAB} # once for path
-    TAB=${TAB%$fTAB} # once for file
+    dtab 2 # once for path, once for file
 fi
