@@ -79,7 +79,7 @@ function gitl {
     if [ $# -ne 1 ]; then
 	git log
     else
-	(git log --follow $@) && git log --follow $@ || git log $@
+	(git log --follow $@ >/dev/null) && git log --follow $@ || git log $@
     fi
 }
 
