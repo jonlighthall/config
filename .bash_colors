@@ -148,14 +148,14 @@ function print_dcolors() {
         echo "something else..."
     fi
     # declare array index variable
-    local -i indx
+    local -i idx
     (
         for ((i=0;i<$N_cols;i++));do
             #define array index
-            indx=$(( (${N_max} + $direction * ($i) + $start + 1 ) % ${N_cols} ))
-            printf '%2d:%2d:' $i $indx
+            idx=$(( (${N_max} + $direction * ($i) + $start + 1 ) % ${N_cols} ))
+            printf '%2d:%2d:' $i $idx
 
-            printf "${dcolor[$indx]}%2d\x1b[m\n" $indx
+            printf "${dcolor[$idx]}%2d\x1b[m\n" $idx
         done
     ) | column -t -s: -N order,index,color
 
@@ -164,40 +164,25 @@ function print_dcolors() {
 }
 
 function dbg2idx() {
-    # since DEBUG=0 does not print and DEBUG=1 corresponds to starting color, or array index 0,
-    # decrement input value
-    #((dbg_in--))
-
-    #define array index
-    local -i indx=$(( (${N_max} + $direction * ($dbg_in) + $start + 1 ) % ${N_cols} ))
-    #printf '%2d:%2d:' $dbg_in $indx
-
-    #printf "${dcolor[$indx]}%2d\x1b[m\n" $indx
-
-    return $indx
-}
-
-function dum() {
     local -i DEBUG=0
-    set -uETe
     # get input DEBUG value
     local -i dbg_in=$1
     decho "dbg_in = $dbg_in"
+
+    # since DEBUG=0 does not print and DEBUG=1 corresponds to starting color, or array index 0,
+    # decrement input value
+    #    ((dbg_in--))
+    
     #define array index
-    local -i indx=$(( ( ${N_max} + $direction * ($dbg_in) + $start + 1 ) % ${N_cols} ))
-    decho "indx = $indx"
-    set +e
-    return $indx
+    idx=$(( ( ${N_max} + $direction * ($dbg_in) + $start + 1 ) % ${N_cols} ))
+    decho "idx = $idx"
+
+    return 0
 }
 
 # print dcolor array in debug order
 function print_fcolors() {
-
-    local -i DEBUG=2
-    #    set_traps
-    # add shell options if not alraedy set
-    old_opts=$(echo "$-")
-    set -u -ET +e
+    local -i DEBUG=0
 
     # get length of array
     local -ir N_cols=${#dcolor[@]}
@@ -220,23 +205,14 @@ function print_fcolors() {
         echo "something else..."
     fi
 
-    set -ET
+    local -i idx
     (
         for ((i=0;i<$N_cols;i++));do
-            #i=0
             #define array index
-            #            dbg2idx $i #>/dev/null
-            set +e
-            dum $i
-            indx=$?
-            set -e
-
-            printf '%2d:%2d:' $i $indx
-            printf "${dcolor[$indx]}%2d\x1b[m\n" $indx
+            unset idx
+            dbg2idx $i
+            printf '%2d:%2d:' $i $idx
+            printf "${dcolor[$idx]}%2d\x1b[m\n" $idx
         done
-    ) | column -t -s: -N order,index,color
-
-    # reset shell options
-    reset_shell ${old_opts} u e
-    trap 'echo "exit ' EXIT
+    ) | column -t -s: -N order,index,color | sed "s/^/${TAB}/"
 }
