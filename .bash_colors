@@ -1,4 +1,4 @@
-# define highligt colors
+# define highlight colors
 export     BAD='\E[0;31m' # red
 export    GOOD='\E[0;32m' # green
 # define accents
@@ -43,7 +43,7 @@ export col07='\E[38;5;107m' #  3:  90 Dark Olive Green    ter - chartreuse
 export col03='\E[38;5;71m'  #  4: 120 Dark Sea Green    pri - GREEN/lime
 export col04='\E[38;5;72m'  #  5: 150 Cadet Blue          ter - spring green
 export col04='\E[38;5;73m'  #  6: 180 Cadet Blue          sec - CYAN/aqua
-export col02='\E[38;5;67m'  #  7: 210 Steel BLue          ter - azure
+export col02='\E[38;5;67m'  #  7: 210 Steel Blue          ter - azure
 export col01='\E[38;5;61m'  #  8: 240 Slate Blue        pri - BLUE
 export col06='\E[38;5;97m'  #  9: 270 Medium Purple       ter - violet
 export col10='\E[38;5;133m' # 10: 300 Medium Orchid       sec - MAGENTA/fuchsia
@@ -56,14 +56,42 @@ dcolor=( '\E[38;5;131m' '\E[38;5;137m' '\E[38;5;143m' '\E[38;5;107m' '\E[38;5;71
 
 # print dcolor array in rainbow-order
 function print_colors() {    
-    for ((i=0;i<12;i++));do
+    if [ $(echo $- | grep u) ]; then
+        decho -n "u is set: "
+        decho "$-"
+    else
+        decho -n "u is not set: "
+        decho "$-"
+        decho "setting u..."
+        set -u
+        decho "$-"
+    fi
+    
+    # get length of array
+    local -ir N_cols=${#dcolor[@]}
+    echo "$N_cols in array ${!dcolor@}"
+    for ((i=0;i<$N_cols;i++));do
         echo -e "${dcolor[$i]}$i"
-    done    
+    done
 }
 
 # print dcolor array in debug order
 function print_dcolors() {
-    for ((i=0;i<12;i++));do
-        echo -e "${dcolor[(11-$i+8)%12]}$i $(((11-i+8)%12))"
+    # get length of array
+    local -ir N_cols=${#dcolor[@]}
+    echo "$N_cols in array ${!dcolor@}"
+    # calculate maximum array index
+    local -ir N_max=$((N_cols-1))
+    echo "$N_max max index of array ${!dcolor@}"
+    # set starting color (using array indices 0-11, specified above)
+    local -ir start=7
+    local indx
+    for ((i=0;i<$N_cols;i++));do
+        #define array index
+        indx=$(( (${N_max} - $i + 8 ) % ${N_cols} ))
+        printf '%2d ' $indx
+        
+        echo -e "${dcolor[(${N_max}-$i+8)%${N_cols}]}$i $(((${N_max}-i+8)%${N_cols}))"
+        echo -en "\x1b[m"
     done    
 }
