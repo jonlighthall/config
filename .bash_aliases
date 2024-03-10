@@ -34,6 +34,7 @@ alias fl='find -L ./ \( -type l -o -xtype l \) -exec ls --color -l {} \;' # find
 alias gitb='git branch -vva  --color=always'
 alias gitcp='git cherry-pick'
 alias gitd='git diff --color-moved=blocks --ignore-space-change'
+alias gitf='git fetch --all --verbose'
 alias gitdn='git diff --name-status'
 alias gitr='git remote -v'
 alias gits='git status'
