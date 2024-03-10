@@ -164,48 +164,58 @@ function print_dcolors() {
 }
 
 function set_dbg2idx() {
+    # turn in-function debugging on/off
+    local -I funcDEBUG
+
     # get length of array
-     N_cols=${#dcolor[@]}
-    echo "$N_cols in array ${!dcolor@}"
+    N_cols=${#dcolor[@]}
+    fecho "$N_cols in array ${!dcolor@}"
     # calculate maximum array index
-     N_max=$((N_cols-1))
-    echo "$N_max max index of array ${!dcolor@}"
+    N_max=$((N_cols-1))
+    fecho "$N_max max index of array ${!dcolor@}"
     #---------------------------------------------------------------
     # set starting color (using array indices 0-11, specified above)
-     start=7
+    start=7
     # set increment direction
-     direction=-1
+    direction=-1
     #---------------------------------------------------------------
-    echo -e "staring with index ${dcolor[$start]}${start}\x1b[m"
+    fecho -e "staring with index ${dcolor[$start]}${start}\x1b[m"
     if [ $direction -gt 0 ]; then
-        echo "incrementing array indicies"
+        fecho "incrementing array indicies"
     elif [ $direction -lt 0 ]; then
-        echo "decrementing array indicies"
+        fecho "decrementing array indicies"
     else
-        echo "something else..."
+        fecho "something else..."
     fi   
 }
 
 # convert DEBUG value to color array index
 function dbg2idx() {
-#    local -i DEBUG=0
+    if [ $# -lt 1 ]; then
+        >&2 echo "$FUNCNAME: input required"
+        return 0
+    fi
+
+    # turn in-function debugging on/off
+    local -I funcDEBUG
+    
     # get input DEBUG value
     local -i dbg_in=$1
- #   decho "dbg_in = $dbg_in"
+    fecho "dbg_in = $dbg_in"
 
-    set_dbg2idx >/dev/null
+    set_dbg2idx
     
     # since DEBUG=0 does not print and DEBUG=1 corresponds to starting color, or array index 0,
     # decrement input value
     local -ir offset=-1
     local -i dbg_idx=$(( ( $dbg_in + ${offset} ) % ${N_cols} ))
-  #  decho "dbg_idx = $dbg_idx"
+    fecho "dbg_idx = $dbg_idx"
     
     #define array index
     idx=$(( ( ${N_max} + $direction * ($dbg_idx) + $start + 1 ) % ${N_cols} ))
-   # decho "idx = $idx"
+    fecho "idx = $idx"
 
-    printf "${dcolor[$idx]}\x1b[7m%2d\x1b[m" $idx
+    fecho "${dcolor[$idx]}\x1b[7m${dbg_in}\x1b[m"
     
     return 0
 }
