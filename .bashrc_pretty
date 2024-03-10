@@ -139,23 +139,6 @@ function ddecho() {
     return 0
 }
 
-function Decho() {
-    # if DEBUG is (unset or null) or greater than 1
-    if [ -z ${DEBUG:+dummy} ] || [ $DEBUG -gt 1 ]; then
-        # get color index
-        local -i idx
-        unset idx
-        dbg2idx 2
-        # set color
-        echo -ne "${dcolor[$idx]}"
-        # print message
-        echo "$@"
-        # unset color
-        echo -ne "\e[0m"
-    fi
-    return 0
-}
-
 decho "DEBUG = $DEBUG"
 
 # If not running interactively, reduce prints
@@ -239,17 +222,17 @@ function print_done() {
 
     # get length of stack
     local -i N=${#BASH_SOURCE[@]}
-    Decho "${TAB}There are N=$N entries in the call stack"
+    ddecho "${TAB}There are N=$N entries in the call stack"
 
-    Decho "${TAB}full bash source:"
-    Decho "${TAB}${fTAB}BASH_SOURCE[@] = ${BASH_SOURCE[@]}"
+    ddecho "${TAB}full bash source:"
+    ddecho "${TAB}${fTAB}BASH_SOURCE[@] = ${BASH_SOURCE[@]}"
 
-    Decho "${TAB}this source:"
-    Decho "${TAB}${fTAB}BASH_SOURCE[0] = ${BASH_SOURCE[0]}"
+    ddecho "${TAB}this source:"
+    ddecho "${TAB}${fTAB}BASH_SOURCE[0] = ${BASH_SOURCE[0]}"
 
     if [ $N -gt 1 ]; then
-        Decho "${TAB}invoking source source:"
-        Decho "${TAB}${fTAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]}"
+        ddecho "${TAB}invoking source source:"
+        ddecho "${TAB}${fTAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]}"
     fi
 
     echo -en "${BASH_SOURCE[(($N - 1))]##*/}${NORMAL} "
@@ -422,63 +405,63 @@ function print_return() {
     
     start_new_line
 
-    Decho "BASH_ARGC = $BASH_ARGC"
-    Decho "BASH_ARGV = $BASH_ARGV"
-    Decho "BASH_COMMAND = $BASH_COMMAND"
-    Decho "BASH_SUBSHELL = $BASH_SUBSHELL"
+    ddecho "BASH_ARGC = $BASH_ARGC"
+    ddecho "BASH_ARGV = $BASH_ARGV"
+    ddecho "BASH_COMMAND = $BASH_COMMAND"
+    ddecho "BASH_SUBSHELL = $BASH_SUBSHELL"
     
     # get length of stack
     local -i NB=${#BASH_SOURCE[@]}
-    Decho "${TAB}There are N=$NB entries in the call stack"
+    ddecho "${TAB}There are N=$NB entries in the call stack"
 
-    Decho "${TAB}full bash source:"
-    Decho "${TAB}${fTAB}BASH_SOURCE[@] = ${BASH_SOURCE[@]}"
+    ddecho "${TAB}full bash source:"
+    ddecho "${TAB}${fTAB}BASH_SOURCE[@] = ${BASH_SOURCE[@]}"
 
-    Decho "${TAB}this source:"
-    Decho "${TAB}${fTAB}BASH_SOURCE[0] = ${BASH_SOURCE[0]}"
+    ddecho "${TAB}this source:"
+    ddecho "${TAB}${fTAB}BASH_SOURCE[0] = ${BASH_SOURCE[0]}"
 
     if [ $NB -gt 1 ]; then
-        Decho "${TAB}invoking source source:"
+        ddecho "${TAB}invoking source source:"
         itab
-        Decho "${TAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]##*/}"
-        Decho "${TAB}BASH_SOURCE[(($NB-1))] = ${BASH_SOURCE[$NB-1]##*/}"
+        ddecho "${TAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]##*/}"
+        ddecho "${TAB}BASH_SOURCE[(($NB-1))] = ${BASH_SOURCE[$NB-1]##*/}"
         dtab
     fi
 
     local -i NF=${#FUNCNAME[@]}
-    Decho "${TAB}There are N=$NF entries in the execution call stack"
-    Decho "${TAB}FUNCNAME=${FUNCNAME[@]}"
+    ddecho "${TAB}There are N=$NF entries in the execution call stack"
+    ddecho "${TAB}FUNCNAME=${FUNCNAME[@]}"
 
-    Decho "${TAB}call stack:"
+    ddecho "${TAB}call stack:"
     itab
     # (
     #     for ((i = 0; i < $NF; i++)); do
-    #         Decho -n "${TAB}$i: ${FUNCNAME[$i]} "
-    #         Decho -n ":defined in: ${BASH_SOURCE[$i]##*/} "
-    #         Decho -n ":called by: "
+    #         ddecho -n "${TAB}$i: ${FUNCNAME[$i]} "
+    #         ddecho -n ":defined in: ${BASH_SOURCE[$i]##*/} "
+    #         ddecho -n ":called by: "
     #         if [ -z "${BASH_SOURCE[$i+1]}" ]; then
-    #             Decho -n "NULL " 
+    #             ddecho -n "NULL " 
     #         else
-    #             Decho -n "${BASH_SOURCE[$i+1]##*/} "
+    #             ddecho -n "${BASH_SOURCE[$i+1]##*/} "
     #         fi
-    #         Decho ":on line: ${BASH_LINENO[$i]}"
+    #         ddecho ":on line: ${BASH_LINENO[$i]}"
     #     done
     # ) | column -t -s : -o ""
     dtab
     
     if [ ${#FUNCNAME[@]} -gt 1 ]; then
-        Decho "${TAB}FUNCNAME[$((NF-2))]=${FUNCNAME[$((NF-2))]}"
+        ddecho "${TAB}FUNCNAME[$((NF-2))]=${FUNCNAME[$((NF-2))]}"
     fi
 
     local -i NL=${#BASH_LINENO[@]}
-    Decho "${TAB}There are N=$NL entries in the line number stack"
-    Decho "${TAB}line no stack:"
+    ddecho "${TAB}There are N=$NL entries in the line number stack"
+    ddecho "${TAB}line no stack:"
     itab
     for ((i = 0; i < $NL; i++)); do
-        Decho "${TAB}$i: line ${BASH_LINENO[$i]}"
+        ddecho "${TAB}$i: line ${BASH_LINENO[$i]}"
     done    
     dtab
-    Decho "lineno $LINENO"
+    ddecho "lineno $LINENO"
     
     echo -e "${yellow}\E[7m RETURN ${NORMAL} ${gray}RETVAL=${RETURN_RETVAL}${NORMAL} ${FUNCNAME[$((NF-2))]}"
 }
@@ -501,27 +484,27 @@ function set_traps() {
     #set -T
     decho "done"
     
-    Decho "the following traps are saved"
+    ddecho "the following traps are saved"
     if [ -z "${save_traps+default}" ]; then
-        Decho "${fTAB}none"
-        Decho -n "setting traps... "
+        ddecho "${fTAB}none"
+        ddecho -n "setting traps... "
         trap 'print_error $LINENO $? $BASH_COMMAND' ERR
         trap 'print_exit $?' EXIT
-        Decho "done"
+        ddecho "done"
     else
-        Decho "${save_traps}" | sed "$ ! s/^/${fTAB}/"
-        Decho "setting saved traps..."
+        ddecho "${save_traps}" | sed "$ ! s/^/${fTAB}/"
+        ddecho "setting saved traps..."
         eval $(echo "${save_traps}" | sed "s/$/;/g")
     fi
 
     # print summary
-    Decho -n "on set trap retrun, the following traps are set"
+    ddecho -n "on set trap retrun, the following traps are set"
     if [ -z "$(trap -p)" ]; then
-        Decho -e "\n${fTAB}none"
+        ddecho -e "\n${fTAB}none"
         exit
     else
-        Decho
-        Decho $(trap -p) | sed "$ ! s/^/${fTAB}/;s/ \(trap\)/\n${fTAB}\1/g" | sed 's/^[ ]*$//g'
+        ddecho
+        ddecho $(trap -p) | sed "$ ! s/^/${fTAB}/;s/ \(trap\)/\n${fTAB}\1/g" | sed 's/^[ ]*$//g'
     fi
 }
 
@@ -543,18 +526,18 @@ function unset_traps() {
     #    set +eE
     decho "done"
 
-    Decho -n "the current traps are set"
+    ddecho -n "the current traps are set"
     if [ -z "$(trap -p)" ]; then
-        Decho -e "\n${fTAB}none"
+        ddecho -e "\n${fTAB}none"
     else
-        Decho
-        Decho $(trap -p) | sed "$ ! s/^/${fTAB}/;s/ \(trap\)/\n${fTAB}\1/g" | sed 's/^[ ]*$//g'
+        ddecho
+        ddecho $(trap -p) | sed "$ ! s/^/${fTAB}/;s/ \(trap\)/\n${fTAB}\1/g" | sed 's/^[ ]*$//g'
 
         # save traps
         export save_traps=$(trap -p | sed 's/-- //g')
         if [ ! -z "${save_traps}" ]; then
-            Decho "the current traps are saved"
-            Decho "${save_traps}" | sed "$ ! s/^/${fTAB}/"
+            ddecho "the current traps are saved"
+            ddecho "${save_traps}" | sed "$ ! s/^/${fTAB}/"
         fi
 
         # clear traps
@@ -564,11 +547,11 @@ function unset_traps() {
     fi
 
     # print summary
-    Decho "on unset trap retrun, the following traps are set"
+    ddecho "on unset trap retrun, the following traps are set"
     if [ -z $(trap -p) ]; then
-        Decho "${fTAB}none"
+        ddecho "${fTAB}none"
     else
-        Decho $(trap -p)
+        ddecho $(trap -p)
         exit
     fi
 }
