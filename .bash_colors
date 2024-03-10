@@ -163,40 +163,18 @@ function print_dcolors() {
     reset_shell ${old_opts} u
 }
 
-function dbg2idx() {
-    local -i DEBUG=0
-    # get input DEBUG value
-    local -i dbg_in=$1
-    decho "dbg_in = $dbg_in"
-
-    # since DEBUG=0 does not print and DEBUG=1 corresponds to starting color, or array index 0,
-    # decrement input value
-    local -ir offset=-1
-    local -i dbg_idx=$(( ( $dbg_in + ${offset} ) % ${N_cols} ))
-    decho "dbg_idx = $dbg_idx"
-    
-    #define array index
-    idx=$(( ( ${N_max} + $direction * ($dbg_idx) + $start + 1 ) % ${N_cols} ))
-    decho "idx = $idx"
-
-    return 0
-}
-
-# print dcolor array in debug order
-function print_fcolors() {
-    local -i DEBUG=0
-
+function set_dbg2idx() {
     # get length of array
-    local -ir N_cols=${#dcolor[@]}
+     N_cols=${#dcolor[@]}
     echo "$N_cols in array ${!dcolor@}"
     # calculate maximum array index
-    local -ir N_max=$((N_cols-1))
+     N_max=$((N_cols-1))
     echo "$N_max max index of array ${!dcolor@}"
     #---------------------------------------------------------------
     # set starting color (using array indices 0-11, specified above)
-    local -ir start=7
+     start=7
     # set increment direction
-    local -ir direction=-1
+     direction=-1
     #---------------------------------------------------------------
     echo -e "staring with index ${dcolor[$start]}${start}\x1b[m"
     if [ $direction -gt 0 ]; then
@@ -205,7 +183,43 @@ function print_fcolors() {
         echo "decrementing array indicies"
     else
         echo "something else..."
-    fi
+    fi   
+}
+
+# convert DEBUG value to color array index
+function dbg2idx() {
+#    local -i DEBUG=0
+    # get input DEBUG value
+    local -i dbg_in=$1
+ #   decho "dbg_in = $dbg_in"
+
+    set_dbg2idx >/dev/null
+    
+    # since DEBUG=0 does not print and DEBUG=1 corresponds to starting color, or array index 0,
+    # decrement input value
+    local -ir offset=-1
+    local -i dbg_idx=$(( ( $dbg_in + ${offset} ) % ${N_cols} ))
+  #  decho "dbg_idx = $dbg_idx"
+    
+    #define array index
+    idx=$(( ( ${N_max} + $direction * ($dbg_idx) + $start + 1 ) % ${N_cols} ))
+   # decho "idx = $idx"
+
+    printf "${dcolor[$idx]}\x1b[7m%2d\x1b[m" $idx
+    
+    return 0
+}
+
+# print dcolor array in debug order
+function print_fcolors() {
+    local -i DEBUG=0
+
+    local -i N_cols
+    local -i N_max
+    local -i start
+    local -i direction
+
+    set_dbg2idx
 
     local -i idx
     (
