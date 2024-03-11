@@ -169,7 +169,7 @@ function set_dbg2idx() {
 
     # get length of array
     N_cols=${#dcolor[@]}
-    fecho "$N_cols in array ${!dcolor@}"
+    fecho "$N_cols elements in array ${!dcolor@}"
     # calculate maximum array index
     N_max=$((N_cols-1))
     fecho "$N_max max index of array ${!dcolor@}"
@@ -203,7 +203,10 @@ function dbg2idx() {
     local -i dbg_in=$1
     fecho "dbg_in = $dbg_in"
 
+    local -ir fdbg=$funcDEBUG
+    funcDEBUG=0
     set_dbg2idx
+    funcDEBUG=fdbg
     
     # since DEBUG=0 does not print and DEBUG=1 corresponds to starting color, or array index 0,
     # decrement input value
@@ -215,15 +218,15 @@ function dbg2idx() {
     idx=$(( ( ${N_max} + $direction * ($dbg_idx) + $start + 1 ) % ${N_cols} ))
     fecho "idx = $idx"
 
-    fecho "${dcolor[$idx]}\x1b[7m${dbg_in}\x1b[m"
+    fecho -e "${dcolor[$idx]}\x1b[7m${dbg_in}\x1b[m"
     
     return 0
 }
 
 # print dcolor array in debug order
 function print_fcolors() {
-    local -i DEBUG=0
-
+    local -iI funcDEBUG=${funcDEBUG:-1} # inherit value or substitution default
+    fecho "printing contents of dcolor..."
     local -i N_cols
     local -i N_max
     local -i start
