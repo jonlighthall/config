@@ -117,8 +117,8 @@ function do_link() {
     #       - proceed with linking
     #     LINK
     #       check if target is authorized_keys
-    #         + PHYSICAL LINK
-    #         - SYM LINK
+    #         + create physical link
+    #         - create symbolic link
     #
     # CALLED BY
     #   do_link_exe
@@ -191,12 +191,14 @@ function do_link() {
             # check existing permissions
             itab
             echo -n "${TAB}checking permissions... "
+            # if the target file is itself a link, the permissions are irrelevant; check the
+            # permissions of the canonicalized target
             local target_canon=$(readlink -f "${target}")
             local -i perm=$(stat -c "%a" "${target_canon}")
             echo -n "${perm} "
 
-            # if necessary, the target files will have their existing permissions replaced with
-            # the required permissions
+            # if necessary, the canonicalized target file will have its existing permissions
+            # replaced with the required permissions
             if [[ ${perm} -gt ${permOK} ]]; then
                 echo -e "${BAD}FAIL${NORMAL}"
                 echo -en "${TAB}${GRH}changing permissions${NORMAL} to ${permOK}... "
