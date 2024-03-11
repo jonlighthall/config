@@ -1,12 +1,42 @@
 #!/bin/bash -u
 
-# define source directory
+# get canonical source name
 src_name=$(readlink -f ${BASH_SOURCE[0]})
-src_dir_logi=${BASH_SOURCE%/*}
+
+# get source path
+## physical (canonical)
+src_dir_phys=$(dirname $src_name)
+## logical (links)
+src_dir_logi=$(dirname $BASH_SOURCE)
+
+# determine if script is being sourced or executed and add conditional behavior
+if (return 0 2>/dev/null); then
+    RUN_TYPE="sourcing"
+else
+    RUN_TYPE="executing"
+    # exit on errors
+    set -e
+    # print note
+fi
+
+# print run type and source name
+echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
+src_name=$(readlink -f $BASH_SOURCE)
+if [ ! "$BASH_SOURCE" = "$src_name" ]; then
+    echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
+fi
+
+# print source path
+## physical
+echo -e "${TAB}${gray}phys -> $src_dir_phys${NORMAL}"
+## logical
+echo -e "${TAB}${gray}logi -> $src_dir_logi${NORMAL}"
 
 # load bash utils
 for util in .bash_colors .bash_tabs .bash_links; do
-    fname="${src_dir_logi}/${util}"
+    # use the canonical (physical) source directory for reference; this is important if sourcing
+    # this file directly from shell
+    fname="${src_dir_phys}/${util}"
     if [ -e "${fname}" ]; then
         source ${fname}
     else
@@ -21,22 +51,56 @@ declare -i DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
 
 # define in-function debug echo
 function fecho() {
-    # check if funcDEBUG is defined
-    # only define funcDEBUG as a local variable within funcions
-    if [ ! -z ${funcDEBUG:+dummy} ]; then
-        n_func=${#FUNCNAME[@]}
-        #        echo "$n_func"
-        #       local -i x
-        #      for (( x=0; x< $n_func; x++ )); do 
-        #         echo "$x ${FUNCNAME[x]}"
-        #        done
+    # NAME
+    #   fecho - function echo
+    # DESCRIPTION
+    #   echos arguments based on the value of funcDEBUG in calling function
+    #   NB: only define funcDEBUG as a local variable within FUNCTIONS
 
-        # fecho() should only be called from other functions, so the length of FUNCNAME should
-        # always be 2 or greater. Start with color 0
-        local -ir idx=$(( n_func - 2 ))
-        
+    # check if funcDEBUG is defined
+    if [ ! -z ${funcDEBUG:+dummy} ]; then       
+        # check if $funcDEBUG is non-zero
         if [ $funcDEBUG -gt 0 ]; then
-            echo -ne "${dcolor[idx]}${FUNCNAME[1]}: "
+            # get size of function stack
+            n_func=${#FUNCNAME[@]}
+
+            # fecho() should only be called from other functions, so the length of FUNCNAME
+            # should always be 2 or greater. Start with color 0
+            local -ir idx=$(( n_func - 2 ))    
+            
+            # set color
+            echo -ne "${dcolor[idx]}"
+
+            # optionally print function stack
+            if true; then
+            echo -ne "$n_func"
+
+            local -i start
+            local -i stop
+            
+            # printing debug messages from the debug handler is a little nuts...
+            # define function stack printing limits
+            if [[ ${FUNCNAME[1]} == "xecho" ]]; then
+                # print xecho debug
+                echo -ne "x"
+                start=$(( $n_func - 2 ))
+                stop=2
+            else
+                # print function debug
+                echo -ne "f"
+                start=$(( $n_func - 5 ))
+                stop=0
+            fi
+
+            # print the function stack...
+            echo -en "["
+            local -i x           
+            for (( x=$start; x>$stop; x-- )); do
+                echo -en "$(basename ${BASH_SOURCE[x+1]}) ${BASH_LINENO[x]}: ${FUNCNAME[x]}\e[0m${dcolor[idx]} -> "
+            done
+            echo -en "$(basename ${BASH_SOURCE[x]}) ${BASH_LINENO[x]}] "
+            fi
+            echo -ne "${FUNCNAME[x]}\e[0m${dcolor[idx]}: "
             echo "$@"
             echo -ne "\e[0m"
         fi
@@ -44,8 +108,33 @@ function fecho() {
     return 0
 }
 
-# define debug echo
-function decho() {
+# start a new line only if not already on a new line
+# i.e., carriage return with conditional line feed
+function start_new_line() {
+    # get the cursor position
+    echo -en "\E[6n"
+    read -sdR CURPOS
+    local CURPOS=${CURPOS#*[}
+          #}# dummy bracket for emacs indenting
+    # get the x-position of the cursor
+    local -i x_pos=${CURPOS#*;}
+    # if the cursor is not at the start of a line, then create a new line
+    if [ ${x_pos} -gt 1 ]; then
+        printf '\e[0;90;40m\u21b5\n\e[m'
+        #echo
+    fi
+}
+
+# define debug echos
+
+# generic debug message handler
+# the debugging functions should be named as follows
+#   decho - level 1: informative... or print steps
+#  ddecho - level 2: explicitly print values
+# dddecho - level 3: why...?
+# and so on
+function xecho() {
+    # check for null or empty arguments ...to skip coloring?
     if false; then
         if [ $# -eq 0 ] ; then
             echo "no args"
@@ -61,10 +150,10 @@ function decho() {
     fi
     
     # turn in-function debugging on/off
-    local -i funcDEBUG=0
+    local -i funcDEBUG=1
 
     # use function name to specify debug threshold
-    local fu=${FUNCNAME}
+    local fu=${FUNCNAME[1]}
     fecho "FUNCNAME = $fu"
     local pre=${fu%echo}
     fecho "prefix = $pre"
@@ -73,13 +162,13 @@ function decho() {
     local -ir thr=$(( ln - 1 ))
     fecho "threshold = $thr"
     fecho "DEBUG = $DEBUG"
-    fecho "args = '$@'"
+    fecho -e "args = \e[7m$@\e[m"
 
     # if DEBUG is (unset or null) or greater than threshold
     if [ -z ${DEBUG:+dummy} ] || [ $DEBUG -gt $thr ]; then
         # get color index
         local -i idx
-        fecho "loading color..."
+        fecho "loading color index $ln..."
         dbg2idx $ln
         fecho "printing..."
         # set color
@@ -88,54 +177,24 @@ function decho() {
         echo "$@"
         # unset color
         echo -ne "\e[0m"
+        if [ $funcDEBUG -gt 0 ]; then
+            start_new_line
+        fi
+        
     else
         fecho "not printing"
     fi
     return 0
 }
 
+# define debug echo
+function decho() {
+    xecho "$@"
+    return 0
+}
+
 function ddecho() {
-    # if the argument is empty, just echo a new line and return
-    if false; then
-        if [ $# -eq 0 ] || [[ -z "$@" ]]; then
-            echo
-            return 0
-        fi
-    fi
-    
-    # turn in-function debugging on/off
-    local -i funcDEBUG=0
-
-    # use function name to specify debug threshold
-    local fu=${FUNCNAME}
-    fecho "FUNCNAME = $fu"
-    local pre=${fu%echo}
-    fecho "prefix = $pre"
-    local -ir ln=${#pre}
-    fecho "length = $ln"
-    local -ir thr=$(( ln - 1 ))
-    fecho "threshold = $thr"
-    fecho "    DEBUG = $DEBUG"
-    fecho "args = '$@'"
-
-    # override external DEBUG
-    #    local -i DEBUG=$ln   
-
-    # if DEBUG is (unset or null) or greater than threshold
-    if [ -z ${DEBUG:+dummy} ] || [ $DEBUG -gt $thr ]; then
-        fecho "printing..."
-        # get color index
-        local -i idx
-        dbg2idx $ln
-        # set color
-        echo -ne "${dcolor[$idx]}"
-        # print message
-        echo "$@"
-        # unset color
-        echo -ne "\e[0m"
-    else
-        fecho "not printing"
-    fi
+    xecho "$@"    
     return 0
 }
 
@@ -281,22 +340,6 @@ function print_elap() {
         decho -ne "${yellow}start_time not defined${NORMAL} "
         # reset cursor position for print_done, etc.
         echo -en "\x1b[1D"
-    fi
-}
-
-# start a new line only if not already on a new line
-# i.e., carriage return with conditional line feed
-function start_new_line() {
-    # get the cursor position
-    echo -en "\E[6n"
-    read -sdR CURPOS
-    local CURPOS=${CURPOS#*[}
-          #}# dummy bracket for emacs indenting
-    # get the x-position of the cursor
-    local -i x_pos=${CURPOS#*;}
-    # if the cursor is not at the start of a line, then create a new line
-    if [ ${x_pos} -gt 1 ]; then
-        echo
     fi
 }
 
