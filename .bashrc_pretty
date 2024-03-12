@@ -47,18 +47,25 @@ done
 # set debug level
 declare -i DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
 
-
 function fello() {
     hello
     return 0
     
 }
 
-
+function driver() {
+    set -T
+    trap 'echo "${FUNCNAME} return"' RETURN
+    local -i DEBUG=2
+    local -i funcDEBUG=0
+    set_traps
+    fello
+    return 0
+    
+}
 
 # print function stack
 function print_stack() {
-
 
     ddecho "BASH_ARGC = $BASH_ARGC"
     ddecho "BASH_ARGV = $BASH_ARGV"
@@ -572,7 +579,6 @@ function print_return() {
     
     start_new_line
 
-
     # get size of function stack
     local -ir n_func=${#FUNCNAME[@]}
     
@@ -584,18 +590,21 @@ function set_traps() {
     # set local debug value
     local DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
 
+    # turn in-function debugging on/off
+    local -iI funcDEBUG=${funcDEBUG:-1} # inherit value or substitution default
+
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${magenta}\E[7mset traps${NORMAL}"
 
     # set shell options
-    decho -n "setting shell options..."
+    ddecho -n "setting shell options..."
     # exit on errors
     set -e
     # trace ERR (inherit ERR trap from shell)
     #set -E
     # trace RETURN and DEBUG traps
     #set -T
-    decho "done"
+    ddecho "done"
     
     ddecho "the following traps are saved"
     if [ -z "${save_traps+default}" ]; then
