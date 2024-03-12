@@ -16,7 +16,6 @@ else
     RUN_TYPE="executing"
     # exit on errors
     set -e
-    # print note
 fi
 
 # print run type and source name
@@ -603,7 +602,7 @@ function set_traps() {
     # set shell options
     ddecho -n "setting shell options..."
     # exit on errors
-    set -e
+    #set -e
     # trace ERR (inherit ERR trap from shell)
     #set -E
     # trace RETURN and DEBUG traps
@@ -644,7 +643,7 @@ function unset_traps() {
     # set shell options
     decho -n "setting shell options... "
     # trace ERR (inherit ERR trap from shell)
-    set -E
+    #set -E
     # trace RETURN and DEBUG traps
     #set -T
     # DO NOT exit on errors
