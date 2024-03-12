@@ -129,8 +129,8 @@ function print_stack() {
     # get size of function stack
     local -ir n_func=${#FUNCNAME[@]}
 
-    # fecho() should only be called from other functions, so the length of FUNCNAME
-    # should always be 2 or greater. Start with color 0
+    # print_stack() should only be called from other functions, so the length of FUNCNAME should
+    # always be 2 or greater. Start with color 0
     local -ir idx=$(( n_func - 2 ))    
     
     # set color
@@ -201,17 +201,26 @@ function print_stack() {
 }
 
 # conditional debug echos
+#-------------------------
 
-# define in-function debug echo
-function fecho() {
-    # NAME
-    #   fecho - function echo
-    # DESCRIPTION
-    #   echos arguments based on the value of funcDEBUG in calling function
-    #   NB: only define funcDEBUG as a local variable within FUNCTIONS
+# NAME
+#   fecho - function echo
+# DESCRIPTION
+#   Arguments are passed to ECHO based on the value of funcDEBUG in the calling function. Used to
+#   bypass, override, or augment the function decho() and the value of DEBUG.
+#
+#   NB: only define funcDEBUG as a local variable within FUNCTIONS
+#
+# Globals:
+#   funcDEBUG
+# Arguments:
+#   text and echo flags
 
+function fecho() {    
     # check if funcDEBUG is defined
-    if [ ! -z ${funcDEBUG:+dummy} ]; then       
+    if [ ! -z ${funcDEBUG:+dummy} ]; then
+        echo "${FUNCNAME}: DEBUG = $DEBUG"
+        echo "${FUNCNAME}: funcDEBUG = $funcDEBUG"
         # check if $funcDEBUG is non-zero
         if [ $funcDEBUG -gt 0 ]; then
             # get size of function stack
@@ -281,7 +290,8 @@ function xecho() {
     fi
     
     # turn in-function debugging on/off
-    local -iI funcDEBUG=${funcDEBUG:-1} # inherit value or substitution default
+    local -iI funcDEBUG=${funcDEBUG:-1} # inherit value from shell or substitute default value if
+                                        # unset or NULL
 
     # use function name to specify debug threshold
     local fu=${FUNCNAME[1]}
@@ -313,7 +323,7 @@ function xecho() {
         fi
         
     else
-        fecho "not printing"
+        fecho -e "\e[1m${dcolor[0]}not printing\e[0m"
     fi
     return 0
 }
