@@ -44,6 +44,8 @@ for util in .bash_colors .bash_tabs .bash_links; do
     fi
 done
 
+# TODO move debug functions to new library
+
 # set debug level
 declare -i DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
 
@@ -403,6 +405,8 @@ function cbar() {
     # print text with TAB
     echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
 }
+
+# TODO move traps to new library
 
 # print source name, elapsed time, and timestamp
 function print_done() {

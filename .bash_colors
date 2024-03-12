@@ -1,3 +1,5 @@
+# TODO this is a perfect example of a library file. rename
+
 # define highlight colors
 export     BAD='\E[0;31m' # red
 export    GOOD='\E[0;32m' # green
@@ -163,6 +165,17 @@ function print_dcolors() {
     reset_shell ${old_opts} u
 }
 
+#--------------------------------------
+# define settings for dbg2idx
+# Globals:
+#   direction
+#   idx
+#   N_cols
+#   N_max
+#   start
+# Arguments:
+#   None
+#--------------------------------------
 function set_dbg2idx() {
     # turn in-function debugging on/off
     local -I funcDEBUG
@@ -189,7 +202,15 @@ function set_dbg2idx() {
     fi   
 }
 
+#--------------------------------------
 # convert DEBUG value to color array index
+# Globals:
+#   N_cols
+#   N_max
+#   direction
+#   idx
+#   start
+#--------------------------------------    
 function dbg2idx() {
     if [ $# -lt 1 ]; then
         >&2 echo "$FUNCNAME: input required"
