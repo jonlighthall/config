@@ -299,3 +299,10 @@ function print_ls_colors_ext() {
         # echo outputs
         xargs -L 1 echo -e | column -t -o ' '
 }
+
+function append_ls_colors() {
+    # physical link (hardlink)
+    LS_COLORS+="mh=44;38;5;15:"
+    # missing
+    LS_COLORS+="mi=05;48;5;232;38;5;15:"
+    }
