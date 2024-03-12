@@ -47,6 +47,94 @@ done
 # set debug level
 declare -i DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
 
+function print_stack() {
+    # get size of function stack
+    local -ir n_func=${#FUNCNAME[@]}
+
+    # fecho() should only be called from other functions, so the length of FUNCNAME
+    # should always be 2 or greater. Start with color 0
+    local -ir idx=$(( n_func - 2 ))    
+    
+    # set color
+    echo -ne "${dcolor[idx]}"
+
+    local -i x
+    local -i start
+    local -i stop
+
+    # define function stack printing limits
+    if [[ ${FUNCNAME[1]} == "xecho" ]]; then
+        # xecho
+        start=$(( $n_func - 2 ))
+        stop=2
+    else
+        # function
+        start=$(( $n_func - 5 ))
+        stop=0
+    fi
+
+    #---------------------------------------------------------------
+    # optionally print function stack
+    #---------------------------------------------------------------
+    # printing debug messages from the debug handler is a little nuts...
+    if true; then
+        # print size of function stack
+        echo -ne "$n_func"
+
+        # print debug type
+        if [[ ${FUNCNAME[1]} == "xecho" ]]; then
+            # xecho
+            echo -ne "x"
+        else
+            # function
+            echo -ne "f"
+        fi
+
+        echo -n ": ${#FUNCNAME[@]} functions, ${#BASH_SOURCE[@]} sources, ${#BASH_LINENO[@]} lines"
+
+        echo
+
+        if [[ ${FUNCNAME[$n_func]} == "main"  ]]; then
+            echo "main"
+        fi
+
+        for func in ${FUNCNAME[@]}; do
+            echo $func
+        done
+
+        for (( i=0; i<$n_func; i++ )); do 
+            echo "$i ${FUNCNAME[i]} defined in $(basename ${BASH_SOURCE[i]}) on line ${BASH_LINENO[i]}; and called from $(basename ${BASH_SOURCE[i+1]})"
+        done
+
+        # print contents of function stack...
+        echo -en "["                
+        for (( x=(( $n_func - 0 )); x>-1; x-- )); do
+            if [[ ${FUNCNAME[x]} == "xecho" ]]; then
+                break
+            fi
+            echo -en "$(basename ${BASH_SOURCE[x+1]} 2>/dev/null) ${BASH_LINENO[x]}: ${FUNCNAME[x]}\e[0m${dcolor[idx]} -> "
+        done
+        echo -en "$(basename ${BASH_SOURCE[x]}) ${BASH_LINENO[x]}] "
+        
+        echo
+        
+        # print contents of function stack...
+        echo -en "["
+        for (( x=$start; x>$stop; x-- )); do
+            echo -en "$(basename ${BASH_SOURCE[x+1]}) ${BASH_LINENO[x]}: ${FUNCNAME[x]}\e[0m${dcolor[idx]} -> "
+        done
+        echo -en "$(basename ${BASH_SOURCE[x]}) ${BASH_LINENO[x]}] "
+
+    else
+        if [[ ${FUNCNAME[1]} == "xecho" ]]; then
+            x=stop
+        else
+            x=start
+        fi            
+    fi
+
+}
+
 # conditional debug echos
 
 # define in-function debug echo
@@ -71,81 +159,14 @@ function fecho() {
             # set color
             echo -ne "${dcolor[idx]}"
 
-            local -i x
-            local -i start
-            local -i stop
-
-            # define function stack printing limits
+            # define function stack printing
+            local -i fidx
             if [[ ${FUNCNAME[1]} == "xecho" ]]; then
-                # xecho
-                start=$(( $n_func - 2 ))
-                stop=2
+                fidx=2
             else
-                # function
-                start=$(( $n_func - 5 ))
-                stop=0
-            fi
-
-            #---------------------------------------------------------------
-            # optionally print function stack
-            #---------------------------------------------------------------
-            # printing debug messages from the debug handler is a little nuts...
-            if true; then
-                # print size of function stack
-                echo -ne "$n_func"
-
-                # print debug type
-                if [[ ${FUNCNAME[1]} == "xecho" ]]; then
-                    # xecho
-                    echo -ne "x"
-                else
-                    # function
-                    echo -ne "f"
-                fi
-
-                echo -n ": ${#FUNCNAME[@]} functions, ${#BASH_SOURCE[@]} sources, ${#BASH_LINENO[@]} lines"
-
-                echo
-
-                if [[ ${FUNCNAME[$n_func]} == "main"  ]]; then
-                    echo "main"
-                fi
-
-                for func in ${FUNCNAME[@]}; do
-                    echo $func
-                done
-
-                for (( i=0; i<$n_func; i++ )); do 
-                    echo "$i ${FUNCNAME[i]} defined in $(basename ${BASH_SOURCE[i]}) on line ${BASH_LINENO[i]}; and called from $(basename ${BASH_SOURCE[i+1]})"
-                done
-
-                # print contents of function stack...
-                echo -en "["                
-                for (( x=(( $n_func - 0 )); x>-1; x-- )); do
-                    if [[ ${FUNCNAME[x]} == "xecho" ]]; then
-                        break
-                    fi
-                    echo -en "$(basename ${BASH_SOURCE[x+1]} 2>/dev/null) ${BASH_LINENO[x]}: ${FUNCNAME[x]}\e[0m${dcolor[idx]} -> "
-                done
-                echo -en "$(basename ${BASH_SOURCE[x]}) ${BASH_LINENO[x]}] "
-                
-                echo
-                
-                # print contents of function stack...
-                echo -en "["
-                for (( x=$start; x>$stop; x-- )); do
-                    echo -en "$(basename ${BASH_SOURCE[x+1]}) ${BASH_LINENO[x]}: ${FUNCNAME[x]}\e[0m${dcolor[idx]} -> "
-                done
-                echo -en "$(basename ${BASH_SOURCE[x]}) ${BASH_LINENO[x]}] "
-
-            else
-                if [[ ${FUNCNAME[1]} == "xecho" ]]; then
-                    x=stop
-                else
-                    x=start
-                fi            
-            fi
-            echo -ne "${FUNCNAME[x]}\e[0m${dcolor[idx]}: "
+                fidx=$(( $n_func - 5 ))
+            fi            
+            echo -ne "${FUNCNAME[fidx]}\e[0m${dcolor[idx]}: "
             echo "$@"
             echo -ne "\e[0m"
         fi
