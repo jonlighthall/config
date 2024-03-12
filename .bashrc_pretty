@@ -47,7 +47,77 @@ done
 # set debug level
 declare -i DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
 
+
+function fello() {
+    hello
+    return 0
+    
+}
+
+
+
+# print function stack
 function print_stack() {
+
+
+    ddecho "BASH_ARGC = $BASH_ARGC"
+    ddecho "BASH_ARGV = $BASH_ARGV"
+    ddecho "BASH_COMMAND = $BASH_COMMAND"
+    ddecho "BASH_SUBSHELL = $BASH_SUBSHELL"
+    
+    # get length of stack
+    local -i NB=${#BASH_SOURCE[@]}
+    ddecho "${TAB}There are N=$NB entries in the call stack"
+
+    ddecho "${TAB}full bash source:"
+    ddecho "${TAB}${fTAB}BASH_SOURCE[@] = ${BASH_SOURCE[@]}"
+
+    ddecho "${TAB}this source:"
+    ddecho "${TAB}${fTAB}BASH_SOURCE[0] = ${BASH_SOURCE[0]}"
+
+    if [ $NB -gt 1 ]; then
+        ddecho "${TAB}invoking source source:"
+        itab
+        ddecho "${TAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]##*/}"
+        ddecho "${TAB}BASH_SOURCE[(($NB-1))] = ${BASH_SOURCE[$NB-1]##*/}"
+        dtab
+    fi
+
+    local -i NF=${#FUNCNAME[@]}
+    ddecho "${TAB}There are N=$NF entries in the execution call stack"
+    ddecho "${TAB}FUNCNAME=${FUNCNAME[@]}"
+
+    ddecho "${TAB}call stack:"
+    itab
+    # (
+    #     for ((i = 0; i < $NF; i++)); do
+    #         ddecho -n "${TAB}$i: ${FUNCNAME[$i]} "
+    #         ddecho -n ":defined in: ${BASH_SOURCE[$i]##*/} "
+    #         ddecho -n ":called by: "
+    #         if [ -z "${BASH_SOURCE[$i+1]}" ]; then
+    #             ddecho -n "NULL " 
+    #         else
+    #             ddecho -n "${BASH_SOURCE[$i+1]##*/} "
+    #         fi
+    #         ddecho ":on line: ${BASH_LINENO[$i]}"
+    #     done
+    # ) | column -t -s : -o ""
+    dtab
+    
+    if [ ${#FUNCNAME[@]} -gt 1 ]; then
+        ddecho "${TAB}FUNCNAME[$((NF-2))]=${FUNCNAME[$((NF-2))]}"
+    fi
+
+    local -i NL=${#BASH_LINENO[@]}
+    ddecho "${TAB}There are N=$NL entries in the line number stack"
+    ddecho "${TAB}line no stack:"
+    itab
+    for ((i = 0; i < $NL; i++)); do
+        ddecho "${TAB}$i: line ${BASH_LINENO[$i]}"
+    done    
+    dtab
+    ddecho "lineno $LINENO"
+
     # get size of function stack
     local -ir n_func=${#FUNCNAME[@]}
 
@@ -73,65 +143,52 @@ function print_stack() {
         stop=0
     fi
 
-    #---------------------------------------------------------------
-    # optionally print function stack
-    #---------------------------------------------------------------
-    # printing debug messages from the debug handler is a little nuts...
-    if true; then
-        # print size of function stack
-        echo -ne "$n_func"
+    # print size of function stack
+    echo -ne "$n_func"
 
-        # print debug type
-        if [[ ${FUNCNAME[1]} == "xecho" ]]; then
-            # xecho
-            echo -ne "x"
-        else
-            # function
-            echo -ne "f"
-        fi
-
-        echo -n ": ${#FUNCNAME[@]} functions, ${#BASH_SOURCE[@]} sources, ${#BASH_LINENO[@]} lines"
-
-        echo
-
-        if [[ ${FUNCNAME[$n_func]} == "main"  ]]; then
-            echo "main"
-        fi
-
-        for func in ${FUNCNAME[@]}; do
-            echo $func
-        done
-
-        for (( i=0; i<$n_func; i++ )); do 
-            echo "$i ${FUNCNAME[i]} defined in $(basename ${BASH_SOURCE[i]}) on line ${BASH_LINENO[i]}; and called from $(basename ${BASH_SOURCE[i+1]})"
-        done
-
-        # print contents of function stack...
-        echo -en "["                
-        for (( x=(( $n_func - 0 )); x>-1; x-- )); do
-            if [[ ${FUNCNAME[x]} == "xecho" ]]; then
-                break
-            fi
-            echo -en "$(basename ${BASH_SOURCE[x+1]} 2>/dev/null) ${BASH_LINENO[x]}: ${FUNCNAME[x]}\e[0m${dcolor[idx]} -> "
-        done
-        echo -en "$(basename ${BASH_SOURCE[x]}) ${BASH_LINENO[x]}] "
-        
-        echo
-        
-        # print contents of function stack...
-        echo -en "["
-        for (( x=$start; x>$stop; x-- )); do
-            echo -en "$(basename ${BASH_SOURCE[x+1]}) ${BASH_LINENO[x]}: ${FUNCNAME[x]}\e[0m${dcolor[idx]} -> "
-        done
-        echo -en "$(basename ${BASH_SOURCE[x]}) ${BASH_LINENO[x]}] "
-
+    # print debug type
+    if [[ ${FUNCNAME[1]} == "xecho" ]]; then
+        # xecho
+        echo -ne "x"
     else
-        if [[ ${FUNCNAME[1]} == "xecho" ]]; then
-            x=stop
-        else
-            x=start
-        fi            
+        # function
+        echo -ne "f"
     fi
+
+    echo -n ": ${#FUNCNAME[@]} functions, ${#BASH_SOURCE[@]} sources, ${#BASH_LINENO[@]} lines"
+
+    echo
+
+    if [[ ${FUNCNAME[$n_func]} == "main"  ]]; then
+        echo "main"
+    fi
+
+    for func in ${FUNCNAME[@]}; do
+        echo $func
+    done
+
+    for (( i=0; i<$n_func; i++ )); do 
+        echo "$i ${FUNCNAME[i]} defined in $(basename ${BASH_SOURCE[i]}) on line ${BASH_LINENO[i]}; and called from $(basename ${BASH_SOURCE[i+1]})"
+    done
+
+    # print contents of function stack...
+    echo -en "["                
+    for (( x=(( $n_func - 0 )); x>-1; x-- )); do
+        if [[ ${FUNCNAME[x]} == "xecho" ]]; then
+            break
+        fi
+        echo -en "$(basename ${BASH_SOURCE[x+1]} 2>/dev/null) ${BASH_LINENO[x]}: ${FUNCNAME[x]}\e[0m${dcolor[idx]} -> "
+    done
+    echo -en "$(basename ${BASH_SOURCE[x]}) ${BASH_LINENO[x]}] "
+    
+    echo
+    
+    # print contents of function stack...
+    echo -en "["
+    for (( x=$start; x>$stop; x-- )); do
+        echo -en "$(basename ${BASH_SOURCE[x+1]}) ${BASH_LINENO[x]}: ${FUNCNAME[x]}\e[0m${dcolor[idx]} -> "
+    done
+    echo -en "$(basename ${BASH_SOURCE[x]}) ${BASH_LINENO[x]}] "
 
 }
 
@@ -509,70 +566,17 @@ function print_return() {
     #set -E
     # trace RETURN and DEBUG traps
     #set -T
+    decho "done"
 
     RETURN_RETVAL=$1
     
     start_new_line
 
-    ddecho "BASH_ARGC = $BASH_ARGC"
-    ddecho "BASH_ARGV = $BASH_ARGV"
-    ddecho "BASH_COMMAND = $BASH_COMMAND"
-    ddecho "BASH_SUBSHELL = $BASH_SUBSHELL"
+
+    # get size of function stack
+    local -ir n_func=${#FUNCNAME[@]}
     
-    # get length of stack
-    local -i NB=${#BASH_SOURCE[@]}
-    ddecho "${TAB}There are N=$NB entries in the call stack"
-
-    ddecho "${TAB}full bash source:"
-    ddecho "${TAB}${fTAB}BASH_SOURCE[@] = ${BASH_SOURCE[@]}"
-
-    ddecho "${TAB}this source:"
-    ddecho "${TAB}${fTAB}BASH_SOURCE[0] = ${BASH_SOURCE[0]}"
-
-    if [ $NB -gt 1 ]; then
-        ddecho "${TAB}invoking source source:"
-        itab
-        ddecho "${TAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]##*/}"
-        ddecho "${TAB}BASH_SOURCE[(($NB-1))] = ${BASH_SOURCE[$NB-1]##*/}"
-        dtab
-    fi
-
-    local -i NF=${#FUNCNAME[@]}
-    ddecho "${TAB}There are N=$NF entries in the execution call stack"
-    ddecho "${TAB}FUNCNAME=${FUNCNAME[@]}"
-
-    ddecho "${TAB}call stack:"
-    itab
-    # (
-    #     for ((i = 0; i < $NF; i++)); do
-    #         ddecho -n "${TAB}$i: ${FUNCNAME[$i]} "
-    #         ddecho -n ":defined in: ${BASH_SOURCE[$i]##*/} "
-    #         ddecho -n ":called by: "
-    #         if [ -z "${BASH_SOURCE[$i+1]}" ]; then
-    #             ddecho -n "NULL " 
-    #         else
-    #             ddecho -n "${BASH_SOURCE[$i+1]##*/} "
-    #         fi
-    #         ddecho ":on line: ${BASH_LINENO[$i]}"
-    #     done
-    # ) | column -t -s : -o ""
-    dtab
-    
-    if [ ${#FUNCNAME[@]} -gt 1 ]; then
-        ddecho "${TAB}FUNCNAME[$((NF-2))]=${FUNCNAME[$((NF-2))]}"
-    fi
-
-    local -i NL=${#BASH_LINENO[@]}
-    ddecho "${TAB}There are N=$NL entries in the line number stack"
-    ddecho "${TAB}line no stack:"
-    itab
-    for ((i = 0; i < $NL; i++)); do
-        ddecho "${TAB}$i: line ${BASH_LINENO[$i]}"
-    done    
-    dtab
-    ddecho "lineno $LINENO"
-    
-    echo -e "${yellow}\E[7m RETURN ${NORMAL} ${gray}RETVAL=${RETURN_RETVAL}${NORMAL} ${FUNCNAME[$((NF-2))]}"
+    echo -e "${yellow}\E[7m RETURN ${NORMAL} ${gray}RETVAL=${RETURN_RETVAL}${NORMAL} ${FUNCNAME[$((n_func-2))]}"
 }
 
 # define traps
