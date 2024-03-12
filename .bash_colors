@@ -227,7 +227,7 @@ function dbg2idx() {
     local -ir fdbg=$funcDEBUG
     funcDEBUG=0
     set_dbg2idx
-    funcDEBUG=fdbg
+    funcDEBUG=$fdbg
     
     # since DEBUG=0 does not print and DEBUG=1 corresponds to starting color, or array index 0,
     # decrement input value
