@@ -286,7 +286,7 @@ function xecho() {
     # Turn in-function debugging on/off.
 
     # Inherit the value of funcDEBUG from shell or substitute default value if unset or NULL.
-    local -iI funcDEBUG=${funcDEBUG:-0}    
+    local -i funcDEBUG=${funcDEBUG:-0}    
 
     # Use the value of DEBUG as default. If DEBUG is unset or NULL, substitue default value local
     # -iI funcDEBUG=${funcDEBUG:-${DEBUG:-0}}    
@@ -626,7 +626,7 @@ function set_traps() {
     local DEBUG=${DEBUG:-0} # substitue default value if DEBUG is unset or null
 
     # turn in-function debugging on/off
-    local -iI funcDEBUG=${funcDEBUG:-${DEBUG}}
+    local -i funcDEBUG=${funcDEBUG:-${DEBUG}}
     # manual setting
     #funcDEBUG=1    
 

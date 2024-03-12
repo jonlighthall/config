@@ -178,7 +178,7 @@ function print_dcolors() {
 #--------------------------------------
 function set_dbg2idx() {
     # turn in-function debugging on/off
-    local -I funcDEBUG
+    local funcDEBUG
 
     # get length of array
     N_cols=${#dcolor[@]}
@@ -218,7 +218,7 @@ function dbg2idx() {
     fi
 
     # turn in-function debugging on/off
-    local -I funcDEBUG
+    local funcDEBUG
     
     # get input DEBUG value
     local -i dbg_in=$1
@@ -246,7 +246,7 @@ function dbg2idx() {
 
 # print dcolor array in debug order
 function print_fcolors() {
-    local -iI funcDEBUG=${funcDEBUG:-1} # inherit value or substitution default
+    local -i funcDEBUG=${funcDEBUG:-1} # inherit value or substitution default
     fecho "printing contents of dcolor..."
     local -i N_cols
     local -i N_max
