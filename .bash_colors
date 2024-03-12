@@ -276,11 +276,26 @@ function print_ls_colors() {
         # isolate definitions
         sed 's/^[^"]*"//;s/"$//' |
         # print each definition on its own line
-        sed '$ s/:/\n/g' |
+        sed '$ s/:/\n/g;/^$/d' |
         # remove file extension definitions
-        sed '/^\*/d;/^$/d' |
+        sed '/^\*/d' |
         # add echo wrapper with escapes
         sed 's/\(^[^=]*\)=\(.*$\)/"\1 \\x1b[\2m\2\\x1b[m"/' |
         # echo outputs
         xargs -L 1 echo -e
+}
+
+function print_ls_colors_ext() {
+    # print value of LS_COLORS
+    declare -p LS_COLORS |
+        # isolate definitions
+        sed 's/^[^"]*"//;s/"$//' |
+        # print each definition on its own line
+        sed '$ s/:/\n/g;/^$/d' |
+        # remove file extension definitions
+        sed '/^\*/!d' |
+        # add echo wrapper with escapes
+        sed 's/\(^[^=]*\)=\(.*$\)/"\1 \\x1b[\2m\2\\x1b[m"/' | sort -n |
+        # echo outputs
+        xargs -L 1 echo -e | column -t -o ' '
 }
