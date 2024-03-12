@@ -269,3 +269,18 @@ function print_fcolors() {
         done
     ) | column -t -s: -N order,index,color | sed "s/^/${TAB}/"
 }
+
+function print_ls_colors() {
+    # print value of LS_COLORS
+    declare -p LS_COLORS |
+        # isolate definitions
+        sed 's/^[^"]*"//;s/"$//' |
+        # print each definition on its own line
+        sed '$ s/:/\n/g' |
+        # remove file extension definitions
+        sed '/^\*/d;/^$/d' |
+        # add echo wrapper with escapes
+        sed 's/\(^[^=]*\)=\(.*$\)/"\1 \\x1b[\2m\2\\x1b[m"/' |
+        # echo outputs
+        xargs -L 1 echo -e
+}
