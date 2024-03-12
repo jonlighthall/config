@@ -5,9 +5,9 @@ src_name=$(readlink -f ${BASH_SOURCE[0]})
 
 # get source path
 ## physical (canonical)
-src_dir_phys=$(dirname $src_name)
+src_dir_phys=$(dirname "$src_name")
 ## logical (links)
-src_dir_logi=$(dirname $BASH_SOURCE)
+src_dir_logi=$(dirname "$BASH_SOURCE")
 
 # determine if script is being sourced or executed and add conditional behavior
 if (return 0 2>/dev/null); then
@@ -219,10 +219,11 @@ function print_stack() {
 function fecho() {    
     # check if funcDEBUG is defined
     if [ ! -z ${funcDEBUG:+dummy} ]; then
-        echo "${FUNCNAME}: DEBUG = $DEBUG"
-        echo "${FUNCNAME}: funcDEBUG = $funcDEBUG"
         # check if $funcDEBUG is non-zero
         if [ $funcDEBUG -gt 0 ]; then
+            echo "${FUNCNAME}: DEBUG = $DEBUG"
+            echo "${FUNCNAME}: funcDEBUG = $funcDEBUG"
+
             # get size of function stack
             local -ir n_func=${#FUNCNAME[@]}
 
@@ -289,9 +290,12 @@ function xecho() {
         fi
     fi
     
-    # turn in-function debugging on/off
-    local -iI funcDEBUG=${funcDEBUG:-1} # inherit value from shell or substitute default value if
-                                        # unset or NULL
+    # Turn in-function debugging on/off. Inherit the value of funcDEBUG from shell or substitute
+    # default value if unset or NULL. Use the value of DEBUG as default. If DEBUG is unset or
+    # NULL, substitue default value
+    local -iI funcDEBUG=${funcDEBUG:-${DEBUG:-0}}
+    # manual setting
+    #funcDEBUG=1
 
     # use function name to specify debug threshold
     local fu=${FUNCNAME[1]}
@@ -601,10 +605,12 @@ function print_return() {
 # define traps
 function set_traps() {
     # set local debug value
-    local DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
+    local DEBUG=${DEBUG:-0} # substitue default value if DEBUG is unset or null
 
     # turn in-function debugging on/off
-    local -iI funcDEBUG=${funcDEBUG:-1} # inherit value or substitution default
+    local -iI funcDEBUG=${funcDEBUG:-${DEBUG}}
+    # manual setting
+    #funcDEBUG=1    
 
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${magenta}\E[7mset traps${NORMAL}"
