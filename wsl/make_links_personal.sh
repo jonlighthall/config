@@ -28,26 +28,57 @@ if [ ! "$BASH_SOURCE" = "$src_name" ]; then
 fi
 
 # define directory names
+echo "${TAB}define directories"
+itab
+# get USERNAME
 windows_user=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
-win_home_dir="/mnt/c/Users/$windows_user/"
+echo "${TAB}%USERNAME% = $windows_user"
+# construct WSL-equivalent HOMEPATH
+win_home_dir="/mnt/c/Users/$windows_user"
+echo "${TAB}%HOMEPATH% = $win_home_dir"
+# get ONEDRIVE
 onedirve_dir=$(cmd.exe /c "echo %OneDrive%" 2>/dev/null | tr -d '\r')
+echo "${TAB}%ONEDRIVE% = $onedirve_dir"
+# construct WSL-equivalent ONEDRIVE
+# here basename won't work becuase of the file seperators
 onedrive_name=$(echo "${onedirve_dir##*\\}")
-onedrive_dir_wsl="${win_home_dir}${onedrive_name}/"
-onedrive_docs="${onedrive_dir_wsl}Documents"
+decho "${TAB}$onedrive_name"
+onedrive_dir_wsl="${win_home_dir}/${onedrive_name}"
+decho "${TAB}$onedrive_dir_wsl"
+# get OneDrive Documents
+onedrive_docs="${onedrive_dir_wsl}/Documents"
+decho "${TAB}$onedrive_docs"
+# define home
 home_dir="${onedrive_docs}/home"
+decho "${TAB}$home_dir"
+# set target
 target_dir=${home_dir}
+decho "${TAB}$target_dir"
+dtab
 
+dir_list=( "${win_home_dir}" "${onedrive_dir_wsl}" "${onedrive_docs}" "${home_dir}" )
+
+if [ "${home_dir}" != "${target_dir}" ]; then
+    dir_list+=( "${target_dir}" )
+fi
+
+#echo ${dir_list[@]}
+
+echo "${TAB}check directories"
+itab
 # test directories
-for dir in $win_home_dir $onedrive_dir_wsl $onedrive_docs $home_dir $target_dir; do
+for dir in "${dir_list[@]}"; do 
     echo -n "${TAB}directory $dir... "
-    if [ -e $dir ]; then
+    if [ -e "${dir}" ]; then
         echo -e "${GOOD}exists${NORMAL}"
     else
         echo -e "${BAD}does not exist${NORMAL}"
         exit 1
     fi
 done
+dtab
 
+echo "${TAB}create links..."
 # set link directory
 link_dir=$HOME
 echo -n "${TAB}link directory ${link_dir}... "
