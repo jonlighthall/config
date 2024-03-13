@@ -1,17 +1,18 @@
-# TODO should be changed to .bashrc_anl
+# User-specific aliases and functions
 
-# User specific aliases and functions
+# logon scripts
 #. /opt/root_v5.32.00/bin/thisroot.sh
 #ssetup root_v5.32.00
 ssetup root_v5.32.03
 ssetup scarlet-2.1
 ssetup hupsort-1.x
 
-# onenet
+# internal host names (onenet)
+## HELIOS
 alias hbac='ssh -Y -l helios@phy bacchanale.onenet'
 alias himp='ssh -Y -l helios@phy impromptu.onenet'
 alias hmal='ssh -Y -l helios@phy malaguena.onenet'
 alias hnoc='ssh -Y -l helios@phy nocturne.onenet'
-
+## user
 alias lmal='ssh -Y -l lighthall malaguena.onenet'
 alias limp='ssh -Y -l lighthall impromptu.onenet'

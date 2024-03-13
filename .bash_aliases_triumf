@@ -1,4 +1,6 @@
-# TRIUMF (triumf.ca)
+# TRIUMF SSH aliases
+
+# SSH connection host names (triumf.ca)
 alias epics='ssh -v -Y tigress@isacepics1'
 alias ladd19='ssh -Y emma@ladd19.triumf.ca'
 alias ladd20='ssh -Y emma@ladd20.triumf.ca'
@@ -6,8 +8,8 @@ alias ladd21='ssh -Y emma@ladd21.triumf.ca'
 alias lighthall='ssh -Y lighthall@lighthall.triumf.ca'
 alias trcomp='ssh -v -Y lighthall@trcomp01.triumf.ca'
 
-# port-forwarding
+# SSH port-forwarding
 alias triumf='ssh -v -ND 1584 lighthall@lighthall.triumf.ca'
 
-# macros
+# SSH Subversion
 alias svni='svn info svn+ssh://lighthall@lighthall.triumf.ca/Users/lighthall/SkyDrive/Documents/repository/'

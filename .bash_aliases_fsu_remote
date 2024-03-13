@@ -1,11 +1,14 @@
-# FSU (physics.fsu.edu)
+# FSU Department of Physics SSH aliases
+
+# SSH connection host names (physics.fsu.edu)
 alias elwood='ssh -Y lighthall@elwood.physics.fsu.edu'
 alias murph='ssh -Y lighthall@murph.physics.fsu.edu'
 alias ray='ssh -Y lighthall@ray.physics.fsu.edu'
 
 # macros
+## rsync
 alias getfigs='rsync -vrt --ignore-existing --progress lighthall@elwood.physics.fsu.edu:/home/lighthall/figures /home/lighthall/anasen/'
 alias getfigsr='rsync -vrt --ignore-existing --progress lighthall@ray.physics.fsu.edu:/home/lighthall/figures /home/lighthall/anasen/'
 alias getroot='rsync -vrt --ignore-existing --progress lighthall@ray.physics.fsu.edu:/data0/lighthall/ /home/lighthall/downloads/ANASEN/root/'
-
+## pkill
 alias killelwood="ssh lighthall@elwood.physics.fsu.edu 'pkill root'"

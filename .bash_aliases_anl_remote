@@ -1,13 +1,16 @@
-# Argonne (phy.anl.gov)
+# Argonne National Laboratory Physics Division DAQ SSH aliases for remote connections
+
+# external-facing SSH connection host names (phy.anl.gov)
+## Bavarians
 alias bcan='ssh -Yq bavarians@cantata.phy.anl.gov'
 alias bson='ssh -Yq bavarians@sonata.phy.anl.gov'
-
+## HELIOS
 alias hcan='ssh -Y -l helios@phy cantata.phy.anl.gov'
 alias hson='ssh -X -l helios@phy sonata.phy.anl.gov'
 alias hsond='ssh -Y -l helios@phy sonata.phy.anl.gov "'"cd \music\helios\Si28\offline\lighthall\extra\dwba"'"'
-
+## user
 alias lcan='ssh -X lighthall@cantata.phy.anl.gov'
 alias lson='ssh -X lighthall@sonata.phy.anl.gov'
 
-# port-forwarding
+# SSH port-forwarding
 alias sonata='ssh -v -ND 1584 lighthall@sonata.phy.anl.gov'
