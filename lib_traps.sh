@@ -18,8 +18,8 @@ function print_stack() {
     start_new_line
     local -ir DEBUG=2
 
-    ddecho "BASH_COMMAND = $BASH_COMMAND"
-    ddecho "BASH_SUBSHELL = $BASH_SUBSHELL"
+    echo "BASH_COMMAND = $BASH_COMMAND"
+    echo "BASH_SUBSHELL = $BASH_SUBSHELL"
     
     # get length of function stack
     local -ir N_FUNC=${#FUNCNAME[@]}
@@ -27,38 +27,56 @@ function print_stack() {
     local -ir N_LINE=${#BASH_LINENO[@]}
 
     # print length of stack
-    ddecho "${TAB}There are N=$N_FUNC entries in the execution call stack"
+    echo "${TAB}There are N=$N_FUNC entries in the execution call stack"
     
     # check that all stacks have the same length
     if [ $N_FUNC -ne $N_BASH ]; then 
-        ddecho "${TAB}There are N=$N_BASH entries in the source file name stack"
+        echo "${TAB}There are N=$N_BASH entries in the source file name stack"
     fi
 
     if [ $N_FUNC -ne $N_LINE ]; then 
-        ddecho "${TAB}There are N=$N_LINE entries in the line number stack"
+        echo "${TAB}There are N=$N_LINE entries in the line number stack"
     fi
 
     if [ $N_FUNC -ne $N_BASH ] || [ $N_FUNC -ne $N_LINE ]; then 
-        ddecho "${TAB}${N_FUNC} functions, ${N_BASH} files, ${N_LINE]} lines"
+        echo "${TAB}${N_FUNC} functions, ${N_BASH} files, ${N_LINE]} lines"
     fi
 
-    ddecho "${TAB}call stack:"
+    echo "${TAB}call stack:"
 
     local -i i
     for ((i = 0; i < $N_FUNC ; i++)); do
         echo "$i ${FUNCNAME[i]} ${BASH_SOURCE[i]} ${BASH_LINENO[i]}"
     done
 
+    # set local debug value
+    local DEBUG=${DEBUG:=0}  # default value if DEBUG is unset or null
+
+    # get length of stack
+    local -i N=${#BASH_SOURCE[@]}
+    echo "${TAB}There are N=$N entries in the call stack"
+
+    echo "${TAB}full bash source:"
+    echo "${TAB}${fTAB}BASH_SOURCE[@] = ${BASH_SOURCE[@]}"
+
+    echo "${TAB}this source:"
+    echo "${TAB}${fTAB}BASH_SOURCE[0] = ${BASH_SOURCE[0]}"
+
+    if [ $N -gt 1 ]; then
+        echo "${TAB}invoking source source:"
+        echo "${TAB}${fTAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]}"
+    fi
+
     return 0    
 
-    ddecho "BASH_ARGC = $BASH_ARGC"
-    ddecho "BASH_ARGV = $BASH_ARGV"
+    echo "BASH_ARGC = $BASH_ARGC"
+    echo "BASH_ARGV = $BASH_ARGV"
     
     if [ $N_BASH -gt 1 ]; then
-        ddecho "${TAB}invoking source source:"
+        echo "${TAB}invoking source source:"
         itab
-        ddecho "${TAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]##*/}"
-        ddecho "${TAB}BASH_SOURCE[(($N_BASH-1))] = ${BASH_SOURCE[$N_BASH-1]##*/}"
+        echo "${TAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]##*/}"
+        echo "${TAB}BASH_SOURCE[(($N_BASH-1))] = ${BASH_SOURCE[$N_BASH-1]##*/}"
         dtab
     fi
 
@@ -66,19 +84,19 @@ function print_stack() {
     itab
     # (
     #     for ((i = 0; i < $N_FUNC; i++)); do
-    #         ddecho -n ":defined in: ${BASH_SOURCE[$i]##*/} "
-    #         ddecho -n ":called by: "
+    #         echo -n ":defined in: ${BASH_SOURCE[$i]##*/} "
+    #         echo -n ":called by: "
     #         if [ -z "${BASH_SOURCE[$i+1]}" ]; then
-    #             ddecho -n "NULL " 
+    #             echo -n "NULL " 
     #         else
-    #             ddecho -n "${BASH_SOURCE[$i+1]##*/} "
+    #             echo -n "${BASH_SOURCE[$i+1]##*/} "
     #         fi
     #     done
     # ) | column -t -s : -o ""
     dtab
     
     if [ ${#FUNCNAME[@]} -gt 1 ]; then
-        ddecho "${TAB}FUNCNAME[$((N_FUNC-2))]=${FUNCNAME[$((N_FUNC-2))]}"
+        echo "${TAB}FUNCNAME[$((N_FUNC-2))]=${FUNCNAME[$((N_FUNC-2))]}"
     fi
 
     # print_stack() should only be called from other functions, so the length of FUNCNAME should
@@ -147,24 +165,6 @@ function print_stack() {
 
 # print source name, elapsed time, and timestamp
 function print_done() {
-    # set local debug value
-    local DEBUG=${DEBUG:=0}  # default value if DEBUG is unset or null
-
-    # get length of stack
-    local -i N=${#BASH_SOURCE[@]}
-    ddecho "${TAB}There are N=$N entries in the call stack"
-
-    ddecho "${TAB}full bash source:"
-    ddecho "${TAB}${fTAB}BASH_SOURCE[@] = ${BASH_SOURCE[@]}"
-
-    ddecho "${TAB}this source:"
-    ddecho "${TAB}${fTAB}BASH_SOURCE[0] = ${BASH_SOURCE[0]}"
-
-    if [ $N -gt 1 ]; then
-        ddecho "${TAB}invoking source source:"
-        ddecho "${TAB}${fTAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]}"
-    fi
-
     echo -en "${BASH_SOURCE[(($N - 1))]##*/}${NORMAL} "
     print_elap
     echo -n " on "
