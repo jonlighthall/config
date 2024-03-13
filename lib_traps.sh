@@ -1,16 +1,41 @@
 function fello() {
     hello
+    echo $-
     return 0    
 }
 
 function driver() {
+    # -T  If set, the DEBUG and RETURN traps are inherited by shell functions.     
     set -T
     trap 'echo "${FUNCNAME} return"' RETURN
-    local -i DEBUG=2
+    local -i DEBUG=0
     local -i funcDEBUG=0
     set_traps
+    echo $-
     fello
     return 0   
+}
+
+function driver2() {
+    driver
+    return 0
+}
+
+function set_shell() {
+    echo $-
+    set -eET
+    echo $-
+    trap 'echo "SET"' RETURN
+    return 0
+}
+
+function unset_shell() {
+    echo $-
+    set +eET
+    echo $-
+    trap 'echo "UNSET"' RETURN
+    return 0
+    
 }
 
 # print function stack
@@ -136,7 +161,6 @@ function print_stack() {
     if [[ ${FUNCNAME[$N_FUNC]} == "main"  ]]; then
         echo "main"
     fi
-
 
     for (( i=0; i<$N_FUNC; i++ )); do 
         echo "$i ${FUNCNAME[i]} defined in $(basename ${BASH_SOURCE[i]}) on line ${BASH_LINENO[i]}; and called from $(basename ${BASH_SOURCE[i+1]})"
