@@ -18,18 +18,19 @@ else
     set -e
 fi
 
-# print run type and source name
-echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
-src_name=$(readlink -f $BASH_SOURCE)
-if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-    echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
+# check if running interactively
+if [[ "$-" == *i* ]]; then
+    # print run type and source name
+    echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
+    if [ ! "$BASH_SOURCE" = "$src_name" ]; then
+        echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
+    fi
+    # print source path
+    ## physical
+    echo -e "${TAB}${gray}phys -> $src_dir_phys${NORMAL}"
+    ## logical
+    echo -e "${TAB}${gray}logi -> $src_dir_logi${NORMAL}"
 fi
-
-# print source path
-## physical
-echo -e "${TAB}${gray}phys -> $src_dir_phys${NORMAL}"
-## logical
-echo -e "${TAB}${gray}logi -> $src_dir_logi${NORMAL}"
 
 # load bash utils
 for util in .bash_colors .bash_tabs .bash_links; do
@@ -85,6 +86,9 @@ function print_stack() {
     start_new_line
     local -ir DEBUG=2
 
+    ddecho "BASH_COMMAND = $BASH_COMMAND"
+    ddecho "BASH_SUBSHELL = $BASH_SUBSHELL"
+    
     # get length of function stack
     local -ir N_FUNC=${#FUNCNAME[@]}
     local -ir N_BASH=${#BASH_SOURCE[@]}
@@ -117,8 +121,6 @@ function print_stack() {
 
     ddecho "BASH_ARGC = $BASH_ARGC"
     ddecho "BASH_ARGV = $BASH_ARGV"
-    ddecho "BASH_COMMAND = $BASH_COMMAND"
-    ddecho "BASH_SUBSHELL = $BASH_SUBSHELL"
     
     if [ $N_BASH -gt 1 ]; then
         ddecho "${TAB}invoking source source:"
@@ -538,8 +540,20 @@ function print_error() {
 
     print_stack
 
-    if [ -f ${BASH_SOURCE[1]} ]; then 
+    # get length of function stack
+    local -ir N_FUNC=${#FUNCNAME[@]}
+
+
+    if [ -f "${BASH_SOURCE[1]}" ] && [ ! -z "${BASH_SOURCE[1]}" ] && [ $N_FUNC -gt 1 ] ; then 
         local ERR_LINE
+        
+        echo "${ERR_LINENO}p"
+        echo "${BASH_SOURCE[1]}"
+        echo ${BASH_SOURCE[1]}
+        echo sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}"
+        sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}"
+
+        
         ERR_LINE=$(sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}" | sed "s/^\s*//") && echo "OK" || print_stack
 
     else
