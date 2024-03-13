@@ -294,21 +294,23 @@ function print_error() {
     # get length of function stack
     local -ir N_FUNC=${#FUNCNAME[@]}
 
-
-    if [ -f "${BASH_SOURCE[1]}" ] && [ ! -z "${BASH_SOURCE[1]}" ] && [ $N_FUNC -gt 1 ] ; then 
-        local ERR_LINE
-        
-        echo "${ERR_LINENO}p"
-        echo "${BASH_SOURCE[1]}"
-        echo ${BASH_SOURCE[1]}
-        echo sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}"
-        sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}"
-
-        
-        ERR_LINE=$(sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}" | sed "s/^\s*//") && echo "OK" || print_stack
-
-    else
-        print_stack
+    if [ -f "${BASH_SOURCE[1]}" ]; then
+        echo "${BASH_SOURCE[1]} is a file"
+        if [ ! -z "${BASH_SOURCE[1]}" ]; then
+            echo "${BASH_SOURCE[1]} variable is not empty"
+            if [ $N_FUNC -gt 1 ] ; then
+                echo "there are functions in stack"
+                local ERR_LINE
+                
+                echo "${ERR_LINENO}p"
+                echo "${BASH_SOURCE[1]}"
+                echo ${BASH_SOURCE[1]}
+                echo sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}"
+                sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}"
+                
+                ERR_LINE=$(sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}" | sed "s/^\s*//") && echo "OK"
+            fi
+        fi
     fi
     
     echo "${ERR_LINE}"
