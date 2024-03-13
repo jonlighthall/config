@@ -1,5 +1,7 @@
 #!/bin/bash -u
 
+echo -e "\x1b[7;38;5;132m${#BASH_SOURCE[@]}\x1b[0m"
+
 # get canonical source name
 src_name=$(readlink -f ${BASH_SOURCE[0]})
 

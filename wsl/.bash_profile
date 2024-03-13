@@ -1,6 +1,7 @@
 # User-dependent .bash_profile for WSL
 # Note: this file must use Unix line endings (LF)!
 
+echo -e "\x1b[7;38;5;132m${#BASH_SOURCE[@]}\x1b[0m"
 msg=$(echo "this file is $(readlink -f ${BASH_SOURCE[0]##*/})!")
 ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
 echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
@@ -53,14 +54,6 @@ if $VB; then
     fi
     echo "${TAB}verbose bash printing is... $VB"
 fi
-
-# define conditional echo
-vecho() {
-    if [ ! -z ${VB:+dummy} ] && ${VB}; then
-        # [not (unset or null)] or true -> print if true or null or unset
-        echo "$@"
-    fi
-}
 
 # system dependencies
 SYS_NAME=wsl

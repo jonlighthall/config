@@ -27,13 +27,6 @@ else
 fi
 run_list=true
 
-# define conditional echo
-vecho() {
-  if [ ! -z ${VB:+dummy} ] && ${VB}; then
-    echo "$@"
-  fi
-}
-
 # determine if being sourced or executed
 if (return 0 2>/dev/null); then
   RUN_TYPE="sourcing"

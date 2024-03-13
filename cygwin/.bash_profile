@@ -30,14 +30,6 @@ if $VB; then
     echo "${TAB}verbose bash printing is... $VB"
 fi
 
-# define conditional echo
-vecho() {
-    if [ ! -z ${VB:+dummy} ] || ${VB}; then
-	# [not (unset or null)] or true -> print if true or null or unset
-	echo "$@"
-    fi
-}
-
 # system dependencies
 SYS_NAME=cygwin
 HOST_NAME=$HOSTNAME

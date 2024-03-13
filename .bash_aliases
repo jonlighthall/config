@@ -4,11 +4,13 @@
 # with WSL, Debian derivatives (Ubuntu), Red Hat-based distros (Centos, Rock Linux), MinGW (MSYS,
 # GitBash), Cygwin, PGI Bash, etc.
 
+echo -e "\x1b[7;38;5;132m${#BASH_SOURCE[@]}\x1b[0m"
+
 # set tab
 TAB+=${TAB+${fTAB:='   '}}
 msg=$(echo "this file is $(readlink -f ${BASH_SOURCE[0]##*/})!")
 ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
-echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
+echo -e "$ln\n\e[7m$msg\e[m\n$ln" | sed "s/^/${TAB}/"
 TAB=${TAB%$fTAB} 
 
 # Aliases
@@ -57,6 +59,7 @@ alias la='ls -la'
 alias lh='ls -ld .?*' # list hidden only
 alias ls='ls -l --color'
 alias lt='ls -ltr' # sort by time
+alias lsd='ls -d */'
 
 # Fucntions
 alias du0='duf --max-depth=0'
@@ -85,6 +88,7 @@ function gitl {
     fi
 }
 
+# print number of files in the current directory, or specify a directory with an optional argument
 function nf {
     if [ $# -eq 0 ]; then
 	dir_list=$PWD
@@ -109,12 +113,4 @@ function nf {
 	    printf "%'${np}d files found in ${dir}/*\n" $n2
 	fi
     done
-}
-
-# conditional echo
-vecho() {
-    if [ ! -z ${VB:+dummy} ] && ${VB}; then
-	# if VB is (unset or null) or true
-	echo "$@"
-    fi
 }

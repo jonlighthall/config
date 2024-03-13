@@ -29,13 +29,6 @@ else
     fi
 fi
 
-# define conditional echo
-vecho() {
-    if [ ! -z ${VB:+dummy} ] && ${VB}; then
-	echo "$@"
-    fi
-}
-
 # required list
 LIST="$HOME/config/.bashrc_common $HOME/config/cygwin/.bashrc_prompt"
 

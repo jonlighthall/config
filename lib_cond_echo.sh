@@ -1,18 +1,36 @@
-# conditional debug echos
-#-------------------------
+# conditional echos
 
-# NAME
-#   fecho - function echo
-# DESCRIPTION
-#   Arguments are passed to ECHO based on the value of funcDEBUG in the calling function. Used to
-#   bypass, override, or augment the function decho() and the value of DEBUG.
+# Name:
+#   VECHO - "verbose bash" echo
+# Description:
+#   Arguments are passed to ECHO based on the value of VB in the calling function.
+# Purpose:
+#   Turn verbose printing on/off in the .bashrc logon scripts
+# Globals:
+#   VB
+# Arguments:
+#   text to display and echo flags
+
+vecho() {
+    if [ ! -z ${VB:+dummy} ] && ${VB}; then
+        # [not (unset or null)] or true -> print if true or null or unset
+        echo "$@"
+    fi
+}
+
+# Name:
+#   FECHO - function echo
+# Description:
+#   Arguments are passed to ECHO based on the value of funcDEBUG in the calling function.
 #
 #   NB: only define funcDEBUG as a local variable within FUNCTIONS
 #
+# Purpose:
+#   Bypass, override, or augment the function decho() and the value of DEBUG.
 # Globals:
 #   funcDEBUG
 # Arguments:
-#   text and echo flags
+#   text to display and echo flags
 
 function fecho() {    
     # check if funcDEBUG is defined

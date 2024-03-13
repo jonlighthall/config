@@ -28,13 +28,6 @@ else
   fi
 fi
 
-# define conditional echo
-vecho() {
-  if [ ! -z ${VB:+dummy} ] && ${VB}; then
-    echo "$@"
-  fi
-}
-
 # NB: The X11 server must be lauchded first, before setting dispaly; otherwise the xdpyinfo tests
 # will fail
 

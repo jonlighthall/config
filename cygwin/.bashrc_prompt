@@ -29,13 +29,6 @@ else
     fi
 fi
 
-# define conditional echo
-vecho() {
-    if [ ! -z ${VB:+dummy} ] && ${VB}; then
-	echo "$@"
-    fi
-}
-
 # System-specific aliases and functions
 
 # Prompt functions
