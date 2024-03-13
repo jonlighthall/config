@@ -33,7 +33,7 @@ if [[ "$-" == *i* ]]; then
 fi
 
 # load bash utils
-for util in .bash_colors .bash_tabs .bash_links; do
+for util in lib_colors.sh lib_tabs.sh lib_links.sh; do
     # use the canonical (physical) source directory for reference; this is important if sourcing
     # this file directly from shell
     fname="${src_dir_phys}/${util}"
