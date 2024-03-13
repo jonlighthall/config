@@ -7,31 +7,31 @@ if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
     if $VB; then
-	# set tab
-	TAB+=${TAB+${fTAB:='   '}}
-	# load formatting
-	fpretty=${HOME}/config/.bashrc_pretty
-	if [ -e $fpretty ]; then
-	    source $fpretty
-	fi
-	# print source name at start
-	if (return 0 2>/dev/null); then
-	    RUN_TYPE="sourcing"
-	else
-	    RUN_TYPE="executing"
-	fi
-	echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
-	src_name=$(readlink -f $BASH_SOURCE)
-	if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-	    echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
-	fi
+	      # set tab
+	      TAB+=${TAB+${fTAB:='   '}}
+	      # load formatting
+	      fpretty=${HOME}/config/.bashrc_pretty
+	      if [ -e $fpretty ]; then
+	          source $fpretty
+	      fi
+	      # print source name at start
+	      if (return 0 2>/dev/null); then
+	          RUN_TYPE="sourcing"
+	      else
+	          RUN_TYPE="executing"
+	      fi
+	      echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
+	      src_name=$(readlink -f $BASH_SOURCE)
+	      if [ ! "$BASH_SOURCE" = "$src_name" ]; then
+	          echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
+	      fi
     fi
 fi
 
 # define conditional echo
 vecho() {
     if [ ! -z ${VB:+dummy} ] && ${VB}; then
-	echo "$@"
+	      echo "$@"
     fi
 }
 
@@ -40,91 +40,95 @@ vecho() {
 # Prompt functions
 git_branch() {
     if  command -v git &>/dev/null; then
-	git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \x1B[0;36m(\1\x1B[0;36m)\x1B[0m/'
-	# 2>/dev/null redirects stderr to null
-	# sed -e '/^[^*]/d' deletes any lines not starting with *
-	# sed -e 's/* \(.*\)/ (\1)/' replaces the first instance of '* ' and add parethesis
+	      git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \x1B[0;36m(\1\x1B[0;36m)\x1B[0m/'
+	      # 2>/dev/null redirects stderr to null
+	      # sed -e '/^[^*]/d' deletes any lines not starting with *
+	      # sed -e 's/* \(.*\)/ (\1)/' replaces the first instance of '* ' and add parethesis
     else
-	:
+	      return 0
     fi
 }
 
+# get screen process ID
 screen_pid() {
+    # check if screen command is defined
     if  command -v screen &>/dev/null; then
-	if [ ! -z "$STY" ]; then
-	    echo ${STY} | cut -d "." -f1 | sed 's/.*/ \x1B[1;35mscreen &\x1B[0m/'
-	else
-	    :
-	fi
+        # check if STY var is set
+	      if [ ! -z "${STY+dummy}" ]; then
+            # add screen PID to command prompt
+	          echo ${STY} | cut -d "." -f1 | sed 's/.*/ \x1B[1;35mscreen &\x1B[0m/'
+	      else
+	          return 0
+	      fi
     else
-	:
+	      return 0
     fi
 }
 
 tmux_ses() {
     if  command -v tmux &>/dev/null; then
-	if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
-	    tmux display-message -p '#S' | sed 's/.*/ \x1B[1;35mtmux &\x1B[0m/'
-	else
-	    :
-	fi
+	      if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
+	          tmux display-message -p '#S' | sed 's/.*/ \x1B[1;35mtmux &\x1B[0m/'
+	      else
+	          return 0
+	      fi
     else
-	:
+	      return 0
     fi
 }
 
 sh_lvl() {
     if [ "$SHLVL" -gt 1 ]; then
-	echo -en " \x1B[1;31mLVL${SHLVL}\x1B[0m"
+	      echo -en " \x1B[1;31mLVL${SHLVL}\x1B[0m"
     else
-	:
+	      return 0
     fi
 }
 
 if $VB; then
     echo "${TAB}Setting prompt..."
-    TAB+=${fTAB:='   '}
+    itab
 fi
 
 vecho -n "${TAB}Checking Git... "
 if  command -v git &>/dev/null; then
     if [ -z $(git_branch) ]; then
-	vecho "not in repository"
+	      vecho "not in repository"
     else
-	vecho -e "on\e[0;36m$(git_branch)\e[0m branch"
+	      vecho -e "on\e[0;36m$(git_branch)\e[0m branch"
     fi
 else
     vecho -e "${BAD}FAIL${NORMAL} Git not defined"
     git_branch() {
-	:
+	      return 0
     }
 fi
 
 vecho -n "${TAB}Checking screen session... "
 if  command -v screen &>/dev/null; then
     if [ -z "$STY" ]; then
-	vecho "not in screen"
+	      vecho "not in screen"
     else
-	vecho -e "in screen session$(screen_pid)"
+	      vecho -e "in screen session$(screen_pid)"
     fi
 else
     vecho -e "${BAD}FAIL${NORMAL} screen not defined"
     screen_pid() {
-	:
+	      return 0
     }
 fi
 
 vecho -n "${TAB}Checking tmux session... "
 if  command -v tmux &>/dev/null; then
     if [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; then
-	vecho -e "in tmux session$(tmux_ses)"
+	      vecho -e "in tmux session$(tmux_ses)"
     else
-	vecho "not in tmux"
+	      vecho "not in tmux"
     fi
 else
     vecho -e "${BAD}FAIL${NORMAL} tmux not defined"
     tmux_ses() {
-	:
+	      return 0
     }
 fi
 
@@ -156,30 +160,30 @@ if $do_test_git; then
     vecho -n "${TAB}Testing Git prompt... "
     # first, check if git is defined
     if  command -v git &>/dev/null; then
-	# then, see if git is slow
-	timeout -s 9 1s git branch &>/dev/null
-	RETVAL=$?
-	if [[ $RETVAL -eq 137 || $RETVAL -eq 127 ]]; then
-	    vecho -e "\n RETVAL = $RETVAL"
-	    vecho " git branch ${BAD}timed out${NORMAL}"
-	    git_bad=true
-	else
-	    vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
-	    git_bad=false
-	fi
+	      # then, see if git is slow
+	      timeout -s 9 1s git branch &>/dev/null
+	      RETVAL=$?
+	      if [[ $RETVAL -eq 137 || $RETVAL -eq 127 ]]; then
+	          vecho -e "\n RETVAL = $RETVAL"
+	          vecho " git branch ${BAD}timed out${NORMAL}"
+	          git_bad=true
+	      else
+	          vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+	          git_bad=false
+	      fi
     else
-	vecho -e "${BAD}FAIL${NORMAL} Git not defined"
-	git_bad=true
+	      vecho -e "${BAD}FAIL${NORMAL} Git not defined"
+	      git_bad=true
     fi
     if $git_bad; then
-	git_branch() {
-	    :
-	}
-	echo -e "${TAB}${fTAB}git branch removed from prompt"
+	      git_branch() {
+	          return 0
+	      }
+	      echo -e "${TAB}${fTAB}git branch removed from prompt"
     fi
 fi
 if $VB; then
-    TAB=${TAB%$fTAB}
+    dtab
 fi
 
 # Test ls color
@@ -188,39 +192,39 @@ if $do_test_color; then
     timeout -s 9 1s \ls -ld --color=auto ./* &>/dev/null
     RETVAL=$?
     if [[ $RETVAL -eq 137 ]]; then
-	echo -e "${TAB}ls --color=auto ${BAD}FAIL${NORMAL}  ${gray}RETVAL=$RETVAL${NORMAL}"
-	unalias ls
-	echo -e "${TAB}--color=auto removed from ls alias"
+	      echo -e "${TAB}ls --color=auto ${BAD}FAIL${NORMAL}  ${gray}RETVAL=$RETVAL${NORMAL}"
+	      unalias ls
+	      echo -e "${TAB}--color=auto removed from ls alias"
     else
-	vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+	      vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
     fi
 fi
 
 # Path additions
 if $VB; then
     echo "${TAB}Path additions..."
-    TAB+=${fTAB:='   '}
+    itab
 fi
 
 # PGI
 if $do_load_pgi; then
     export PGI_DIR=/opt/pgi
     if [ -d $PGI_DIR ]; then
-	vecho "${TAB}adding PGI to path..."
-	if [[ ":$PATH" != *":${PGI_DIR}"*  ]]; then
-	    export PATH=$PGI_DIR/linux86-64/19.10/bin:$PATH
-	else
-	    vecho "${TAB}${PGI_DIR} already in PATH"
-	fi
+	      vecho "${TAB}adding PGI to path..."
+	      if [[ ":$PATH" != *":${PGI_DIR}"*  ]]; then
+	          export PATH=$PGI_DIR/linux86-64/19.10/bin:$PATH
+	      else
+	          vecho "${TAB}${PGI_DIR} already in PATH"
+	      fi
 
-	if [[ ":$MANPATH" != *":${PGI_DIR}"*  ]]; then
-	    export MANPATH=$MANPATH:$PGI_DIR/linux86-64/19.10/man
-	else
-	    vecho "${TAB}${PGI_DIR} already in MANPATH"
-	fi
-	export LM_LICENSE_FILE=$LM_LICENSE_FILE:$PGI_DIR/license.dat;
+	      if [[ ":$MANPATH" != *":${PGI_DIR}"*  ]]; then
+	          export MANPATH=$MANPATH:$PGI_DIR/linux86-64/19.10/man
+	      else
+	          vecho "${TAB}${PGI_DIR} already in MANPATH"
+	      fi
+	      export LM_LICENSE_FILE=$LM_LICENSE_FILE:$PGI_DIR/license.dat;
     else
-	echo "${TAB}${PGI_DIR} not found"
+	      echo "${TAB}${PGI_DIR} not found"
     fi
 fi
 
@@ -228,30 +232,30 @@ fi
 if $do_load_nvidia; then
     export NV_DIR=/opt/nvidia/hpc_sdk/Linux_x86_64/22.3/compilers
     if [ -d $NV_DIR ]; then
-	vecho "${TAB}adding NVIDIA to path..."
-	if [[ ":$MANPATH" != *":${NV_DIR}"*  ]]; then
-	    MANPATH=$MANPATH:$NV_DIR/man; export MANPATH
-	else
-	    vvecho "${TAB}${NV_DIR} already in MANPATH"
-	fi
-	if [[ ":$PATH" != *":${NV_DIR}"*  ]]; then
-	    PATH=$NV_DIR/bin:$PATH; export PATH
-	else
-	    vecho "${TAB}${NV_DIR} already in PATH"
-	fi
+	      vecho "${TAB}adding NVIDIA to path..."
+	      if [[ ":$MANPATH" != *":${NV_DIR}"*  ]]; then
+	          MANPATH=$MANPATH:$NV_DIR/man; export MANPATH
+	      else
+	          vvecho "${TAB}${NV_DIR} already in MANPATH"
+	      fi
+	      if [[ ":$PATH" != *":${NV_DIR}"*  ]]; then
+	          PATH=$NV_DIR/bin:$PATH; export PATH
+	      else
+	          vecho "${TAB}${NV_DIR} already in PATH"
+	      fi
     else
-	echo "${TAB}${NV_DIR} not found"
+	      echo "${TAB}${NV_DIR} not found"
     fi
 fi
 
 ADDPATH=${HOME}/.local/bin
 if [[ ":$PATH" != *":${ADDPATH}"*  ]]; then
     if [ -d "${ADDPATH}" ] ; then
-	vecho -n "${TAB}appending ${ADDPATH} to PATH... "
-	export PATH=$PATH:$ADDPATH
-	vecho "done"
+	      vecho -n "${TAB}appending ${ADDPATH} to PATH... "
+	      export PATH=$PATH:$ADDPATH
+	      vecho "done"
     else
-	echo "${TAB}${ADDPATH} not found"
+	      echo "${TAB}${ADDPATH} not found"
     fi
 else
     vecho "${TAB}${ADDPATH} already in PATH"
@@ -259,6 +263,5 @@ fi
 
 if $VB; then
     # reset tab
-    TAB=${TAB%$fTAB} # once for path
-    TAB=${TAB%$fTAB} # once for file
+    dtab 2 # once for path, once for file
 fi

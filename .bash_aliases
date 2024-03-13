@@ -34,6 +34,7 @@ alias fl='find -L ./ \( -type l -o -xtype l \) -exec ls --color -l {} \;' # find
 alias gitb='git branch -vva  --color=always'
 alias gitcp='git cherry-pick'
 alias gitd='git diff --color-moved=blocks --ignore-space-change'
+alias gitf='git fetch --all --verbose'
 alias gitdn='git diff --name-status'
 alias gitr='git remote -v'
 alias gits='git status'
@@ -44,6 +45,7 @@ alias gitsl='git stash list --date=local'
 alias g='gr'
 alias gr='grep -iIrRn -D skip --exclude-dir=".git"'
 alias grep='grep --color=auto'
+alias gR='gr --no-ignore-case'
 
 # history
 alias hg='history | grep'
@@ -79,7 +81,7 @@ function gitl {
     if [ $# -ne 1 ]; then
 	git log
     else
-	(git log --follow $@) && git log --follow $@ || git log $@
+	(git log --follow $@ >/dev/null) && git log --follow $@ || git log $@
     fi
 }
 

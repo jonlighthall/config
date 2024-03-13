@@ -23,7 +23,7 @@ if (return 0 2>/dev/null); then
 else
     RUN_TYPE="executing"
     # exit on errors
-    set -eE
+    set -e
 fi
 # print source name at start
 echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."

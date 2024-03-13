@@ -1,3 +1,5 @@
+# this is functions only; it should be a library file
+
 # .bash_links - functions for making links in bash shell
 #
 # CONTIANS
@@ -117,8 +119,8 @@ function do_link() {
     #       - proceed with linking
     #     LINK
     #       check if target is authorized_keys
-    #         + PHYSICAL LINK
-    #         - SYM LINK
+    #         + create physical link
+    #         - create symbolic link
     #
     # CALLED BY
     #   do_link_exe
@@ -191,12 +193,14 @@ function do_link() {
             # check existing permissions
             itab
             echo -n "${TAB}checking permissions... "
+            # if the target file is itself a link, the permissions are irrelevant; check the
+            # permissions of the canonicalized target
             local target_canon=$(readlink -f "${target}")
             local -i perm=$(stat -c "%a" "${target_canon}")
             echo -n "${perm} "
 
-            # if necessary, the target files will have their existing permissions replaced with
-            # the required permissions
+            # if necessary, the canonicalized target file will have its existing permissions
+            # replaced with the required permissions
             if [[ ${perm} -gt ${permOK} ]]; then
                 echo -e "${BAD}FAIL${NORMAL}"
                 echo -en "${TAB}${GRH}changing permissions${NORMAL} to ${permOK}... "
@@ -214,8 +218,9 @@ function do_link() {
         fi
 
         # check exclusions
-        for fname in keys2 pub. \~ id_dsa; do
-            if [[ ${target##*/} == *"$fname"* ]]; then
+        for fname in keys2 pub. \~ id_dsa _[0-9]{4}-[0-9]{2}-[0-9]{2}; do
+            # check both pattern matching and regex
+            if [[ ${target##*/} == *"$fname"* ]] || [[ ${target##*/} =~ .*$fname.* ]]  ; then
                 echo -e "${TAB}${GRH}exclude${NORMAL} $fname: ${target##*/}"
                 dtab
                 return 0
@@ -231,11 +236,18 @@ function do_link() {
     if [ -L "${link_name}" ] || [ -f "${link_name}" ] || [ -d "${link_name}" ]; then
         itab
         echo -n "exists and "
-        if [[ "${target}" -ef "${link_name}" ]]; then
-            echo "already points to ${link_name##*/}"
+        # check if link already points to the target
+        # in the case of an authorized_keys file, the target must be hardlinked
+        if [[ "${target}" -ef "${link_name}" && "${target}" != *"_keys"* ]] || [[ "$(stat -c "%i" ${target})" == "$(stat -c "%i" ${link_name})" ]] ; then
+            echo "already points to $(basename ${link_name})"
             echo -n "${TAB}"
+            if [ "$(stat -c "%i" ${target})" == "$(stat -c "%i" ${link_name})" ]; then
+                echo -n "hardlink: "
+            else
+                echo -n "symlink: "
+            fi
             #TODO print only link and target
-            ls -lhG --color=auto "${link_name}"
+            ls -lhG --color=always "${link_name}" | tr -s ' ' | cut -d' ' -f 8-
             echo "${TAB}skipping..."
             dtab 2 # reset status and link tab
             return 0

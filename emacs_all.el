@@ -77,7 +77,7 @@
   (indent-region (point-min) (point-max)) ; select all
   ;;  (delete-trailing-whitespace)
   (goto-char 1)
-  (replace-regexp "^\n\\{2,\\}" "\n") ; delete repeated blank lines
+  (replace-regexp "^\s*\n\\{2,\\}" "\n") ; delete repeated blank lines
   (pop-mark) ; pop mark position saved by regexp
   (goto-char 1)
   (replace-regexp "}##" "#}#") ; comment dummy brackets

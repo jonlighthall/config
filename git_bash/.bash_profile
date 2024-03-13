@@ -13,7 +13,7 @@ if $VB; then
     # load formatting
     fpretty=${HOME}/config/.bashrc_pretty
     if [ -e $fpretty ]; then
-	if [ -z ${fpretty_loaded+dummy} ]; then
+	if [ -z ${FPRETTY_LOADED+dummy} ]; then
 	   source $fpretty
 	fi
     fi
