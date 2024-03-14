@@ -13,6 +13,14 @@ export   BLINK='\E[5m'    # blinking
 export  INVERT='\E[7m'    # invert
 export      ST='\E[9m'    # strikethrough
 
+function test_normal() {
+    for i in {0..9}; do
+        [ $i -gt 0 ] && echo -en "${CHARTRU}"
+        [ $i = 6 ] && continue
+        echo -e "$i: \x1b[${i}mhello,${NORMAL} world!"
+    done
+}
+
 # define LaTeX-like text formatting
 export      BF='\E[1m'    # bold face
 
