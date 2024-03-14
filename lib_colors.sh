@@ -1,42 +1,93 @@
-# TODO this is a perfect example of a library file. rename
+# define custom SGR (Select Graphic Rendition) parameters
 
-# define highlight colors
-export     BAD='\E[0;31m' # red
-export    GOOD='\E[0;32m' # green
-# define accents
-export  NORMAL='\E[0m'    # reset
+# clear all formatting
+export   RESET='\E[0m'    # reset
+
+# define graphics mode accents
+export  NORMAL='\E[21;22;23;24;25;27;28;29m' # normal
 export    BOLD='\E[1m'    # bold
+export     DIM='\E[2m'    # dim/faint
+export      IT='\E[3m'    # italics
 export      UL='\E[4m'    # underline
+export   BLINK='\E[5m'    # blinking 
 export  INVERT='\E[7m'    # invert
-# define 'ls' colors
-export  BROKEN='\E[1;31m' # bold red    : broken link
-export     TGT='\E[1;32m' # bold green  : target
-export     DIR='\E[1;34m' # bold blue   : directory
-export   VALID='\E[1;36m' # bold cyan   : valid link
-# define PS1 colors
-export  PSTIME='\E[0;37m' # light gray  : time
-export  PSUSER='\E[0;32m' # green       : user name, prompt
-export  PSHOST='\E[1;34m' # bold blue   : host name
-export   PSDIR='\E[0;33m' # yellow      : directory
-export    PSBR='\E[0;36m' # blue        : branch
-# define 'grep' colors
-export     GRH='\E[1;31m' # bold red    : pattern match
-export     GRF='\E[0;35m' # magenta     : file match
+export      ST='\E[9m'    # strikethrough
+
+# define LaTeX-like text formatting
+export      BF='\E[1m'    # bold face
+
+# define LaTeX-like text formatting names
+export    BF='\E[1m'  # bold face
+export    IT='\E[3m'  # italics
+export UNDERLINE='\E[4m'  # underline
+
 # define primary colors	(foreground)
-export     red='\E[31m'
-export   green='\E[32m'   # lime
-export    blue='\E[34m'
+export     RED='\E[31m'
+export   GREEN='\E[32m'   # lime
+export    BLUE='\E[34m'
 # define secondary colors (foreground)
-export  yellow='\E[33m'
-export    cyan='\E[36m'  # aqua
-export magenta='\E[35m'  # fuchsia
+export  YELLOW='\E[33m'
+export    CYAN='\E[36m'  # aqua
+export MAGENTA='\E[35m'  # fuchsia
+# define teriary colors (foreground)
+#      var              ID    hex     RGB           Name
+#-----+-------+--------------+-------+-------------+----------------
+export  ORANGE='\E[38;5;208m' #ff8700 (255,135,  0) Dark Orange
+export CHARTRU='\E[38;5;118m' #87ff00	(135,255,  0) Chartreuse
+export SPGREEN='\E[38;5;46m'  #00ff87	(  0,255,135) Spring Green, aquamarine
+export   AZURE='\E[38;5;33m' 	#0087ff	(  0,135,255) (Brooklyn) Dodger Blue, Brescian Blue
+export  PURPLE='\E[38;5;93m' 	#8700ff	(135,  0,255) Purple, violet
+export    ROSE='\E[38;5;198m' #ff0087	(255,  0,135) DeepPink1	
+
+# create array of 12 rainbow colors
+declare -ax rcolor=( "${RED}" "${ORANGE}" "${YELLOW}" "${CHARTRU}" "${GREEN}" "${SPGREEN}" "${CYAN}" "${AZURE}" "${BLUE}" "${PURPLE}" "${MAGENTA}" "${ROSE}" )
+
 # define monochrome colors
 export    gray='\E[90m'
 export   white='\E[1;37m'
 
+# define highlight colors
+export     BAD="${RED}" # red
+export    GOOD="${GREEN}" # green
+
+# define 'ls' colors
+export  BROKEN='\E[1;31m' # bold red    : or orphan link
+export     TGT='\E[1;32m' # bold green  : ex executable
+export     DIR='\E[1;34m' # bold blue   : di directory
+export   VALID='\E[1;36m' # bold cyan   : ln valid link
+
+function define_ls_colors() {
+    local -r LN=$(declare -p LS_COLORS | sed 's/^.*ln=\([0-9;]*\):.*$/\1/')
+    local -r OR=$(declare -p LS_COLORS | sed 's/^.*or=\([0-9;]*\):.*$/\1/')
+    local -r DI=$(declare -p LS_COLORS | sed 's/^.*di=\([0-9;]*\):.*$/\1/')
+    local -r EX=$(declare -p LS_COLORS | sed 's/^.*ex=\([0-9;]*\):.*$/\1/')
+
+    export cLN="\E[${LN}m"
+    export cOR="\E[${OR}m"
+    export cDI="\E[${DI}m"
+    export cEX="\E[${EX}m"
+
+    echo -e "${cLN}links${RESET}"
+    echo -e "${cOR}orphaned links${RESET}"
+    echo -e "${cDI}directories${RESET}"
+    echo -e "${cEX}executable files${RESET}"    
+}
+
+# define PS1 colors
+export  PSTIME='\E[0;37m' # light gray  : \A time
+export  PSUSER='\E[0;32m' # green       : \u user name, prompt
+export  PSHOST='\E[1;34m' # bold blue   : \h host name
+export   PSDIR='\E[0;33m' # yellow      : \w directory
+export    PSBR='\E[0;36m' # blue        : branch
+
+# define 'grep' colors
+export     GRH='\E[1;31m' # bold red    : ms selected match
+export     GRL='\E[0;32m' # green       : ln line number 
+export     GRF='\E[0;35m' # magenta     : fn file name
+
 # subtle colors for readability
 # hue=(N*30), saturation=33%, lightness=52%; sorted by hue
-#      order          ID       N  hue name              corresponding color
+#      order          ID       N  hue Name              corresponding color
 #-----+------+--------------+----+---+-----------------+--------------------
 export col08='\E[38;5;131m' #  0:   0 Indian Red        pri - RED
 export col11='\E[38;5;137m' #  1:  30 Light Salmon        ter - orange
@@ -53,7 +104,7 @@ export col09='\E[38;5;132m' # 11: 330 Hot Pink            ter - rose
 
 export col00='\E[38;5;102m' # 12:   0 Grey              mon - GRAY
 
-# create rainbow-ordered (hue order) of 12 colors
+# create rainbow-ordered (hue order) array of 12 debug colors
 declare -ax dcolor=( '\E[38;5;131m' '\E[38;5;137m' '\E[38;5;143m' '\E[38;5;107m' '\E[38;5;71m'  '\E[38;5;72m'  '\E[38;5;73m'  '\E[38;5;67m'  '\E[38;5;61m'  '\E[38;5;97m'  '\E[38;5;133m' '\E[38;5;132m' )
 
 # reset shell options
@@ -106,7 +157,6 @@ function reset_shell() {
 
 # print dcolor array in rainbow-order
 function print_colors() {
-    local -i DEBUG=1
     # add shell options if not alraedy set
     old_opts=$(echo "$-")
     set -u
@@ -114,12 +164,41 @@ function print_colors() {
     # get length of array
     local -ir N_cols=${#dcolor[@]}
     echo "$N_cols in array ${!dcolor@}"
+    # declare array index variable
+    local -i i
+    # print array elements
     for ((i=0;i<$N_cols;i++));do
         echo -e "${dcolor[$i]}$i"
     done
+    # reset color
+    echo -en "\E[m"
+    
+    # reset shell options
+    local -i DEBUG=${DEBUG:-1}
+    reset_shell ${old_opts} u
+}
+
+# print dcolor array in rainbow-order
+function print_rcolors() {
+    # add shell options if not alraedy set
+    # old_opts=$(echo "$-")
+    # set -u
+
+    # get length of array
+    local -ir N_cols=${#rcolor[@]}    
+    echo "$N_cols in array ${!dcolor@}"
+    # declare array index variable
+    local -i i    
+    # print array elements
+    for ((i=0;i<$N_cols;i++));do
+        echo -e "${rcolor[$i]}$i"
+    done
+    # reset color
+    echo -en "\E[m"
 
     # reset shell options
-    reset_shell ${old_opts} u
+    #local -i DEBUG=${DEBUG:-1}
+    #reset_shell ${old_opts} u
 }
 
 # print dcolor array in debug order
@@ -162,6 +241,8 @@ function print_dcolors() {
     ) | column -t -s: -N order,index,color
 
     # reset shell options
+    set -ETe
+    set_traps
     reset_shell ${old_opts} u
 }
 
@@ -218,7 +299,7 @@ function dbg2idx() {
     fi
 
     # turn in-function debugging on/off
-    local funcDEBUG
+    local -i funcDEBUG=${funcDEBUG:-0} # inherit value or substitution default
     
     # get input DEBUG value
     local -i dbg_in=$1
@@ -226,6 +307,11 @@ function dbg2idx() {
 
     local -ir fdbg=$funcDEBUG
     funcDEBUG=0
+    local -i N_cols
+    local -i N_max
+    local -i start
+    local -i direction
+
     set_dbg2idx
     funcDEBUG=$fdbg
     
@@ -248,13 +334,7 @@ function dbg2idx() {
 function print_fcolors() {
     local -i funcDEBUG=${funcDEBUG:-1} # inherit value or substitution default
     fecho "printing contents of dcolor..."
-    local -i N_cols
-    local -i N_max
-    local -i start
-    local -i direction
-
-    set_dbg2idx
-
+    
     local -i idx
     (
         # loop over valid non-zero values of debug
@@ -305,4 +385,4 @@ function append_ls_colors() {
     LS_COLORS+="mh=44;38;5;15:"
     # missing
     LS_COLORS+="mi=05;48;5;232;38;5;15:"
-    }
+}
