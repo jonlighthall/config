@@ -34,7 +34,7 @@ vecho() {
 
 function fecho() {    
     # check if funcDEBUG is defined
-    if [ ! -z ${funcDEBUG:+dummy} ]; then
+    if [ ! -z ${funcDEBUG+dummy} ]; then
         # check if $funcDEBUG is non-zero
         if [ $funcDEBUG -gt 0 ]; then
             # get size of function stack
@@ -123,7 +123,10 @@ function xecho() {
         # unset color
         echo -ne "\e[0m"
         if [ $funcDEBUG -gt 0 ]; then
+            echo -n ":"
             start_new_line
+        else
+            echo -n
         fi
         
     else
