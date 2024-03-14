@@ -1,5 +1,3 @@
-#TODO move all functions to bash_tabs.sh
-
 function set_ftab() {
     # if fTAB is unset, assign default value
     export fTAB=${fTAB='   '}
@@ -75,5 +73,3 @@ function set_tab() {
         decho -e "${TAB}TAB = \E[106m${TAB}${RESET} length $j"
     fi
 }
-
-set_tab
