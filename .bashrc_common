@@ -30,10 +30,10 @@ else
         else
             RUN_TYPE="executing"
         fi
-        echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
+        echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
         src_name=$(readlink -f $BASH_SOURCE)
         if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-            echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
+            echo -e "${TAB}${VALID}link${RESET} -> $src_name"
         fi
     fi
 fi
@@ -115,7 +115,7 @@ if [ ! -z ${appPATH} ]; then
                 export PATH=$PATH:$path
                 vecho "done"
             else
-                echo -e "${TAB}${path} ${UL}not found${NORMAL}"
+                echo -e "${TAB}${path} ${UL}not found${RESET}"
             fi
         else
             vecho "${TAB}${path} already in PATH"
@@ -133,7 +133,7 @@ if [ ! -z "${prePATH}" ]; then
                 export PATH=$path:$PATH
                 vecho "done"
             else
-                echo -e "${TAB}${path} ${UL}not found${NORMAL}"
+                echo -e "${TAB}${path} ${UL}not found${RESET}"
             fi
         else
             vecho "${TAB}${path} already in PATH"

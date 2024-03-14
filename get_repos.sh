@@ -218,7 +218,7 @@ for my_repo in bash fortran_utilities; do
 		    bash ${make_links_file}
 		    cd ${rdir}
 	  else
-		    echo -e "${TAB}${BAD}${make_links_file} not found${NORMAL}"
+		    echo -e "${TAB}${BAD}${make_links_file} not found${RESET}"
 	  fi
 done
 
@@ -284,7 +284,7 @@ for my_repo in batch powershell; do
 		    bash ${make_links_file}
 		    cd ${wdir}
 	  else
-		    echo -e "${TAB}${BAD}${make_links_file} not found${NORMAL}"
+		    echo -e "${TAB}${BAD}${make_links_file} not found${RESET}"
 	  fi
 done
 echo -e "done cloning ${group_name} repos"
@@ -292,7 +292,7 @@ echo -e "done cloning ${group_name} repos"
 # load formatting
 if [ -e $fpretty ]; then
 	  source $fpretty
-	  cbar "${magenta}pretty print enabled${NORMAL}"
+	  cbar "${magenta}pretty print enabled${RESET}"
 fi
 
 # reset TAB
@@ -309,7 +309,7 @@ for my_repo in cpp fortran hello nrf python; do
 	  link_name=${edir}/${my_repo}
 
 	  # check if target exists
-	  echo -ne "${TAB}target dirctory ${yellow}${target}${NORMAL}... "
+	  echo -ne "${TAB}target dirctory ${yellow}${target}${RESET}... "
 	  if [ -e "${target}" ]; then
 		    echo "exits"
         itab
@@ -350,7 +350,7 @@ for my_repo in matlab; do
 	  link_name=${rdir}/matlab
 
 	  # check if target exists
-	  echo -ne "${TAB}target dirctory ${yellow}${target}${NORMAL}... "
+	  echo -ne "${TAB}target dirctory ${yellow}${target}${RESET}... "
 	  if [ -e "${target}" ]; then
 		    echo "exits"
         itab

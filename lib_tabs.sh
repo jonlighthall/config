@@ -56,7 +56,7 @@ function set_tab() {
     local -i i=0
     # check if TAB is set
     if [ -z ${TAB+dummy} ]; then
-        echo -e "TAB ${yellow}unset${NORMAL}"
+        echo -e "TAB ${yellow}unset${RESET}"
     else
         # get length of TAB
         i=${#TAB}
@@ -72,7 +72,7 @@ function set_tab() {
 
     # if TAB changed length or was unset, print size of TAB
     if [ $i -ne $j ]; then
-        decho -e "${TAB}TAB = \E[106m${TAB}${NORMAL} length $j"
+        decho -e "${TAB}TAB = \E[106m${TAB}${RESET} length $j"
     fi
 }
 

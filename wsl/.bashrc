@@ -167,7 +167,7 @@ $HOME/config/linux/.bashrc_prompt $HOME/config/wsl/.bashrc_X11"
     if [ -f $FILE ]; then
       LIST+=" $FILE"
     else
-      vecho -e "${TAB}$FILE ${UL}not found${NORMAL}"
+      vecho -e "${TAB}$FILE ${UL}not found${RESET}"
     fi
   done
   #else
@@ -181,12 +181,12 @@ for FILE in $LIST; do
     source $FILE
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
-      vecho -e "${TAB}$FILE ${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+      vecho -e "${TAB}$FILE ${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
     else
-      echo -e "${TAB}$FILE ${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+      echo -e "${TAB}$FILE ${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
     fi
   else
-    echo -e "${TAB}$FILE ${UL}not found${NORMAL}"
+    echo -e "${TAB}$FILE ${UL}not found${RESET}"
   fi
 done
 

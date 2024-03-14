@@ -20,10 +20,10 @@ else
 	      else
 	          RUN_TYPE="executing"
 	      fi
-	      echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
+	      echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
 	      src_name=$(readlink -f $BASH_SOURCE)
 	      if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-	          echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
+	          echo -e "${TAB}${VALID}link${RESET} -> $src_name"
 	      fi
     fi
 fi
@@ -98,7 +98,7 @@ if  command -v git &>/dev/null; then
 	      vecho -e "on\e[0;36m$(git_branch)\e[0m branch"
     fi
 else
-    vecho -e "${BAD}FAIL${NORMAL} Git not defined"
+    vecho -e "${BAD}FAIL${RESET} Git not defined"
     git_branch() {
 	      return 0
     }
@@ -112,7 +112,7 @@ if  command -v screen &>/dev/null; then
 	      vecho -e "in screen session$(screen_pid)"
     fi
 else
-    vecho -e "${BAD}FAIL${NORMAL} screen not defined"
+    vecho -e "${BAD}FAIL${RESET} screen not defined"
     screen_pid() {
 	      return 0
     }
@@ -126,7 +126,7 @@ if  command -v tmux &>/dev/null; then
 	      vecho "not in tmux"
     fi
 else
-    vecho -e "${BAD}FAIL${NORMAL} tmux not defined"
+    vecho -e "${BAD}FAIL${RESET} tmux not defined"
     tmux_ses() {
 	      return 0
     }
@@ -165,14 +165,14 @@ if $do_test_git; then
 	      RETVAL=$?
 	      if [[ $RETVAL -eq 137 || $RETVAL -eq 127 ]]; then
 	          vecho -e "\n RETVAL = $RETVAL"
-	          vecho " git branch ${BAD}timed out${NORMAL}"
+	          vecho " git branch ${BAD}timed out${RESET}"
 	          git_bad=true
 	      else
-	          vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+	          vecho -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
 	          git_bad=false
 	      fi
     else
-	      vecho -e "${BAD}FAIL${NORMAL} Git not defined"
+	      vecho -e "${BAD}FAIL${RESET} Git not defined"
 	      git_bad=true
     fi
     if $git_bad; then
@@ -192,11 +192,11 @@ if $do_test_color; then
     timeout -s 9 1s \ls -ld --color=auto ./* &>/dev/null
     RETVAL=$?
     if [[ $RETVAL -eq 137 ]]; then
-	      echo -e "${TAB}ls --color=auto ${BAD}FAIL${NORMAL}  ${gray}RETVAL=$RETVAL${NORMAL}"
+	      echo -e "${TAB}ls --color=auto ${BAD}FAIL${RESET}  ${gray}RETVAL=$RETVAL${RESET}"
 	      unalias ls
 	      echo -e "${TAB}--color=auto removed from ls alias"
     else
-	      vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+	      vecho -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
     fi
 fi
 

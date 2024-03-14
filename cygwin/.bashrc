@@ -21,10 +21,10 @@ else
 	else
 	    RUN_TYPE="executing"
 	fi
-	echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
+	echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
 	src_name=$(readlink -f $BASH_SOURCE)
 	if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-	    echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
+	    echo -e "${TAB}${VALID}link${RESET} -> $src_name"
 	fi
     fi
 fi
@@ -39,7 +39,7 @@ do
     if [ -f $FILE ]; then
 	LIST+=" $FILE"
     else
-	vecho -e "${TAB}$FILE ${UL}not found${NORMAL}"
+	vecho -e "${TAB}$FILE ${UL}not found${RESET}"
     fi
 done
 
@@ -50,12 +50,12 @@ do
 	source $FILE
 	RETVAL=$?
 	if [ $RETVAL -eq 0 ]; then
-	    vecho -e "${TAB}$FILE ${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+	    vecho -e "${TAB}$FILE ${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
 	else
-	    echo -e "${TAB}$FILE ${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+	    echo -e "${TAB}$FILE ${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
 	fi
     else
-	echo -e "${TAB}$FILE ${UL}not found${NORMAL}"
+	echo -e "${TAB}$FILE ${UL}not found${RESET}"
     fi
 done
 

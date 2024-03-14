@@ -68,20 +68,20 @@ function check_target() {
     [ -d "${target}" ] && type="directory "
 
     if [[ "${target_canon}" == ${HOME} ]]; then
-        echo -e "target ${yellow}$1${NORMAL} is ${red}HOME${NORMAL}"
+        echo -e "target ${yellow}$1${RESET} is ${red}HOME${RESET}"
     fi    
     
     # check if target exists
-    echo -en "target ${type}${yellow}$1${NORMAL}... "
+    echo -en "target ${type}${yellow}$1${RESET}... "
     if [ -e "${target_canon}" ]; then
-        echo -e "${GOOD}exists${NORMAL}"
+        echo -e "${GOOD}exists${RESET}"
         itab
         return 0
     else
-        echo -e "${BAD}does not exist${NORMAL}"
+        echo -e "${BAD}does not exist${RESET}"
         dtab
         if [[ "${target_canon}" == ${HOME} ]]; then
-            echo -e "target ${yellow}$1${NORMAL} is ${red}HOME${NORMAL}"
+            echo -e "target ${yellow}$1${RESET} is ${red}HOME${RESET}"
             exit 1
         else 
             return 1
@@ -163,17 +163,17 @@ function do_link() {
         local -i perm=$(stat -c "%a" ${target_dir})
         echo -n "${perm} "
         if [[ ${perm} -gt ${permOK} ]]; then
-            echo -e "${BAD}FAIL${NORMAL}"
-            echo -en "${TAB}${GRH}changing permissions${NORMAL} to ${permOK}... "
+            echo -e "${BAD}FAIL${RESET}"
+            echo -en "${TAB}${GRH}changing permissions${RESET} to ${permOK}... "
             chmod ${permOK} ${target_dir}
             local RETVAL=$?
             if [ $RETVAL -eq 0 ]; then
-                echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+                echo -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
             else
-                echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+                echo -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
             fi
         else
-            echo -e "${GOOD}OK${NORMAL}"
+            echo -e "${GOOD}OK${RESET}"
         fi
         dtab
 
@@ -202,17 +202,17 @@ function do_link() {
             # if necessary, the canonicalized target file will have its existing permissions
             # replaced with the required permissions
             if [[ ${perm} -gt ${permOK} ]]; then
-                echo -e "${BAD}FAIL${NORMAL}"
-                echo -en "${TAB}${GRH}changing permissions${NORMAL} to ${permOK}... "
+                echo -e "${BAD}FAIL${RESET}"
+                echo -en "${TAB}${GRH}changing permissions${RESET} to ${permOK}... "
                 chmod ${permOK} ${target_cannon}
                 local RETVAL=$?
                 if [ $RETVAL -eq 0 ]; then
-                    echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+                    echo -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
                 else
-                    echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+                    echo -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
                 fi
             else
-                echo -e "${GOOD}OK${NORMAL}"
+                echo -e "${GOOD}OK${RESET}"
             fi
             dtab
         fi
@@ -221,7 +221,7 @@ function do_link() {
         for fname in keys2 pub. \~ id_dsa _[0-9]{4}-[0-9]{2}-[0-9]{2}; do
             # check both pattern matching and regex
             if [[ ${target##*/} == *"$fname"* ]] || [[ ${target##*/} =~ .*$fname.* ]]  ; then
-                echo -e "${TAB}${GRH}exclude${NORMAL} $fname: ${target##*/}"
+                echo -e "${TAB}${GRH}exclude${RESET} $fname: ${target##*/}"
                 dtab
                 return 0
             fi
@@ -279,7 +279,7 @@ function do_link() {
                 # issue warning
                 echo -n "${TAB}${BAD}cannot be written to"
                 if [ "$EUID" -ne 0 ]; then
-                    echo -e "${TAB}${GRH}This command must be run as root!${NORMAL}"
+                    echo -e "${TAB}${GRH}This command must be run as root!${RESET}"
                 fi
                 dtab 2
                 return 1
@@ -304,7 +304,7 @@ function do_link() {
     fi
     echo -ne "${TAB}"
     hline 72
-    echo -en "${NORMAL}"
+    echo -en "${RESET}"
     dtab
     return 0
 }
@@ -352,16 +352,16 @@ function do_link_exe() {
         echo ${perm}
         # the target files will have the required permissions added to the existing permissions
         if [[ ${perm} -le ${permOK} ]] || [[ ! (-f "${target}" && -x "${target}") ]]; then
-            echo -en "${TAB}${GRH}adding permissions${NORMAL} to ${permOK}... "
+            echo -en "${TAB}${GRH}adding permissions${RESET} to ${permOK}... "
             chmod +${permOK} "${target}" || chmod u+rx "${target}"
             local RETVAL=$?
             if [ $RETVAL -eq 0 ]; then
-                echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+                echo -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
             else
-                echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+                echo -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
             fi
         else
-            echo -e "${TAB}permissions ${GOOD}OK${NORMAL}"
+            echo -e "${TAB}permissions ${GOOD}OK${RESET}"
         fi
         dtab
     fi

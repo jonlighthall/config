@@ -23,10 +23,10 @@ if $VB; then
     else
         RUN_TYPE="executing"
     fi
-    echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
+    echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
     src_name=$(readlink -f $BASH_SOURCE)
     if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-	echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
+	echo -e "${TAB}${VALID}link${RESET} -> $src_name"
     fi
     echo "${TAB}verbose bash printing is... $VB"
 fi
@@ -34,7 +34,7 @@ fi
 # system dependencies
 SYS_NAME=git_bash
 HOST_NAME=$HOSTNAME
-vecho -e "${TAB}applying ${SYS_NAME} settings on ${PSHOST}${HOST_NAME}${NORMAL}"
+vecho -e "${TAB}applying ${SYS_NAME} settings on ${PSHOST}${HOST_NAME}${RESET}"
 
 # save login timestamp to history
 hist_file=${HOME}/.bash_history
@@ -43,17 +43,17 @@ if [ -f $hist_file ]; then
     echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from ${HOST_NAME}" >> $hist_file
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
-	vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+	vecho -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
     else
 	if $VB; then
-	    echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+	    echo -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
 	else
 	    echo "echo to $hist_file failed"
 	fi
     fi
 else
     if $VB; then
-	echo "${BAD}NOT FOUND{NORMAL}"
+	echo "${BAD}NOT FOUND{RESET}"
     else
 	echo "$hist_file not found"
     fi
@@ -66,9 +66,9 @@ if [ -f $fname ] ; then
     source $fname
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
-	vecho -e "${TAB}$fname ${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+	vecho -e "${TAB}$fname ${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
     else
-	echo -e "${TAB}$fname ${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+	echo -e "${TAB}$fname ${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
     fi
 else
     echo "${TAB}$fname not found"
@@ -83,7 +83,7 @@ if $VB; then
     then
 	bash sec2elap ${dT} | tr -d '\n'
     else
-    echo -n "elapsed time is ${white}${dT} sec${NORMAL}"
+    echo -n "elapsed time is ${white}${dT} sec${RESET}"
     fi
     echo " on $(date +"%a %b %-d at %-l:%M %p %Z")"
 fi

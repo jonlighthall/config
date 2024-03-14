@@ -23,15 +23,15 @@ fi
 # check if running interactively
 if [[ "$-" == *i* ]]; then
     # print run type and source name
-    echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
+    echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
     if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-        echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
+        echo -e "${TAB}${VALID}link${RESET} -> $src_name"
     fi
     # print source path
     ## physical
-    echo -e "${TAB}${gray}phys -> $src_dir_phys${NORMAL}"
+    echo -e "${TAB}${gray}phys -> $src_dir_phys${RESET}"
     ## logical
-    echo -e "${TAB}${gray}logi -> $src_dir_logi${NORMAL}"
+    echo -e "${TAB}${gray}logi -> $src_dir_logi${RESET}"
 fi
 
 # load bash utils
@@ -60,7 +60,7 @@ if [[ "$-" == *i* ]]; then
     if [ -z ${FPRETTY_LOADED+dummy} ]; then
         declare -grx FPRETTY_LOADED=true
     else
-        echo -e "${TAB}${yellow}${BASH_SOURCE[0]##*/} already loaded${NORMAL}"
+        echo -e "${TAB}${yellow}${BASH_SOURCE[0]##*/} already loaded${RESET}"
     fi
     dtab
 fi

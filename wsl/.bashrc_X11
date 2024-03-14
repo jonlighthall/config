@@ -20,10 +20,10 @@ else
     else
       RUN_TYPE="executing"
     fi
-    echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
+    echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
     src_name=$(readlink -f $BASH_SOURCE)
     if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-      echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
+      echo -e "${TAB}${VALID}link${RESET} -> $src_name"
     fi
   fi
 fi
@@ -59,24 +59,24 @@ else
       if [[ $RETVAL == 0 ]]; then
         xOK=true
         if $VB; then
-          echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+          echo -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
           xPID=$(pgrep -x $PROG)
           if [ ! -z $xPID ]; then
             echo "${TAB}$PROG running with PID ${xPID}"
           fi
         fi
       else
-        vecho -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+        vecho -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
         vecho "${TAB}unaliasing $PROG..."
         unalias vcx 2>/dev/null
       fi
     else
-      vecho -e "${TAB}$PROG ${UL}not found${NORMAL}"
+      vecho -e "${TAB}$PROG ${UL}not found${RESET}"
       vecho "${TAB}unaliasing $PROG..."
       unalias vcx 2>/dev/null
     fi
   else
-    vecho -e "${TAB}$DIR ${UL}not found${NORMAL}"
+    vecho -e "${TAB}$DIR ${UL}not found${RESET}"
     vecho "${TAB}unaliasing $PROG..."
     unalias vcx 2>/dev/null
   fi
@@ -107,24 +107,24 @@ if ! $xOK; then
         if [[ $RETVAL == 0 ]]; then
           xOK=true
           if $VB; then
-            echo -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+            echo -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
             xPID=$(pgrep -x $PROG)
             if [ ! -z $xPID ]; then
               echo "${TAB}$PROG running with PID ${xPID}"
             fi
           fi
         else
-          vecho -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+          vecho -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
           vecho "${TAB}unaliasing $PROG..."
           unalias xming 2>/dev/null
         fi
       else
-        vecho -e "${TAB}$PROG ${UL}not found${NORMAL}"
+        vecho -e "${TAB}$PROG ${UL}not found${RESET}"
         vecho "${TAB}unaliasing $PROG..."
         unalias xming 2>/dev/null
       fi
     else
-      vecho -e "${TAB}$DIR ${UL}not found${NORMAL}"
+      vecho -e "${TAB}$DIR ${UL}not found${RESET}"
       vecho "${TAB}unaliasing $PROG..."
       unalias xming 2>/dev/null
     fi
@@ -144,9 +144,9 @@ if $xOK; then
     RETVAL=$?
     if [[ $RETVAL == 0 ]]; then
       dispOK=true
-      vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+      vecho -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
     else
-      vecho -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+      vecho -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
       unset DISPLAY
     fi
   fi
@@ -166,10 +166,10 @@ if $xOK; then
     xdpyinfo -display $DISPLAY &>/dev/null
     RETVAL=$?
     if [[ $RETVAL == 0 ]]; then
-      vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+      vecho -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
     else
       if $VB; then
-        echo -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+        echo -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
         # check other values if FAIL
         echo "${TAB}building candidate DISPLAY list..."
         TAB+=$fTAB
@@ -188,7 +188,7 @@ if $xOK; then
           display_list+="$route "
         done
       else
-        vecho "${UL}not found${NORMAL}"
+        vecho "${UL}not found${RESET}"
       fi
       for disp in $display_list; do
         export DISPLAY="${disp}:0.0"
@@ -196,17 +196,17 @@ if $xOK; then
         xdpyinfo -display $DISPLAY &>/dev/null
         RETVAL=$?
         if [[ $RETVAL == 0 ]]; then
-          vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+          vecho -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
           break
         else
-          vecho -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+          vecho -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
           unset DISPLAY
         fi
       done
       TAB=${TAB%$fTAB}
 
       if [ -z "${DISPLAY}" ]; then
-        echo -e "${TAB}${BAD}ERROR: ${NORMAL}DISPLAY not set"
+        echo -e "${TAB}${BAD}ERROR: ${RESET}DISPLAY not set"
       else
         vecho "${TAB}DISPLAY set to $DISPLAY"
       fi
@@ -216,7 +216,7 @@ if $xOK; then
     fi
   fi
 else
-  echo -e "${TAB}${BAD}ERROR: ${NORMAL}no X11 program running"
+  echo -e "${TAB}${BAD}ERROR: ${RESET}no X11 program running"
   echo "${TAB}DISPLAY not set by $BASH_SOURCE"
   echo "${TAB}DISPLAY set to to $DISPLAY"
 fi

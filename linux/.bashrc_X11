@@ -20,10 +20,10 @@ else
 	else
 	    RUN_TYPE="executing"
 	fi
-	echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
+	echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
 	src_name=$(readlink -f $BASH_SOURCE)
 	if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-	    echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
+	    echo -e "${TAB}${VALID}link${RESET} -> $src_name"
 	fi
     fi
 fi
@@ -44,9 +44,9 @@ else
     RETVAL=$?
     if [[ $RETVAL == 0 ]]; then
 	dispOK=true
-	vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+	vecho -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
     else
-	vecho -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+	vecho -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
 	unset DISPLAY
     fi
 fi
@@ -69,10 +69,10 @@ if ! $dispOK; then
 	timeout -s 9 3s xdpyinfo -display $DISPLAY &>/dev/null
 	RETVAL=$?
 	if [[ $RETVAL == 0 ]]; then
-	    vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+	    vecho -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
 	    break
 	else
-	    vecho -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+	    vecho -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
 	    unset DISPLAY
 	fi
     done
@@ -84,10 +84,10 @@ if ! $dispOK; then
 	timeout -s 9 3s xdpyinfo -display $DISPLAY &>/dev/null
 	RETVAL=$?
 	if [[ $RETVAL == 0 ]]; then
-	    vecho -e "${GOOD}OK${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+	    vecho -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
 	    break
 	else
-	    vecho -e "${BAD}FAIL${NORMAL} ${gray}RETVAL=$RETVAL${NORMAL}"
+	    vecho -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
 	    unset DISPLAY
 	fi
     done
@@ -95,7 +95,7 @@ if ! $dispOK; then
     TAB=${TAB%$fTAB}
 
     if [ -z "${DISPLAY}" ]; then
-	echo -e "${TAB}${BAD}ERROR: ${NORMAL}DISPLAY not set"
+	echo -e "${TAB}${BAD}ERROR: ${RESET}DISPLAY not set"
     else
 	vecho "${TAB}DISPLAY set to $DISPLAY"
     fi

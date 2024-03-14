@@ -21,10 +21,10 @@ else
     set -e
 fi
 # print source name at start
-echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
+echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
 src_name=$(readlink -f "$BASH_SOURCE")
 if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-    echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
+    echo -e "${TAB}${VALID}link${RESET} -> $src_name"
 fi
 
 # define directory names
@@ -70,9 +70,9 @@ itab
 for dir in "${dir_list[@]}"; do 
     echo -n "${TAB}directory $dir... "
     if [ -e "${dir}" ]; then
-        echo -e "${GOOD}exists${NORMAL}"
+        echo -e "${GOOD}exists${RESET}"
     else
-        echo -e "${BAD}does not exist${NORMAL}"
+        echo -e "${BAD}does not exist${RESET}"
         exit 1
     fi
 done
@@ -83,12 +83,12 @@ echo "${TAB}create links..."
 link_dir=$HOME
 echo -n "${TAB}link directory ${link_dir}... "
 if [ -d "$link_dir" ]; then
-    echo -e "${GOOD}exists${NORMAL}"
+    echo -e "${GOOD}exists${RESET}"
 else
-    echo -e "${yellow}does not exist${NORMAL}"
+    echo -e "${yellow}does not exist${RESET}"
     mkdir -pv "$link_dir"
     if [ $link_dir = $HOME ]; then
-        echo -e "${BAD}this should never be true! $link_dir is HOME${NORMAL}"
+        echo -e "${BAD}this should never be true! $link_dir is HOME${RESET}"
         exit 1
     else
         echo "$link_dir != $HOME"
@@ -143,5 +143,5 @@ echo -en "${TAB}$(date +"%a %b %-d %-l:%M %p %Z") ${BASH_SOURCE##*/} "
 if command -v sec2elap &>/dev/null; then
     bash sec2elap ${SECONDS}
 else
-    echo "elapsed time is ${white}${SECONDS} sec${NORMAL}"
+    echo "elapsed time is ${white}${SECONDS} sec${RESET}"
 fi

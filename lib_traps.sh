@@ -189,7 +189,7 @@ function print_stack() {
 
 # print source name, elapsed time, and timestamp
 function print_done() {
-    echo -en "${BASH_SOURCE[(($N - 1))]##*/}${NORMAL} "
+    echo -en "${BASH_SOURCE[(($N - 1))]##*/}${RESET} "
     print_elap
     echo -n " on "
     timestamp
@@ -229,10 +229,10 @@ function print_elap() {
         if command -v sec2elap &>/dev/null; then
             bash sec2elap $dT_sec | tr -d "\n"
         else
-            echo -ne "elapsed time is ${white}${dT_sec} sec${NORMAL}"
+            echo -ne "elapsed time is ${white}${dT_sec} sec${RESET}"
         fi
     else
-        decho -ne "${yellow}start_time not defined${NORMAL} "
+        decho -ne "${yellow}start_time not defined${RESET} "
         # reset cursor position for print_done, etc.
         echo -en "\x1b[1D"
     fi
@@ -249,10 +249,10 @@ function print_exit() {
     fi
 
     start_new_line
-    echo -ne "${TAB}${yellow}\E[7m EXIT ${NORMAL} "
+    echo -ne "${TAB}${yellow}\E[7m EXIT ${RESET} "
     # print exit code
     if [ ! -z ${EXIT_RETVAL+alt} ]; then
-        echo -ne "${gray}RETVAL=${EXIT_RETVAL}${NORMAL} "
+        echo -ne "${gray}RETVAL=${EXIT_RETVAL}${RESET} "
     fi
 
     print_done
@@ -272,7 +272,7 @@ function print_error() {
 
     # print summary
     start_new_line
-    local ERR_PRINT=$(echo -e "${TAB}\E[37;41m ERROR ${NORMAL} ")
+    local ERR_PRINT=$(echo -e "${TAB}\E[37;41m ERROR ${RESET} ")
     echo -n ${ERR_PRINT}
     # print grep-like line match
     echo -ne " \E[35m${BASH_SOURCE[1]##*/}\E[m\E[36m:\E[m\E[32m${ERR_LINENO}\E[m\E[36m:\E[m"
@@ -325,7 +325,7 @@ function print_error() {
 
     # if command contains vairables, evaluate expression
     if [[ "$ERR_CMD" =~ '$' ]]; then
-        decho -e "${spx} ${gray}expanding variables...${NORMAL}"
+        decho -e "${spx} ${gray}expanding variables...${RESET}"
         # print 'eval' set back from cmd
         echo -ne "\E[${etab}C${VALID}${eva}\E[m\E[36m:\E[m"
         # print evaluated command and remove leading whitespace
@@ -337,15 +337,15 @@ function print_error() {
             # print evaluated ouput
             echo -en "\E[${spx}C"
             eval echo $NCMD
-            echo -e "$ {gray}redirect (no output)${NORMAL}"
+            echo -e "$ {gray}redirect (no output)${RESET}"
         fi
     fi
-    echo -e "${spx} ${gray}RETVAL=${ERR_RETVAL}${NORMAL}"
+    echo -e "${spx} ${gray}RETVAL=${ERR_RETVAL}${RESET}"
 }
 
 function print_int() {
     start_new_line
-    echo -e "${yellow}\E[7m INT ${NORMAL} ${BASH_SOURCE[1]##*/}"
+    echo -e "${yellow}\E[7m INT ${RESET} ${BASH_SOURCE[1]##*/}"
     echo " Ctrl-C pressed"
     #	echo -e "breaking..."
     #	break
@@ -370,7 +370,7 @@ function print_return() {
     # get size of function stack
     local -ir N_FUNC=${#FUNCNAME[@]}
     
-    echo -e "${yellow}\E[7m RETURN ${NORMAL} ${gray}RETVAL=${RETURN_RETVAL}${NORMAL} ${FUNCNAME[$((N_FUNC-2))]}"
+    echo -e "${yellow}\E[7m RETURN ${RESET} ${gray}RETVAL=${RETURN_RETVAL}${RESET} ${FUNCNAME[$((N_FUNC-2))]}"
 }
 
 # define traps
@@ -384,7 +384,7 @@ function set_traps() {
     #funcDEBUG=1    
 
     [ $DEBUG -gt 0 ] && start_new_line
-    decho -e "${magenta}\E[7mset traps${NORMAL}"
+    decho -e "${magenta}\E[7mset traps${RESET}"
 
     # set shell options
     ddecho -n "setting shell options..."
@@ -425,7 +425,7 @@ function unset_traps() {
     local DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
 
     [ $DEBUG -gt 0 ] && start_new_line
-    decho -e "${cyan}\E[7mun-set traps${NORMAL}"
+    decho -e "${cyan}\E[7mun-set traps${RESET}"
 
     # set shell options
     decho -n "setting shell options... "

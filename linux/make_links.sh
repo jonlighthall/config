@@ -26,10 +26,10 @@ else
     set -eE
 fi
 # print source name at start
-echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${NORMAL}..."
+echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
 src_name=$(readlink -f "$BASH_SOURCE")
 if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-    echo -e "${TAB}${VALID}link${NORMAL} -> $src_name"
+    echo -e "${TAB}${VALID}link${RESET} -> $src_name"
 fi
 
 # set target and link directories
@@ -41,7 +41,7 @@ echo -n "${TAB}target directory ${target_dir}... "
 if [ -d "$target_dir" ]; then
     echo "exists"
 else
-    echo -e "${BAD}does not exist${NORMAL}"
+    echo -e "${BAD}does not exist${RESET}"
     exit 1
 fi
 
