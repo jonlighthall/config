@@ -232,7 +232,7 @@ function print_elap() {
             echo -ne "elapsed time is ${white}${dT_sec} sec${RESET}"
         fi
     else
-        decho -ne "${yellow}start_time not defined${RESET} "
+        decho -ne "${YELLOW}start_time not defined${RESET} "
         # reset cursor position for print_done, etc.
         echo -en "\x1b[1D"
     fi
@@ -249,7 +249,7 @@ function print_exit() {
     fi
 
     start_new_line
-    echo -ne "${TAB}${yellow}\E[7m EXIT ${RESET} "
+    echo -ne "${TAB}${YELLOW}\E[7m EXIT ${RESET} "
     # print exit code
     if [ ! -z ${EXIT_RETVAL+alt} ]; then
         echo -ne "${gray}RETVAL=${EXIT_RETVAL}${RESET} "
@@ -319,7 +319,7 @@ function print_error() {
     local -i etab=$((x_pos - evl))
 
     if [[ "$ERR_CMD" != "$ERR_LINE" ]]; then
-        echo -ne "\E[${etab}C${yellow} cmd\E[36m:\E[m"
+        echo -ne "\E[${etab}C${YELLOW} cmd\E[36m:\E[m"
         echo "${ERR_CMD}"
     fi
 
@@ -345,7 +345,7 @@ function print_error() {
 
 function print_int() {
     start_new_line
-    echo -e "${yellow}\E[7m INT ${RESET} ${BASH_SOURCE[1]##*/}"
+    echo -e "${YELLOW}\E[7m INT ${RESET} ${BASH_SOURCE[1]##*/}"
     echo " Ctrl-C pressed"
     #	echo -e "breaking..."
     #	break
@@ -370,7 +370,7 @@ function print_return() {
     # get size of function stack
     local -ir N_FUNC=${#FUNCNAME[@]}
     
-    echo -e "${yellow}\E[7m RETURN ${RESET} ${gray}RETVAL=${RETURN_RETVAL}${RESET} ${FUNCNAME[$((N_FUNC-2))]}"
+    echo -e "${YELLOW}\E[7m RETURN ${RESET} ${gray}RETVAL=${RETURN_RETVAL}${RESET} ${FUNCNAME[$((N_FUNC-2))]}"
 }
 
 # define traps
@@ -381,10 +381,14 @@ function set_traps() {
     # turn in-function debugging on/off
     local -i funcDEBUG=${funcDEBUG:-${DEBUG}}
     # manual setting
-    #funcDEBUG=1    
+    funcDEBUG=${DEBUG+0}
+    fecho "hello"
+    decho "hello"
+    ddecho "hello"
+
 
     [ $DEBUG -gt 0 ] && start_new_line
-    decho -e "${magenta}\E[7mset traps${RESET}"
+    decho -e "${MAGENTA}\E[7mset traps${RESET}"
 
     # set shell options
     ddecho -n "setting shell options..."
@@ -425,7 +429,7 @@ function unset_traps() {
     local DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
 
     [ $DEBUG -gt 0 ] && start_new_line
-    decho -e "${cyan}\E[7mun-set traps${RESET}"
+    decho -e "${CYAN}\E[7mun-set traps${RESET}"
 
     # set shell options
     decho -n "setting shell options... "

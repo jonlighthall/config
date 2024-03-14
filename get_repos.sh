@@ -292,7 +292,7 @@ echo -e "done cloning ${group_name} repos"
 # load formatting
 if [ -e $fpretty ]; then
 	  source $fpretty
-	  cbar "${magenta}pretty print enabled${RESET}"
+	  cbar "${MAGENTA}pretty print enabled${RESET}"
 fi
 
 # reset TAB
@@ -309,7 +309,7 @@ for my_repo in cpp fortran hello nrf python; do
 	  link_name=${edir}/${my_repo}
 
 	  # check if target exists
-	  echo -ne "${TAB}target dirctory ${yellow}${target}${RESET}... "
+	  echo -ne "${TAB}target dirctory ${YELLOW}${target}${RESET}... "
 	  if [ -e "${target}" ]; then
 		    echo "exits"
         itab
@@ -350,7 +350,7 @@ for my_repo in matlab; do
 	  link_name=${rdir}/matlab
 
 	  # check if target exists
-	  echo -ne "${TAB}target dirctory ${yellow}${target}${RESET}... "
+	  echo -ne "${TAB}target dirctory ${YELLOW}${target}${RESET}... "
 	  if [ -e "${target}" ]; then
 		    echo "exits"
         itab

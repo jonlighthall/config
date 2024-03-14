@@ -54,7 +54,7 @@ function set_tab() {
     local -i i=0
     # check if TAB is set
     if [ -z ${TAB+dummy} ]; then
-        echo -e "TAB ${yellow}unset${RESET}"
+        echo -e "TAB ${YELLOW}unset${RESET}"
     else
         # get length of TAB
         i=${#TAB}
