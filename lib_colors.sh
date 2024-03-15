@@ -115,54 +115,6 @@ export col00='\E[38;5;102m' # 12:   0 Grey              mon - GRAY
 # create rainbow-ordered (hue order) array of 12 debug colors
 declare -ax dcolor=( '\E[38;5;131m' '\E[38;5;137m' '\E[38;5;143m' '\E[38;5;107m' '\E[38;5;71m'  '\E[38;5;72m'  '\E[38;5;73m'  '\E[38;5;67m'  '\E[38;5;61m'  '\E[38;5;97m'  '\E[38;5;133m' '\E[38;5;132m' )
 
-# reset shell options
-function reset_shell() {
-    if [ $# -lt 1 ]; then
-        return 0
-    fi
-
-    local TAB=${TAB:='   '}
-    local -r old_opts=$1
-    shift
-    if [ $# -lt 1 ]; then
-        return 0
-    fi
-
-    decho -n "resetting shell options... "
-    (        
-        for opt in $@; do          
-            decho
-            if [[ "${opt::1}" == "+" ]]; then                
-                opt=${opt:1}
-            fi
-
-            if [ $(echo ${old_opts} | grep ${opt}) ]; then
-                decho "${opt} was set:${old_opts}"
-                if [ $(echo $- | grep ${opt}) ]; then
-                    decho -n "${opt} is set:"
-                else
-                    decho "${opt} is not set:$-"
-                    decho -n "setting ${opt}:"
-                    set -${opt}
-                fi
-                decho -n "$-"
-            else
-                decho "${opt} was not set:${old_opts}"
-                if [ $(echo $- | grep ${opt}) ]; then
-                    decho "${opt} is set:$-"
-                    decho -n "unsetting ${opt}:"
-                    set +${opt}
-                else
-                    decho -n "${opt} is not set:"
-                fi
-                decho -n "$-"
-            fi
-        done
-        echo
-    ) | sed '1d' | column -t -s':' -o': ' -R 1 | sed '1 s/^/\n/' | sed "s/^/${TAB}/"
-    decho "done"
-}
-
 # print dcolor array in rainbow-order
 function print_colors() {
     # add shell options if not alraedy set

@@ -38,6 +38,92 @@ function unset_shell() {
     
 }
 
+# reset shell options
+function reset_shell() {
+    local DEBUG=0
+
+    if [ $# -lt 1 ]; then
+        return 0
+    fi
+
+    local TAB=${TAB:='   '}
+    local -xr old_opts=$1
+    shift
+    if [ $# -lt 1 ]; then
+        option_list=$(echo "aTbefhkmnptuvxBCEHPT" | sed 's/./ &/g')
+    else
+        option_list=$@
+    fi
+
+    decho -e "\ncurrent: $-"    
+    decho "    old: $old_opts"
+    
+    if [[ "$-" == "${old_opts}" ]]; then
+        ddecho "same"
+        return 0
+    else
+        ddecho "not same"
+    fi
+    decho -n "resetting shell options... "
+    #(
+    for opt in ${option_list}; do          
+        set -T
+        if [[ "$-" == "$old_opts" ]]; then
+            break
+            decho
+            echo ":$-"
+            echo ":$old_opts"
+
+        else
+            decho
+            ddecho "fixing $opt"
+        fi
+
+        
+        # strip + from option
+        if [[ "${opt::1}" == "+" ]]; then                
+            opt=${opt:1}
+        fi
+
+        new_opts=$-
+
+        if [ $(echo ${old_opts} | grep ${opt}) ]; then
+            decho "${opt} was set:${old_opts}"
+            if [ $(echo ${new_opts} | grep ${opt}) ]; then
+                decho -n "${opt} is set:"
+            else
+                decho "${opt} is not set:$-"
+                decho -n "setting ${opt}:"
+                set -${opt}
+                decho -e "${RESET}${-}" | grep ${opt} --color=always   
+            fi
+            decho -n "$-"
+        else
+            decho "${opt} was not set:${old_opts}"
+            if [ $(echo ${new_opts} | grep ${opt}) ]; then
+                decho -n "${opt} is set:"
+                decho -e "${RESET}${new_opts}" | grep ${opt} --color=always
+                decho -n "unsetting ${opt}:"
+                set +${opt}
+            else
+                decho -n "${opt} is not set:"
+            fi
+            set -T
+            decho -n "$-"
+        fi
+        
+    done
+    decho
+    # ) | sed '1d' | column -t -s':' -o': ' -R 1 | sed '1 s/^/\n/' | sed "s/^/  /"
+    set -T
+    echo "done: $-"
+    #huh
+}
+
+function huh() {
+    echo "-> $-"
+}
+
 # print function stack
 function print_stack() {
     start_new_line
