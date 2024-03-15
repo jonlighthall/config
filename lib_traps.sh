@@ -67,33 +67,55 @@ function print_stack() {
         echo "${TAB}${N_FUNC} functions, ${N_BASH} files, ${N_LINE]} lines"
     fi
 
+    # print call stack
     echo "${TAB}call stack:"
-
     local -i i
     for ((i = 0; i < $N_FUNC ; i++)); do
         echo "$i ${FUNCNAME[i]} ${BASH_SOURCE[i]} ${BASH_LINENO[i]}"
     done
+    return 0
 
-    # set local debug value
-    local DEBUG=${DEBUG:=0}  # default value if DEBUG is unset or null
+    # resolve symbolic links
+    for ((i = 0; i < $N; i++)); do
+        BASH_LINK[$i]=$(readlink -f ${BASH_SOURCE[$i]})
+    done
+    
+    echo "${TAB}list of sources:"
+    (
+        for ((i = 0; i < $N_BASH; i++)); do
+            vecho -ne "$i:+${BASH_SOURCE[$i]}"
+            if [[ "${BASH_SOURCE[$i]}" != "${BASH_LINK[$i]}" ]]; then
+                vecho -e "+->+${BASH_LINK[$i]}"
+            else
+                vecho
+            fi
+        done
+    ) | column -t -s + | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
 
-    # get length of stack
-    local -i N=${#BASH_SOURCE[@]}
-    echo "${TAB}There are N=$N entries in the call stack"
+    echo "${TAB}list of invocations (links):"
+    (
+        if [ $N_BASH -gt 1 ]; then
+            for ((i = 1; i < $N_BASH; i++)); do
+                vecho "$((i - 1)):+${BASH_SOURCE[$((i - 1))]}+invoked by+${BASH_SOURCE[$i]}"
+            done
+        else
+            called_by=$(ps -o comm= $PPID)
+            echo "0:+${BASH_SOURCE[0]}+invoked by+${called_by}"
+        fi
+    ) | column -t -s + -o " " | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
 
-    echo "${TAB}full bash source:"
-    echo "${TAB}${fTAB}BASH_SOURCE[@] = ${BASH_SOURCE[@]}"
-
-    echo "${TAB}this source:"
-    echo "${TAB}${fTAB}BASH_SOURCE[0] = ${BASH_SOURCE[0]}"
-
-    if [ $N -gt 1 ]; then
-        echo "${TAB}invoking source source:"
-        echo "${TAB}${fTAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]}"
-    fi
-
-    return 0    
-
+    echo "${TAB}list of invocations (canonicalized):"
+    (
+        if [ $N_BASH -gt 1 ]; then
+            for ((i = 1; i < $N_BASH; i++)); do
+                vecho "$((i - 1)):+${BASH_LINK[$((i - 1))]}+invoked by+${BASH_LINK[$i]}"
+            done
+        else
+            called_by=$(ps -o comm= $PPID)
+            echo "0:+${BASH_LINK[0]}+invoked by+${called_by}"
+        fi
+    ) | column -t -s + -o " " | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
+    
     echo "BASH_ARGC = $BASH_ARGC"
     echo "BASH_ARGV = $BASH_ARGV"
     
@@ -385,7 +407,6 @@ function set_traps() {
     fecho "hello"
     decho "hello"
     ddecho "hello"
-
 
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${MAGENTA}\E[7mset traps${RESET}"

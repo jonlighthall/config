@@ -43,54 +43,11 @@ fi
 
 # get length of stack
 N=${#BASH_SOURCE[@]}
-vecho "${TAB}There are N=$N entries in the call stack"
-
-echo "${TAB}full bash source:"
-echo "${TAB}${fTAB}BASH_SOURCE[@] = ${BASH_SOURCE[@]}"
-
-echo "${TAB}this bash source:"
-echo "${TAB}${fTAB}BASH_SOURCE[0] = ${BASH_SOURCE[0]}"
 
 # resolve symbolic links
 for ((i = 0; i < $N; i++)); do
   BASH_LINK[$i]=$(readlink -f ${BASH_SOURCE[$i]})
 done
-
-echo "${TAB}list of sources:"
-(
-  for ((i = 0; i < $N; i++)); do
-    vecho -ne "$i:+${BASH_SOURCE[$i]}"
-    if [[ "${BASH_SOURCE[$i]}" != "${BASH_LINK[$i]}" ]]; then
-      vecho -e "+->+${BASH_LINK[$i]}"
-    else
-      vecho
-    fi
-  done
-) | column -t -s + | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
-
-echo "${TAB}list of invocations (links):"
-(
-  if [ $N -gt 1 ]; then
-    for ((i = 1; i < $N; i++)); do
-      vecho "$((i - 1)):+${BASH_SOURCE[$((i - 1))]}+invoked by+${BASH_SOURCE[$i]}"
-    done
-  else
-    called_by=$(ps -o comm= $PPID)
-    echo "0:+${BASH_SOURCE[0]}+invoked by+${called_by}"
-  fi
-) | column -t -s + -o " " | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
-
-echo "${TAB}list of invocations (canonicalized):"
-(
-  if [ $N -gt 1 ]; then
-    for ((i = 1; i < $N; i++)); do
-      vecho "$((i - 1)):+${BASH_LINK[$((i - 1))]}+invoked by+${BASH_LINK[$i]}"
-    done
-  else
-    called_by=$(ps -o comm= $PPID)
-    echo "0:+${BASH_LINK[0]}+invoked by+${called_by}"
-  fi
-) | column -t -s + -o " " | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
 
 echo "${TAB}check invoking scripts:"
 for ((i = 1; i <= $N; i++)); do
