@@ -45,7 +45,7 @@ function fecho() {
             local -ir IDX=$(( N_FUNC - 2 ))    
             
             # set color
-            echo -ne "${dcolor[IDX]}"
+            echo -ne "${DIM}${dcolor[IDX]}"
 
             # define function stack printing
             local -i fidx
@@ -54,11 +54,13 @@ function fecho() {
             else
                 fidx=$(( $N_FUNC - 5 ))
             fi            
-            echo -ne "${FUNCNAME[fidx]}\e[0m${dcolor[IDX]}: "
+            echo -ne "${FUNCNAME[fidx]}: \e[0m${dcolor[IDX]}"
             echo "$@"
             echo -ne "\e[0m"
         fi
     fi
+    set +T
+    trap - RETURN
     return 0
 }
 
@@ -87,15 +89,16 @@ function xecho() {
     fi
     
     # Turn in-function debugging on/off.
-
+    local -i funcDEBUG
     # Inherit the value of funcDEBUG from shell or substitute default value if unset or NULL.
-    local -i funcDEBUG=${funcDEBUG:-0}    
+    funcDEBUG=${funcDEBUG:-0}    
 
-    # Use the value of DEBUG as default. If DEBUG is unset or NULL, substitue default value local
-    # -iI funcDEBUG=${funcDEBUG:-${DEBUG:-0}}    
+    # Use the value of DEBUG as default. If DEBUG is unset or NULL, substitue default value
+    #funcDEBUG=${funcDEBUG:-${DEBUG:-0}}    
 
     # manual setting
-    #funcDEBUG=1
+    funcDEBUG=${funcDEBUG+0}
+#    funcDEBUG=0
 
     # use function name to specify debug threshold
     local fu=${FUNCNAME[1]}
