@@ -38,6 +38,92 @@ function unset_shell() {
     
 }
 
+# reset shell options
+function reset_shell() {
+    local DEBUG=0
+
+    if [ $# -lt 1 ]; then
+        return 0
+    fi
+
+    local TAB=${TAB:='   '}
+    local -xr old_opts=$1
+    shift
+    if [ $# -lt 1 ]; then
+        option_list=$(echo "aTbefhkmnptuvxBCEHPT" | sed 's/./ &/g')
+    else
+        option_list=$@
+    fi
+
+    decho -e "\ncurrent: $-"    
+    decho "    old: $old_opts"
+    
+    if [[ "$-" == "${old_opts}" ]]; then
+        ddecho "same"
+        return 0
+    else
+        ddecho "not same"
+    fi
+    decho -n "resetting shell options... "
+    #(
+    for opt in ${option_list}; do          
+        set -T
+        if [[ "$-" == "$old_opts" ]]; then
+            break
+            decho
+            echo ":$-"
+            echo ":$old_opts"
+
+        else
+            decho
+            ddecho "fixing $opt"
+        fi
+
+        
+        # strip + from option
+        if [[ "${opt::1}" == "+" ]]; then                
+            opt=${opt:1}
+        fi
+
+        new_opts=$-
+
+        if [ $(echo ${old_opts} | grep ${opt}) ]; then
+            decho "${opt} was set:${old_opts}"
+            if [ $(echo ${new_opts} | grep ${opt}) ]; then
+                decho -n "${opt} is set:"
+            else
+                decho "${opt} is not set:$-"
+                decho -n "setting ${opt}:"
+                set -${opt}
+                decho -e "${RESET}${-}" | grep ${opt} --color=always   
+            fi
+            decho -n "$-"
+        else
+            decho "${opt} was not set:${old_opts}"
+            if [ $(echo ${new_opts} | grep ${opt}) ]; then
+                decho -n "${opt} is set:"
+                decho -e "${RESET}${new_opts}" | grep ${opt} --color=always
+                decho -n "unsetting ${opt}:"
+                set +${opt}
+            else
+                decho -n "${opt} is not set:"
+            fi
+            set -T
+            decho -n "$-"
+        fi
+        
+    done
+    decho
+    # ) | sed '1d' | column -t -s':' -o': ' -R 1 | sed '1 s/^/\n/' | sed "s/^/  /"
+    set -T
+    echo "done: $-"
+    #huh
+}
+
+function huh() {
+    echo "-> $-"
+}
+
 # print function stack
 function print_stack() {
     start_new_line
@@ -67,33 +153,55 @@ function print_stack() {
         echo "${TAB}${N_FUNC} functions, ${N_BASH} files, ${N_LINE]} lines"
     fi
 
+    # print call stack
     echo "${TAB}call stack:"
-
     local -i i
     for ((i = 0; i < $N_FUNC ; i++)); do
         echo "$i ${FUNCNAME[i]} ${BASH_SOURCE[i]} ${BASH_LINENO[i]}"
     done
+    return 0
 
-    # set local debug value
-    local DEBUG=${DEBUG:=0}  # default value if DEBUG is unset or null
+    # resolve symbolic links
+    for ((i = 0; i < $N; i++)); do
+        BASH_LINK[$i]=$(readlink -f ${BASH_SOURCE[$i]})
+    done
+    
+    echo "${TAB}list of sources:"
+    (
+        for ((i = 0; i < $N_BASH; i++)); do
+            vecho -ne "$i:+${BASH_SOURCE[$i]}"
+            if [[ "${BASH_SOURCE[$i]}" != "${BASH_LINK[$i]}" ]]; then
+                vecho -e "+->+${BASH_LINK[$i]}"
+            else
+                vecho
+            fi
+        done
+    ) | column -t -s + | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
 
-    # get length of stack
-    local -i N=${#BASH_SOURCE[@]}
-    echo "${TAB}There are N=$N entries in the call stack"
+    echo "${TAB}list of invocations (links):"
+    (
+        if [ $N_BASH -gt 1 ]; then
+            for ((i = 1; i < $N_BASH; i++)); do
+                vecho "$((i - 1)):+${BASH_SOURCE[$((i - 1))]}+invoked by+${BASH_SOURCE[$i]}"
+            done
+        else
+            called_by=$(ps -o comm= $PPID)
+            echo "0:+${BASH_SOURCE[0]}+invoked by+${called_by}"
+        fi
+    ) | column -t -s + -o " " | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
 
-    echo "${TAB}full bash source:"
-    echo "${TAB}${fTAB}BASH_SOURCE[@] = ${BASH_SOURCE[@]}"
-
-    echo "${TAB}this source:"
-    echo "${TAB}${fTAB}BASH_SOURCE[0] = ${BASH_SOURCE[0]}"
-
-    if [ $N -gt 1 ]; then
-        echo "${TAB}invoking source source:"
-        echo "${TAB}${fTAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]}"
-    fi
-
-    return 0    
-
+    echo "${TAB}list of invocations (canonicalized):"
+    (
+        if [ $N_BASH -gt 1 ]; then
+            for ((i = 1; i < $N_BASH; i++)); do
+                vecho "$((i - 1)):+${BASH_LINK[$((i - 1))]}+invoked by+${BASH_LINK[$i]}"
+            done
+        else
+            called_by=$(ps -o comm= $PPID)
+            echo "0:+${BASH_LINK[0]}+invoked by+${called_by}"
+        fi
+    ) | column -t -s + -o " " | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
+    
     echo "BASH_ARGC = $BASH_ARGC"
     echo "BASH_ARGV = $BASH_ARGV"
     
@@ -385,7 +493,6 @@ function set_traps() {
     fecho "hello"
     decho "hello"
     ddecho "hello"
-
 
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${MAGENTA}\E[7mset traps${RESET}"
