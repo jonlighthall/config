@@ -1,0 +1,13 @@
+[user]
+	name = Jon Lighthall
+	email = jon.lighthall@gmail.com
+[credential]
+	helper = store --file ${HOME}/.git-credentials	
+[core]
+	autocrlf = input
+	fileMode = true
+	pager = less -EX
+[color]
+	ui = true
+[push]
+	default = simple
