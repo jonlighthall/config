@@ -9,7 +9,6 @@ function driver() {
     set -T
     trap 'echo "${FUNCNAME} return"' RETURN
     local -i DEBUG=0
-    local -i funcDEBUG=0
     set_traps
     echo $-
     fello
@@ -34,13 +33,12 @@ function unset_shell() {
     set +eET
     echo $-
     trap 'echo "UNSET"' RETURN
-    return 0
-    
+    return 0    
 }
 
 # reset shell options
 function reset_shell() {
-    local DEBUG=0
+    local -i DEBUG=0
 
     if [ $# -lt 1 ]; then
         return 0
@@ -585,7 +583,7 @@ function print_int() {
 
 function print_return() {
     # set local debug value
-    local DEBUG=${DEBUG:=0}  # default value if DEBUG is unset or null
+    local -i DEBUG=${DEBUG:-0} # substitute default value if DEBUG is unset or null
 
     # set shell options
     decho "setting shell options..."
@@ -608,15 +606,7 @@ function print_return() {
 # define traps
 function set_traps() {
     # set local debug value
-    local DEBUG=${DEBUG:-0} # substitute default value if DEBUG is unset or null
-
-    # turn in-function debugging on/off
-    local -i funcDEBUG=${funcDEBUG:-${DEBUG}}
-    # manual setting
-    funcDEBUG=${DEBUG+0}
-    fecho "hello"
-    decho "hello"
-    ddecho "hello"
+    local -i DEBUG=${DEBUG:-0} # substitute default value if DEBUG is unset or null
 
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${MAGENTA}\E[7mset traps${RESET}"
@@ -658,7 +648,7 @@ function set_traps() {
 
 function unset_traps() {
     # set local debug value
-    local DEBUG=${DEBUG-0} # default value if DEBUG is unset or null
+    local DEBUG=${DEBUG:-0} # default value if DEBUG is unset or null
 
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${CYAN}\E[7mun-set traps${RESET}"
