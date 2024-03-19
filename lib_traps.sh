@@ -423,11 +423,10 @@ echo $LINENO
     dtab
 }
 
-
-
 # print source name, elapsed time, and timestamp
 function print_done() {
-    echo -en "${BASH_SOURCE[(($N - 1))]##*/}${RESET} "
+    local -i N_BASH=${#BASH_SOURCE[@]}
+    echo -en "${BASH_SOURCE[(($N_BASH - 1))]##*/}${RESET} "
     print_elap
     echo -n " on "
     timestamp
