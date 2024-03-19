@@ -1,6 +1,22 @@
 function set_ftab() {
-    # if fTAB is unset, assign default value
-    export fTAB=${fTAB='   '}
+    # if fTAB is unset or null, then assign default value
+    export fTAB=${fTAB:='   '}
+}
+
+function set_tab() {
+    # reset TAB
+    rtab
+
+    # get the lenght of the execution stack
+    local -ig N_BASH=${#BASH_SOURCE[@]}
+    # since this is a function, reduce N_BASH by one
+    ((N_BASH--))
+    
+    # set the tab length
+    local -ir N_TAB=$(($N_BASH-1))
+    
+    # set tab
+    itab $N_TAB
 }
 
 function ctab() {
@@ -50,7 +66,7 @@ function dtab() {
     export TAB
 }
 
-function set_tab() {
+function check_tab() {
     local -i i=0
     # check if TAB is set
     if [ -z ${TAB+dummy} ]; then
@@ -62,8 +78,7 @@ function set_tab() {
     
     # if TAB is unset, then assign default value
     export TAB=${TAB=''}
-    # if fTAB is unset or null, then assign default value
-    export fTAB=${fTAB:='   '}
+    set_ftab
     
     #get new length of TAB
     local -i j=${#TAB}
