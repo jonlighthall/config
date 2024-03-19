@@ -45,7 +45,7 @@ alias gitsl='git stash list --date=local'
 
 # grep
 alias g='gr'
-alias gr='grep -iIrRn -D skip --exclude-dir=".git"'
+alias gr='grep -iIrRn -D skip --exclude-dir=".git" --exclude="*~"'
 alias grep='grep --color=auto'
 alias gR='gr --no-ignore-case'
 
