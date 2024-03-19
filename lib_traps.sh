@@ -346,7 +346,7 @@ function print_stack2() {
 function print_invo() {
     local DEBUG=1
 
-    # print invocoking source or function
+    # print invoking source or function
     decho "${TAB}BASH_SOURCE=${BASH_SOURCE[@]}"
     decho "${TAB}FUNCNAME=${FUNCNAME[@]}"
     decho "${TAB}BASH_LINENO=${BASH_LINENO[@]}"
@@ -382,7 +382,7 @@ function print_invo() {
         caller $i
     done
     dtab
-    ) | column -t -s "\t" -N "index,line,subroutein,filename" -R1
+    ) | column -t -s "\t" -N "index,line,subroutine,filename" -R1
 
     
 
@@ -518,7 +518,7 @@ function print_error() {
     echo -en "\E[6n"
     read -sdR CURPOS
     local CURPOS=${CURPOS#*[}
-          #}# dummy bracket for emacs indenting
+          #}# dummy bracket for Emacs indenting
     # get the x-position of the cursor
     local -i x_pos=${CURPOS#*;}
     ((--x_pos))
@@ -560,7 +560,7 @@ function print_error() {
         echo "${ERR_CMD}"
     fi
 
-    # if command contains vairables, evaluate expression
+    # if command contains variables, evaluate expression
     if [[ "$ERR_CMD" =~ '$' ]]; then
         decho -e "${spx} ${gray}expanding variables...${RESET}"
         # print 'eval' set back from cmd
@@ -571,7 +571,7 @@ function print_error() {
             # remove redirect
             NCMD=$(echo $ERR_CMD | sed 's|/dev/null||')
             NCMD=$(echo $NCMD | sed 's/[12>&\s]*$//')
-            # print evaluated ouput
+            # print evaluated output
             echo -en "\E[${spx}C"
             eval echo $NCMD
             echo -e "$ {gray}redirect (no output)${RESET}"
@@ -613,7 +613,7 @@ function print_return() {
 # define traps
 function set_traps() {
     # set local debug value
-    local DEBUG=${DEBUG:-0} # substitue default value if DEBUG is unset or null
+    local DEBUG=${DEBUG:-0} # substitute default value if DEBUG is unset or null
 
     # turn in-function debugging on/off
     local -i funcDEBUG=${funcDEBUG:-${DEBUG}}
@@ -650,7 +650,7 @@ function set_traps() {
     fi
 
     # print summary
-    ddecho -n "on set trap retrun, the following traps are set"
+    ddecho -n "on set trap return, the following traps are set"
     if [ -z "$(trap -p)" ]; then
         ddecho -e "\n${fTAB}none"
         exit
@@ -699,7 +699,7 @@ function unset_traps() {
     fi
 
     # print summary
-    ddecho "on unset trap retrun, the following traps are set"
+    ddecho "on unset trap return, the following traps are set"
     if [ -z $(trap -p) ]; then
         ddecho "${fTAB}none"
     else
