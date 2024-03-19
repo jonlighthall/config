@@ -10,7 +10,7 @@ if [ -e "$fpretty" ]; then
     set_traps
     # set tab
     rtab
-    itab $(( ${#BASH_SOURCE[@]} - 1 ))
+    itab $(( ${#BASH_SOURCE[@]} - 0 ))
 fi
 
 # determine if script is being sourced or executed
