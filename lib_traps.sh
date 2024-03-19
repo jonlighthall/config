@@ -648,7 +648,8 @@ function set_traps() {
     ddecho -n "on set trap return, the following traps are set"
     if [ -z "$(trap -p)" ]; then
         ddecho -e "\n${fTAB}none"
-        exit
+        echo "something didn't work..."
+        return 1
     else
         ddecho
         ddecho $(trap -p) | sed "$ ! s/^/${fTAB}/;s/ \(trap\)/\n${fTAB}\1/g" | sed 's/^[ ]*$//g'
@@ -657,7 +658,7 @@ function set_traps() {
 
 function unset_traps() {
     # set local debug value
-    local DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
+    local DEBUG=${DEBUG-0} # default value if DEBUG is unset or null
 
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${CYAN}\E[7mun-set traps${RESET}"
@@ -676,6 +677,7 @@ function unset_traps() {
     ddecho -n "the current traps are set"
     if [ -z "$(trap -p)" ]; then
         ddecho -e "\n${fTAB}none"
+        return 0
     else
         ddecho
         ddecho $(trap -p) | sed "$ ! s/^/${fTAB}/;s/ \(trap\)/\n${fTAB}\1/g" | sed 's/^[ ]*$//g'
@@ -699,6 +701,7 @@ function unset_traps() {
         ddecho "${fTAB}none"
     else
         ddecho $(trap -p)
-        exit
+        echo "something didn't work..."
+        return 1
     fi
 }
