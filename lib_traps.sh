@@ -326,7 +326,6 @@ function print_stack2() {
     local -ga BASH_FNAME
     # strip directories
     for ((i = 0; i < $N_BASH; i++)); do
-        #     BASH_FNAME[$i]= ${BASH_SOURCE[$i]##*/}
         BASH_FNAME[$i]=${BASH_SOURCE[$i]##*/}
     done
 
