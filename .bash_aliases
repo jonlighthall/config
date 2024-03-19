@@ -4,14 +4,13 @@
 # with WSL, Debian derivatives (Ubuntu), Red Hat-based distros (Centos, Rock Linux), MinGW (MSYS,
 # GitBash), Cygwin, PGI Bash, etc.
 
-echo -e "\x1b[7;38;5;132m${#BASH_SOURCE[@]}\x1b[0m"
-
-# set tab
-TAB+=${TAB+${fTAB:='   '}}
-msg=$(echo "this file is $(readlink -f ${BASH_SOURCE[0]##*/})!")
-ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
-echo -e "$ln\n\e[7m$msg\e[m\n$ln" | sed "s/^/${TAB}/"
-TAB=${TAB%$fTAB} 
+# load formatting
+fpretty=${HOME}/config/.bashrc_pretty
+if [ -e $fpretty ]; then
+    source $fpretty            
+    set_tab
+    print_ribbon
+fi
 
 # Aliases
 alias close='source ${HOME}/.bash_logout;killall -9 -v -u $USER$USERNAME; exit'
@@ -67,50 +66,50 @@ alias du1='duf --max-depth=1'
 alias du2='duf --max-depth=2'
 function duf {
     du -k "$@" | sort -n |
-	while read size fname; do
-     	    for unit in k M G T P E Z Y
-	    do
-		if [ $size -lt 1024 ]; then
-		    echo -e "${size}${unit}B${fname}";
-		    break;
-		fi;
-		size=$((size/1024));
-	    done
-	done
+	      while read size fname; do
+     	      for unit in k M G T P E Z Y
+	          do
+		            if [ $size -lt 1024 ]; then
+		                echo -e "${size}${unit}B${fname}";
+		                break;
+		            fi;
+		            size=$((size/1024));
+	          done
+	      done
 }
 
 function gitl {
     # alias gitl='git log --follow'
     if [ $# -ne 1 ]; then
-	git log
+	      git log
     else
-	(git log --follow $@ >/dev/null) && git log --follow $@ || git log $@
+	      (git log --follow $@ >/dev/null) && git log --follow $@ || git log $@
     fi
 }
 
 # print number of files in the current directory, or specify a directory with an optional argument
 function nf {
     if [ $# -eq 0 ]; then
-	dir_list=$PWD
+	      dir_list=$PWD
     else
-	dir_list="$@"
+	      dir_list="$@"
     fi
     for dir in $dir_list
     do
-	dir=${dir%/}
-	n1=$(find "${dir}" -maxdepth 1 -type f | wc -l)
+	      dir=${dir%/}
+	      n1=$(find "${dir}" -maxdepth 1 -type f | wc -l)
 
-	# calculate length of longest number
-	n2=$(find "${dir}" -type f | wc -l)
-	nn=$(echo "(l($n2)/l(10))+1" | bc -l | sed 's/\..*$//')
-	# account for commas
-	nc=$((($nn-1)/3))
-	np=$(($nn + $nc))
+	      # calculate length of longest number
+	      n2=$(find "${dir}" -type f | wc -l)
+	      nn=$(echo "(l($n2)/l(10))+1" | bc -l | sed 's/\..*$//')
+	      # account for commas
+	      nc=$((($nn-1)/3))
+	      np=$(($nn + $nc))
 
-	# print results
-	printf "%'${np}d files found in ${dir}\n" $n1
-	if [ $n1 -ne $n2 ]; then
-	    printf "%'${np}d files found in ${dir}/*\n" $n2
-	fi
+	      # print results
+	      printf "%'${np}d files found in ${dir}\n" $n1
+	      if [ $n1 -ne $n2 ]; then
+	          printf "%'${np}d files found in ${dir}/*\n" $n2
+	      fi
     done
 }

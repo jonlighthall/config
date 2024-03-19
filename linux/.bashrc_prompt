@@ -7,12 +7,12 @@ if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
     if $VB; then
-	      # set tab
-	      TAB+=${TAB+${fTAB:='   '}}
 	      # load formatting
 	      fpretty=${HOME}/config/.bashrc_pretty
 	      if [ -e $fpretty ]; then
 	          source $fpretty
+            set_tab
+            print_ribbon
 	      fi
 	      # print source name at start
 	      if (return 0 2>/dev/null); then
@@ -20,11 +20,7 @@ else
 	      else
 	          RUN_TYPE="executing"
 	      fi
-	      echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
-	      src_name=$(readlink -f $BASH_SOURCE)
-	      if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-	          echo -e "${TAB}${VALID}link${RESET} -> $src_name"
-	      fi
+        print_source
     fi
 fi
 

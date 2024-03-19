@@ -6,24 +6,37 @@ declare -i DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
 function get_source() {
     # set local debug value
     local -i DEBUG=${DEBUG:-0} # substitute default value if DEBUG is unset or null
+
+    local -i FUNC_LEV
+    #echo "calling function is ${FUNCNAME[1]}"
+    if [[ "${FUNCNAME[1]}" =~ "print"* ]]; then
+        FUNC_LEV=2
+    else
+        FUNC_LEV=1
+    fi   
     
     # get canonical source name
-    src_name=$(readlink -f ${BASH_SOURCE[1]})
+    src_name=$(readlink -f ${BASH_SOURCE[${FUNC_LEV}]})
     # get short source name
     src_base=$(basename "${src_name}")
     # get source path
     ##physical (canonical)
-    export src_dir_phys=$(dirname "$src_name")
+    src_dir_phys=$(dirname "$src_name")
     ## logical (links)
-    src_dir_logi=$(dirname "${BASH_SOURCE[1]}")
+    src_dir_logi=$(dirname "${BASH_SOURCE[${FUNC_LEV}]}")
 }
 
 function print_source() {
     RUN_TYPE=${RUN_TYPE:-"running"}
 
+    
+    
+
     local -i ln=${#RUN_TYPE}
     local -i sp=$(($ln - 7))
-    local spx=$(echo -ne "\E[${sp}C")    
+    local spx=$(echo -ne "\E[${sp}C")
+
+    get_source
     
     # print run type and source name
     vecho -e "${TAB}${RUN_TYPE} ${PSDIR}${BASH_SOURCE[1]}${RESET}..."
@@ -38,6 +51,30 @@ function print_source() {
         ## physical
         vecho -e "${TAB}${spx}${gray}phys -> $src_dir_phys${RESET}"
     fi
+}
+
+function print_ribbon() {
+    get_source
+    # get the lenght of the execution stack
+    local -i N_BASH=${#BASH_SOURCE[@]}
+    # since this is a function, reduce N_BASH by one
+    ((N_BASH--))
+    # print source
+    decho -e "${TAB}\x1b[7;38;5;132m${N_BASH}: ${src_base} :${N_BASH}\x1b[0m"
+}
+
+function print_bar() {
+    get_source
+    # get the lenght of the execution stack
+    local -i N_BASH=${#BASH_SOURCE[@]}
+    # since this is a function, reduce N_BASH by one
+    ((N_BASH--))
+    # define message
+    msg=$(echo "this file is ${src_base}!")
+    # define line
+    ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
+    # print source
+    decho -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
 }
 
 get_source
@@ -63,13 +100,6 @@ do
     fi
 done
 
-decho "DEBUG = $DEBUG"
-
-#set tab
-set_tab
-# print source
-decho -e "${TAB}\x1b[7;38;5;132m${N_BASH}: this is ${src_base}\x1b[0m"
-
 # determine if script is being sourced or executed and add conditional behavior
 if (return 0 2>/dev/null); then
     :
@@ -80,20 +110,21 @@ fi
 
 # check if running interactively
 if [[ "$-" == *i* ]]; then
-    msg=$(echo "this file is ${src_base}!")
-    ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
-    decho -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
-
-    # determine if script is being sourced or executed
-    if (return 0 2>/dev/null); then
-        RUN_TYPE="sourcing"
-    else
-        RUN_TYPE="executing"
-    fi
-    print_source
+    #set tab
+    set_tab
+    decho "${TAB}DEBUG = $DEBUG"
+    print_ribbon
 
     # add read-only variable to check if this file has already been loaded
     if [ -z ${FPRETTY_LOADED+dummy} ]; then
+        # determine if script is being sourced or executed
+        if (return 0 2>/dev/null); then
+            RUN_TYPE="sourcing"
+        else
+            RUN_TYPE="executing"
+        fi
+        print_source
+        
         declare -grx FPRETTY_LOADED=true
     else
         decho -e "${TAB}${BASH_SOURCE[0]##*/} already loaded${RESET}"

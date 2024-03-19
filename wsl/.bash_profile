@@ -1,11 +1,6 @@
 # User-dependent .bash_profile for WSL
 # Note: this file must use Unix line endings (LF)!
 
-echo -e "\x1b[7;38;5;132m${#BASH_SOURCE[@]}\x1b[0m"
-msg=$(echo "this file is $(readlink -f ${BASH_SOURCE[0]##*/})!")
-ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
-echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
-
 # If not running interactively, don't do anything
 if [[ "$-" != *i* ]]; then
     echo -e "${TAB}\E[7mnot interactive\e[0m"
@@ -28,26 +23,23 @@ if $VB; then
     # load formatting
     fpretty=${HOME}/config/.bashrc_pretty
     if [ -e $fpretty ]; then
-        if [ -z ${FPRETTY_LOADED+dummy} ]; then
-            source $fpretty
-            set_tab
-            set -e            
-        fi
+        source $fpretty
+        set -e
+        set_tab
+        print_ribbon
     else
         set +eu
-    fi
+    fi    
+
     # determine if being sourced or executed
     if (return 0 2>/dev/null); then
         RUN_TYPE="sourcing"
     else
         RUN_TYPE="executing"
-    fi
-    get_source
-    print_source
+    fi    
+    print_source    
     echo "${TAB}verbose bash printing is... $VB"
 fi
-
-
 
 # system dependencies
 SYS_NAME=wsl
@@ -77,11 +69,11 @@ else
     fi
 fi
 
-
-
 # source the user's .bashrc if it exists
 fname=${HOME}/config/${SYS_NAME}/.bashrc
-vecho -e "${TAB}\x1b[7mloading $fname... \x1b[m"
+vecho -n "${TAB}"
+decho -en "\x1b[7m"
+vecho -e "loading $fname... ${RESET}"
 if [ -f $fname ]; then
     source $fname
     RETVAL=$?

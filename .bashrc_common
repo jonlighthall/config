@@ -6,13 +6,6 @@
 #
 # Note: this file must use UNIX line endings (LF)!
 
-# set tab
-TAB+=${TAB+${fTAB:='   '}}
-
-msg=$(echo "this file is $(readlink -f ${BASH_SOURCE[0]##*/})!")
-ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
-echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
-
 if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
@@ -20,9 +13,9 @@ else
         # load formatting
         fpretty=${HOME}/config/.bashrc_pretty
         if [ -e $fpretty ]; then
-            if [ -z ${FPRETTY_LOADED+dummy} ]; then
-                source $fpretty
-            fi
+            source $fpretty            
+            set_tab
+            print_ribbon
         fi
         # print source name at start
         if (return 0 2>/dev/null); then
@@ -30,11 +23,7 @@ else
         else
             RUN_TYPE="executing"
         fi
-        echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
-        src_name=$(readlink -f $BASH_SOURCE)
-        if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-            echo -e "${TAB}${VALID}link${RESET} -> $src_name"
-        fi
+        print_source
     fi
 fi
 

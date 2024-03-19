@@ -17,11 +17,14 @@ else
     set +eu
 fi
 
-echo -e "${TAB}\x1b[7;33mstart\x1b[m"
+
+print_ribbon
+
+#decho -e "${TAB}\x1b[7;33mstart\x1b[m"
 
 msg=$(echo "this file is $(readlink -f ${BASH_SOURCE[0]##*/})!")
 ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
-echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
+#decho -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
 
 # since ~/.bashrc usually calls ~/.bash_aliases, a conditional could be added in .bash_aliases
 # (linked to repo) and have all the functionality of this script, but for subshells.
@@ -176,4 +179,4 @@ fi
 if [ ! -z ${oldFILE+dummy} ]; then
     FILE=$oldFILE
 fi
-echo -e "${TAB}\x1b[7;32mdone\x1b[m"
+decho -e "${TAB}\x1b[7;32mdone\x1b[m"
