@@ -83,9 +83,6 @@ dtab
 link_dir=$HOME
 check_link_dir $link_dir
 
-echo -n "${TAB}hello"
-exit 0
-
 bar 38 "---- Start Linking External Files ----" | sed "s/^/${TAB}/"
 
 # list of files to be linked
@@ -125,7 +122,7 @@ do_link "${home_dir}" "${HOME}/home"
 
 # define matlab
 echo -n "${TAB}matlab: "
-do_link ${onedrive_docs}/MATLAB/ ${HOME}/matlab
+do_link "${onedrive_docs}/MATLAB/" "${HOME}/matlab"
 
 bar 38 "- Done Linking External Directories --" | sed "s/^/${TAB}/"
 #       12345678901234567890123456789012345678
