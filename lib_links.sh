@@ -391,17 +391,13 @@ function do_link_exe() {
 
 
 function do_make_dir() {
-    #2 METHOD
-    #3  check if target directory exists
-    #4   + return
-    #5   - make the directory
-    #6
-    #7 DEPENDENCIES
-    #8   check_target
-
-    
-    print_invo
-    echo $LINENO
+    # METHOD
+    #  check if target directory exists
+    #   + return
+    #   - make the directory
+    #
+    # DEPENDENCIES
+    #   check_target
     
     check_arg1 $@
     
