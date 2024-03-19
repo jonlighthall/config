@@ -1,4 +1,4 @@
-# this is functions only; it should be a library file
+#!/bin/bash -u
 
 # .bash_links - functions for making links in bash shell
 #
@@ -61,7 +61,7 @@ function check_target() {
     [ -d "${target}" ] && type="directory "
 
     if [[ "${target_canon}" == ${HOME} ]]; then
-        echo -e "target ${yellow}$1${RESET} is ${red}HOME${RESET}"
+        echo -e "target ${YELLOW}$1${RESET} is ${RED}HOME${RESET}"
     fi    
     
     # check if target exists
@@ -107,7 +107,7 @@ function check_link_dir() {
     echo -en "link ${type}${YELLOW}${link}${RESET}... "
     if [ -e "${link_canon}" ]; then
         echo -e "${GOOD}exists${RESET}"
-        itab
+        dtab
         return 0
     else
         echo -e "${BAD}does not exist"
