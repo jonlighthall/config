@@ -37,13 +37,6 @@ function check_arg2() {
 }
 
 function check_target() {
-    # print invocoking source or function
-    decho "${TAB}BASH_SOURCE=${BASH_SOURCE[@]}"
-    decho "${TAB}FUNCNAME=${FUNCNAME[@]}"
-    if [ ${#FUNCNAME[@]} -gt 1 ]; then
-        decho "${TAB}FUNCNAME[1]=${FUNCNAME[1]}"
-    fi
-
     check_arg1 $@
 
     # define target (source)
@@ -125,13 +118,7 @@ function do_link() {
     # CALLED BY
     #   do_link_exe
 
-    # print invocoking source or function
-    decho "${TAB}BASH_SOURCE=${BASH_SOURCE[@]}"
-    decho "${TAB}FUNCNAME=${FUNCNAME[@]}"
-    if [ ${#FUNCNAME[@]} -gt 1 ]; then
-        decho "${TAB}FUNCNAME[1]=${FUNCNAME[1]}"
-    fi
-
+    # check arguments
     check_arg2 $@
 
     # define target (source)
@@ -324,13 +311,6 @@ function do_link_exe() {
     #   PERM check the target is executable
     #   LINK pass arguments to do_link
     
-    # print invocoking source or function
-    decho "${TAB}BASH_SOURCE=${BASH_SOURCE[@]}"
-    decho "${TAB}FUNCNAME=${FUNCNAME[@]}"
-    if [ ${#FUNCNAME[@]} -gt 1 ]; then
-        decho "${TAB}FUNCNAME[1]=${FUNCNAME[1]}"
-    fi
-
     check_arg2 $@
     
     # define target (source)
@@ -371,22 +351,20 @@ function do_link_exe() {
     return 0
 }
 
+
 function do_make_dir() {
-    # METHOD
-    #   check if target directory exists
-    #     + return
-    #     - make the directory
-    #
-    # DEPENDENCIES
-    #   check_target
+    #2 METHOD
+    #3  check if target directory exists
+    #4   + return
+    #5   - make the directory
+    #6
+    #7 DEPENDENCIES
+    #8   check_target
 
-    # print invocoking source or function
-    decho "${TAB}BASH_SOURCE=${BASH_SOURCE[@]}"
-    decho "${TAB}FUNCNAME=${FUNCNAME[@]}"
-    if [ ${#FUNCNAME[@]} -gt 1 ]; then
-        decho "${TAB}FUNCNAME[1]=${FUNCNAME[1]}"
-    fi
-
+    
+    print_invo
+    echo $LINENO
+    
     check_arg1 $@
     
     # define target (source)
@@ -395,7 +373,7 @@ function do_make_dir() {
     check_target "$target" || {
         itab 2
         mkdir -pv ${target} &> >(sed "s/^/${TAB}/")
-        dtab
+        dtab 2
     }
     return $?
 }
@@ -408,13 +386,6 @@ function do_make_link() {
     #   check_target
     #   do_link
     #   do_make_dir    
-
-    # print invocoking source or function
-    decho "${TAB}BASH_SOURCE=${BASH_SOURCE[@]}"
-    decho "${TAB}FUNCNAME=${FUNCNAME[@]}"
-    if [ ${#FUNCNAME[@]} -gt 1 ]; then
-        decho "${TAB}FUNCNAME[1]=${FUNCNAME[1]}"
-    fi
 
     check_arg2 $@
     
