@@ -1,6 +1,10 @@
 #!/bin/bash -u
 
-echo -e "\x1b[7;38;5;132m${#BASH_SOURCE[@]}\x1b[0m"
+N_BASH=${#BASH_SOURCE[@]}
+N_TAB=$(($N_BASH-1))
+fTAB=${fTAB='   '}
+TAB=$(for ((i = 1; i <= ${N_TAB}; i++)); do echo -n "${fTAB}"; done)
+echo -e "${TAB}\x1b[7;38;5;132m${N_BASH}\x1b[0m"
 
 # get canonical source name
 src_name=$(readlink -f ${BASH_SOURCE[0]})
@@ -11,56 +15,72 @@ src_dir_phys=$(dirname "$src_name")
 ## logical (links)
 src_dir_logi=$(dirname "$BASH_SOURCE")
 
-# determine if script is being sourced or executed and add conditional behavior
-if (return 0 2>/dev/null); then
-    RUN_TYPE="sourcing"
-else
-    RUN_TYPE="executing"
-    # exit on errors
-    set -e
-fi
-
-# check if running interactively
-if [[ "$-" == *i* ]]; then
-    # print run type and source name
-    echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
-    if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-        echo -e "${TAB}${VALID}link${RESET} -> $src_name"
-    fi
-    # print source path
-    ## physical
-    echo -e "${TAB}${gray}phys -> $src_dir_phys${RESET}"
-    ## logical
-    echo -e "${TAB}${gray}logi -> $src_dir_logi${RESET}"
-fi
+set +e
 
 # load bash utils
-for util in lib_colors.sh lib_cond_echo.sh lib_fmt.sh lib_links.sh lib_tabs.sh lib_traps.sh; do
+for util in lib_links.sh \
+                lib_colors.sh \
+                lib_cond_echo.sh \
+                lib_tabs.sh \
+                lib_fmt.sh \
+                lib_traps.sh
+do
     # use the canonical (physical) source directory for reference; this is important if sourcing
     # this file directly from shell
     fname="${src_dir_phys}/${util}"
     if [ -e "${fname}" ]; then
+        echo "${TAB}loading $(basename ${fname})"
         source ${fname}
     else
         echo "${fname} not found"
     fi
 done
 
-# set debug level
-declare -i DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
-decho "DEBUG = $DEBUG"
+#set tab
+rtab
+itab $(( ${#BASH_SOURCE[@]} - 1 ))
 
-# If not running interactively, reduce prints
+# determine if script is being sourced or executed and add conditional behavior
+if (return 0 2>/dev/null); then
+    :
+else
+    # exit on errors
+    set -e
+fi
+
+# check if running interactively
 if [[ "$-" == *i* ]]; then
-    itab
     msg=$(echo "this file is ${src_name##*/}!")
     ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
     echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
+
+    # determine if script is being sourced or executed
+    if (return 0 2>/dev/null); then
+        RUN_TYPE="sourcing"
+    else
+        RUN_TYPE="executing"
+    fi
+    
+    # print run type and source name
+    echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
+    if [ ! "$BASH_SOURCE" = "$src_name" ]; then
+        echo -e "${TAB}${VALID}link${RESET} -> $src_name"
+    fi
+
+    # print source path
+    ## physical
+    echo -e "${TAB}${gray}phys -> $src_dir_phys${RESET}"
+    ## logical
+    echo -e "${TAB}${gray}logi -> $src_dir_logi${RESET}"
+
     # add read-only variable to check if this file has already been loaded
     if [ -z ${FPRETTY_LOADED+dummy} ]; then
         declare -grx FPRETTY_LOADED=true
     else
-        echo -e "${TAB}${yellow}${BASH_SOURCE[0]##*/} already loaded${RESET}"
-    fi
-    dtab
+        echo -e "${TAB}${YELLOW}${BASH_SOURCE[0]##*/} already loaded${RESET}"
+    fi    
 fi
+
+# set debug level
+declare -i DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
+decho "DEBUG = $DEBUG"
