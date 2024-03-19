@@ -1,24 +1,30 @@
+#!/bin/bash -eu
+
 # ${HOME}/config/wsl/.bashrc
 #
 # Interactive shell settings for Linux Subsystem for Windows
 #
 # Note: this file must use unix line endings (LF)!
+
+# load bash utilities
+fpretty=${HOME}/config/.bashrc_pretty
+if [ -e $fpretty ]; then
+	  source $fpretty
+    set_tab
+	  set -e
+	  set_traps
+else
+    set +eu
+fi
+
 echo -e "${TAB}\x1b[7;33mstart\x1b[m"
 
-TAB+=${TAB+${fTAB:='   '}}
 msg=$(echo "this file is $(readlink -f ${BASH_SOURCE[0]##*/})!")
 ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
 echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
 
 # since ~/.bashrc usually calls ~/.bash_aliases, a conditional could be added in .bash_aliases
 # (linked to repo) and have all the functionality of this script, but for subshells.
-
-fpretty=${HOME}/config/.bashrc_pretty
-if [ -e $fpretty ]; then
-	  source $fpretty
-	  set_traps
-	  set -e
-fi
 
 if [ -f ${HOME}/.bashrc ]; then
     run_home=true
@@ -33,13 +39,8 @@ if (return 0 2>/dev/null); then
 else
     RUN_TYPE="executing"
 fi
-
-# print source name at start
-echo -e "${TAB}${RUN_TYPE} \E[0;33m$BASH_SOURCE\e[0m..."
-src_name=$(readlink -f $BASH_SOURCE)
-if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-    echo -e "${TAB}\E[1;36mlink\e[0m -> $src_name"
-fi
+get_source
+print_source
 
 # get length of stack
 N=${#BASH_SOURCE[@]}
@@ -49,46 +50,53 @@ for ((i = 0; i < $N; i++)); do
     BASH_LINK[$i]=$(readlink -f ${BASH_SOURCE[$i]})
 done
 
-echo "${TAB}check invoking scripts:"
+decho "${TAB}check invoking scripts:"
+itab
 for ((i = 1; i <= $N; i++)); do
-	  vecho "${TAB}${fTAB}$((i - 1)): ${BASH_SOURCE[$((i - 1))]}... "
+	  decho "${TAB}$((i - 1)): ${BASH_SOURCE[$((i - 1))]}... "
 	  fref=$(readlink -f ${HOME}/.bashrc)
 	  itab
 	  if [[ "${BASH_LINK[$((i - 1))]}" == "${fref}" ]]; then
-		    echo -e "${TAB}${fTAB}\e[31mBREAK\e[0m ${BASH_SOURCE[$((i - 2))]##*/} is ${fref}"
-		    vecho -ne "${TAB}${fTAB}\E[0;35minvoked by ${BASH_LINK[$((i - 1))]}\e[0m: "
-		    vecho "excluding ${fref##*/} from file list"
+		    decho -ne "${TAB}\E[0;35minvoked by ${BASH_LINK[$((i - 1))]}\e[0m: "
+		    decho "excluding ${fref##*/} from file list"
 		    run_home=false
+		    decho -e "${TAB}\e[31mBREAK\e[0m ${BASH_SOURCE[$((i - 2))]##*/} is ${fref}"
+        dtab 
 		    break
 	  else
-		    echo -e "${TAB}${fTAB}\e[32mOK\e[0m - not ${fref}"
+		    decho -e "${TAB}\e[32mOK\e[0m - not ${fref}"        
 	  fi
 
 	  dref=${HOME}/config/
 	  if [[ "${BASH_SOURCE[$((i - 1))]}" == "${dref}"* ]]; then
-		    echo -e "${TAB}\e[33mCHECK\e[0m - is within ${dref}"
-		    vecho -en "${TAB}\x1b[35minvoked by ${BASH_SOURCE[$((i - 1))]}\x1b[0m: "
-		    echo -e "wrong!"
-		    vecho -ne "${TAB}\E[0;36minvoked by ${BASH_SOURCE[$i]}\e[0m: "
+		    decho -e "${TAB}\e[33mCHECK\e[0m - is within ${dref}"
+        itab
+		    decho -en "${TAB}\x1b[35minvoked by ${BASH_SOURCE[$((i - 1))]}\x1b[0m: "
+		    decho -e "wrong!"
+		    decho -ne "${TAB}\E[0;36minvoked by ${BASH_SOURCE[$i]}\e[0m: "
 		    check_link=${HOME}/.bash_aliases
 		    if [ -L ${check_link} ]; then
 			      run_list=false
-			      vecho "not running list..."
-			      echo -e "${TAB}${fTAB}\e[31mBREAK\e[0m ${check_link} is link"
+			      decho "not running list..."
+			      decho -e "${TAB}\e[31mBREAK\e[0m ${check_link} is link"
+            dtab 2
 			      break
 		    else
-			      echo -e "\e[32mOK\e[0m - ${check_link} not link*"
-			      vecho "continuing..."
+			      dcho -e "\e[32mOK\e[0m - ${check_link} not link*"
+			      decho "continuing..."
 		    fi
+        dtab
 	  else
-		    echo -e "${TAB}${fTAB}\e[32mOK\e[0m - not in ${dref}*"
+        dtab
+		    decho -e "${TAB}${fTAB}\e[32mOK\e[0m - not in ${dref}*"
+        itab
 	  fi
     dtab
 done
 dtab
 
-vecho "${TAB}run_list = $run_list" | sed 's/true/\x1b[32m&\x1b[m/;s/false/\x1b[31m&\x1b[m/'
-vecho "${TAB}run_home = $run_home" | sed 's/true/\x1b[32m&\x1b[m/;s/false/\x1b[31m&\x1b[m/'
+decho "${TAB}run_list = $run_list" | sed 's/true/\x1b[32m&\x1b[m/;s/false/\x1b[31m&\x1b[m/'
+decho "${TAB}run_home = $run_home" | sed 's/true/\x1b[32m&\x1b[m/;s/false/\x1b[31m&\x1b[m/'
 
 set +e
 unset_traps
