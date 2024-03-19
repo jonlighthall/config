@@ -78,22 +78,10 @@ for dir in "${dir_list[@]}"; do
 done
 dtab
 
-echo "${TAB}create links..."
 # set link directory
 link_dir=$HOME
-echo -n "${TAB}link directory ${link_dir}... "
-if [ -d "$link_dir" ]; then
-    echo -e "${GOOD}exists${RESET}"
-else
-    echo -e "${yellow}does not exist${RESET}"
-    mkdir -pv "$link_dir"
-    if [ $link_dir = $HOME ]; then
-        echo -e "${BAD}this should never be true! $link_dir is HOME${RESET}"
-        exit 1
-    else
-        echo "$link_dir != $HOME"
-    fi
-fi
+check_link_dir $link_dir
+
 
 bar 38 "---- Start Linking External Files ----" | sed "s/^/${TAB}/"
 
