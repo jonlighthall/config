@@ -55,6 +55,8 @@ if $VB; then
     echo "${TAB}verbose bash printing is... $VB"
 fi
 
+
+
 # system dependencies
 SYS_NAME=wsl
 HOST_NAME=$(hostname -s)
@@ -83,9 +85,11 @@ else
     fi
 fi
 
+
+
 # source the user's .bashrc if it exists
 fname=${HOME}/config/${SYS_NAME}/.bashrc
-vecho -e "\x1b[7m${TAB}loading $fname... \x1b[m"
+vecho -e "${TAB}\x1b[7mloading $fname... \x1b[m"
 if [ -f $fname ]; then
     source $fname
     RETVAL=$?
