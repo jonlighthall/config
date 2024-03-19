@@ -65,7 +65,7 @@ function check_target() {
     fi    
     
     # check if target exists
-    echo -en "target ${type}${yellow}$1${RESET}... "
+    echo -en "target ${type}${YELLOW}${target}${RESET}... "
     if [ -e "${target_canon}" ]; then
         echo -e "${GOOD}exists${RESET}"
         itab
@@ -73,12 +73,48 @@ function check_target() {
     else
         echo -e "${BAD}does not exist${RESET}"
         dtab
-        if [[ "${target_canon}" == ${HOME} ]]; then
-            echo -e "target ${yellow}$1${RESET} is ${red}HOME${RESET}"
-            exit 1
-        else 
-            return 1
-        fi
+        return 1
+    fi
+}
+
+# This function is used to check destination link directories that must exist like ${HOME} or
+# /etc. If the directory does not exist, exit with error.
+function check_link_dir() {
+    check_arg1 $@
+
+    # define link (destination)
+    local link="$1"
+    local link_canon=$(readlink -f "${link}")
+
+    # get the cursor position
+    echo -en "\E[6n"
+    read -sdR CURPOS
+    local CURPOS=${CURPOS#*[}
+          #}# dummy bracket for emacs indenting
+    # get the x-position of the cursor
+    local -i x_pos=${CURPOS#*;}
+    #echo "${TAB}x_pos=${x_pos}"
+    if [ ${x_pos} -eq 1 ]; then
+        echo -n "${TAB}"
+    fi
+
+    # determine 
+    [ -L "${link}" ] && type="link "
+    [ -f "${link}" ] && type="file "
+    [ -d "${link}" ] && type="directory "
+    
+    # check if link exists
+    echo -en "link ${type}${YELLOW}${link}${RESET}... "
+    if [ -e "${link_canon}" ]; then
+        echo -e "${GOOD}exists${RESET}"
+        itab
+        return 0
+    else
+        echo -e "${BAD}does not exist"
+        echo -e "this should never be true${RESET}"
+        echo -e "link ${YELLOW}$1${RESET} is ${RED}HOME${NORMAL}"
+        dtab        
+        exit 1
     fi
 }
 
