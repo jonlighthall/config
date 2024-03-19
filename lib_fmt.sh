@@ -26,14 +26,6 @@ function get_curpos() {
 	  # print the cursor position
 	  fecho -e "cursor position: x=$x_pos y=$y_pos"
 
-    fecho -n "x-position is $x_pos: "
-    if [ ${x_pos} -gt 1 ]; then
-        fecho -n "new line"
-        printf '\n'
-    else
-        fecho "stay here"
-    fi
-
     fecho "number of args: $#"
     
     # output values to parent   
