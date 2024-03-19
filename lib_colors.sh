@@ -219,7 +219,7 @@ function print_dcolors() {
 #--------------------------------------
 function set_dbg2idx() {
     # turn in-function debugging on/off
-    local funcDEBUG
+    local funcDEBUG=0
 
     # get length of array
     N_cols=${#dcolor[@]}
@@ -253,27 +253,34 @@ function set_dbg2idx() {
 #   start
 #--------------------------------------    
 function dbg2idx() {
-    if [ $# -lt 1 ]; then
-        >&2 echo "$FUNCNAME: input required"
-        return 0
+    if [ $# -lt 2 ]; then
+        (
+            echo -e "${DIM}$FUNCNAME${NORMAL}: 2 inputs required"
+            echo -e "${DIM}$FUNCNAME${NORMAL}: $# inputs received"
+            echo -e "${DIM}$FUNCNAME${NORMAL}: Please provide an input value and and ouput variable as:"
+            echo -e "${DIM}$FUNCNAME${NORMAL}: ${FUNCNAME} INDEX VARIABLE"
+        ) >&2
+        return 1
     fi
 
     # turn in-function debugging on/off
     local -i funcDEBUG=${funcDEBUG:-0} # inherit value or substitution default
+    local funcDEBUG=0
     
     # get input DEBUG value
-    local -i dbg_in=$1
+    local -ir dbg_in=$1
     fecho "dbg_in = $dbg_in"
 
-    local -ir fdbg=$funcDEBUG
-    funcDEBUG=0
+    # get output variable
+    local -n var_out=$2
+    fecho "var_out = ${!var_out}"
+    
     local -i N_cols
     local -i N_max
     local -i start
     local -i direction
 
     set_dbg2idx
-    funcDEBUG=$fdbg
     
     # since DEBUG=0 does not print and DEBUG=1 corresponds to starting color, or array index 0,
     # decrement input value
@@ -300,8 +307,7 @@ function print_fcolors() {
         # loop over valid non-zero values of debug
         for ((i=1;i<=$N_cols;i++));do
             #define array index
-            unset idx
-            dbg2idx $i
+            dbg2idx $i idx
             # print indices
             printf '%2d:%2d:' $i $idx
             # print color

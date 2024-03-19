@@ -72,68 +72,27 @@ function fecho() {
 #  ddecho - level 2: explicitly print values
 # dddecho - level 3: why...?
 # and so on
-function xecho() {
-    # check for null or empty arguments ...to skip coloring?
-    if false; then
-        if [ $# -eq 0 ] ; then
-            echo "no args"
-        else
-            echo "number of args: $#"
-        fi
-        
-        if [[ -z "$@" ]]; then
-            echo "empty"
-        else
-            echo "args: $@"
-        fi
-    fi
-    
-    # Turn in-function debugging on/off.
-    local -i funcDEBUG
-    # Inherit the value of funcDEBUG from shell or substitute default value if unset or NULL.
-    funcDEBUG=${funcDEBUG:-0}    
-
-    # Use the value of DEBUG as default. If DEBUG is unset or NULL, substitue default value
-    #funcDEBUG=${funcDEBUG:-${DEBUG:-0}}    
-
-    # manual setting
-    funcDEBUG=${funcDEBUG+0}
-#    funcDEBUG=0
-
-    # use function name to specify debug threshold
-    local fu=${FUNCNAME[1]}
-    fecho "FUNCNAME = $fu"
-    local pre=${fu%echo}
-    fecho "prefix = $pre"
-    local -ir PREFIX_LENGTH=${#pre}
-    fecho "length = $PREFIX_LENGTH"
-    local -ir thr=$(( PREFIX_LENGTH - 1 ))
-    fecho "threshold = $thr"
-    fecho "DEBUG = $DEBUG"
-    fecho -e "args = \e[7m$@\e[m"
+function xecho() {     
+    # use parent function name to specify debug threshold
+    local -r PARENT_FUNC=${FUNCNAME[1]}
+    # strip "echo" from parent function name
+    local -r PREFIX=${PARENT_FUNC%echo}
+    # get length of prefix
+    local -ir PREFIX_LENGTH=${#PREFIX}
+    # set print threshold
+    local -ir THRESHOLD=$(( PREFIX_LENGTH - 1 ))
 
     # if DEBUG is (unset or null) or greater than threshold
-    if [ -z ${DEBUG:+dummy} ] || [ $DEBUG -gt $thr ]; then
+    if [ -z ${DEBUG:+dummy} ] || [ $DEBUG -gt $THRESHOLD ]; then
         # get color index
         local -i idx
-        fecho "loading color index $PREFIX_LENGTH..."
-        dbg2idx $PREFIX_LENGTH
-        fecho "printing..."
+        dbg2idx $PREFIX_LENGTH idx
         # set color
-        echo -ne "${dcolor[$idx]}"
+        echo -ne "${dcolor[idx]}"
         # print message
         echo "$@"
         # unset color
         echo -ne "\e[0m"
-        if [ $funcDEBUG -gt 0 ]; then
-            echo -n ":"
-            start_new_line
-        else
-            echo -n
-        fi
-        
-    else
-        fecho -e "\e[1m${dcolor[0]}not printing\e[0m"
     fi
     return 0
 }
