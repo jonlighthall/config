@@ -80,14 +80,7 @@ target_dir="${config_dir}/${sys_name}"
 link_dir=$HOME
 
 # check directories
-echo -n "${TAB}target directory ${target_dir}... "
-if [ -d "$target_dir" ]; then
-    echo "exists"
-else
-    echo -e "${BAD}does not exist${RESET}"
-    exit 1
-fi
-
+check_target "${target_dir}"
 do_make_dir "$link_dir"
 
 bar 38 "------ Start Linking Repo Files ------" | sed "s/^/${TAB}/"
