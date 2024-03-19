@@ -264,7 +264,7 @@ function do_link() {
         if [[ "${target}" -ef "${link_name}" && "${target}" != *"_keys"* ]] || [[ "$(stat -c "%i" ${target})" == "$(stat -c "%i" ${link_name})" ]] ; then
             echo "already points to $(basename ${link_name})"
             echo -n "${TAB}"
-            if [ "$(stat -c "%i" ${target})" == "$(stat -c "%i" ${link_name})" ]; then
+            if [ "$(stat -c "%i" "${target}")" == "$(stat -c "%i" "${link_name}")" ]; then
                 echo -n "hardlink: "
             else
                 echo -n "symlink: "
