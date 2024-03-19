@@ -1,19 +1,20 @@
 #!/bin/bash -u
 
+# get canonical source name
+src_name=$(readlink -f ${BASH_SOURCE[0]})
+# get short source name
+src_base=$(basename "${src_name}")
+# get source path
+##physical (canonical)
+src_dir_phys=$(dirname "$src_name")
+## logical (links)
+src_dir_logi=$(dirname "$BASH_SOURCE")
+
 N_BASH=${#BASH_SOURCE[@]}
 N_TAB=$(($N_BASH-1))
 fTAB=${fTAB='   '}
 TAB=$(for ((i = 1; i <= ${N_TAB}; i++)); do echo -n "${fTAB}"; done)
-echo -e "${TAB}\x1b[7;38;5;132m${N_BASH}\x1b[0m"
-
-# get canonical source name
-src_name=$(readlink -f ${BASH_SOURCE[0]})
-
-# get source path
-## physical (canonical)
-src_dir_phys=$(dirname "$src_name")
-## logical (links)
-src_dir_logi=$(dirname "$BASH_SOURCE")
+echo -e "${TAB}\x1b[7;38;5;132m${N_BASH}: this is ${src_base}\x1b[0m"
 
 set +e
 
@@ -29,7 +30,9 @@ do
     # this file directly from shell
     fname="${src_dir_phys}/${util}"
     if [ -e "${fname}" ]; then
-        echo "${TAB}loading $(basename ${fname})"
+        if [[ "$-" == *i* ]]; then
+            echo "${TAB}loading $(basename ${fname})"
+        fi
         source ${fname}
     else
         echo "${fname} not found"
@@ -50,7 +53,7 @@ fi
 
 # check if running interactively
 if [[ "$-" == *i* ]]; then
-    msg=$(echo "this file is ${src_name##*/}!")
+    msg=$(echo "this file is ${src_base}!")
     ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
     echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
 
