@@ -277,7 +277,7 @@ function do_link() {
         else
             # next, check write permissions
             local link_dir=$(dirname "${link_name}")
-            if [ -w ${link_name} ] && [ -w ${link_dir} ]; then
+            if  [ -w ${link_dir} ] && ([ -w ${link_name} ] || [ ! -e ${link_name} ]); then
                 # then, delete or backup existing copy
 
                 # check file contents
@@ -291,29 +291,31 @@ function do_link() {
                         echo "will be backed up..."
                         local mdate=$(date -r "${link_name}" +'%Y-%m-%d-t%H%M')
                     else
-                        echo -n "is a broken link..."
+                        echo "is a broken link..."
                         local mdate=$(stat -c '%y' ${link_name} | sed 's/\(^[0-9-]*\) \([0-9:]*\)\..*$/\1-t\2/' | sed 's/://g')
                     fi
                     # backup/rename existing file
+                    echo -en "${TAB}"
                     local link_copy="${link_name}_${mdate}"
-                    mv -v "${link_name}" "${link_copy}" | sed "s/^/${TAB}/"
+                    mv -v "${link_name}" "${link_copy}"
                 fi
             else
                 # issue warning
-                echo -n "${TAB}${BAD}cannot be written to"
+                echo -en "${BAD}cannot be written to"
                 if [ "$EUID" -ne 0 ]; then
-                    echo -e "${TAB}${GRH}This command must be run as root!${RESET}"
+                    echo -e "\n${TAB}${BAD}This command must be run as root!${RESET}"
                 fi
                 dtab 2
                 return 1
             fi
-            dtab 2
+            #dtab 2
         fi
         dtab
     else
         echo "does not exist"
     fi
     # finally, link target to link_name
+    itab
     echo -en "${TAB}${GRH}"
     hline 72
     echo "${TAB}making link... "
@@ -328,7 +330,7 @@ function do_link() {
     echo -ne "${TAB}"
     hline 72
     echo -en "${RESET}"
-    dtab
+    dtab 2
     return 0
 }
 
