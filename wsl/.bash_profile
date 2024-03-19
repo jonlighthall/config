@@ -10,7 +10,6 @@ echo -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
 if [[ "$-" != *i* ]]; then
     echo -e "${TAB}\E[7mnot interactive\e[0m"
     echo "${TAB}exiting ${BASH_SOURCE##*/}..."
-    return
 else
     echo -n "${TAB}${BASH_SOURCE##*/}... "
 fi
@@ -26,19 +25,16 @@ clear -x
 # Verbose bash prints?
 export VB=true
 if $VB; then
-    # set tab
-    if [ "${called_by}" = "bash" ] || [ "${called_by}" = "SessionLeader" ] || [[ "${called_by}" == "Relay"* ]]; then
-        TAB=''
-        : ${fTAB:='   '}
-    else
-        TAB+=${TAB+${fTAB:='   '}}
-    fi
     # load formatting
     fpretty=${HOME}/config/.bashrc_pretty
     if [ -e $fpretty ]; then
         if [ -z ${FPRETTY_LOADED+dummy} ]; then
             source $fpretty
+            set_tab
+            set -e            
         fi
+    else
+        set +eu
     fi
     # determine if being sourced or executed
     if (return 0 2>/dev/null); then
@@ -46,12 +42,8 @@ if $VB; then
     else
         RUN_TYPE="executing"
     fi
-    # print source name at start
-    echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
-    src_name=$(readlink -f $BASH_SOURCE)
-    if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-        echo -e "${TAB}${VALID}link${RESET} -> $src_name"
-    fi
+    get_source
+    print_source
     echo "${TAB}verbose bash printing is... $VB"
 fi
 
@@ -104,7 +96,7 @@ fi
 vecho
 # print runtime duration
 if $VB; then
-    TAB=${TAB%$fTAB}
+    dtab
     print_done
 fi
 
@@ -113,3 +105,12 @@ clear -x
 
 # print welcome message
 echo "${TAB}Welcome to ${HOST_NAME}"
+
+# test formatting
+source ~/utils/bash/git/lib_git.sh
+start_dir=$PWD
+echo "${TAB}starting directory = ${start_dir}"
+cd config
+print_remotes
+# return to starting directory
+cd $start_dir
