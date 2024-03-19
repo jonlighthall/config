@@ -9,7 +9,8 @@ if [ -e "$fpretty" ]; then
     source "$fpretty"
     set_traps
     # set tab
-    itab
+    rtab
+    itab $(( ${#BASH_SOURCE[@]} - 1 ))
 fi
 
 # determine if script is being sourced or executed
@@ -82,6 +83,8 @@ dtab
 link_dir=$HOME
 check_link_dir $link_dir
 
+echo -n "${TAB}hello"
+exit 0
 
 bar 38 "---- Start Linking External Files ----" | sed "s/^/${TAB}/"
 
@@ -98,6 +101,7 @@ for my_link in .bash_history; do
     link=${link_dir}/${my_link}
     do_link "$target" "$link"
 done
+
 bar 38 "----- Done Linking External Files ----" | sed "s/^/${TAB}/"
 
 bar 38 "- Start Linking External Directories -" | sed "s/^/${TAB}/"
