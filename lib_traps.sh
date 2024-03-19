@@ -326,7 +326,7 @@ function print_stack2() {
     local -ga BASH_FNAME
     # strip directories
     for ((i = 0; i < $N_BASH; i++)); do
-   #     BASH_FNAME[$i]= ${BASH_SOURCE[$i]##*/}
+        #     BASH_FNAME[$i]= ${BASH_SOURCE[$i]##*/}
         BASH_FNAME[$i]=${BASH_SOURCE[$i]##*/}
     done
 
@@ -336,7 +336,7 @@ function print_stack2() {
     itab
     (
         for ((i = 0; i < $N_FUNC ; i++)); do
-        echo "$i:${FUNCNAME[i]}:${BASH_FNAME[i]}:${BASH_LINENO[i]}"
+            echo "$i:${FUNCNAME[i]}:${BASH_FNAME[i]}:${BASH_LINENO[i]}"
         done
     ) | column -t -s: -N "index,function,source,line no" -R1
     dtab
@@ -377,14 +377,12 @@ function print_invo() {
 
     (
         itab
-    for ((i = 0; i < (($N_FUNC + 1 )); i++)); do
-        echo -en "${TAB}$i\t"
-        caller $i
-    done
-    dtab
+        for ((i = 0; i < (($N_FUNC + 1 )); i++)); do
+            echo -en "${TAB}$i\t"
+            caller $i
+        done
+        dtab
     ) | column -t -s "\t" -N "index,line,subroutine,filename" -R1
-
-    
 
     local -i N_BOTTOM=$(($N_FUNC - 1))
     echo "N_BOTTOM = $N_BOTTOM"
@@ -397,7 +395,6 @@ function print_invo() {
         echo "bottom of stack is not main: ${FUNCNAME[$N_BOTTOM]}"
         echo "root invocation ${BASH_FNAME[$N_BOTTOM]} is a shell function"
     fi
-
 
     echo "${TAB}script invocations:"
     itab
@@ -412,14 +409,13 @@ function print_invo() {
     else
         echo "${FUNCNAME[0]} (defined in ${BASH_FNAME[0]}) called from $SHELL line ${BASH_LINENO[0]}"
     fi
-    
 
     itab
     for ((i = 0; i < $N_FUNC ; i++)); do
         echo "${TAB}$i: ${FUNCNAME[i]} defined in ${BASH_FNAME[i]} ${BASH_LINENO[i]}"
     done
     dtab
-echo $LINENO
+    echo $LINENO
     dtab
 }
 
