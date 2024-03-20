@@ -28,11 +28,16 @@ function get_source() {
 
 function print_source() {
     RUN_TYPE=${RUN_TYPE:-"running"}
-
     
-    
+    local -i N_BASH=${#BASH_SOURCE[@]}
+    # since this is a function, reduce N_BASH by one
+    ((N_BASH--))
 
-    local -i ln=${#RUN_TYPE}
+    RUN_TYPE="\x1b[7;38;5;132m${N_BASH}\x1b[0m${RUN_TYPE}"
+
+    local msgne=$(echo -e " $@ " | sed "s/$(echo -e "\E")[^m]*m//g")
+    
+    local -i ln=${#msgne}
     local -i sp=$(($ln - 7))
     local spx=$(echo -ne "\E[${sp}C")
 

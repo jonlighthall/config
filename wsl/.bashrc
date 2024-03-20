@@ -10,21 +10,13 @@
 fpretty=${HOME}/config/.bashrc_pretty
 if [ -e $fpretty ]; then
 	  source $fpretty
-    set_tab
+
 	  set -e
+    print_ribbon
 	  set_traps
 else
     set +eu
 fi
-
-
-print_ribbon
-
-#decho -e "${TAB}\x1b[7;33mstart\x1b[m"
-
-msg=$(echo "this file is $(readlink -f ${BASH_SOURCE[0]##*/})!")
-ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
-#decho -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
 
 # since ~/.bashrc usually calls ~/.bash_aliases, a conditional could be added in .bash_aliases
 # (linked to repo) and have all the functionality of this script, but for subshells.
@@ -42,7 +34,8 @@ if (return 0 2>/dev/null); then
 else
     RUN_TYPE="executing"
 fi
-get_source
+
+set_tab
 print_source
 
 # get length of stack
@@ -149,7 +142,7 @@ unset_traps
 # source list of files
 for FILE in $LIST; do
     vecho "${TAB}loading $FILE..."
-    if [ -f $FILE ]; then       
+    if [ -f $FILE ]; then
         source $FILE
         RETVAL=$?
         if [ $RETVAL -eq 0 ]; then
