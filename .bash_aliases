@@ -9,7 +9,10 @@ fpretty=${HOME}/config/.bashrc_pretty
 if [ -e $fpretty ]; then
     source $fpretty            
     set_tab
-    print_ribbon
+    if [[ "$-" == *i* ]]; then
+        print_ribbon
+        print_source
+    fi
 fi
 
 # Aliases
@@ -113,3 +116,4 @@ function nf {
 	      fi
     done
 }
+dtab
