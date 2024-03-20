@@ -7,9 +7,22 @@ function get_source() {
     # set local debug value
     local -i DEBUG=${DEBUG:-0} # substitute default value if DEBUG is unset or null
 
+    # get the lenght of the execution stack
+    N_BASH=${#BASH_SOURCE[@]}
+    # since this is a function, reduce N_BASH by one
+    ((N_BASH--))
+    # check stack size
+    if [ $N_BASH -lt 1 ]; then
+        return 0
+    fi
+
+    # define function level
     local -i FUNC_LEV
-    #echo "calling function is ${FUNCNAME[1]}"
+    # check if calling function is print*
     if [[ "${FUNCNAME[1]}" =~ "print"* ]]; then
+        if [ $N_BASH -lt 2 ]; then
+            return 0
+        fi
         FUNC_LEV=2
     else
         FUNC_LEV=1
@@ -19,6 +32,7 @@ function get_source() {
     src_name=$(readlink -f ${BASH_SOURCE[${FUNC_LEV}]})
     # get short source name
     src_base=$(basename "${src_name}")
+    bin_name=$(basename "${BASH_SOURCE[${FUNC_LEV}]}")
     # get source path
     ##physical (canonical)
     src_dir_phys=$(dirname "$src_name")
@@ -28,20 +42,17 @@ function get_source() {
 
 function print_source() {
     RUN_TYPE=${RUN_TYPE:-"running"}
+    get_source    
     
-    local -i N_BASH=${#BASH_SOURCE[@]}
-    # since this is a function, reduce N_BASH by one
-    ((N_BASH--))
-
     RUN_TYPE="\x1b[7;38;5;132m${N_BASH}\x1b[0m${RUN_TYPE}"
-
-    local msgne=$(echo -e " $@ " | sed "s/$(echo -e "\E")[^m]*m//g")
-    
+    # strip escapes
+    local msgne=$(echo -e "$RUN_TYPE" | sed "s/$(echo -e "\E")[^m]*m//g")
+    # get message mength
     local -i ln=${#msgne}
+    # subtract link/path prefix length
     local -i sp=$(($ln - 7))
+    # define indent
     local spx=$(echo -ne "\E[${sp}C")
-
-    get_source
     
     # print run type and source name
     vecho -e "${TAB}${RUN_TYPE} ${PSDIR}${BASH_SOURCE[1]}${RESET}..."
@@ -60,20 +71,13 @@ function print_source() {
 
 function print_ribbon() {
     get_source
-    # get the lenght of the execution stack
-    local -i N_BASH=${#BASH_SOURCE[@]}
-    # since this is a function, reduce N_BASH by one
-    ((N_BASH--))
+
     # print source
     decho -e "${TAB}\x1b[7;38;5;132m${N_BASH}: ${src_base} :${N_BASH}\x1b[0m"
 }
 
 function print_bar() {
     get_source
-    # get the lenght of the execution stack
-    local -i N_BASH=${#BASH_SOURCE[@]}
-    # since this is a function, reduce N_BASH by one
-    ((N_BASH--))
     # define message
     msg=$(echo "this file is ${src_base}!")
     # define line
