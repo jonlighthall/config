@@ -4,29 +4,24 @@
 [[ "$-" != *i* ]] && return
 
 start_time=$(date +%s%N)
+
+# load bash utilities
+fpretty=${HOME}/config/.bashrc_pretty
+if [ -e $fpretty ]; then
+	  source $fpretty    
+fi
+
 # Verbose bash prints?
 export VB=true
 if $VB; then
-    # set tab
-    TAB+=${TAB+${fTAB:='   '}}
-    # load formatting
-    fpretty=${HOME}/config/.bashrc_pretty
-    if [ -e $fpretty ]; then
-	if [ -z ${FPRETTY_LOADED+dummy} ]; then
-	   source $fpretty
-	fi
-    fi
+    set_tab
     # print source name at start
     if (return 0 2>/dev/null); then
         RUN_TYPE="sourcing"
     else
         RUN_TYPE="executing"
     fi
-    echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
-    src_name=$(readlink -f $BASH_SOURCE)
-    if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-	echo -e "${TAB}${VALID}link${RESET} -> $src_name"
-    fi
+    print_source
     echo "${TAB}verbose bash printing is... $VB"
 fi
 
