@@ -51,8 +51,8 @@ export    ROSE='\E[38;5;198m' #ff0087	(255,  0,135) DeepPink1
 declare -ax rcolor=( "${RED}" "${ORANGE}" "${YELLOW}" "${CHARTRU}" "${GREEN}" "${SPGREEN}" "${CYAN}" "${AZURE}" "${BLUE}" "${PURPLE}" "${MAGENTA}" "${ROSE}" )
 
 # define monochrome colors
-export    gray='\E[90m'
-export   white='\E[1;37m'
+export    GRAY='\E[90m'
+export   WHITE='\E[1;37m'
 
 # define highlight colors
 export     BAD="${RED}" # red
