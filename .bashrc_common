@@ -11,11 +11,12 @@ if [ -z ${VB:+dummy} ]; then
 else
     if $VB; then
         # load formatting
+
         fpretty=${HOME}/config/.bashrc_pretty
         if [ -e $fpretty ]; then
             source $fpretty            
-            set_tab
             print_ribbon
+
         fi
         # print source name at start
         if (return 0 2>/dev/null); then
@@ -23,6 +24,7 @@ else
         else
             RUN_TYPE="executing"
         fi
+        dtab 2
         print_source
     fi
 fi

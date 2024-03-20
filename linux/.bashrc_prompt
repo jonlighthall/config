@@ -11,7 +11,7 @@ else
 	      fpretty=${HOME}/config/.bashrc_pretty
 	      if [ -e $fpretty ]; then
 	          source $fpretty
-            set_tab
+
             print_ribbon
 	      fi
 	      # print source name at start
