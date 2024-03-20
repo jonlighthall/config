@@ -57,9 +57,9 @@ do
 	source $FILE
 	RETVAL=$?
 	if [ $RETVAL -eq 0 ]; then
-	    vecho -e "${TAB}$FILE ${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+	    vecho -e "${TAB}$FILE ${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
 	else
-	    echo -e "${TAB}$FILE ${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+	    echo -e "${TAB}$FILE ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
 	fi
     else
 	echo -e "${TAB}$FILE ${UL}not found${RESET}"

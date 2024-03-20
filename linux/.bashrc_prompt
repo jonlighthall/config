@@ -164,7 +164,7 @@ if $do_test_git; then
 	          vecho " git branch ${BAD}timed out${RESET}"
 	          git_bad=true
 	      else
-	          vecho -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+	          vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
 	          git_bad=false
 	      fi
     else
@@ -188,11 +188,11 @@ if $do_test_color; then
     timeout -s 9 1s \ls -ld --color=auto ./* &>/dev/null
     RETVAL=$?
     if [[ $RETVAL -eq 137 ]]; then
-	      echo -e "${TAB}ls --color=auto ${BAD}FAIL${RESET}  ${gray}RETVAL=$RETVAL${RESET}"
+	      echo -e "${TAB}ls --color=auto ${BAD}FAIL${RESET}  ${GRAY}RETVAL=$RETVAL${RESET}"
 	      unalias ls
 	      echo -e "${TAB}--color=auto removed from ls alias"
     else
-	      vecho -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+	      vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     fi
 fi
 

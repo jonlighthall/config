@@ -459,7 +459,7 @@ function print_elap() {
         if command -v sec2elap &>/dev/null; then
             bash sec2elap $dT_sec | tr -d "\n"
         else
-            echo -ne "elapsed time is ${white}${dT_sec} sec${RESET}"
+            echo -ne "elapsed time is ${WHITE}${dT_sec} sec${RESET}"
         fi
     else
         decho -ne "${YELLOW}start_time not defined${RESET} "
@@ -482,7 +482,7 @@ function print_exit() {
     echo -ne "${TAB}${YELLOW}\E[7m EXIT ${RESET} "
     # print exit code
     if [ ! -z ${EXIT_RETVAL+alt} ]; then
-        echo -ne "${gray}RETVAL=${EXIT_RETVAL}${RESET} "
+        echo -ne "${GRAY}RETVAL=${EXIT_RETVAL}${RESET} "
     fi
 
     print_done
@@ -555,7 +555,7 @@ function print_error() {
 
     # if command contains variables, evaluate expression
     if [[ "$ERR_CMD" =~ '$' ]]; then
-        decho -e "${spx} ${gray}expanding variables...${RESET}"
+        decho -e "${spx} ${GRAY}expanding variables...${RESET}"
         # print 'eval' set back from cmd
         echo -ne "\E[${etab}C${VALID}${eva}\E[m\E[36m:\E[m"
         # print evaluated command and remove leading whitespace
@@ -567,10 +567,10 @@ function print_error() {
             # print evaluated output
             echo -en "\E[${spx}C"
             eval echo $NCMD
-            echo -e "$ {gray}redirect (no output)${RESET}"
+            echo -e "$ {GRAY}redirect (no output)${RESET}"
         fi
     fi
-    echo -e "${spx} ${gray}RETVAL=${ERR_RETVAL}${RESET}"
+    echo -e "${spx} ${GRAY}RETVAL=${ERR_RETVAL}${RESET}"
 }
 
 function print_int() {
@@ -600,7 +600,7 @@ function print_return() {
     # get size of function stack
     local -ir N_FUNC=${#FUNCNAME[@]}
     
-    echo -e "${YELLOW}\E[7m RETURN ${RESET} ${gray}RETVAL=${RETURN_RETVAL}${RESET} ${FUNCNAME[$((N_FUNC-2))]}"
+    echo -e "${YELLOW}\E[7m RETURN ${RESET} ${GRAY}RETVAL=${RETURN_RETVAL}${RESET} ${FUNCNAME[$((N_FUNC-2))]}"
 }
 
 # define traps

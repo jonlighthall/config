@@ -191,9 +191,9 @@ function do_link() {
             chmod ${permOK} ${target_dir}
             local RETVAL=$?
             if [ $RETVAL -eq 0 ]; then
-                echo -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+                echo -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
             else
-                echo -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+                echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
             fi
         else
             echo -e "${GOOD}OK${RESET}"
@@ -230,9 +230,9 @@ function do_link() {
                 chmod ${permOK} ${target_cannon}
                 local RETVAL=$?
                 if [ $RETVAL -eq 0 ]; then
-                    echo -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+                    echo -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
                 else
-                    echo -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+                    echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
                 fi
             else
                 echo -e "${GOOD}OK${RESET}"
@@ -374,9 +374,9 @@ function do_link_exe() {
             chmod +${permOK} "${target}" || chmod u+rx "${target}"
             local RETVAL=$?
             if [ $RETVAL -eq 0 ]; then
-                echo -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+                echo -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
             else
-                echo -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+                echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
             fi
         else
             echo -e "${TAB}permissions ${GOOD}OK${RESET}"

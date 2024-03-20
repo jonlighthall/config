@@ -52,9 +52,9 @@ function print_source() {
     # print source path
     if [[ "${src_dir_logi}" != "${src_dir_phys}" ]]; then 
         ## logical
-        vecho -e "${TAB}${spx}${gray}logi -> $src_dir_logi${RESET}"
+        vecho -e "${TAB}${spx}${GRAY}logi -> $src_dir_logi${RESET}"
         ## physical
-        vecho -e "${TAB}${spx}${gray}phys -> $src_dir_phys${RESET}"
+        vecho -e "${TAB}${spx}${GRAY}phys -> $src_dir_phys${RESET}"
     fi
 }
 

@@ -43,10 +43,10 @@ alias gitsi='git status --ignored'
 alias gitsl='git stash list --date=local'
 
 # grep
-alias g='gr'
-alias gr='grep -iIrRn -D skip --exclude-dir=".git" --exclude="*~"'
 alias grep='grep --color=auto'
-alias gR='gr --no-ignore-case'
+alias gR='grep -IrRn -D skip --exclude-dir=".git" --exclude="*~"'
+alias gr='gR -i'
+alias g='gr'
 
 # history
 alias hg='history | grep'

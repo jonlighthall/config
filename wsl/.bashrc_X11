@@ -59,14 +59,14 @@ else
       if [[ $RETVAL == 0 ]]; then
         xOK=true
         if $VB; then
-          echo -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+          echo -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
           xPID=$(pgrep -x $PROG)
           if [ ! -z $xPID ]; then
             echo "${TAB}$PROG running with PID ${xPID}"
           fi
         fi
       else
-        vecho -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+        vecho -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
         vecho "${TAB}unaliasing $PROG..."
         unalias vcx 2>/dev/null
       fi
@@ -107,14 +107,14 @@ if ! $xOK; then
         if [[ $RETVAL == 0 ]]; then
           xOK=true
           if $VB; then
-            echo -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+            echo -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
             xPID=$(pgrep -x $PROG)
             if [ ! -z $xPID ]; then
               echo "${TAB}$PROG running with PID ${xPID}"
             fi
           fi
         else
-          vecho -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+          vecho -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
           vecho "${TAB}unaliasing $PROG..."
           unalias xming 2>/dev/null
         fi
@@ -144,9 +144,9 @@ if $xOK; then
     RETVAL=$?
     if [[ $RETVAL == 0 ]]; then
       dispOK=true
-      vecho -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+      vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     else
-      vecho -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+      vecho -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
       unset DISPLAY
     fi
   fi
@@ -166,10 +166,10 @@ if $xOK; then
     xdpyinfo -display $DISPLAY &>/dev/null
     RETVAL=$?
     if [[ $RETVAL == 0 ]]; then
-      vecho -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+      vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     else
       if $VB; then
-        echo -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+        echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
         # check other values if FAIL
         echo "${TAB}building candidate DISPLAY list..."
         TAB+=$fTAB
@@ -196,10 +196,10 @@ if $xOK; then
         xdpyinfo -display $DISPLAY &>/dev/null
         RETVAL=$?
         if [[ $RETVAL == 0 ]]; then
-          vecho -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+          vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
           break
         else
-          vecho -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+          vecho -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
           unset DISPLAY
         fi
       done

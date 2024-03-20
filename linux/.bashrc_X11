@@ -44,9 +44,9 @@ else
     RETVAL=$?
     if [[ $RETVAL == 0 ]]; then
 	dispOK=true
-	vecho -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+	vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     else
-	vecho -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+	vecho -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
 	unset DISPLAY
     fi
 fi
@@ -69,10 +69,10 @@ if ! $dispOK; then
 	timeout -s 9 3s xdpyinfo -display $DISPLAY &>/dev/null
 	RETVAL=$?
 	if [[ $RETVAL == 0 ]]; then
-	    vecho -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+	    vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
 	    break
 	else
-	    vecho -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+	    vecho -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
 	    unset DISPLAY
 	fi
     done
@@ -84,10 +84,10 @@ if ! $dispOK; then
 	timeout -s 9 3s xdpyinfo -display $DISPLAY &>/dev/null
 	RETVAL=$?
 	if [[ $RETVAL == 0 ]]; then
-	    vecho -e "${GOOD}OK${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+	    vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
 	    break
 	else
-	    vecho -e "${BAD}FAIL${RESET} ${gray}RETVAL=$RETVAL${RESET}"
+	    vecho -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
 	    unset DISPLAY
 	fi
     done
