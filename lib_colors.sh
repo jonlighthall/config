@@ -82,16 +82,17 @@ function define_ls_colors() {
 }
 
 # define PS1 colors
-export  PSTIME='\E[0;37m' # light gray  : \A time
-export  PSUSER='\E[0;32m' # green       : \u user name, prompt
-export  PSHOST='\E[1;34m' # bold blue   : \h host name
-export   PSDIR='\E[0;33m' # yellow      : \w directory
-export    PSBR='\E[0;36m' # blue        : branch
+export  PSTIME='\E[0;37m' # light gray  : \A : time
+export  PSUSER='\E[0;32m' # green       : \u : user name, prompt
+export  PSHOST='\E[1;34m' # bold blue   : \h : host name
+export   PSDIR='\E[0;33m' # yellow      : \w : directory
+export    PSBR='\E[0;36m' # blue        :    : branch
 
 # define 'grep' colors
-export     GRH='\E[1;31m' # bold red    : ms selected match
-export     GRL='\E[0;32m' # green       : ln line number 
-export     GRF='\E[0;35m' # magenta     : fn file name
+export     GRH='\E[1;31m' # bold red    : ms : selected match
+export     GRL='\E[0;32m' # green       : ln : line number 
+export     GRF='\E[0;35m' # magenta     : fn : file name
+export     GRS='\E[0;36m' # cyan        : se : seperator
 
 # subtle colors for readability
 # hue=(N*30), saturation=33%, lightness=52%; sorted by hue
