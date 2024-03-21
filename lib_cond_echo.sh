@@ -47,13 +47,20 @@ function fecho() {
             # set color
             echo -ne "${DIM}${dcolor[IDX]}"
 
-            # define function stack printing
+            # select element of function stack
             local -i fidx
+            # check if called from xecho
             if [[ ${FUNCNAME[1]} == "xecho" ]]; then
                 fidx=2
             else
-                fidx=$(( $N_FUNC - 5 ))
-            fi            
+                # check length of function stack
+                if [ ${N_FUNC} -lt 5 ]; then
+                    fidx=$(( $N_FUNC - 1 ))
+                else                
+                    fidx=$(( $N_FUNC - 5 ))
+                    # where does this come from?
+                fi
+            fi
             echo -ne "${FUNCNAME[fidx]}: \e[0m${dcolor[IDX]}"
             echo "$@"
             echo -ne "\e[0m"
