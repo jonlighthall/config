@@ -6,15 +6,31 @@
 #
 # Note: this file must use unix line endings (LF)!
 
+# If running interactively, print source
+if [[ "$-" == *i* ]]; then
+    echo "${TAB}${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE}) "
+fi
+
 # load bash utilities
 fpretty=${HOME}/config/.bashrc_pretty
 if [ -e $fpretty ]; then
 	  source $fpretty
 	  set -e
-    print_ribbon
 	  set_traps
 else
     set +eu
+fi
+
+if $VB; then
+    # determine if being sourced or executed
+    if (return 0 2>/dev/null); then
+        RUN_TYPE="sourcing"
+    else
+        RUN_TYPE="executing"
+    fi
+    set_tab
+    print_ribbon
+    print_source
 fi
 
 # since ~/.bashrc usually calls ~/.bash_aliases, a conditional could be added in .bash_aliases
@@ -27,27 +43,10 @@ else
 fi
 run_list=true
 
-# determine if being sourced or executed
-if (return 0 2>/dev/null); then
-    RUN_TYPE="sourcing"
-else
-    RUN_TYPE="executing"
-fi
-set_tab
-echo "${TAB}here ${#BASH_SOURCE[@]}"
-#DEBUG=1
-
-# get length of stack
-N=${#BASH_SOURCE[@]}
-
-# resolve symbolic links
-for ((i = 0; i < $N; i++)); do
-    BASH_LINK[$i]=$(readlink -f ${BASH_SOURCE[$i]})
-done
-
+print_stack
 decho "${TAB}check invoking scripts:"
 itab
-for ((i = 1; i <= $N; i++)); do
+for ((i = 1; i <= $N_BASH; i++)); do
 	  decho "${TAB}$((i - 1)): ${BASH_SOURCE[$((i - 1))]}... "
 	  fref=$(readlink -f ${HOME}/.bashrc)
 	  itab
@@ -89,8 +88,6 @@ for ((i = 1; i <= $N; i++)); do
     dtab
 done
 dtab
-
-print_source
 
 decho "${TAB}run_list = $run_list" | sed 's/true/\x1b[32m&\x1b[m/;s/false/\x1b[31m&\x1b[m/'
 decho "${TAB}run_home = $run_home" | sed 's/true/\x1b[32m&\x1b[m/;s/false/\x1b[31m&\x1b[m/'
