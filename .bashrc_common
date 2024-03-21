@@ -11,20 +11,18 @@ if [ -z ${VB:+dummy} ]; then
 else
     if $VB; then
         # load formatting
-
         fpretty=${HOME}/config/.bashrc_pretty
         if [ -e $fpretty ]; then
             source $fpretty            
             print_ribbon
-
         fi
-        # print source name at start
+        # determine if being sourced or executed
         if (return 0 2>/dev/null); then
             RUN_TYPE="sourcing"
         else
             RUN_TYPE="executing"
         fi
-        dtab 2
+        set_tab
         print_source
     fi
 fi
@@ -93,7 +91,7 @@ fi
 # ---------------
 if $VB; then
     echo "${TAB}Path additions..."
-    TAB+=${fTAB:='   '}
+    itab
 fi
 
 # list paths to append to PATH
@@ -134,6 +132,5 @@ fi
 
 if $VB; then
     # reset tab
-    TAB=${TAB%$fTAB} # once for path
-    TAB=${TAB%$fTAB} # once for file
+    dtab 2 # once for path, once for file
 fi

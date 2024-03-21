@@ -7,29 +7,22 @@ if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
     if $VB; then
-	      # load formatting
-	      fpretty=${HOME}/config/.bashrc_pretty
-	      if [ -e $fpretty ]; then
-	          source $fpretty
-
+        # load formatting
+        fpretty=${HOME}/config/.bashrc_pretty
+        if [ -e $fpretty ]; then
+            source $fpretty            
             print_ribbon
-	      fi
-	      # print source name at start
-	      if (return 0 2>/dev/null); then
-	          RUN_TYPE="sourcing"
-	      else
-	          RUN_TYPE="executing"
-	      fi
+        fi
+        # determine if being sourced or executed
+        if (return 0 2>/dev/null); then
+            RUN_TYPE="sourcing"
+        else
+            RUN_TYPE="executing"
+        fi
+        set_tab
         print_source
     fi
 fi
-
-# define conditional echo
-vecho() {
-    if [ ! -z ${VB:+dummy} ] && ${VB}; then
-	      echo "$@"
-    fi
-}
 
 # System-specific aliases and functions
 
@@ -197,6 +190,7 @@ if $do_test_color; then
 fi
 
 # Path additions
+# ---------------
 if $VB; then
     echo "${TAB}Path additions..."
     itab

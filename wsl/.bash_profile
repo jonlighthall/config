@@ -44,9 +44,18 @@ if [ -e $fpretty ]; then
         echo "loading $fpretty..."
     fi
     source $fpretty
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]; then
+        dtab
+        vecho -e "${TAB}$fpretty ${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+    else
+        echo -e "${TAB}$fpretty ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+    fi
     set -e
+    set_traps
     print_ribbon
 else
+    echo "${TAB}$fname not found"
     set +eu
 fi    
 

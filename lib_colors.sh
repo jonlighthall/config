@@ -327,6 +327,35 @@ function print_fcolors() {
     ) | column -t -s: -N order,index,color | sed "s/^/${TAB}/"
 }
 
+function print_pretty() {
+    local msg="pretty print enabled"    
+    decho "$msg"
+    local -i ln=${#msg}
+    decho "is $ln long"
+
+    local -i idx
+    local let
+    local -i pos=0
+    for ((i=0;i<$ln;i++));do
+        let="${msg:$i:1}"
+
+        if [[ "$let" == " " ]]; then
+            :
+        else
+            ((pos++))
+        fi
+        dbg2idx $pos idx
+        # set color
+        echo -en "${dcolor[$idx]}$let"
+    done
+    echo -e "$RESET"
+
+}
+
+function print_pretty_cbar() {
+    cbar $(print_pretty)
+}
+
 function print_ls_colors() {
     # print value of LS_COLORS
     declare -p LS_COLORS |
