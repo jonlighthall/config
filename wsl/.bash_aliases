@@ -1,41 +1,50 @@
 #!/bin/bash -eu
 # -----------------------------------------------------------------------------------------------
-# SYSTEM-DEPENDENT INTERACTIVE SHELL SETTINGS for Linux Subsystem for Windows
+# User-dependent INTERACTIVE SHELL SETTINGS for SUBSHELLS in Windows Subsystem for Linux
 # -----------------------------------------------------------------------------------------------
 #
 # ~/.bash_aliases -> ~/config/wsl/.bash_aliases
 #
-# Purpose: Load user-dependent and system-dependent .bashrc files for interactive shell
-#   sessions. Used instead of creating a custom ~/.bashrc file to preserve to contents of the
-#   system-default ~/.bashrc.
+# Purpose: Load system-dependent interactive shell settings when running interactive
+#   subshells. This is the subshell counterpart to ~/.bash_profile -> ~/config/wsl/.bash_profile
+#   and mimics its non-login behavior.
 #
-# Usage: Typically executed by bash in ~/.bashrc for interactive subshells. This file is also
-#   called by ~/config/wsl/.bashrc to keep shell and subshell settings consistient. It should be
-#   called directly by ~/.bash_profile -> ~/config/wsl/.bash_profile, and ~/config/wsl/.bashrc
-#   should be deleted.
+# Usage: Executed by bash (in ~/.bashrc) for interactive subshells. 
 #
-# Note: this file must use unix line endings (LF)!
+# Note: this file must use Unix line endings (LF)!
 #
-# History: developed under the name ~/config/wsl/.bashrc.
-#
-# Jul 2018 JCL
+# Mar 2024 JCL
 #
 # -----------------------------------------------------------------------------------------------
 
 # If running interactively, print source
 if [[ "$-" == *i* ]]; then
+    # get starting time in nanoseconds
+    declare -i start_time=$(date +%s%N)
+    # print source
     echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+    # set "Verbose Bash" for conditional prints
+    export VB=true
 fi
 
-# load bash utilities
-fpretty=${HOME}/config/.bashrc_pretty
+# clear terminal
+clear -x
+
+config_dir=${HOME}/config
+# load utility functions
+fpretty=${config_dir}/.bashrc_pretty
 if [ -e $fpretty ]; then
-	  source $fpretty
-	  set -e  
+    if $VB; then
+        # remember, if .bashrc_pretty hasn't been loaded yet, vecho is not defined
+        echo "loading $fpretty..."
+    fi
+    source $fpretty
+    set -e
+    print_ribbon
 	  set_traps
 else
     set +eu
-fi
+fi    
 
 if $VB; then
     # determine if being sourced or executed
@@ -43,57 +52,47 @@ if $VB; then
         RUN_TYPE="sourcing"
     else
         RUN_TYPE="executing"
-    fi
+    fi    
     set_tab
-    print_ribbon
     print_source
+    echo "${TAB}BASH_SUBSHELL = $BASH_SUBSHELL"
+    print_stack
+    echo -e "${TAB}verbose bash printing is... ${GOOD}$VB${RESET}"
 fi
-print_stack
 
-vecho "${TAB}running list..."
-# required list
-unset LIST
-config_dir=${HOME}/config
-LIST+="${config_dir}/.bashrc_common ${config_dir}/linux/.bashrc_prompt ${config_dir}/wsl/.bashrc_X11"
-
-# optional list
-LIST_OPT="$HOME/.bash_local root_v5.34.36/bin/thisroot.sh"
-
-# add optional list to required list if targets exist
-for FILE in $LIST_OPT; do
-    if [ -f $FILE ]; then
-        LIST+=" $FILE"
-    else
-        vecho -e "${TAB}$FILE ${UL}not found${RESET}"
-    fi
-done
+# system dependencies
+SYS_NAME=wsl
+HOST_NAME=$(hostname -s)
+vecho -e "${TAB}applying ${SYS_NAME} settings on ${PSHOST}${HOST_NAME}${RESET}"
 
 # (un)set traps and shell options before loading command files
 set +e
 unset_traps
 
-# source list of files
-for FILE in $LIST; do
-    vecho "${TAB}loading $FILE..."
-    if [ -f $FILE ]; then
-        source $FILE
-        RETVAL=$?
-        if [ $RETVAL -eq 0 ]; then
-            vecho -e "${TAB}$FILE ${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
-        else
-            echo -e "${TAB}$FILE ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
-        fi
+# load system-dependent interactive shell settings
+fname=${config_dir}/${SYS_NAME}/.bashrc
+vecho -e "${TAB}loading $fname... ${RESET}"
+if [ -f $fname ]; then
+    source $fname
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]; then
+        vecho -e "${TAB}$fname ${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     else
-        echo -e "${TAB}$FILE ${UL}not found${RESET}"
+        echo -e "${TAB}$fname ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     fi
-done
-
-# ROOT
-if [[ "$LIST" == *"thisroot.sh"* ]]; then
-    which root
+else
+    echo "${TAB}$fname not found"
 fi
-
+vecho
+# print runtime duration
 if $VB; then
-    # reset tab
     dtab
+    print_done
 fi
+
+# clear terminal
+clear -x
+
+# print welcome message
+echo "${TAB}Welcome to ${HOST_NAME}"
+return

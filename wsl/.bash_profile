@@ -5,7 +5,7 @@
 #
 # ~/.bash_profile -> ~/config/wsl/.bash_profile
 #
-# Purpose: execute login functions and load interactive shell settings.
+# Purpose: execute login functions and load system-dependent interactive shell settings.
 #
 # Usage: Executed by bash for interactive login shell sessions.
 #
@@ -35,8 +35,9 @@ echo "invoked by ${called_by}"
 # clear terminal
 clear -x
 
+config_dir=${HOME}/config
 # load utility functions
-fpretty=${HOME}/config/.bashrc_pretty
+fpretty=${config_dir}/.bashrc_pretty
 if [ -e $fpretty ]; then
     if $VB; then
         # remember, if .bashrc_pretty hasn't been loaded yet, vecho is not defined
@@ -44,7 +45,6 @@ if [ -e $fpretty ]; then
     fi
     source $fpretty
     set -e
-    set_tab
     print_ribbon
 else
     set +eu
@@ -57,6 +57,7 @@ if $VB; then
     else
         RUN_TYPE="executing"
     fi    
+    set_tab
     print_source
     print_stack
     echo -e "${TAB}verbose bash printing is... ${GOOD}$VB${RESET}"
@@ -90,14 +91,9 @@ else
     fi
 fi
 
-# -------------------------------
-# load interactive shell settings
-# -------------------------------
-# source the user's .bashrc if it exists
-fname=${HOME}/config/${SYS_NAME}/.bashrc
-vecho -n "${TAB}"
-decho -en "\x1b[7m"
-vecho -e "loading $fname... ${RESET}"
+# load system-dependent interactive shell settings
+fname=${config_dir}/${SYS_NAME}/.bashrc
+vecho -e "${TAB}loading $fname... ${RESET}"
 if [ -f $fname ]; then
     source $fname
     RETVAL=$?
@@ -127,7 +123,7 @@ return
 source ~/utils/bash/git/lib_git.sh
 start_dir=$PWD
 echo "${TAB}starting directory = ${start_dir}"
-cd config
+cd ${config_dir}
 print_remotes
 # return to starting directory
 cd "$start_dir"
