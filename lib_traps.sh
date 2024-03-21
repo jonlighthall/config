@@ -335,9 +335,8 @@ function print_stack2() {
         for ((i = 0; i < $N_FUNC ; i++)); do
             echo "$i:${FUNCNAME[i]}:${BASH_FNAME[i]}:${BASH_LINENO[i]}"
         done
-    ) | column -t -s: -N "index,function,source,line no" -R1
+    ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
     dtab
-
 }
 
 function print_invo() {
