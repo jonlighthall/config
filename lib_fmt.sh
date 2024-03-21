@@ -20,11 +20,11 @@ function get_curpos() {
 	  # parse the cursor position
 	  local -r pair=${CURPOS#*[}
           #}# dummy bracket for emacs indenting
-	  local -ir x_pos=${pair#*;}
-	  local -ir y_pos=${pair%;*}
+	  local -ir cursor_x_position=${pair#*;}
+	  local -ir cursor_y_position=${pair%;*}
 
 	  # print the cursor position
-	  fecho -e "cursor position: x=$x_pos y=$y_pos"
+	  fecho -e "cursor position: x=$cursor_x_position y=$cursor_y_position"
 
     fecho "number of args: $#"
     
@@ -35,8 +35,8 @@ function get_curpos() {
         if [ -n "${x_out+dummy}" ]; then
             fecho "   arg 1 in : ${!x_out}=$x_out"
         fi
-        fecho "   arg 1 out: ${!x_out}=${x_pos}"
-        x_out=$x_pos        
+        fecho "   arg 1 out: ${!x_out}=${cursor_x_position}"
+        x_out=$cursor_x_position        
     fi
 
     if [ $# -gt 1 ]; then
@@ -44,8 +44,8 @@ function get_curpos() {
         if [ -n "${y_out+dummy}" ]; then
             fecho "   arg 2 in : ${!y_out}=$y_out"
         fi
-        fecho "   arg 2 out: ${!y_out}=${y_pos}"
-        y_out=$y_pos        
+        fecho "   arg 2 out: ${!y_out}=${cursor_y_position}"
+        y_out=$cursor_y_position        
     fi
 }
 
