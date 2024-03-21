@@ -164,4 +164,6 @@ if [[ "$-" == *i* ]]; then
     print_source
 fi
 
-print_pretty_cbar
+if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
+    print_pretty_cbar
+fi
