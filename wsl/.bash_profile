@@ -1,44 +1,53 @@
 # User-dependent .bash_profile for WSL
 # Note: this file must use Unix line endings (LF)!
 
+# If running interactively, print source
+if [[ "$-" == *i* ]]; then
+    echo "${TAB}${BASH_SOURCE##*/}... "
+fi
+
 # If not running interactively, don't do anything
 if [[ "$-" != *i* ]]; then
     echo -e "${TAB}\E[7mnot interactive\e[0m"
     echo "${TAB}exiting ${BASH_SOURCE##*/}..."
+    # Verbose bash prints?
+    export VB=false
 else
     echo -n "${TAB}${BASH_SOURCE##*/}... "
+    export VB=true
 fi
 
 # get starting time in nanoseconds
 declare -i start_time=$(date +%s%N)
 
-# clear terminal
+# print invoking process
 called_by=$(ps -o comm= $PPID)
 echo "invoked by ${called_by}"
+
+# clear terminal
 clear -x
 
-# Verbose bash prints?
-export VB=true
-if $VB; then
-    # load formatting
-    fpretty=${HOME}/config/.bashrc_pretty
-    if [ -e $fpretty ]; then
-        source $fpretty
-        set -e
-        set_tab
-        print_ribbon
-    else
-        set +eu
-    fi    
+# load formatting
+fpretty=${HOME}/config/.bashrc_pretty
+if [ -e $fpretty ]; then
+    source $fpretty
+    set -e
+    set_tab
+    print_ribbon
+else
+    set +eu
+fi    
 
+if $VB; then
     # determine if being sourced or executed
     if (return 0 2>/dev/null); then
         RUN_TYPE="sourcing"
     else
         RUN_TYPE="executing"
     fi    
-    print_source    
-    echo "${TAB}verbose bash printing is... $VB"
+    print_source
+    print_stack
+    echo -e "${TAB}verbose bash printing is... ${GOOD}$VB${RESET}"
 fi
 
 # system dependencies
