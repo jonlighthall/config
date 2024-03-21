@@ -304,11 +304,80 @@ function print_stack() {
     echo "${TAB}call stack:"
     local -i i
     itab
+
+    if false; then
+        (
+            for ((i = 0; i < $N_FUNC ; i++)); do
+                echo "$i:${FUNCNAME[i]}:${BASH_FNAME[i]}:${BASH_LINENO[i]}"
+            done
+        ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
+        echo
+
+        # set color
+        ((idx++))
+        echo -ne "${dcolor[idx]}"
+        (
+            for ((i = 0; i < $N_FUNC ; i++)); do
+                echo "$i:${FUNCNAME[i]}:${BASH_SOURCE[i]}:${BASH_LINENO[i]}"
+            done
+        ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
+        echo
+
+        # set color
+        ((idx++))
+        echo -ne "${dcolor[idx]}"
+        (
+            for ((i = 0; i < $N_FUNC ; i++)); do
+                echo "$i:${FUNCNAME[i]}:${BASH_LINK[i]}:${BASH_LINENO[i]}"
+            done
+        ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
+        echo
+
+        # set color
+        ((idx++))
+        echo -ne "${dcolor[idx]}"    
+        (
+            for ((i = 0; i < $N_FUNC ; i++)); do
+                echo "$i:${FUNCNAME[i]}:${BASH_SOURCE[i]}:${BASH_LINENO[i]}"
+                if [[ "${BASH_SOURCE[$i]}" != "${BASH_LINK[$i]}" ]]; then
+                    decho -ne "$i:${FUNCNAME[i]}:${BASH_LINK[i]}:${BASH_LINENO[i]}"
+                    echo -e "${dcolor[idx]}"
+                fi
+            done
+        ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
+        echo
+    fi
+    
+    # get directories
+    local -ga BASH_DIR
+    for ((i = 0; i < $N_BASH; i++)); do
+        BASH_DIR[$i]=$(dirname ${BASH_SOURCE[$i]})
+    done
+
+    # get directories
+    local -ga BASH_LINK_DIR
+    for ((i = 0; i < $N_BASH; i++)); do
+        BASH_LINK_DIR[$i]=$(dirname ${BASH_LINK[$i]})
+    done   
+
     (
         for ((i = 0; i < $N_FUNC ; i++)); do
-            echo "$i:${FUNCNAME[i]}:${BASH_FNAME[i]}:${BASH_LINENO[i]}"
+            # print stack element
+            echo "$i:${FUNCNAME[i]}:${BASH_DIR[i]}:${BASH_FNAME[i]}:${BASH_LINENO[i]}"
+            # check if source is linked
+            if [[ "${BASH_SOURCE[$i]}" != "${BASH_LINK[$i]}" ]]; then
+                # set color
+                ((idx++))
+                echo -ne "${dcolor[idx]}"
+                # print link
+                echo -ne "$i:${FUNCNAME[i]}:${BASH_LINK_DIR[i]}:${BASH_LINK[i]##*/}:${BASH_LINENO[i]}"
+                # reset color
+                ((idx--))
+                echo -e "${dcolor[idx]}"
+            fi
         done
-    ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
+    ) | column -t -s: -N "index,function,directory,source,line no" -R1 | sed "s/^/${TAB}/" 
+
     dtab
     # unset color
     echo -ne "\e[0m"
@@ -568,10 +637,10 @@ function print_error() {
 
     # print error line
     echo -n "${ERR_LINE}"
-      if [ ${N_BOTTOM} -eq 0 ]; then
-          ddecho -e " <- ${INVERT}you did this"
-      else
-          echo
+    if [ ${N_BOTTOM} -eq 0 ]; then
+        ddecho -e " <- ${INVERT}you did this"
+    else
+        echo
     fi
 
     # if the error line and the error command do not mach, print error command
@@ -604,7 +673,7 @@ function print_error() {
     fi
     echo -e "${spx} ${GRAY}RETVAL=${ERR_RETVAL}${RESET}"
 
-  
+    
     
     return 0   
 
