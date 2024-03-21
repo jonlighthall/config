@@ -1,7 +1,6 @@
 function fello() {
     hello
     echo $-
-    return 0    
 }
 
 function driver() {
@@ -12,12 +11,10 @@ function driver() {
     set_traps
     echo $-
     fello
-    return 0   
 }
 
 function driver2() {
     driver
-    return 0
 }
 
 function set_shell() {
@@ -25,7 +22,6 @@ function set_shell() {
     set -eET
     echo $-
     trap 'echo "SET"' RETURN
-    return 0
 }
 
 function unset_shell() {
@@ -33,7 +29,6 @@ function unset_shell() {
     set +eET
     echo $-
     trap 'echo "UNSET"' RETURN
-    return 0    
 }
 
 # reset shell options
@@ -126,21 +121,11 @@ function print_stack_devel() {
     local -ir DEBUG=2
     print_stack
     
+    echo "BASH_ARGC = $BASH_ARGC"
+    echo "BASH_ARGV = $BASH_ARGV"
     echo "BASH_COMMAND = $BASH_COMMAND"
     echo "BASH_SUBSHELL = $BASH_SUBSHELL"    
     
-    echo "${TAB}list of sources:"
-    (
-        for ((i = 0; i < $N_BASH; i++)); do
-            vecho -ne "$i:+${BASH_SOURCE[$i]}"
-            if [[ "${BASH_SOURCE[$i]}" != "${BASH_LINK[$i]}" ]]; then
-                vecho -e "+->+${BASH_LINK[$i]}"
-            else
-                vecho
-            fi
-        done
-    ) | column -t -s + | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
-
     echo "${TAB}list of invocations (links):"
     (
         if [ $N_BASH -gt 1 ]; then
@@ -165,8 +150,6 @@ function print_stack_devel() {
         fi
     ) | column -t -s + -o " " | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
     
-    echo "BASH_ARGC = $BASH_ARGC"
-    echo "BASH_ARGV = $BASH_ARGV"
     
     if [ $N_BASH -gt 1 ]; then
         echo "${TAB}invoking source source:"
@@ -175,7 +158,6 @@ function print_stack_devel() {
         echo "${TAB}BASH_SOURCE[(($N_BASH-1))] = ${BASH_SOURCE[$N_BASH-1]##*/}"
         dtab
     fi
-
     
     itab
     # (
@@ -530,7 +512,7 @@ function print_error() {
     # trap 'print_error $LINENO $? $BASH_COMMAND' ERR
 
     local -i DEBUG=9
-    local -i funcDEBUG=9
+    local -i funcDEBUG=$DEBUG
     
     # parse arguments
     local -i ERR_LINENO=$1
@@ -539,12 +521,12 @@ function print_error() {
     shift
     local ERR_CMD="$@"
 
+    # print arguments
     fecho "LINENO = $ERR_LINENO"
     fecho "RETVAL = $ERR_RETVAL"
     fecho "   CMD = $ERR_CMD"
 
     print_stack
-
     
     # since print stack is itself part of the stack, remove the top of the stack
     ((N_FUNC--))
@@ -566,11 +548,11 @@ function print_error() {
     dtab
 
     # get the command that casued the error
+    local ERR_LINE=
     decho "${TAB}getting line that caused error..."
     itab
 
-    local ERR_LINE=
-
+    # check if error came from shell
     if [[ ${BASH_SOURCE[${N_BOTTOM}]} =~ "bash" ]]; then
         # bash
         ddecho "${TAB}error did not come from a file, it came from bash"
@@ -585,26 +567,25 @@ function print_error() {
             if [ ! -z "${BASH_SOURCE[1]}" ]; then
                 ddecho "${TAB}BASH_SOURCE[1] is not empty"
                 if [ $N_FUNC -gt 1 ] ; then
+                    # print source
                     ddecho "${TAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]}"
-                    ddecho "${TAB}there are functions in stack"
+                    # print line number
                     ddecho "${TAB}ERR_LINE = ${ERR_LINENO}"
-
+                    # print summary
                     ddecho -n "${TAB}line ${ERR_LINENO} in ${BASH_SOURCE[1]}: "
                     ddecho sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}"
                     decho "${TAB}"$(sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}")
-                    
+                    # save offending line
                     ERR_LINE=$(sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}" | sed "s/^\s*//")
                 else
-                    ERR_LINE="???"
+                    ddecho "${TAB}BASH_SOURCE[1] is EMPTY"
+                    ERR_LINE="EMPTY"
                 fi
             fi
         else
-            ddecho "${TAB}error did not come from a file"
-            
+            ddecho "${TAB}error did not come from a file"            
             ERR_LINE="$ERR_CMD"
-        fi
-
-        
+        fi       
     fi
     dtab
     
@@ -672,12 +653,6 @@ function print_error() {
         fi
     fi
     echo -e "${spx} ${GRAY}RETVAL=${ERR_RETVAL}${RESET}"
-
-    
-    
-    return 0   
-
-    
 }
 
 function print_int() {
@@ -689,24 +664,27 @@ function print_int() {
 }
 
 function print_return() {
+    # expected arguments are $?
+    # e.g.
+    # trap 'print_return $?' RETURN
+    
     # set local debug value
     local -i DEBUG=${DEBUG:-0} # substitute default value if DEBUG is unset or null
 
+    ddecho "${TAB}$-"
     # set shell options
-    decho "setting shell options..."
-    # trace ERR (inherit ERR trap from shell)
-    #set -E
-    # trace RETURN and DEBUG traps
+    ddecho "setting shell options..."
+    # trace RETURN and DEBUG traps (subshells inherit RETURN and DEBUG traps from shell)
     #set -T
-    decho "done"
+    ddecho "done"
+    ddecho "${TAB}$-"
 
-    RETURN_RETVAL=$1
-    
-    start_new_line
+    RETURN_RETVAL=$1    
 
     # get size of function stack
     local -ir N_FUNC=${#FUNCNAME[@]}
-    
+    # print summary
+    start_new_line
     echo -e "${YELLOW}\E[7m RETURN ${RESET} ${GRAY}RETVAL=${RETURN_RETVAL}${RESET} ${FUNCNAME[$((N_FUNC-2))]}"
 }
 
@@ -722,12 +700,8 @@ function set_traps() {
     ddecho "${TAB}$-"
     # set shell options
     decho -n "${TAB}setting shell options... "
-    # exit on errors
-    #set -e
     # trace ERR (subshells inherit ERR trap from shell)
     set -E
-    # trace RETURN and DEBUG traps (subshells inherit RETURN and DEBUG traps from shell)
-    #set -T
     ddecho "done"
     ddecho "${TAB}$-"
     
