@@ -11,6 +11,8 @@
 #
 # Note: this file must use Unix line endings (LF)!
 #
+# Jul 2018 JCL
+#
 # -----------------------------------------------------------------------------------------------
 
 # If not running interactively, don't do anything
@@ -37,7 +39,8 @@ clear -x
 fpretty=${HOME}/config/.bashrc_pretty
 if [ -e $fpretty ]; then
     if $VB; then
-        vecho "loading $fpretty..."
+        # remember, if .bashrc_pretty hasn't been loaded yet, vecho is not defined
+        echo "loading $fpretty..."
     fi
     source $fpretty
     set -e
