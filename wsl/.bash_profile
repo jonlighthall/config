@@ -105,4 +105,4 @@ echo "${TAB}starting directory = ${start_dir}"
 cd config
 print_remotes
 # return to starting directory
-cd $start_dir
+cd "$start_dir"
