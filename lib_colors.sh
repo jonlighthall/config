@@ -17,7 +17,7 @@ function test_normal() {
     for i in {0..9}; do
         [ $i -gt 0 ] && echo -en "${CHARTRU}"
         [ $i = 6 ] && continue
-        echo -e "$i: \x1b[${i}mhello,${NORMAL} world!"
+        echo -e "$i: \x1b[${i}mhello${NORMAL}, world!"
     done
 }
 
