@@ -1,4 +1,13 @@
-# conditional echos
+#!/bin/bash -eu
+# -----------------------------------------------------------------------------------------------
+# CONDITIONAL ECHOS LIBRARY
+# -----------------------------------------------------------------------------------------------
+#
+# ~/config/lib_colors.sh
+#
+# PURPOSE: Define conditional echos for printing debugging messages.
+#
+# -----------------------------------------------------------------------------------------------
 
 # Name:
 #   VECHO - "verbose bash" echo

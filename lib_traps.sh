@@ -1,3 +1,16 @@
+#!/bin/bash -eu
+# -----------------------------------------------------------------------------------------------
+# TRAPS LIBRARY
+# -----------------------------------------------------------------------------------------------
+#
+# ~/config/lib_traps.sh
+#
+# PURPOSE: define fuctions to set and unset traps, setting and reseting shell options, and
+#   printing the contents of the execution stack. Includes functions for printing timestamps and
+#   return values.
+#
+# -----------------------------------------------------------------------------------------------
+
 function fello() {
     hello
     echo $-

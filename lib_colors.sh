@@ -1,4 +1,14 @@
-# define custom SGR (Select Graphic Rendition) parameters
+#!/bin/bash -eu
+# -----------------------------------------------------------------------------------------------
+# COLORS LIBRARY
+# -----------------------------------------------------------------------------------------------
+#
+# ~/config/lib_colors.sh
+#
+# PURPOSE: define custom SGR (Select Graphic Rendition) parameters and functions for coloring
+#   text.
+#
+# -----------------------------------------------------------------------------------------------
 
 # clear all formatting
 export   RESET='\E[0m'    # reset

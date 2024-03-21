@@ -1,6 +1,18 @@
+# -----------------------------------------------------------------------------------------------
+# TABS LIBRARY
+# -----------------------------------------------------------------------------------------------
+#
+# ~/config/lib_tabs.sh
+#
+# PURPOSE: Define functions for making and controling indentation (tabs).
+#
+# Mar 2024 JCL
+#
+# -----------------------------------------------------------------------------------------------
+
 function set_ftab() {
     # if fTAB is unset or null, then assign default value
-    export fTAB=${fTAB:='   '}
+    export fTAB=${fTAB:='|  '}
 }
 
 function set_tab() {

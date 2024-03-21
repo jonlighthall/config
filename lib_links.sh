@@ -1,17 +1,24 @@
 #!/bin/bash -u
-
-# .bash_links - functions for making links in bash shell
+# -----------------------------------------------------------------------------------------------
+# LINKS LIBRARY
+# -----------------------------------------------------------------------------------------------
 #
-# CONTIANS
-#  check_arg1()
-#  check_arg2()
-#  check_target()
-#  do_link()
-#  do_link_exe()
-#  do_make_dir()
-#  do_make_link()
+# ~/config/lib_links.sh
+#
+# PURPOSE: functions for making links in bash shell.
+#
+# CONTIANS:
+#   check_arg1()
+#   check_arg2()
+#   check_target()
+#   do_link()
+#   do_link_exe()
+#   do_make_dir()
+#   do_make_link()
 # 
 # Mar 2024 JCL
+#
+# -----------------------------------------------------------------------------------------------
 
 function check_arg1() {
     # check number of arguments

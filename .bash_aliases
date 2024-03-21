@@ -1,15 +1,22 @@
+#!/bin/bash -eu
+# -----------------------------------------------------------------------------------------------
+# BASH ALIASES
+# -----------------------------------------------------------------------------------------------
 # ~/config/.bash_aliases
 #
-# Aliases and fucnction for interactive UNIX-like shells. Intended to be universally compatible
-# with WSL, Debian derivatives (Ubuntu), Red Hat-based distros (Centos, Rock Linux), MinGW (MSYS,
-# GitBash), Cygwin, PGI Bash, etc.
+# Purpose: Define aliases and fucnction for interactive UNIX-like shells.
+#
+# Usage: Intended to be universally compatible with WSL, Debian derivatives (Ubuntu), Red
+#   Hat-based distros (Centos, Rock Linux), MinGW (MSYS, GitBash), Cygwin, PGI Bash, etc.
+#
+# -----------------------------------------------------------------------------------------------
 
 # load formatting
 fpretty=${HOME}/config/.bashrc_pretty
 if [ -e $fpretty ]; then
     source $fpretty            
-    set_tab
     if [[ "$-" == *i* ]]; then
+        set_tab
         print_ribbon
         print_source
     fi

@@ -1,24 +1,30 @@
-# User-dependent .bash_profile for WSL
+#!/bin/bash -eu
+# -----------------------------------------------------------------------------------------------
+# User-dependent LOGIN SHELL SETTINGS for Linux Subsystem for Windows
+# -----------------------------------------------------------------------------------------------
+#
+# ~/.bash_profile -> ~/config/wsl/.bash_profile
+#
+# Purpose: execute login functions and load interactive shell settings.
+#
+# Usage: Executed by bash for interactive login shell sessions.
+#
 # Note: this file must use Unix line endings (LF)!
-
-# If running interactively, print source
-if [[ "$-" == *i* ]]; then
-    echo "${TAB}${BASH_SOURCE##*/}... "
-fi
+#
+# -----------------------------------------------------------------------------------------------
 
 # If not running interactively, don't do anything
 if [[ "$-" != *i* ]]; then
-    echo -e "${TAB}\E[7mnot interactive\e[0m"
-    echo "${TAB}exiting ${BASH_SOURCE##*/}..."
-    # Verbose bash prints?
+    # turn off "Verbose Bash" conditional prints
     export VB=false
 else
-    echo -n "${TAB}${BASH_SOURCE##*/}... "
+    # get starting time in nanoseconds
+    declare -i start_time=$(date +%s%N)
+    # print source
+    echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+    # set "Verbose Bash" for conditional prints
     export VB=true
 fi
-
-# get starting time in nanoseconds
-declare -i start_time=$(date +%s%N)
 
 # print invoking process
 called_by=$(ps -o comm= $PPID)
@@ -27,9 +33,12 @@ echo "invoked by ${called_by}"
 # clear terminal
 clear -x
 
-# load formatting
+# load utility functions
 fpretty=${HOME}/config/.bashrc_pretty
 if [ -e $fpretty ]; then
+    if $VB; then
+        vecho "loading $fpretty..."
+    fi
     source $fpretty
     set -e
     set_tab
@@ -78,6 +87,9 @@ else
     fi
 fi
 
+# -------------------------------
+# load interactive shell settings
+# -------------------------------
 # source the user's .bashrc if it exists
 fname=${HOME}/config/${SYS_NAME}/.bashrc
 vecho -n "${TAB}"
@@ -106,6 +118,7 @@ clear -x
 
 # print welcome message
 echo "${TAB}Welcome to ${HOST_NAME}"
+return
 
 # test formatting
 source ~/utils/bash/git/lib_git.sh
