@@ -173,23 +173,207 @@ function safe_shell() {
     clear_traps
 }
 
-# ------------------------------------------------------------------------------
-# Functions for print EXIT, RETURN, and INT (non-ERR) status
-# ------------------------------------------------------------------------------
+function print_stack() {
+    local -i DEBUG=9
+    start_new_line
+    # get length of function stack
+    declare -i  N_FUNC
+    declare -i  N_BASH
+    declare -i  N_LINE
 
-# print source name, elapsed time, and timestamp
-function print_time() {
-    # check if start time is defined
-    if [ -n "${start_time+alt}" ]; then
-        # get the length of the execution stack
-        local -i N_BASH=${#BASH_SOURCE[@]}
-        # BASH_SOURCE counts from zero; get the bottom of the stack
-        # print file name of the calling function
-        echo -ne "${TAB}${GRAY}${BASH_SOURCE[(($N_BASH - 1))]##*/} "
-        # print elapsed time and change color
-        print_elap | sed 's/37m/90m/'
+    export N_FUNC=${#FUNCNAME[@]}
+    export N_BASH=${#BASH_SOURCE[@]}
+    export N_LINE=${#BASH_LINENO[@]}
+
+    # get color index
+    local -i idx
+    dbg2idx $N_BASH idx
+    # set color
+    echo -ne "${dcolor[idx]}"
+    
+    # print length of stack
+    echo "${TAB}There are N=$N_FUNC entries in the execution call stack"
+    
+    # check that all stacks have the same length
+    if [ $N_FUNC -ne $N_BASH ]; then 
+        echo "${TAB}There are N=$N_BASH entries in the source file name stack"
+    fi
+
+    if [ $N_FUNC -ne $N_LINE ]; then 
+        echo "${TAB}There are N=$N_LINE entries in the line number stack"
+    fi
+
+    if [ $N_FUNC -ne $N_BASH ] || [ $N_FUNC -ne $N_LINE ]; then 
+        echo "${TAB}${N_FUNC} functions, ${N_BASH} files, ${N_LINE]} lines"
+    fi
+
+    local -ax BASH_LINK
+    # resolve symbolic links
+    for ((i = 0; i < $N_BASH; i++)); do
+        BASH_LINK[$i]=$(readlink -f ${BASH_SOURCE[$i]})
+    done
+    export BASH_LINK
+
+    local -ax BASH_FNAME
+    # strip directories
+    for ((i = 0; i < $N_BASH; i++)); do
+        BASH_FNAME[$i]=${BASH_SOURCE[$i]##*/}
+    done
+    export BASH_FNAME
+
+    # get directories
+    local -ax BASH_DIR
+    for ((i = 0; i < $N_BASH; i++)); do
+        BASH_DIR[$i]=$(dirname ${BASH_SOURCE[$i]})
+    done
+    export BASH_DIR
+
+    # get directories
+    local -ax BASH_LINK_DIR
+    for ((i = 0; i < $N_BASH; i++)); do
+        BASH_LINK_DIR[$i]=$(dirname ${BASH_LINK[$i]})
+    done   
+    export BASH_LINK_DIR
+
+
+    # print call stack
+    echo "${TAB}call stack:"
+    local -i i
+    itab
+
+    if false; then
+        (
+            for ((i = 0; i < $N_FUNC ; i++)); do
+                echo "$i:${FUNCNAME[i]}:${BASH_FNAME[i]}:${BASH_LINENO[i]}"
+            done
+        ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
+        echo
+
+        # set color
+        ((idx++))
+        echo -ne "${dcolor[idx]}"
+        (
+            for ((i = 0; i < $N_FUNC ; i++)); do
+                echo "$i:${FUNCNAME[i]}:${BASH_SOURCE[i]}:${BASH_LINENO[i]}"
+            done
+        ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
+        echo
+
+        # set color
+        ((idx++))
+        echo -ne "${dcolor[idx]}"
+        (
+            for ((i = 0; i < $N_FUNC ; i++)); do
+                echo "$i:${FUNCNAME[i]}:${BASH_LINK[i]}:${BASH_LINENO[i]}"
+            done
+        ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
+        echo
+
+        # set color
+        ((idx++))
+        echo -ne "${dcolor[idx]}"    
+        (
+            for ((i = 0; i < $N_FUNC ; i++)); do
+                echo "$i:${FUNCNAME[i]}:${BASH_SOURCE[i]}:${BASH_LINENO[i]}"
+                if [[ "${BASH_SOURCE[$i]}" != "${BASH_LINK[$i]}" ]]; then
+                    decho -ne "$i:${FUNCNAME[i]}:${BASH_LINK[i]}:${BASH_LINENO[i]}"
+                    echo -e "${dcolor[idx]}"
+                fi
+            done
+        ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
         echo
     fi
+    
+    (
+        for ((i = 0; i < $N_FUNC ; i++)); do
+            # print stack element
+            echo "$i:${FUNCNAME[i]}:${BASH_DIR[i]}:${BASH_FNAME[i]}:${BASH_LINENO[i]}"
+            # check if source is linked
+            if [[ "${BASH_SOURCE[$i]}" != "${BASH_LINK[$i]}" ]]; then
+                # set color
+                ((idx++))
+                echo -ne "${dcolor[idx]}"
+                # print link
+                echo -ne "$i:${FUNCNAME[i]}:${BASH_LINK_DIR[i]}:${BASH_LINK[i]##*/}:${BASH_LINENO[i]}"
+                # reset color
+                ((idx--))
+                echo -e "${dcolor[idx]}"
+            fi
+        done
+    ) | column -t -s: -N "index,function,directory,source,line no" -R1 | sed "s/^/${TAB}/" 
+
+    dtab
+    # unset color
+    echo -ne "\e[0m"
+}
+
+function print_invo() {
+    local DEBUG=9
+    print_stack
+    # since print stack is itself part of the stack, remove the top of the stack
+    ((N_FUNC--))
+    ((N_BASH--))    
+    ((N_LINE--))    
+    
+    echo "${TAB}invocations:"
+    itab
+    for ((i = 0; i < (($N_FUNC -2)); i++)); do
+        echo "${TAB}$i: ${FUNCNAME[i]} ${BASH_FNAME[i]} ${BASH_LINENO[i+1]}"
+    done
+    dtab
+    
+    echo "${TAB}shell function invocations:"
+    itab
+    for ((i = 0; i < (($N_FUNC - 1 )); i++)); do
+        echo "${TAB}$i: ${FUNCNAME[i]} ${BASH_FNAME[i]} ${BASH_LINENO[i+1]}"
+    done
+    dtab
+
+    echo "caller:"
+    caller
+
+    (
+        itab
+        for ((i = 0; i < (($N_FUNC + 1 )); i++)); do
+            echo -en "${TAB}$i\t"
+            caller $i
+        done
+        dtab
+    ) | column -t -s "\t" -N "index,line,subroutine,filename" -R1
+
+    local -i N_BOTTOM=$(($N_FUNC - 1))
+    echo "N_BOTTOM = $N_BOTTOM"
+    echo "FUNCNAME[$N_BOTTOM] = ${FUNCNAME[$N_BOTTOM]}"
+    
+    if [[ "${FUNCNAME[$N_BOTTOM]}" =~ "main" ]]; then
+        echo "bottom of stack is main"
+        echo "root invocation ${BASH_FNAME[$N_BOTTOM]} is a script"
+    else
+        echo "bottom of stack is not main: ${FUNCNAME[$N_BOTTOM]}"
+        echo "root invocation ${BASH_FNAME[$N_BOTTOM]} is a shell function"
+    fi
+
+    echo "${TAB}script invocations:"
+    itab
+    for ((i = 0; i < (($N_FUNC-1)) ; i++)); do
+        echo "${TAB}$i: ${FUNCNAME[i]} called from ${BASH_FNAME[i+1]} line ${BASH_LINENO[i]}"
+    done
+    dtab
+    echo "${TAB}shell function invocations:"
+    
+    if [ $N_FUNC -gt 1 ]; then
+        echo "${FUNCNAME[0]} (defined in ${BASH_FNAME[0]}) called from ${FUNCNAME[1]} (defined in ${BASH_FNAME[1]}) line ${BASH_LINENO[0]}"
+    else
+        echo "${FUNCNAME[0]} (defined in ${BASH_FNAME[0]}) called from $SHELL line ${BASH_LINENO[0]}"
+    fi
+
+    itab
+    for ((i = 0; i < $N_FUNC ; i++)); do
+        echo "${TAB}$i: ${FUNCNAME[i]} defined in ${BASH_FNAME[i]} ${BASH_LINENO[i]}"
+    done
+    dtab
+    echo $LINENO
+    dtab
 }
 
 # print source name, elapsed time, and timestamp

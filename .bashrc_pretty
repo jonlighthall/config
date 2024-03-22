@@ -13,16 +13,11 @@
 TAB=${TAB=''}
 
 # add read-only variable to check if this file has already been loaded
-# if the argument '-f' is used, force loading the file
-# check for argument
-if [[ "$@" == "-f" ]];then
-    # force re-load
-    
-    # assign print command
-    cmd=decho
-    # check if print command is valid
-    if ! command -v $cmd &>/dev/null; then
-        cmd=echo
+if [ -z ${FPRETTY_LOADED+dummy} ]; then      
+    declare -rx FPRETTY_LOADED=true
+else
+    if [ ! -z "$(declare -f print_pretty_cbar)" ]; then 
+        return
     fi
     # print message
     $cmd "${TAB}reloading ${BASH_SOURCE##*/}"
