@@ -279,12 +279,14 @@ function dbg2idx() {
     local funcDEBUG=0
     
     # get input DEBUG value
+    fecho " arg 1 : $1"
     local -ir dbg_in=$1
     fecho "dbg_in = $dbg_in"
 
     # get output variable
-    local -n var_out=$2
-    fecho "var_out = ${!var_out}"
+    fecho " arg 2 : $2"
+    local var_out=$2
+    fecho "${!var_out+DUMMY} = ${var_out-UNSET}${var_out:-NULL}"
     
     local -i N_cols
     local -i N_max
@@ -300,8 +302,10 @@ function dbg2idx() {
     fecho "dbg_idx = $dbg_idx"
     
     #define array index
-    idx=$(( ( ${N_max} + $direction * ($dbg_idx) + $start + 1 ) % ${N_cols} ))
-    fecho "idx = $idx"
+    local -i idx_out
+    idx_out=$(( ( ${N_max} + $direction * ($dbg_idx) + $start + 1 ) % ${N_cols} ))
+    fecho "$var_out = $idx_out"
+    eval ${var_out}=$idx_out
 
     fecho -e "${dcolor[$idx]}\x1b[7m${dbg_in}\x1b[m"
     

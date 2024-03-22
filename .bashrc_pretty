@@ -12,7 +12,7 @@
 
 # add read-only variable to check if this file has already been loaded
 if [ -z ${FPRETTY_LOADED+dummy} ]; then      
-    declare -grx FPRETTY_LOADED=true
+    declare -rx FPRETTY_LOADED=true
 else
     if [ ! -z "$(declare -f print_pretty_cbar)" ]; then 
         return

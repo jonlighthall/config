@@ -36,25 +36,26 @@ function get_curpos() {
 	  fecho -e "cursor position: x=$cursor_x_position y=$cursor_y_position"
 
     fecho "number of args: $#"
-    
     # output values to parent   
     if [ $# -gt 0 ]; then
+        fecho "   arg 1 : $1=${!1-UNSET}"        
         fecho "outputing..."
-        local -n x_out=$1
+        local x_out=$1
         if [ -n "${x_out+dummy}" ]; then
-            fecho "   arg 1 in : ${!x_out}=$x_out"
+            fecho "   arg 1 in : $x_out=${!x_out-UNSET}"
         fi
-        fecho "   arg 1 out: ${!x_out}=${cursor_x_position}"
-        x_out=$cursor_x_position        
+        fecho "   arg 1 out: ${x_out}=${cursor_x_position}"
+        eval $x_out=$cursor_x_position        
     fi
 
     if [ $# -gt 1 ]; then
-        local -n y_out=$2
+        fecho "   arg 2 : $2=${!2}"
+        local y_out=$2
         if [ -n "${y_out+dummy}" ]; then
-            fecho "   arg 2 in : ${!y_out}=$y_out"
+            fecho "   arg 2 in : $y_out=${!y_out}"
         fi
-        fecho "   arg 2 out: ${!y_out}=${cursor_y_position}"
-        y_out=$cursor_y_position        
+        fecho "   arg 2 out: ${y_out}=${cursor_y_position}"
+        eval $y_out=$cursor_y_position        
     fi
 }
 
@@ -140,5 +141,5 @@ function cbar() {
     # get length of text
     local ln=$(for ((i = 1; i <= ${#msgne}; i++)); do echo -n "-"; done)
     # print text with TAB
-    echo -e "$ln\n${MESSAGE_IN}\n$ln" | sed "s/^/${TAB}/"
-}
+                    echo -e "$ln\n${MESSAGE_IN}\n$ln" | sed "s/^/${TAB}/"
+                }

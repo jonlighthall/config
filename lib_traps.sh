@@ -257,9 +257,13 @@ function print_stack() {
     local -i DEBUG=9
     start_new_line
     # get length of function stack
-    local -gi N_FUNC=${#FUNCNAME[@]}
-    local -gi N_BASH=${#BASH_SOURCE[@]}
-    local -gi N_LINE=${#BASH_LINENO[@]}
+    declare -i  N_FUNC
+    declare -i  N_BASH
+    declare -i  N_LINE
+
+    export N_FUNC=${#FUNCNAME[@]}
+    export N_BASH=${#BASH_SOURCE[@]}
+    export N_LINE=${#BASH_LINENO[@]}
 
     # get color index
     local -i idx
@@ -283,17 +287,34 @@ function print_stack() {
         echo "${TAB}${N_FUNC} functions, ${N_BASH} files, ${N_LINE]} lines"
     fi
 
-    local -ga BASH_LINKS
+    local -ax BASH_LINK
     # resolve symbolic links
     for ((i = 0; i < $N_BASH; i++)); do
         BASH_LINK[$i]=$(readlink -f ${BASH_SOURCE[$i]})
     done
+    export BASH_LINK
 
-    local -ga BASH_FNAME
+    local -ax BASH_FNAME
     # strip directories
     for ((i = 0; i < $N_BASH; i++)); do
         BASH_FNAME[$i]=${BASH_SOURCE[$i]##*/}
     done
+    export BASH_FNAME
+
+    # get directories
+    local -ax BASH_DIR
+    for ((i = 0; i < $N_BASH; i++)); do
+        BASH_DIR[$i]=$(dirname ${BASH_SOURCE[$i]})
+    done
+    export BASH_DIR
+
+    # get directories
+    local -ax BASH_LINK_DIR
+    for ((i = 0; i < $N_BASH; i++)); do
+        BASH_LINK_DIR[$i]=$(dirname ${BASH_LINK[$i]})
+    done   
+    export BASH_LINK_DIR
+
 
     # print call stack
     echo "${TAB}call stack:"
@@ -343,18 +364,6 @@ function print_stack() {
         echo
     fi
     
-    # get directories
-    local -ga BASH_DIR
-    for ((i = 0; i < $N_BASH; i++)); do
-        BASH_DIR[$i]=$(dirname ${BASH_SOURCE[$i]})
-    done
-
-    # get directories
-    local -ga BASH_LINK_DIR
-    for ((i = 0; i < $N_BASH; i++)); do
-        BASH_LINK_DIR[$i]=$(dirname ${BASH_LINK[$i]})
-    done   
-
     (
         for ((i = 0; i < $N_FUNC ; i++)); do
             # print stack element
