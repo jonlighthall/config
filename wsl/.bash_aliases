@@ -53,9 +53,8 @@ if $VB; then
     else
         RUN_TYPE="executing"
     fi    
-    set_tab
     print_source
-    echo "${TAB}BASH_SUBSHELL = $BASH_SUBSHELL"
+    echo -e "${TAB}SHLVL = $BROKEN$SHLVL$RESET"
     print_stack
     echo -e "${TAB}verbose bash printing is... ${GOOD}$VB${RESET}"
 fi

@@ -22,7 +22,6 @@ else
         else
             RUN_TYPE="executing"
         fi
-        set_tab
         print_source
     fi
 fi

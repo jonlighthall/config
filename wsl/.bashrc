@@ -46,7 +46,6 @@ if $VB; then
     else
         RUN_TYPE="executing"
     fi
-    set_tab
     print_ribbon
     print_source
 fi

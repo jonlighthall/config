@@ -67,8 +67,10 @@ function get_source() {
 function print_source() {
     RUN_TYPE=${RUN_TYPE:-"running"}
     get_source
+    set_tab
     # since print_source is itself part of the stack, remove the top of the stack
     ((N_BASH--))
+    dtab
 
     if [ $DEBUG -gt 0 ]; then 
         RUN_TYPE="\x1b[7;38;5;132m${N_BASH}\x1b[0m${RUN_TYPE}"

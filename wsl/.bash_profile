@@ -66,7 +66,6 @@ if $VB; then
     else
         RUN_TYPE="executing"
     fi    
-    set_tab
     print_source
     print_stack
     echo -e "${TAB}verbose bash printing is... ${GOOD}$VB${RESET}"
