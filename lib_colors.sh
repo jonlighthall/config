@@ -11,17 +11,17 @@
 # -----------------------------------------------------------------------------------------------
 
 # clear all formatting
-export   RESET='\E[0m'    # reset
+export   RESET='\x1b[0m'    # reset
 
 # define graphics mode accents
-export  NORMAL='\E[21;22;23;24;25;27;28;29m' # normal
-export    BOLD='\E[1m'    # bold
-export     DIM='\E[2m'    # dim/faint
-export      IT='\E[3m'    # italics
-export      UL='\E[4m'    # underline
-export   BLINK='\E[5m'    # blinking 
-export  INVERT='\E[7m'    # invert
-export      ST='\E[9m'    # strikethrough
+export  NORMAL='\x1b[21;22;23;24;25;27;28;29m' # normal
+export    BOLD='\x1b[1m'    # bold
+export     DIM='\x1b[2m'    # dim/faint
+export      IT='\x1b[3m'    # italics
+export      UL='\x1b[4m'    # underline
+export   BLINK='\x1b[5m'    # blinking 
+export  INVERT='\x1b[7m'    # invert
+export      ST='\x1b[9m'    # strikethrough
 
 function test_normal() {
     for i in {0..9}; do
@@ -32,47 +32,47 @@ function test_normal() {
 }
 
 # define LaTeX-like text formatting
-export      BF='\E[1m'    # bold face
+export      BF='\x1b[1m'    # bold face
 
 # define LaTeX-like text formatting names
-export    BF='\E[1m'  # bold face
-export    IT='\E[3m'  # italics
-export UNDERLINE='\E[4m'  # underline
+export    BF='\x1b[1m'  # bold face
+export    IT='\x1b[3m'  # italics
+export UNDERLINE='\x1b[4m'  # underline
 
 # define primary colors	(foreground)
-export     RED='\E[31m'
-export   GREEN='\E[32m'   # lime
-export    BLUE='\E[34m'
+export     RED='\x1b[31m'
+export   GREEN='\x1b[32m'   # lime
+export    BLUE='\x1b[34m'
 # define secondary colors (foreground)
-export  YELLOW='\E[33m'
-export    CYAN='\E[36m'  # aqua
-export MAGENTA='\E[35m'  # fuchsia
+export  YELLOW='\x1b[33m'
+export    CYAN='\x1b[36m'  # aqua
+export MAGENTA='\x1b[35m'  # fuchsia
 # define teriary colors (foreground)
 #      var              ID    hex     RGB           Name
 #-----+-------+--------------+-------+-------------+----------------
-export  ORANGE='\E[38;5;208m' #ff8700 (255,135,  0) Dark Orange
-export CHARTRU='\E[38;5;118m' #87ff00	(135,255,  0) Chartreuse
-export SPGREEN='\E[38;5;46m'  #00ff87	(  0,255,135) Spring Green, aquamarine
-export   AZURE='\E[38;5;33m' 	#0087ff	(  0,135,255) (Brooklyn) Dodger Blue, Brescian Blue
-export  PURPLE='\E[38;5;93m' 	#8700ff	(135,  0,255) Purple, violet
-export    ROSE='\E[38;5;198m' #ff0087	(255,  0,135) DeepPink1	
+export  ORANGE='\x1b[38;5;208m' #ff8700 (255,135,  0) Dark Orange
+export CHARTRU='\x1b[38;5;118m' #87ff00	(135,255,  0) Chartreuse
+export SPGREEN='\x1b[38;5;46m'  #00ff87	(  0,255,135) Spring Green, aquamarine
+export   AZURE='\x1b[38;5;33m' 	#0087ff	(  0,135,255) (Brooklyn) Dodger Blue, Brescian Blue
+export  PURPLE='\x1b[38;5;93m' 	#8700ff	(135,  0,255) Purple, violet
+export    ROSE='\x1b[38;5;198m' #ff0087	(255,  0,135) DeepPink1	
 
 # create array of 12 rainbow colors
 declare -ax rcolor=( "${RED}" "${ORANGE}" "${YELLOW}" "${CHARTRU}" "${GREEN}" "${SPGREEN}" "${CYAN}" "${AZURE}" "${BLUE}" "${PURPLE}" "${MAGENTA}" "${ROSE}" )
 
 # define monochrome colors
-export    GRAY='\E[90m'
-export   WHITE='\E[1;37m'
+export    GRAY='\x1b[90m'
+export   WHITE='\x1b[1;37m'
 
 # define highlight colors
 export     BAD="${RED}" # red
 export    GOOD="${GREEN}" # green
 
 # define 'ls' colors
-export  BROKEN='\E[1;31m' # bold red    : or orphan link
-export     TGT='\E[1;32m' # bold green  : ex executable
-export     DIR='\E[1;34m' # bold blue   : di directory
-export   VALID='\E[1;36m' # bold cyan   : ln valid link
+export  BROKEN='\x1b[1;31m' # bold red    : or orphan link
+export     TGT='\x1b[1;32m' # bold green  : ex executable
+export     DIR='\x1b[1;34m' # bold blue   : di directory
+export   VALID='\x1b[1;36m' # bold cyan   : ln valid link
 
 function define_ls_colors() {
     local -r LN=$(declare -p LS_COLORS | sed 's/^.*ln=\([0-9;]*\):.*$/\1/')
@@ -80,10 +80,10 @@ function define_ls_colors() {
     local -r DI=$(declare -p LS_COLORS | sed 's/^.*di=\([0-9;]*\):.*$/\1/')
     local -r EX=$(declare -p LS_COLORS | sed 's/^.*ex=\([0-9;]*\):.*$/\1/')
 
-    export cLN="\E[${LN}m"
-    export cOR="\E[${OR}m"
-    export cDI="\E[${DI}m"
-    export cEX="\E[${EX}m"
+    export cLN="\x1b[${LN}m"
+    export cOR="\x1b[${OR}m"
+    export cDI="\x1b[${DI}m"
+    export cEX="\x1b[${EX}m"
 
     echo -e "${cLN}links${RESET}"
     echo -e "${cOR}orphaned links${RESET}"
@@ -92,39 +92,39 @@ function define_ls_colors() {
 }
 
 # define PS1 colors
-export  PSTIME='\E[0;37m' # light gray  : \A : time
-export  PSUSER='\E[0;32m' # green       : \u : user name, prompt
-export  PSHOST='\E[1;34m' # bold blue   : \h : host name
-export   PSDIR='\E[0;33m' # yellow      : \w : directory
-export    PSBR='\E[0;36m' # blue        :    : branch
+export  PSTIME='\x1b[0;37m' # light gray  : \A : time
+export  PSUSER='\x1b[0;32m' # green       : \u : user name, prompt
+export  PSHOST='\x1b[1;34m' # bold blue   : \h : host name
+export   PSDIR='\x1b[0;33m' # yellow      : \w : directory
+export    PSBR='\x1b[0;36m' # blue        :    : branch
 
 # define 'grep' colors
-export     GRH='\E[1;31m' # bold red    : ms : selected match
-export     GRL='\E[0;32m' # green       : ln : line number 
-export     GRF='\E[0;35m' # magenta     : fn : file name
-export     GRS='\E[0;36m' # cyan        : se : seperator
+export     GRH='\x1b[1;31m' # bold red    : ms : selected match
+export     GRL='\x1b[0;32m' # green       : ln : line number 
+export     GRF='\x1b[0;35m' # magenta     : fn : file name
+export     GRS='\x1b[0;36m' # cyan        : se : seperator
 
 # subtle colors for readability
 # hue=(N*30), saturation=33%, lightness=52%; sorted by hue
 #      order          ID       N  hue Name              corresponding color
 #-----+------+--------------+----+---+-----------------+--------------------
-export col08='\E[38;5;131m' #  0:   0 Indian Red        pri - RED
-export col11='\E[38;5;137m' #  1:  30 Light Salmon        ter - orange
-export col12='\E[38;5;143m' #  2:  60 Dark Khaki          sec - YELLOW
-export col07='\E[38;5;107m' #  3:  90 Dark Olive Green    ter - chartreuse
-export col03='\E[38;5;71m'  #  4: 120 Dark Sea Green    pri - GREEN/lime
-export col04='\E[38;5;72m'  #  5: 150 Cadet Blue          ter - spring green
-export col04='\E[38;5;73m'  #  6: 180 Cadet Blue          sec - CYAN/aqua
-export col02='\E[38;5;67m'  #  7: 210 Steel Blue          ter - azure
-export col01='\E[38;5;61m'  #  8: 240 Slate Blue        pri - BLUE
-export col06='\E[38;5;97m'  #  9: 270 Medium Purple       ter - violet
-export col10='\E[38;5;133m' # 10: 300 Medium Orchid       sec - MAGENTA/fuchsia
-export col09='\E[38;5;132m' # 11: 330 Hot Pink            ter - rose
+export col08='\x1b[38;5;131m' #  0:   0 Indian Red        pri - RED
+export col11='\x1b[38;5;137m' #  1:  30 Light Salmon        ter - orange
+export col12='\x1b[38;5;143m' #  2:  60 Dark Khaki          sec - YELLOW
+export col07='\x1b[38;5;107m' #  3:  90 Dark Olive Green    ter - chartreuse
+export col03='\x1b[38;5;71m'  #  4: 120 Dark Sea Green    pri - GREEN/lime
+export col04='\x1b[38;5;72m'  #  5: 150 Cadet Blue          ter - spring green
+export col04='\x1b[38;5;73m'  #  6: 180 Cadet Blue          sec - CYAN/aqua
+export col02='\x1b[38;5;67m'  #  7: 210 Steel Blue          ter - azure
+export col01='\x1b[38;5;61m'  #  8: 240 Slate Blue        pri - BLUE
+export col06='\x1b[38;5;97m'  #  9: 270 Medium Purple       ter - violet
+export col10='\x1b[38;5;133m' # 10: 300 Medium Orchid       sec - MAGENTA/fuchsia
+export col09='\x1b[38;5;132m' # 11: 330 Hot Pink            ter - rose
 
-export col00='\E[38;5;102m' # 12:   0 Grey              mon - GRAY
+export col00='\x1b[38;5;102m' # 12:   0 Grey              mon - GRAY
 
 # create rainbow-ordered (hue order) array of 12 debug colors
-declare -ax dcolor=( '\E[38;5;131m' '\E[38;5;137m' '\E[38;5;143m' '\E[38;5;107m' '\E[38;5;71m'  '\E[38;5;72m'  '\E[38;5;73m'  '\E[38;5;67m'  '\E[38;5;61m'  '\E[38;5;97m'  '\E[38;5;133m' '\E[38;5;132m' )
+declare -ax dcolor=( '\x1b[38;5;131m' '\x1b[38;5;137m' '\x1b[38;5;143m' '\x1b[38;5;107m' '\x1b[38;5;71m'  '\x1b[38;5;72m'  '\x1b[38;5;73m'  '\x1b[38;5;67m'  '\x1b[38;5;61m'  '\x1b[38;5;97m'  '\x1b[38;5;133m' '\x1b[38;5;132m' )
 
 # print dcolor array in rainbow-order
 function print_colors() {
@@ -142,7 +142,7 @@ function print_colors() {
         echo -e "${dcolor[$i]}$i"
     done
     # reset color
-    echo -en "\E[m"
+    echo -en "\x1b[m"
     
     # reset shell options
     local -i DEBUG=${DEBUG:-1}
@@ -165,7 +165,7 @@ function print_rcolors() {
         echo -e "${rcolor[$i]}$i"
     done
     # reset color
-    echo -en "\E[m"
+    echo -en "\x1b[m"
 
     # reset shell options
     #local -i DEBUG=${DEBUG:-1}
