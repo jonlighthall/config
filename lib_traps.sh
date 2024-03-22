@@ -346,13 +346,13 @@ function print_stack() {
     # get directories
     local -ga BASH_DIR
     for ((i = 0; i < $N_BASH; i++)); do
-        BASH_DIR[$i]=$(dirname ${BASH_SOURCE[$i]})
+        BASH_DIR[$i]="$(dirname "${BASH_SOURCE[$i]}")"
     done
 
     # get directories
     local -ga BASH_LINK_DIR
     for ((i = 0; i < $N_BASH; i++)); do
-        BASH_LINK_DIR[$i]=$(dirname ${BASH_LINK[$i]})
+        BASH_LINK_DIR[$i]="$(dirname "${BASH_LINK[$i]}")"
     done   
 
     (
