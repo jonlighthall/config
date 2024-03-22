@@ -1,13 +1,15 @@
 #!/bin/bash -eu
 # -----------------------------------------------------------------------------------------------
-# BASH ALIASES
+# SYSTEM-INDEPENDENT BASH ALIASES
 # -----------------------------------------------------------------------------------------------
 # ~/config/.bash_aliases
 #
-# Purpose: Define aliases and fucnction for interactive UNIX-like shells.
+# Purpose: Define aliases and function for interactive UNIX-like shells.
 #
 # Usage: Intended to be universally compatible with WSL, Debian derivatives (Ubuntu), Red
 #   Hat-based distros (Centos, Rock Linux), MinGW (MSYS, GitBash), Cygwin, PGI Bash, etc.
+#
+# Aug 2023 JCL
 #
 # -----------------------------------------------------------------------------------------------
 
@@ -20,7 +22,7 @@ else
         # load formatting
         fpretty=${HOME}/config/.bashrc_pretty
         if [ -e $fpretty ]; then
-            source $fpretty
+            source $fpretty            
             print_ribbon
             if [[ "$-" == *i* ]]; then
                 # determine if being sourced or executed
@@ -83,7 +85,7 @@ alias ls='ls -l --color'
 alias lt='ls -ltr' # sort by time
 alias lsd='ls -d */'
 
-# Fucntions
+# Functions
 alias du0='duf --max-depth=0'
 alias du1='duf --max-depth=1'
 alias du2='duf --max-depth=2'
@@ -136,4 +138,7 @@ function nf {
 	      fi
     done
 }
-dtab
+if $VB; then
+    # reset tab
+    dtab
+fi

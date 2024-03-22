@@ -21,16 +21,24 @@
 if [[ "$-" == *i* ]]; then
     # get starting time in nanoseconds
     declare -i start_time=$(date +%s%N)
+    # set "Verbose Bash" for conditional prints
+    export VB=false
+    # set debug level if unset
+    export DEBUG=${DEBUG=0}  
     # print source
     if [ ${DEBUG:-0} -gt 0 ]; then
         echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
     fi
     # set "Verbose Bash" for conditional prints
-    export VB=false
+    export VB=true
+    # set debug level if unset
+    export DEBUG=${DEBUG=0}      
+    # clear terminal
+    clear -x
+    if [ ${DEBUG} -gt 0 ]; then
+        export VB=true
+    fi
 fi
-
-# clear terminal
-clear -x
 
 config_dir=${HOME}/config
 # load utility functions
@@ -65,7 +73,7 @@ if $VB; then
     fi    
     print_source
     echo -e "${TAB}SHLVL = $BROKEN$SHLVL$RESET"
-    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
+    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then    
         print_stack
     fi
     decho -e "${TAB}verbose bash printing is... ${GOOD}$VB${RESET}"
@@ -90,11 +98,15 @@ if [ -f $fname ]; then
 else
     echo "${TAB}$fname not found"
 fi
-vecho
+
 # print runtime duration
 if $VB; then
+    # reset tab
     dtab
+    # print timestamp
     print_done
+    # print hidden text to force a new line before clearing screen
+    vecho -e "\E[8mhello\E[28m"
 fi
 
 # clear terminal

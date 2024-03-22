@@ -1,6 +1,6 @@
 #!/bin/bash -eu
 # -----------------------------------------------------------------------------------------------
-# User-dependent LOGIN SHELL SETTINGS for Linux Subsystem for Windows
+# User-dependent LOGIN SHELL SETTINGS for Windows Subsystem for Linux
 # -----------------------------------------------------------------------------------------------
 #
 # ~/.bash_profile -> ~/config/wsl/.bash_profile
@@ -29,7 +29,7 @@ else
     # print source
     if [ ${DEBUG:-0} -gt 0 ]; then
         echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
-         # print invoking process
+        # print invoking process
         called_by=$(ps -o comm= $PPID)
         echo "${TAB}invoked by ${called_by}"
     fi
@@ -38,11 +38,10 @@ else
     # set debug level if unset
     export DEBUG=${DEBUG=0}      
     # clear terminal
-    clear -x    
-fi
-
-if [ ${DEBUG} -gt 0 ]; then
-    export VB=true
+    clear -x
+    if [ ${DEBUG} -gt 0 ]; then
+        export VB=true
+    fi
 fi
 
 config_dir=${HOME}/config
@@ -125,11 +124,15 @@ if [ -f $fname ]; then
 else
     echo "${TAB}$fname not found"
 fi
-vecho
+
 # print runtime duration
 if $VB; then
+    # reset tab
     dtab
+    # print timestamp
     print_done
+    # print hidden text to force a new line before clearing screen
+    vecho -e "\E[8mhello\E[28m"
 fi
 
 # clear terminal
