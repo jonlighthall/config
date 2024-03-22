@@ -52,7 +52,7 @@ function reset_shell() {
         return 0
     fi
 
-    local TAB=${TAB:='   '}
+    itab
     local -xr old_opts=$1
     shift
     if [ $# -lt 1 ]; then
@@ -66,6 +66,7 @@ function reset_shell() {
     
     if [[ "$-" == "${old_opts}" ]]; then
         ddecho "same"
+        dtab
         return 0
     else
         ddecho "not same"
@@ -122,6 +123,7 @@ function reset_shell() {
     # ) | sed '1d' | column -t -s':' -o': ' -R 1 | sed '1 s/^/\n/' | sed "s/^/  /"
     set -T
     decho "done: $-"
+    dtab
     #huh
 }
 
