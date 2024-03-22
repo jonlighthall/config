@@ -328,7 +328,8 @@ function print_fcolors() {
 }
 
 function print_pretty() {
-    local msg="pretty print enabled"    
+    local -i DEBUG=0
+    local msg="pretty-print enabled"    
     decho "$msg"
     local -i ln=${#msg}
     decho "is $ln long"

@@ -22,9 +22,11 @@ if [[ "$-" == *i* ]]; then
     # get starting time in nanoseconds
     declare -i start_time=$(date +%s%N)
     # print source
-    echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+    if [ ${DEBUG:-0} -gt 0 ]; then
+        echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+    fi
     # set "Verbose Bash" for conditional prints
-    export VB=true
+    export VB=false
 fi
 
 # clear terminal
@@ -39,10 +41,18 @@ if [ -e $fpretty ]; then
         echo "loading $fpretty..."
     fi
     source $fpretty
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]; then
+        dtab
+        vecho -e "${TAB}$fpretty ${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+    else
+        echo -e "${TAB}$fpretty ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+    fi
     set -e
+    set_traps
     print_ribbon
-	  set_traps
 else
+    echo "${TAB}$fname not found"
     set +eu
 fi    
 
@@ -55,18 +65,16 @@ if $VB; then
     fi    
     print_source
     echo -e "${TAB}SHLVL = $BROKEN$SHLVL$RESET"
-    print_stack
-    echo -e "${TAB}verbose bash printing is... ${GOOD}$VB${RESET}"
+    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
+        print_stack
+    fi
+    decho -e "${TAB}verbose bash printing is... ${GOOD}$VB${RESET}"
 fi
 
 # system dependencies
 SYS_NAME=wsl
 HOST_NAME=$(hostname -s)
 vecho -e "${TAB}applying ${SYS_NAME} settings on ${PSHOST}${HOST_NAME}${RESET}"
-
-# (un)set traps and shell options before loading command files
-set +e
-unset_traps
 
 # load system-dependent interactive shell settings
 fname=${config_dir}/${SYS_NAME}/.bashrc

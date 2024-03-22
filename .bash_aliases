@@ -11,14 +11,27 @@
 #
 # -----------------------------------------------------------------------------------------------
 
-# load formatting
-fpretty=${HOME}/config/.bashrc_pretty
-if [ -e $fpretty ]; then
-    source $fpretty            
-    if [[ "$-" == *i* ]]; then
-        set_tab
-        print_ribbon
-        print_source
+# check if VB is unset or null
+if [ -z ${VB:+dummy} ]; then
+    export VB=false
+else
+    # check if VB is true
+    if $VB; then
+        # load formatting
+        fpretty=${HOME}/config/.bashrc_pretty
+        if [ -e $fpretty ]; then
+            source $fpretty
+            print_ribbon
+            if [[ "$-" == *i* ]]; then
+                # determine if being sourced or executed
+                if (return 0 2>/dev/null); then
+                    RUN_TYPE="sourcing"
+                else
+                    RUN_TYPE="executing"
+                fi
+                print_source
+            fi
+        fi
     fi
 fi
 

@@ -12,7 +12,7 @@
 
 function set_ftab() {
     # if fTAB is unset or null, then assign default value
-    export fTAB=${fTAB:='|  '}
+    export fTAB=${fTAB:='   '}
 }
 
 function set_tab() {

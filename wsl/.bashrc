@@ -25,8 +25,8 @@
 # -----------------------------------------------------------------------------------------------
 
 # If running interactively, print source
-if [[ "$-" == *i* ]]; then
-    echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
+    echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
 fi
 
 # load bash utilities
@@ -50,7 +50,9 @@ if $VB; then
     print_source
 fi
 
-print_stack
+if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
+    print_stack
+fi
 
 vecho "${TAB}running list..."
 # required list

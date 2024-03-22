@@ -22,18 +22,28 @@ if [[ "$-" != *i* ]]; then
 else
     # get starting time in nanoseconds
     declare -i start_time=$(date +%s%N)
+    # set "Verbose Bash" for conditional prints
+    export VB=false
+    # set debug level if unset
+    export DEBUG=${DEBUG=0}  
     # print source
-    echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+    if [ ${DEBUG:-0} -gt 0 ]; then
+        echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+         # print invoking process
+        called_by=$(ps -o comm= $PPID)
+        echo "${TAB}invoked by ${called_by}"
+    fi
     # set "Verbose Bash" for conditional prints
     export VB=true
+    # set debug level if unset
+    export DEBUG=${DEBUG=0}      
+    # clear terminal
+    clear -x    
 fi
 
-# print invoking process
-called_by=$(ps -o comm= $PPID)
-echo "invoked by ${called_by}"
-
-# clear terminal
-clear -x
+if [ ${DEBUG} -gt 0 ]; then
+    export VB=true
+fi
 
 config_dir=${HOME}/config
 # load utility functions
@@ -67,8 +77,10 @@ if $VB; then
         RUN_TYPE="executing"
     fi    
     print_source
-    print_stack
-    echo -e "${TAB}verbose bash printing is... ${GOOD}$VB${RESET}"
+    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then    
+        print_stack
+    fi
+    decho -e "${TAB}verbose bash printing is... ${GOOD}$VB${RESET}"
 fi
 
 # system dependencies
@@ -135,3 +147,4 @@ cd ${config_dir}
 print_remotes
 # return to starting directory
 cd "$start_dir"
+

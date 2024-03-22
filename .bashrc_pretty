@@ -19,13 +19,13 @@ else
     fi
 fi    
 
-# If running interactively, print source
-if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
-    echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
-fi
-
 # set debug level
 declare -i DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
+
+# If running interactively, print source
+if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
+    echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+fi
 
 function get_source() {
     # set local debug value
@@ -33,7 +33,7 @@ function get_source() {
 
     # get the lenght of the execution stack
     N_BASH=${#BASH_SOURCE[@]}
-    # since this is a function, reduce N_BASH by one
+    # since this function is part of the stack, reduce N_BASH by one
     ((N_BASH--))
     # check stack size
     if [ $N_BASH -lt 1 ]; then
@@ -103,19 +103,21 @@ function print_source() {
 
 function print_ribbon() {
     get_source
-
+    # since this function is part of the stack, reduce N_BASH by one
+    ((N_BASH--))
     # print source
     decho -e "${TAB}\x1b[7;38;5;132m${N_BASH}: ${src_base} :${N_BASH}\x1b[0m"
 }
 
 function print_bar() {
     get_source
+    
     # define message
     msg=$(echo "this file is ${src_base}!")
     # define line
     ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
     # print source
-    decho -e "$ln\n$msg\n$ln" | sed "s/^/${TAB}/"
+    decho -e "$ln\n$msg\n$ln" | sed "$ ! s/^/${TAB}/"
 }
 
 # run get_source to define source directory
@@ -154,8 +156,9 @@ fi
 if [[ "$-" == *i* ]]; then
     #set tab
     set_tab
-    decho "${TAB}DEBUG = $DEBUG"
-    print_ribbon
+    decho "${TAB}${BASH_SOURCE##*/}: DEBUG = $DEBUG"
+    #print_ribbon
+    #print_bar
 
     # determine if script is being sourced or executed
     if (return 0 2>/dev/null); then
