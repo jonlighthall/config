@@ -23,8 +23,25 @@ function set_ftab() {
     export fTAB=${fTAB:='   '}
 }
 
-function guide_tabs() {
-    export fTAB='|--'
+function set_tab() {
+    # reset TAB
+    rtab
+
+    # get the lenght of the execution stack
+    local -i N_BASH=${#BASH_SOURCE[@]}
+
+    # since this is a function, reduce N_BASH by one
+    ((N_BASH--))
+    if [ $SHLVL -gt 1 ]; then
+        ((N_BASH--))
+    fi
+    export N_BASH
+
+    # set the tab length
+    local -ir N_TAB=$(($N_BASH-1))
+    
+    # set tab
+    itab $N_TAB
 }
 
 # clear tab

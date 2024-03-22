@@ -625,14 +625,15 @@ function dbg2idx() {
     local -i funcDEBUG=0
 
     # get input DEBUG value
+    fecho " arg 1 : $1"
     local -ir dbg_in=$1
     fecho "dbg_in = $dbg_in"
 
     # get output variable
-    local -n var_out=$2
-    fecho "var_out = ${!var_out}"
-
-    # define parameters
+    fecho " arg 2 : $2"
+    local var_out=$2
+    fecho "${!var_out+DUMMY} = ${var_out-UNSET}${var_out:-NULL}"
+    
     local -i N_cols
     local -i N_max
     local -i start
@@ -666,10 +667,12 @@ function dbg2idx() {
     # calculate the corresponding "debug" index, modulo number of colors
     local -i dbg_idx=$(( ( $dbg_in + ${offset} ) % ${N_mod} ))
     fecho "dbg_idx = $dbg_idx"
-
-    #define array index, based on values defined in set_dbg2idx
-    var_out=$(( ( ${N_max} + $direction * ($dbg_idx) + $start + 1 ) % ${N_mod} ))
-    fecho "idx = $idx"
+    
+    #define array index
+    local -i idx_out
+    idx_out=$(( ( ${N_max} + $direction * ($dbg_idx) + $start + 1 ) % ${N_cols} ))
+    fecho "$var_out = $idx_out"
+    eval ${var_out}=$idx_out
 
     # print result
     fecho -e "${dcolor[$idx]}\x1B[7m${dbg_in}\x1B[m"
