@@ -12,8 +12,9 @@
 function get_curpos() {
     # Turn in-function debugging on/off.
     # Inherit the value of funcDEBUG from shell or substitute default value if unset or NULL.
-    local -i funcDEBUG=${funcDEBUG+0}
-    local -i DEBUG=${DEBUG+0}    
+    local -i funcDEBUG=${funcDEBUG:-0}
+    local -i DEBUG=${DEBUG:-0}
+    
     local CURPOS
     # get the cursor position
     echo -en "\E[6n"
@@ -39,7 +40,7 @@ function get_curpos() {
     
     # output values to parent   
     if [ $# -gt 0 ]; then
-        fecho "outputing..."
+        fecho "outputting..."
         local -n x_out=$1
         if [ -n "${x_out+dummy}" ]; then
             fecho "   arg 1 in : ${!x_out}=$x_out"
@@ -59,13 +60,39 @@ function get_curpos() {
 }
 
 function ind() {
-    echo -n "hello "
-    local -i x=0
-    local -i y=0
+    local -i DEBUG=1
+    local -i funcDEBUG=1
+    
+    local -i x1=0
+    local -i y1=0
+    local -i x2=0
+    local -i y1=0
+
+
+    echo -n "indented: "
     # pass variable names, not values
-    get_curpos x y
-    echo "x = $x"
-    echo "y = $y"
+    get_curpos x1 y1
+    echo "x = $x1"
+    echo "y = $y1"
+    echo "BASH_LINENO = ${BASH_LINENO[@]}"
+
+    echo "not indented: "
+    get_curpos x2 y2
+    echo "x = $x2"
+    echo "y = $y2"
+    echo "BASH_LINENO = ${BASH_LINENO[@]}"
+
+    if [ $x1 = $x2 ]; then
+        echo "x-position did not change"
+    fi
+    
+    if [ $y1 = $y2 ]; then
+        echo "y-position did not change"
+    fi
+
+    if [ $x1 = $x2 ] && [ $y1 = $y2 ]; then         
+        echo "cursor position did not change"
+    fi   
 }
 
 # start a new line only if not already on a new line
