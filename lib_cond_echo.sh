@@ -105,21 +105,29 @@ function xecho() {
         dbg2idx $PREFIX_LENGTH idx
         # set color
         echo -ne "${dcolor[idx]}"
-        # print message
-        echo "$@"
-        # unset color
-        echo -ne "\e[0m"
+        # print message and unset color
+        # must be included on same line to maintain formatting
+        # check if argument is escaped
+        if [[ "$@" =~ -[nE]*e[nE]* ]]; then
+            echo "$@\e[0m"
+        else
+            echo -n "$@"                
+            echo -ne "\e[0m"
+            # check if argument includes newline
+            if [[ "$@" =~ -[E]*n[E]* ]]; then
+                :
+            else
+                echo
+            fi
+        fi
     fi
-    return 0
 }
 
 # define debug echo
 function decho() {
     xecho "$@"
-    return 0
 }
 
 function ddecho() {
     xecho "$@"    
-    return 0
 }
