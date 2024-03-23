@@ -64,7 +64,16 @@ function get_source() {
     src_dir_logi=$(dirname "${BASH_SOURCE[${FUNC_LEV}]}")
 }
 
+function strip_pretty() {
+    local -n output=$1
+    shift
+
+    # strip escapes    
+    output=$(echo -e "$@" | sed "s/$(echo -e "\E")[^m]*m//g")
+}
+
 function print_source() {
+    # define default run type
     RUN_TYPE=${RUN_TYPE:-"running"}
     get_source
     set_tab
@@ -72,22 +81,43 @@ function print_source() {
     ((N_BASH--))
     dtab
 
+    # conditionally add stack level prefix
     if [ $DEBUG -gt 0 ]; then 
         RUN_TYPE="\x1b[7;38;5;132m${N_BASH}\x1b[0m${RUN_TYPE}"
     fi
-    # strip escapes
-    local msgne=$(echo -e "$RUN_TYPE" | sed "s/$(echo -e "\E")[^m]*m//g")
+    # strip escapes from run type
+    local msgne
+    strip_pretty msgne $RUN_TYPE
     # get message mength
-    local -i ln=${#msgne}
+    local -i lnr=${#msgne}
+    # define prefix prototype
+    prefix="${VALID}link${RESET} -> "    
+    strip_pretty msgne $prefix
+    local -i lnp=${#msgne}
+    
     # subtract link/path prefix length
-    local -i sp=$(($ln - 7))
+    local -i sp=$(($lnr - $lnp))
+    
+    # if runt type is shorter than prefix, adjust
+    if [ $sp -le 0 ]; then
+        echo "space: $lnr, $lnp, $sp"
+        if [ $sp -eq 0 ]; then
+            RUN_TYPE=" $RUN_TYPE"
+        else
+            for ((i = $sp; i < 0; i++)); do
+                RUN_TYPE=" $RUN_TYPE"
+                echo "$RUN_TYPE: $i"
+            done
+        fi
+    fi    
+    
     # define indent
     local spx=$(echo -ne "\E[${sp}C")
     
     # print run type and source name
     vecho -e "${TAB}${RUN_TYPE} ${PSDIR}${BASH_SOURCE[1]}${RESET}..."
     if [ ! "${BASH_SOURCE[1]}" = "$src_name" ]; then
-        vecho -e "${TAB}${spx}${VALID}link${RESET} -> $src_name"
+        vecho -e "${TAB}${spx}${prefix}$src_name"
     fi
 
     if [ $DEBUG -gt 0 ]; then 
