@@ -686,13 +686,15 @@ function print_return() {
     # set local debug value
     local -i DEBUG=${DEBUG:-0} # substitute default value if DEBUG is unset or null
 
-    ddecho "${TAB}$-"
-    # set shell options
-    ddecho "setting shell options..."
-    # trace RETURN and DEBUG traps (subshells inherit RETURN and DEBUG traps from shell)
-    #set -T
-    ddecho "done"
-    ddecho "${TAB}$-"
+    if false; then
+        ddecho "${TAB}$-"
+        # set shell options
+        ddecho -n "${TAB}setting shell options... "
+        # trace RETURN and DEBUG traps (subshells inherit RETURN and DEBUG traps from shell)
+        #set -T
+        ddecho "done"
+        ddecho "${TAB}$-"
+    fi
 
     RETURN_RETVAL=$1    
 
@@ -700,7 +702,7 @@ function print_return() {
     local -ir N_FUNC=${#FUNCNAME[@]}
     # print summary
     start_new_line
-    echo -e "${YELLOW}\E[7m RETURN ${RESET} ${GRAY}RETVAL=${RETURN_RETVAL}${RESET} ${FUNCNAME[$((N_FUNC-2))]}"
+    echo -e "${TAB}${YELLOW}\E[7m RETURN ${RESET} ${GRAY}RETVAL=${RETURN_RETVAL}${RESET} ${FUNCNAME[$((N_FUNC-2))]}"
 }
 
 # define traps
