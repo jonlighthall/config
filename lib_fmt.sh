@@ -11,10 +11,10 @@
 
 function get_curpos() {
     # Turn in-function debugging on/off.
-    # Inherit the value of funcDEBUG from shell or substitute default value if unset or NULL.
-    local -i funcDEBUG=${funcDEBUG:-0}
     local -i DEBUG=${DEBUG:-0}
-    
+    local -i funcDEBUG=$((${DEBUG:-1} - 1))
+
+    ddecho -e "${TAB}${INVERT}function: ${FUNCNAME}${RESET}"    
     local CURPOS
     # get the cursor position
     echo -en "\E[6n"
@@ -22,7 +22,8 @@ function get_curpos() {
     if [ $DEBUG -eq 0 ]; then
         read -sdR CURPOS
     else
-        decho -n "cursor text: '"        
+        decho -n "${TAB}cursor text: '"
+        wait
         read -dR CURPOS
         decho  "'"
     fi
@@ -98,7 +99,7 @@ function ind() {
 # start a new line only if not already on a new line
 # i.e., carriage return with conditional line feed
 function start_new_line() {
-    local -i funcDEBUG=${funcDEBUG+0}
+    local -i funcDEBUG=0
     # get the cursor position
     local -i x
     get_curpos x

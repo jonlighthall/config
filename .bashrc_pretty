@@ -75,7 +75,6 @@ function strip_pretty() {
 function print_source() {
     funcDEBUG=$((${DEBUG:-1} - 1))
     ddecho -e "${TAB}${INVERT}function: ${FUNCNAME}${RESET}"
-    fecho "funcDEBUG = $funcDEBUG"
     # define default run type
     RUN_TYPE=${RUN_TYPE:-"running"}
     get_source
