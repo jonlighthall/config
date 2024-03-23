@@ -73,6 +73,9 @@ function strip_pretty() {
 }
 
 function print_source() {
+    funcDEBUG=$((${DEBUG:-1} - 1))
+    ddecho -e "${TAB}${INVERT}function: ${FUNCNAME}${RESET}"
+    fecho "funcDEBUG = $funcDEBUG"
     # define default run type
     RUN_TYPE=${RUN_TYPE:-"running"}
     get_source
@@ -82,7 +85,7 @@ function print_source() {
     dtab
 
     # conditionally add stack level prefix
-    if [ $DEBUG -gt 0 ]; then 
+    if [ $DEBUG -gt 1 ]; then 
         RUN_TYPE="\x1b[7;38;5;132m${N_BASH}\x1b[0m${RUN_TYPE}"
     fi
     # strip escapes from run type
@@ -97,16 +100,16 @@ function print_source() {
     
     # subtract link/path prefix length
     local -i sp=$(($lnr - $lnp))
-    
+       fecho "space: $lnr, $lnp, $sp"
     # if runt type is shorter than prefix, adjust
     if [ $sp -le 0 ]; then
-        echo "space: $lnr, $lnp, $sp"
+        fecho "space: $lnr, $lnp, $sp"
         if [ $sp -eq 0 ]; then
-            RUN_TYPE=" $RUN_TYPE"
+            sp=-1
         else
             for ((i = $sp; i < 0; i++)); do
                 RUN_TYPE=" $RUN_TYPE"
-                echo "$RUN_TYPE: $i"
+                fecho "$RUN_TYPE: $i"
             done
         fi
     fi    
@@ -120,7 +123,7 @@ function print_source() {
         vecho -e "${TAB}${spx}${prefix}$src_name"
     fi
 
-    if [ $DEBUG -gt 0 ]; then 
+    if [ $DEBUG -gt 1 ]; then 
         # print source path
         if [[ "${src_dir_logi}" != "${src_dir_phys}" ]]; then 
             ## logical
