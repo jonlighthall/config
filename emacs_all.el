@@ -32,6 +32,7 @@
  '(ediff-split-window-function (quote split-window-horizontally))
  '(fortran-continuation-string ">")
  '(fortran-line-length fcols)
+ '(global-display-line-numbers-mode t)
  '(inhibit-startup-screen t)
  '(visible-bell t)
  )
@@ -41,8 +42,9 @@
 
 ;; ------Libraries-----------------------------------------
 ;; Turn on line numbering
-(require 'linum)
-(global-linum-mode 1)
+
+;;(global-linum-mode 1)
+(setq global-display-line-number t)
 ;; whitespace-mode settings
 (require 'whitespace)
 (setq whitespace-style '(face lines-tail))

@@ -29,7 +29,7 @@
 
 ;; ------Frame appearance and behavior---------------------
 ;; window (non-terminal) setings
-(when window-system-version
+(when window-system
   ;; Set frame position
   ;; intended to move window to upper left corner
   (setq initial-frame-alist '((top . 197) (left . 1))) ;; Windows 11 WSLg
