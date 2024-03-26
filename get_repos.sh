@@ -1,6 +1,5 @@
 #!/bin/bash -u
 # set tab
-:${TAB:=''}
 
 # load formatting
 fpretty="${HOME}/config/.bashrc_pretty"
@@ -17,14 +16,8 @@ else
 	  set -e
 fi
 # print source name at start
-echo -e "${TAB}${RUN_TYPE} \E[0;33m$BASH_SOURCE\E[0m..."
-src_name=$(readlink -f ${BASH_SOURCE[0]})
-src_dir_logi=${BASH_SOURCE%/*}
-if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-	  echo -e "${TAB}\E[1;36mlink\E[0m -> $src_name"
-fi
-# set tab
-export TAB='   '
+print_source
+
 if [ $# -eq 0 ]; then
 	  echo "No system specified"
 fi
