@@ -11,13 +11,15 @@
 
 function get_curpos() {
     # Turn in-function debugging on/off.
-    local -i DEBUG=${DEBUG:-0}
-    local -i funcDEBUG=$((${DEBUG:-1} - 1))
+    local -i DEBUG=0
+    local -i funcDEBUG=0
 
-    ddecho -e "${TAB}${INVERT}function: ${FUNCNAME}${RESET}"    
-    local CURPOS
+    # print function name
+    ddecho -e "${TAB}${INVERT}function: ${FUNCNAME}${RESET}"
+    
     # get the cursor position
     echo -en "\E[6n"
+    local CURPOS
     # print response
     if [ $DEBUG -eq 0 ]; then
         read -sdR CURPOS
