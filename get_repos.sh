@@ -54,6 +54,7 @@ if [ $# -eq 1 ]; then
 			      # define profile name
 			      profie_name=.bash_profile
 			      echo -n "${TAB}$profie_name... "
+            itab
 			      # check if file exists
 			      if [ -f $profie_name ]; then
 				        echo -n "found: "
@@ -66,6 +67,7 @@ if [ $# -eq 1 ]; then
 				        # profile...
 				        echo "not found"
 			      fi
+            dtab
 		    else
 			      # make links file...
 			      echo "not found"
@@ -100,9 +102,6 @@ if command -v wsl.exe >/dev/null; then
     #     - used for saving Win32 scripts (batch and powershell)
     #
 
-
-
-
     # Put another way, the following directories should contain a folder named repos:
     #  * ~
     #  * ~/sync
@@ -127,10 +126,6 @@ if command -v wsl.exe >/dev/null; then
     #  * ~/sync -> ~/home/<host>/<distro>
     #  * ~/offline -> ~/winhome/<distro>
 
-
-
-
-
     # get host name
 	  host_name=$(hostname)
 
@@ -147,20 +142,10 @@ if command -v wsl.exe >/dev/null; then
 
 	  # convert to lower case
 	  distro=$(echo "$distro" | tr '[:upper:]' '[:lower:]')
-
-
-
-
-
     
-    #  * ~/winhome/Documents
-
-    
-    
+    #  * ~/winhome/Documents    
     #  * ~/sync/repos
-
     #  * ~/offline/repos
-    
 
     # set sync directory
 	  host_dir=${HOME}/home/$host_name
@@ -173,10 +158,6 @@ if command -v wsl.exe >/dev/null; then
 		    echo "${TAB}host dir: $host_dir"
 		    echo "${TAB}distro dir: $distro_dir"
 	  ) | column -t -s : -o : -R 1
-
-
-
-
 
     #define target (source)
 	  target=${distro_dir}
@@ -196,7 +177,6 @@ if command -v wsl.exe >/dev/null; then
     echo "${TAB}linking to ${odir}..."
 
     do_make_link "${wdir}" "${odir}"
-
     
 	  # define repository directory
 	  rdir=${distro_dir}/repos
@@ -206,18 +186,6 @@ if command -v wsl.exe >/dev/null; then
 	  target=${rdir}
 	  # define link name (destination)
 	  link_name=${HOME}/repos
-
-	  # check if target exists
-	  echo -ne "${TAB}target directory \e[33m${target}\e[0m... "
-	  if [ -e "${target}" ]; then
-		    echo "exists "
-	  else
-		    echo "does not exist"
-		    mkdir -pv ${target} | sed "s/^/${TAB}/"
-	  fi
-
-    # TODO this is backwards
-    do_link "${target}" "${link_name}"
 else
 	  echo "WSL not defined."
 fi
