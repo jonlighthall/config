@@ -234,7 +234,7 @@ function do_link() {
             if [[ ${perm} -gt ${permOK} ]]; then
                 echo -e "${BAD}FAIL${RESET}"
                 echo -en "${TAB}${GRH}changing permissions${RESET} to ${permOK}... "
-                chmod ${permOK} ${target_cannon}
+                chmod ${permOK} ${target_canon}
                 local RETVAL=$?
                 if [ $RETVAL -eq 0 ]; then
                     echo -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
