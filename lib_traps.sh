@@ -736,7 +736,7 @@ function reset_traps() {
     fi
 
     # print summary
-    decho "${TAB}on set trap return, the following traps are set"
+    decho "${TAB}on ${FUNC_NAME} return, the following traps are set"
     itab
     if [ -z "$(trap -p)" ]; then
         decho -e "${TAB}none"
@@ -769,10 +769,10 @@ function set_traps() {
     ddecho "done"
 
     # print summary
-    decho -n "${TAB}on set trap return, the following traps are set"
+    decho "${TAB}on ${FUNC_NAME} return, the following traps are set"
     itab
     if [ -z "$(trap -p)" ]; then
-        decho -e "\n${TAB}none"
+        decho -e "${TAB}none"
         echo "something didn't work..."
         dtab
         return 1
@@ -807,7 +807,6 @@ function clear_traps() {
     if [ -z "$(trap -p)" ]; then
         ddecho -e "\n${TAB}${fTAB}none"
         dtab
-        return 0
     else
         itab
         ddecho
@@ -824,7 +823,8 @@ function clear_traps() {
     trap - RETURN
 
     # print summary
-    decho "${TAB}on clear trap return, the following traps are set"
+    decho "${TAB}on ${FUNC_NAME} return, the following traps are set"
+    itab
     if [ -z $(trap -p) ]; then
         decho "${TAB}${fTAB}none"
     else
@@ -861,7 +861,6 @@ function unset_traps() {
         ddecho -e "${TAB}${fTAB}none"
         unset save_traps
         dtab
-        return 0
     else
         itab
         ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g"
@@ -883,7 +882,7 @@ function unset_traps() {
     fi
 
     # print summary
-    decho "${TAB}on unset trap return, the following traps are set"
+    decho "${TAB}on ${FUNC_NAME} return, the following traps are set"
     if [ -z $(trap -p) ]; then
         decho "${TAB}${fTAB}none"
     else
