@@ -178,6 +178,8 @@ function print_dcolors() {
     # add shell options if not alraedy set
     old_opts=$(echo "$-")
     set -u
+    set +e
+    unset_traps
 
     # get length of array
     local -ir N_cols=${#dcolor[@]}
@@ -212,9 +214,8 @@ function print_dcolors() {
     ) | column -t -s: -N order,index,color
 
     # reset shell options
-    set -ETe
-    set_traps
     reset_shell ${old_opts} u
+    reset_traps
 }
 
 #--------------------------------------
