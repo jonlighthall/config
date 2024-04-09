@@ -706,6 +706,47 @@ function print_return() {
 }
 
 # define traps
+function reset_traps() {
+    # set local debug value
+    local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+
+    [ $DEBUG -gt 0 ] && start_new_line
+    decho -e "${TAB}${GREEN}\E[7mreset traps${RESET}"
+    itab
+
+    ddecho "${TAB}$-"
+    # set shell options
+    ddecho -n "${TAB}setting shell options... "
+    # trace ERR (subshells inherit ERR trap from shell)
+    set -E
+    ddecho "done"
+    ddecho "${TAB}$-"
+    
+    ddecho "${TAB}the following traps are saved"
+    itab
+    if [ -z "${save_traps+default}" ]; then
+        ddecho "${TAB}none"
+        dtab
+    else
+        ddecho "${save_traps}" | sed "s/^/${TAB}/"
+        dtab
+        ddecho -n "${TAB}setting saved traps..."
+        eval $(echo "${save_traps}" | sed "s/$/;/g")
+        ddecho "done"
+    fi
+
+    # print summary
+    decho "${TAB}on set trap return, the following traps are set"
+    itab
+    if [ -z "$(trap -p)" ]; then
+        decho -e "${TAB}none"
+    else
+        decho
+        decho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" # | sed 's/^[ ]*$//g'
+    fi
+    dtab 2
+}
+
 function set_traps() {
     # set local debug value
     local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
@@ -722,20 +763,10 @@ function set_traps() {
     ddecho "done"
     ddecho "${TAB}$-"
     
-    ddecho "${TAB}the following traps are saved"
-    itab
-    if [ -z "${save_traps+default}" ]; then
-        ddecho "${TAB}${fTAB}none"
-        ddecho -n "${TAB}setting traps... "
-        trap 'print_error $LINENO $? $BASH_COMMAND' ERR
-        trap 'print_exit $?' EXIT
-        ddecho "done"
-    else
-        ddecho "${save_traps}" | sed "$ ! s/^/${TAB}/"
-        ddecho "${TAB}setting saved traps..."
-        eval $(echo "${save_traps}" | sed "s/$/;/g")
-    fi
-    dtab
+    ddecho -n "${TAB}setting traps... "
+    trap 'print_error $LINENO $? $BASH_COMMAND' ERR
+    trap 'print_exit $?' EXIT
+    ddecho "done"
 
     # print summary
     decho -n "${TAB}on set trap return, the following traps are set"
@@ -747,7 +778,7 @@ function set_traps() {
         return 1
     else
         decho
-        decho $(trap -p) | sed "$ ! s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" | sed 's/^[ ]*$//g'
+        decho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" # | sed 's/^[ ]*$//g'
     fi
     dtab 2
 }
@@ -825,15 +856,15 @@ function unset_traps() {
     ddecho "done"
     ddecho "${TAB}$-"
     
-    ddecho -n "${TAB}the current traps are set"
+    ddecho "${TAB}the current traps are set"
     if [ -z "$(trap -p)" ]; then
-        ddecho -e "\n${TAB}${fTAB}none"
+        ddecho -e "${TAB}${fTAB}none"
+        unset save_traps
         dtab
         return 0
     else
         itab
-        ddecho
-        ddecho $(trap -p) | sed "$ ! s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" | sed 's/^[ ]*$//g'
+        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g"
         dtab
         
         # save traps
@@ -841,7 +872,7 @@ function unset_traps() {
         if [ ! -z "${save_traps}" ]; then
             ddecho "${TAB}the current traps are saved"
             itab
-            ddecho "${save_traps}" | sed "$ ! s/^/${TAB}/"
+            ddecho "${save_traps}" | sed "s/^/${TAB}/"
             dtab
         fi
 
