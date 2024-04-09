@@ -288,7 +288,7 @@ function print_stack() {
     local -ga BASH_LINKS
     # resolve symbolic links
     for ((i = 0; i < $N_BASH; i++)); do
-        BASH_LINK[$i]=$(readlink -f ${BASH_SOURCE[$i]})
+        BASH_LINK[$i]="$(readlink -f "${BASH_SOURCE[$i]}")"
     done
 
     local -ga BASH_FNAME
