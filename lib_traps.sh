@@ -736,7 +736,7 @@ function reset_traps() {
     fi
 
     # print summary
-    decho "${TAB}on ${FUNC_NAME} return, the following traps are set"
+    decho "${TAB}on ${FUNCNAME} return, the following traps are set"
     itab
     if [ -z "$(trap -p)" ]; then
         decho -e "${TAB}none"
@@ -769,7 +769,7 @@ function set_traps() {
     ddecho "done"
 
     # print summary
-    decho "${TAB}on ${FUNC_NAME} return, the following traps are set"
+    decho "${TAB}on ${FUNCNAME} return, the following traps are set"
     itab
     if [ -z "$(trap -p)" ]; then
         decho -e "${TAB}none"
@@ -823,7 +823,7 @@ function clear_traps() {
     trap - RETURN
 
     # print summary
-    decho "${TAB}on ${FUNC_NAME} return, the following traps are set"
+    decho "${TAB}on ${FUNCNAME} return, the following traps are set"
     itab
     if [ -z $(trap -p) ]; then
         decho "${TAB}${fTAB}none"
@@ -882,7 +882,7 @@ function unset_traps() {
     fi
 
     # print summary
-    decho "${TAB}on ${FUNC_NAME} return, the following traps are set"
+    decho "${TAB}on ${FUNCNAME} return, the following traps are set"
     if [ -z $(trap -p) ]; then
         decho "${TAB}${fTAB}none"
     else
