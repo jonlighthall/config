@@ -5,35 +5,20 @@ if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
     if [ "${VB}" = true ]; then
-	# set tab
-	TAB+=${TAB+${fTAB:='   '}}
-	# load formatting
-	fpretty=${HOME}/config/.bashrc_pretty
-	if [ -e $fpretty ]; then
-	    if [ -z ${FPRETTY_LOADED+dummy} ]; then
-	       source $fpretty
-	    fi
-	fi
-	# print source name at start
-	if (return 0 2>/dev/null); then
-	    RUN_TYPE="sourcing"
-	else
-	    RUN_TYPE="executing"
-	fi
-	echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
-	src_name=$(readlink -f $BASH_SOURCE)
-	if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-	    echo -e "${TAB}${VALID}link${RESET} -> $src_name"
-	fi
+	      # load formatting
+	      fpretty=${HOME}/config/.bashrc_pretty
+	      if [ -e $fpretty ]; then
+	          source $fpretty
+	      fi
+	      # print source name at start
+	      if (return 0 2>/dev/null); then
+	          RUN_TYPE="sourcing"
+	      else
+	          RUN_TYPE="executing"
+	      fi
+        print_source
     fi
 fi
-
-# define conditional echo
-vecho() {
-    if [ ! -z ${VB:+dummy} ] && ${VB}; then
-	echo "$@"
-    fi
-}
 
 dispOK=false
 if [ -z $DISPLAY ];then
@@ -43,61 +28,61 @@ else
     xdpyinfo -display $DISPLAY &>/dev/null
     RETVAL=$?
     if [[ $RETVAL == 0 ]]; then
-	dispOK=true
-	vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+	      dispOK=true
+	      vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     else
-	vecho -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
-	unset DISPLAY
+	      vecho -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+	      unset DISPLAY
     fi
 fi
 
 if ! $dispOK; then
     if [ "${VB}" = true ]; then
-	echo "${TAB}building candidate DISPLAY list..."
-	TAB+=$fTAB
+	      echo "${TAB}building candidate DISPLAY list..."
+	      TAB+=$fTAB
     fi
     display_list="localhost "
     name_list=$(\grep nameserver /etc/resolv.conf | awk '{print $2}')
     for name in $name_list
     do
-	display_list+="$name "
+	      display_list+="$name "
     done
     for disp in $display_list
     do
-	export DISPLAY="${disp}:0.0"
-	vecho -n "${TAB}setting DISPLAY to $DISPLAY... "
-	timeout -s 9 3s xdpyinfo -display $DISPLAY &>/dev/null
-	RETVAL=$?
-	if [[ $RETVAL == 0 ]]; then
-	    vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
-	    break
-	else
-	    vecho -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
-	    unset DISPLAY
-	fi
+	      export DISPLAY="${disp}:0.0"
+	      vecho -n "${TAB}setting DISPLAY to $DISPLAY... "
+	      timeout -s 9 3s xdpyinfo -display $DISPLAY &>/dev/null
+	      RETVAL=$?
+	      if [[ $RETVAL == 0 ]]; then
+	          vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+	          break
+	      else
+	          vecho -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+	          unset DISPLAY
+	      fi
     done
 
     for ((i=1;i<13;i++))
     do
-	export DISPLAY="localhost:${i}.0"
-	vecho -n "${TAB}setting DISPLAY to $DISPLAY... "
-	timeout -s 9 3s xdpyinfo -display $DISPLAY &>/dev/null
-	RETVAL=$?
-	if [[ $RETVAL == 0 ]]; then
-	    vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
-	    break
-	else
-	    vecho -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
-	    unset DISPLAY
-	fi
+	      export DISPLAY="localhost:${i}.0"
+	      vecho -n "${TAB}setting DISPLAY to $DISPLAY... "
+	      timeout -s 9 3s xdpyinfo -display $DISPLAY &>/dev/null
+	      RETVAL=$?
+	      if [[ $RETVAL == 0 ]]; then
+	          vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+	          break
+	      else
+	          vecho -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+	          unset DISPLAY
+	      fi
     done
 
     TAB=${TAB%$fTAB}
 
     if [ -z "${DISPLAY}" ]; then
-	echo -e "${TAB}${BAD}ERROR: ${RESET}DISPLAY not set"
+	      echo -e "${TAB}${BAD}ERROR: ${RESET}DISPLAY not set"
     else
-	vecho "${TAB}DISPLAY set to $DISPLAY"
+	      vecho "${TAB}DISPLAY set to $DISPLAY"
     fi
 fi
 

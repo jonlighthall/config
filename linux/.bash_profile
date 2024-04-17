@@ -25,14 +25,6 @@ if [ "${VB}" = true ]; then
     echo "${TAB}verbose bash printing is... $VB"
 fi
 
-# define conditional echo
-vecho() {
-    if [ ! -z ${VB:+dummy} ] && ${VB}; then
-	# [not (unset or null)] or true -> print if true or null or unset
-	echo "$@"
-    fi
-}
-
 # system dependencies
 SYS_NAME=linux
 HOST_NAME=$(hostname -s)
