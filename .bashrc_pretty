@@ -84,8 +84,13 @@ function print_source() {
     dtab
 
     # conditionally add stack level prefix
-    if [ $DEBUG -gt 1 ]; then 
-        RUN_TYPE="\x1b[7;38;5;132m${N_BASH}\x1b[0m${RUN_TYPE}"
+    if [ $DEBUG -gt 1 ] || true ; then
+        local prefix="\x1b[7;38;5;132m${N_BASH}"
+        if [[ "$-" == *i* ]]; then
+            prefix+="i"
+        fi        
+        prefix+="\x1b[0m"
+        RUN_TYPE="${prefix}${RUN_TYPE}"
     fi
     # strip escapes from run type
     local msgne
@@ -99,7 +104,7 @@ function print_source() {
     
     # subtract link/path prefix length
     local -i sp=$(($lnr - $lnp))
-       fecho "space: $lnr, $lnp, $sp"
+    fecho "space: $lnr, $lnp, $sp"
     # if runt type is shorter than prefix, adjust
     if [ $sp -le 0 ]; then
         fecho "space: $lnr, $lnp, $sp"
