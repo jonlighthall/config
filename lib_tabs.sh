@@ -16,22 +16,48 @@ function set_ftab() {
 }
 
 function set_tab() {
+    local -i funcDEBUG=0
+    local -i DEBUG=0
+    
     # reset TAB
     rtab
 
     # get the lenght of the execution stack
-    local -ig N_BASH=${#BASH_SOURCE[@]}
+    fecho "getting length of stack..."
+    local -i N_BASH=${#BASH_SOURCE[@]}
+    decho -n "${TAB}$N_BASH"
+    if [[ "$-" == *i* ]]; then
+        decho -n "i"
+    fi
+    decho " ($FUNCNAME)"
+    decho "${TAB}call stack:"
+    local -i i
+    for ((i = 0; i < $N_BASH ; i++)); do
+        decho "   $i:${FUNCNAME[i]}:${BASH_SOURCE[i]##*/}:${BASH_LINENO[i]}"
+    done
+
+    fecho "stack size is $N_BASH"
+
     # since this is a function, reduce N_BASH by one
+    fecho "reducing stack..."
     ((N_BASH--))
+    fecho "SHLVL = $SHLVL"
     if [ $SHLVL -gt 1 ]; then
         ((N_BASH--))
     fi
-    
-    # set the tab length
-    local -ir N_TAB=$(($N_BASH-1))
-    
-    # set tab
-    itab $N_TAB
+    fecho "stack size is $N_BASH"
+
+    if [ $N_BASH -gt 0 ]; then 
+        
+        # set the tab length
+        local -ir N_TAB=$(($N_BASH-1))
+        fecho "indent $N_TAB tabs"
+        
+        # set tab
+        fecho "${TAB}."
+        itab $N_TAB
+        fecho "${TAB}."
+    fi
 }
 
 function ctab() {
