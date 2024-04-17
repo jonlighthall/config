@@ -74,7 +74,7 @@ function strip_pretty() {
 
 function print_source() {
     funcDEBUG=$((${DEBUG:-1} - 1))
-    ddecho -e "${TAB}${INVERT}function: ${FUNCNAME}${RESET}"
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     get_source
 
     # define default run type
@@ -167,11 +167,12 @@ get_source
 
 # load bash utils
 for util in lib_links.sh \
-                lib_colors.sh \
-                lib_cond_echo.sh \
+                lib_traps.sh\
                 lib_tabs.sh \
+                lib_cond_echo.sh \
                 lib_fmt.sh \
-                lib_traps.sh
+                lib_colors.sh \
+
 do
     # use the canonical (physical) source directory for reference; this is important if sourcing
     # this file directly from shell

@@ -5,8 +5,13 @@
 #
 # ~/config/lib_colors.sh
 #
-# PURPOSE: define custom SGR (Select Graphic Rendition) parameters and functions for coloring
+# Purpose: define custom SGR (Select Graphic Rendition) parameters and functions for coloring
 #   text.
+#
+# Dependancies:
+#   lib_traps
+#   lib_tabs
+#   lib_cond_echo
 #
 # -----------------------------------------------------------------------------------------------
 
@@ -24,11 +29,14 @@ export  INVERT='\x1B[7m'    # invert
 export      ST='\x1B[9m'    # strikethrough
 
 function test_normal() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     for i in {0..9}; do
-        [ $i -gt 0 ] && echo -en "${CHARTRU}"
         [ $i = 6 ] && continue
+        echo -ne "$TAB"
+        [ $i -gt 0 ] && echo -en "${CHARTRU}"
         echo -e "$i: \x1B[${i}mhello${NORMAL}, world!"
     done
+    echo -ne "${RESET}"
 }
 
 # define LaTeX-like text formatting
@@ -75,6 +83,10 @@ export     DIR='\x1B[1;34m' # bold blue   : di directory
 export   VALID='\x1B[1;36m' # bold cyan   : ln valid link
 
 function define_ls_colors() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    if [ -z ${LS_COLORS:+dummy} ]; then
+        return
+    fi
     local -r LN=$(declare -p LS_COLORS | sed 's/^.*ln=\([0-9;]*\):.*$/\1/')
     local -r OR=$(declare -p LS_COLORS | sed 's/^.*or=\([0-9;]*\):.*$/\1/')
     local -r DI=$(declare -p LS_COLORS | sed 's/^.*di=\([0-9;]*\):.*$/\1/')
@@ -127,20 +139,24 @@ export col00='\x1B[38;5;102m' # 12:   0 Grey              mon - GRAY
 declare -ax dcolor=( '\x1B[38;5;131m' '\x1B[38;5;137m' '\x1B[38;5;143m' '\x1B[38;5;107m' '\x1B[38;5;71m'  '\x1B[38;5;72m'  '\x1B[38;5;73m'  '\x1B[38;5;67m'  '\x1B[38;5;61m'  '\x1B[38;5;97m'  '\x1B[38;5;133m' '\x1B[38;5;132m' )
 
 # print dcolor array in rainbow-order
+# requires lib_traps
 function print_colors() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     # add shell options if not alraedy set
     old_opts=$(echo "$-")
     set -u
 
     # get length of array
     local -ir N_cols=${#dcolor[@]}
-    echo "$N_cols in array ${!dcolor@}"
+    echo "${TAB}$N_cols in array ${!dcolor@}"
     # declare array index variable
     local -i i
     # print array elements
+    itab
     for ((i=0;i<$N_cols;i++));do
-        echo -e "${dcolor[$i]}$i"
+        echo -e "${TAB}${dcolor[$i]}$i"
     done
+    dtab
     # reset color
     echo -en "\x1B[m"
     
@@ -151,30 +167,27 @@ function print_colors() {
 
 # print dcolor array in rainbow-order
 function print_rcolors() {
-    # add shell options if not alraedy set
-    # old_opts=$(echo "$-")
-    # set -u
-
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     # get length of array
     local -ir N_cols=${#rcolor[@]}    
-    echo "$N_cols in array ${!dcolor@}"
+    echo "${TAB}$N_cols in array ${!dcolor@}"
     # declare array index variable
-    local -i i    
+    local -i i
     # print array elements
+    itab
     for ((i=0;i<$N_cols;i++));do
-        echo -e "${rcolor[$i]}$i"
+        echo -e "${TAB}${rcolor[$i]}$i"
     done
+    dtab
     # reset color
     echo -en "\x1B[m"
-
-    # reset shell options
-    #local -i DEBUG=${DEBUG:-1}
-    #reset_shell ${old_opts} u
 }
 
 # print dcolor array in debug order
+# requires lib_traps, lib_fmt
 function print_dcolors() {
-    local -i DEBUG=2
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    local -i DEBUG=${DEBUG:-2}
     # add shell options if not alraedy set
     old_opts=$(echo "$-")
     set -u
@@ -183,23 +196,23 @@ function print_dcolors() {
 
     # get length of array
     local -ir N_cols=${#dcolor[@]}
-    echo "$N_cols in array ${!dcolor@}"
+    echo "${TAB}$N_cols in array ${!dcolor@}"
     # calculate maximum array index
     local -ir N_max=$((N_cols-1))
-    echo "$N_max max index of array ${!dcolor@}"
+    echo "${TAB}$N_max max index of array ${!dcolor@}"
     #---------------------------------------------------------------
     # set starting color (using array indices 0-11, specified above)
     local -ir start=7
     # set increment direction
     local -ir direction=-1
     #---------------------------------------------------------------
-    echo -e "staring with index ${dcolor[$start]}${start}\x1B[m\n"
+    echo -e "${TAB}staring with index ${dcolor[$start]}${start}\x1B[m\n"
     if [ $direction -gt 0 ]; then
-        echo "incrementing array indicies"
+        echo "${TAB}incrementing array indicies"
     elif [ $direction -lt 0 ]; then
-        echo "decrementing array indicies"
+        echo "${TAB}decrementing array indicies"
     else
-        echo "something else..."
+        echo "${TAB}something else..."
     fi
     # declare array index variable
     local -i idx
@@ -211,7 +224,7 @@ function print_dcolors() {
 
             printf "${dcolor[$idx]}%2d\x1B[m\n" $idx
         done
-    ) | column -t -s: -N order,index,color
+    ) | column -t -s: -N order,index,color | sed "s/^/${TAB}/"
 
     # reset shell options
     reset_shell ${old_opts} u
@@ -228,10 +241,12 @@ function print_dcolors() {
 #   start
 # Arguments:
 #   None
+# Dependancies:
+#   lib_cond_echo
 #--------------------------------------
 function set_dbg2idx() {
     # turn in-function debugging on/off
-    local funcDEBUG=0
+    local -i funcDEBUG=0
 
     # get length of array
     N_cols=${#dcolor[@]}
@@ -263,6 +278,8 @@ function set_dbg2idx() {
 #   direction
 #   idx
 #   start
+# Dependancies:
+#   lib_cond_echo
 #--------------------------------------    
 function dbg2idx() {
     if [ $# -lt 2 ]; then
@@ -276,8 +293,7 @@ function dbg2idx() {
     fi
 
     # turn in-function debugging on/off
-    local -i funcDEBUG=${funcDEBUG:-0} # inherit value or substitution default
-    local funcDEBUG=0
+    local -i funcDEBUG=0
     
     # get input DEBUG value
     local -ir dbg_in=$1
@@ -310,10 +326,14 @@ function dbg2idx() {
 }
 
 # print dcolor array in debug order
+# requires lib_cond_echo
 function print_fcolors() {
-    local -i funcDEBUG=${funcDEBUG:-1} # inherit value or substitution default
-    fecho "printing contents of dcolor..."
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    local -i DEBUG=${DEBUG:-1}
+    decho "${TAB}printing contents of dcolor..."
     
+    # get length of array
+    local -ir N_cols=${#dcolor[@]}
     local -i idx
     (
         # loop over valid non-zero values of debug
@@ -328,16 +348,24 @@ function print_fcolors() {
     ) | column -t -s: -N order,index,color | sed "s/^/${TAB}/"
 }
 
+# requires lib_tabs, lib_cond_echo
 function print_pretty() {
-    local -i DEBUG=0
-    local msg="pretty-print enabled"    
-    decho "$msg"
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    # set default debug level
+    local -i DEBUG=${DEBUG:-1}
+    # define message
+    local msg="pretty-print enabled"
+    # determine message length
+    decho -n "${TAB}'$msg' "
     local -i ln=${#msg}
     decho "is $ln long"
 
+    # define loop variables
     local -i idx
     local let
     local -i pos=0
+    decho -n "${TAB}"
+    # loop over message
     for ((i=0;i<$ln;i++));do
         let="${msg:$i:1}"
 
@@ -355,10 +383,16 @@ function print_pretty() {
 }
 
 function print_pretty_cbar() {
-    cbar $(print_pretty)
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    local -i DEBUG=0
+    cbar $(print_pretty) 
 }
 
 function print_ls_colors() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    if [ -z ${LS_COLORS:+dummy} ]; then
+        return
+    fi
     # print value of LS_COLORS
     declare -p LS_COLORS |
         # isolate definitions
@@ -374,6 +408,10 @@ function print_ls_colors() {
 }
 
 function print_ls_colors_ext() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    if [ -z ${LS_COLORS:+dummy} ]; then
+        return
+    fi
     # print value of LS_COLORS
     declare -p LS_COLORS |
         # isolate definitions
@@ -389,8 +427,22 @@ function print_ls_colors_ext() {
 }
 
 function append_ls_colors() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
     # physical link (hardlink)
     LS_COLORS+="mh=44;38;5;15:"
     # missing
     LS_COLORS+="mi=05;48;5;232;38;5;15:"
 }
+
+if [ ${DEBUG:-0} -gt 2 ]; then
+    test_normal
+    define_ls_colors
+    print_colors
+    print_rcolors
+    print_dcolors
+    print_fcolors
+    print_pretty
+    print_pretty_cbar
+    print_ls_colors
+    print_ls_colors_ext
+fi

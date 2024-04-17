@@ -62,15 +62,18 @@ function fecho() {
             if [[ ${FUNCNAME[1]} == "xecho" ]]; then
                 fidx=2
             else
+
+                fidx=1
+                
                 # check length of function stack
                 if [ ${N_FUNC} -lt 5 ]; then
-                    fidx=$(( $N_FUNC - 1 ))
+                    : #fidx=$(( $N_FUNC - 1 ))
                 else                
-                    fidx=$(( $N_FUNC - 5 ))
+                  : #  fidx=$(( $N_FUNC - 5 ))
                     # where does this come from?
                 fi
             fi
-#           fidx=1
+
             
             echo -n "${FUNCNAME[fidx]}"
 #           echo -n " $fidx of $N_FUNC"

@@ -777,7 +777,6 @@ function set_traps() {
         dtab
         return 1
     else
-        decho
         decho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" # | sed 's/^[ ]*$//g'
     fi
     dtab 2
@@ -891,5 +890,4 @@ function unset_traps() {
         dtab
         return 1
     fi
-    dtab
 }
