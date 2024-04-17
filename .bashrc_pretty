@@ -3,7 +3,7 @@
 #
 # ~/config/.bashrc_pretty
 #
-# Purpose: define and load adanced functions for interactive shell sessions, including
+# Purpose: define and load advanced functions for interactive shell sessions, including
 #   "pretty-print" formatting
 #
 # Apr 2023 JCL
@@ -31,7 +31,7 @@ function get_source() {
     # set local debug value
     local -i DEBUG=${DEBUG:-0} # substitute default value if DEBUG is unset or null
 
-    # get the lenght of the execution stack
+    # get the length of the execution stack
     N_BASH=${#BASH_SOURCE[@]}
     # since this function is part of the stack, reduce N_BASH by one
     ((N_BASH--))
@@ -90,7 +90,7 @@ function print_source() {
     # strip escapes from run type
     local msgne
     strip_pretty msgne $RUN_TYPE
-    # get message mength
+    # get message length
     local -i lnr=${#msgne}
     # define prefix prototype
     prefix="${VALID}link${RESET} -> "    
