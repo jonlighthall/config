@@ -4,7 +4,7 @@
 if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
-    if $VB; then
+    if [ "${VB}" = true ]; then
 	# set tab
 	TAB+=${TAB+${fTAB:='   '}}
 	# load formatting
@@ -52,7 +52,7 @@ else
 fi
 
 if ! $dispOK; then
-    if $VB; then
+    if [ "${VB}" = true ]; then
 	echo "${TAB}building candidate DISPLAY list..."
 	TAB+=$fTAB
     fi
@@ -101,7 +101,7 @@ if ! $dispOK; then
     fi
 fi
 
-if $VB; then
+if [ "${VB}" = true ]; then
     # reset tab
     TAB=${TAB%$fTAB}
 fi

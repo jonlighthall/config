@@ -19,7 +19,7 @@ if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
     # check if VB is true
-    if $VB; then
+    if [ "${VB}" = true ]; then
         # load formatting
         fpretty=${HOME}/config/.bashrc_pretty
         if [ -e $fpretty ]; then
@@ -100,7 +100,7 @@ fi
 
 # Path additions
 # ---------------
-if $VB; then
+if [ "${VB}" = true ]; then
     echo "${TAB}Path additions..."
     itab
 fi
@@ -141,7 +141,7 @@ if [ ! -z "${prePATH}" ]; then
     done
 fi
 
-if $VB; then
+if [ "${VB}" = true ]; then
     # reset tab
     dtab 2 # once for path, once for file
 fi

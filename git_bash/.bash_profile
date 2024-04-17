@@ -7,7 +7,7 @@
 start_time=$SECONDS
 # Verbose bash prints?
 export VB=true
-if $VB; then
+if [ "${VB}" = true ]; then
     # set tab
     TAB+=${TAB+${fTAB:='   '}}
     # load formatting
@@ -45,14 +45,14 @@ if [ -f $hist_file ]; then
     if [ $RETVAL -eq 0 ]; then
 	vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     else
-	if $VB; then
+	if [ "${VB}" = true ]; then
 	    echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
 	else
 	    echo "echo to $hist_file failed"
 	fi
     fi
 else
-    if $VB; then
+    if [ "${VB}" = true ]; then
 	echo "${BAD}NOT FOUND{RESET}"
     else
 	echo "$hist_file not found"
@@ -75,7 +75,7 @@ else
 fi
 vecho
 # print runtime duration
-if $VB; then
+if [ "${VB}" = true ]; then
     TAB=${TAB%$fTAB}
     echo -n "${TAB}$(basename $BASH_SOURCE) "
     dT=$(($SECONDS-start_time))

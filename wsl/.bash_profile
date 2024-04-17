@@ -48,7 +48,7 @@ config_dir=${HOME}/config
 # load utility functions
 fpretty=${config_dir}/.bashrc_pretty
 if [ -e $fpretty ]; then
-    if $VB; then
+    if [ "${VB}" = true ]; then
         # remember, if .bashrc_pretty hasn't been loaded yet, vecho is not defined
         echo "loading $fpretty..."
     fi
@@ -68,7 +68,7 @@ else
     set +eu
 fi    
 
-if $VB; then
+if [ "${VB}" = true ]; then
     # determine if being sourced or executed
     if (return 0 2>/dev/null); then
         RUN_TYPE="sourcing"
@@ -96,14 +96,14 @@ if [ -f $hist_file ]; then
     if [ $RETVAL -eq 0 ]; then
         vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     else
-        if $VB; then
+        if [ "${VB}" = true ]; then
             echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
         else
             echo "echo to $hist_file failed"
         fi
     fi
 else
-    if $VB; then
+    if [ "${VB}" = true ]; then
         echo "${BAD}NOT FOUND{RESET}"
     else
         echo "$hist_file not found"
@@ -126,7 +126,7 @@ else
 fi
 
 # print runtime duration
-if $VB; then
+if [ "${VB}" = true ]; then
     # reset tab
     dtab
     # print timestamp

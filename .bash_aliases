@@ -18,7 +18,7 @@ if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
     # check if VB is true
-    if $VB; then
+    if [ "${VB}" = true ]; then
         # load formatting
         fpretty=${HOME}/config/.bashrc_pretty
         if [ -e $fpretty ]; then
@@ -138,7 +138,7 @@ function nf {
 	      fi
     done
 }
-if $VB; then
+if [ "${VB}" = true ]; then
     # reset tab
     dtab
 fi

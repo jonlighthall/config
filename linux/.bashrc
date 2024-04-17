@@ -5,7 +5,7 @@
 if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
-    if $VB; then
+    if [ "${VB}" = true ]; then
 	# set tab
 	TAB+=${TAB+${fTAB:='   '}}
 	# load formatting
@@ -68,7 +68,7 @@ done
 
 unset command_not_found_handle
 
-if $VB; then
+if [ "${VB}" = true ]; then
     # reset tab
     TAB=${TAB%$fTAB}
 fi

@@ -14,7 +14,7 @@
 if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
-    if $VB; then
+    if [ "${VB}" = true ]; then
         # load formatting
         fpretty=${HOME}/config/.bashrc_pretty
         if [ -e $fpretty ]; then
@@ -69,7 +69,7 @@ sh_lvl() {
     fi
 }
 
-if $VB; then
+if [ "${VB}" = true ]; then
     echo "${TAB}Setting prompt..."
     itab
 fi
@@ -166,7 +166,7 @@ if $do_test_git; then
 	      echo -e "${TAB}${fTAB}git branch removed from prompt"
     fi
 fi
-if $VB; then
+if [ "${VB}" = true ]; then
     dtab
 fi
 
@@ -186,7 +186,7 @@ fi
 
 # Path additions
 # ---------------
-if $VB; then
+if [ "${VB}" = true ]; then
     echo "${TAB}Path additions..."
     itab
 fi
@@ -246,7 +246,7 @@ else
     vecho "${TAB}${ADDPATH} already in PATH"
 fi
 
-if $VB; then
+if [ "${VB}" = true ]; then
     # reset tab
     dtab 2 # once for path, once for file
 fi

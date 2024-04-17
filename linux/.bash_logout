@@ -7,12 +7,12 @@ list="collatz_loop.exe \
 	timer.exe"
 for prog in $list
 do
-    if $VB; then echo -n "checking $prog... ";fi
+    if [ "${VB}" = true ]; then echo -n "checking $prog... ";fi
     pid=`ps ux | \grep $prog | \grep -v grep | awk '{print $2}'`
     if [[ -z $pid ]]; then
-	if $VB; then echo "not found";fi
+	if [ "${VB}" = true ]; then echo "not found";fi
     else
-	if $VB; then
+	if [ "${VB}" = true ]; then
 	    echo "found"
 	else
 	    echo "$prog is running"

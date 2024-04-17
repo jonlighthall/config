@@ -13,7 +13,7 @@ fi
 
 # Verbose bash prints?
 export VB=true
-if $VB; then
+if [ "${VB}" = true ]; then
     set_tab
     # print source name at start
     if (return 0 2>/dev/null); then
@@ -47,14 +47,14 @@ if [ -f $hist_file ]; then
     if [ $RETVAL -eq 0 ]; then
 	vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     else
-	if $VB; then
+	if [ "${VB}" = true ]; then
 	    echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
 	else
 	    echo "echo to $hist_file failed"
 	fi
     fi
 else
-    if $VB; then
+    if [ "${VB}" = true ]; then
 	echo "${BAD}NOT FOUND{RESET}"
     else
 	echo "$hist_file not found"
@@ -77,7 +77,7 @@ else
 fi
 vecho
 # print runtime duration
-if $VB; then
+if [ "${VB}" = true ]; then
     TAB=${TAB%$fTAB}
     echo -n "${TAB}$(basename $BASH_SOURCE) "
     elap_time=$(($(date +%s%N)-${start_time}))

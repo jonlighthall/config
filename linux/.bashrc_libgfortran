@@ -6,7 +6,7 @@
 if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
-    if $VB; then
+    if [ "${VB}" = true ]; then
 	# set tab
 	TAB+=${TAB+${fTAB:='   '}}
 	# load formatting
@@ -33,7 +33,7 @@ fi
 host_list="hybrid1"
 if [[ $HOSTNAME =~ ${host_list} ]]; then
 # Find path
-    if $VB; then
+    if [ "${VB}" = true ]; then
 	echo "${TAB}LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
     fi
     FINDLIB=libgfortran.so.5
@@ -47,12 +47,12 @@ if [[ $HOSTNAME =~ ${host_list} ]]; then
 	ADDPATH=${LIBPATH}
 	if [[ ":$LD_LIBRARY_PATH" != *":${ADDPATH}"*  ]]; then
 	    if [ -d "${ADDPATH}" ] ; then
-		if $VB; then
+		if [ "${VB}" = true ]; then
 		    echo "${TAB}${ADDPATH} not found in LD_LIBRARY_PATH"
 		    echo -n "${TAB}adding ${ADDPATH} to LD_LIBRARY_PATH..."
 		fi
 		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ADDPATH
-		if $VB; then
+		if [ "${VB}" = true ]; then
 		    if [[ $? == 0 ]]; then
 			echo "OK"
 		    else
@@ -64,7 +64,7 @@ if [[ $HOSTNAME =~ ${host_list} ]]; then
 		echo "${TAB}${ADDPATH} not found"
 	    fi
 	else
-	    if $VB; then
+	    if [ "${VB}" = true ]; then
 		echo "${TAB}${ADDPATH} already in LD_LIBRARY_PATH"
 	    fi
 	fi
@@ -72,12 +72,12 @@ if [[ $HOSTNAME =~ ${host_list} ]]; then
 	echo "not found"
     fi
 else
-    if $VB; then
+    if [ "${VB}" = true ]; then
 	echo "${TAB}hostname $HOSTNAME not recognized"
     fi
 fi
 
-if $VB; then
+if [ "${VB}" = true ]; then
     # reset tab
     TAB=${TAB%$fTAB}
 fi

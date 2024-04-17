@@ -44,7 +44,7 @@ config_dir=${HOME}/config
 # load utility functions
 fpretty=${config_dir}/.bashrc_pretty
 if [ -e $fpretty ]; then
-    if $VB; then
+    if [ "${VB}" = true ]; then
         # remember, if .bashrc_pretty hasn't been loaded yet, vecho is not defined
         echo "loading $fpretty..."
     fi
@@ -64,7 +64,7 @@ else
     set +eu
 fi    
 
-if $VB; then
+if [ "${VB}" = true ]; then
     # determine if being sourced or executed
     if (return 0 2>/dev/null); then
         RUN_TYPE="sourcing"
@@ -100,7 +100,7 @@ else
 fi
 
 # print runtime duration
-if $VB; then
+if [ "${VB}" = true ]; then
     # reset tab
     dtab
     # print timestamp

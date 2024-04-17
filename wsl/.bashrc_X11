@@ -4,7 +4,7 @@
 if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
-    if $VB; then
+    if [ "${VB}" = true ]; then
         # load formatting
         fpretty=${HOME}/config/.bashrc_pretty
         if [ -e $fpretty ]; then
@@ -37,7 +37,7 @@ if [ ! -z $xPID ]; then
     xOK=true
     vecho "${TAB}${PROG} already running with PID ${xPID}"
 else
-    if $VB; then
+    if [ "${VB}" = true ]; then
         echo "${TAB}attemping to launch ${PROG}..."
         TAB+=$fTAB
     fi
@@ -50,7 +50,7 @@ else
             RETVAL=$?
             if [[ $RETVAL == 0 ]]; then
                 xOK=true
-                if $VB; then
+                if [ "${VB}" = true ]; then
                     echo -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
                     xPID=$(pgrep -x $PROG)
                     if [ ! -z $xPID ]; then
@@ -72,7 +72,7 @@ else
         vecho "${TAB}unaliasing $PROG..."
         unalias vcx 2>/dev/null
     fi
-    if $VB; then
+    if [ "${VB}" = true ]; then
         TAB=${TAB%$fTAB}
     fi
 fi
@@ -85,7 +85,7 @@ if ! $xOK; then
         xOK=true
         vecho "${TAB}${PROG} already running with PID ${xPID}"
     else
-        if $VB; then
+        if [ "${VB}" = true ]; then
             echo "${TAB}attemping to launch ${PROG}..."
             TAB+=$fTAB
         fi
@@ -98,7 +98,7 @@ if ! $xOK; then
                 RETVAL=$?
                 if [[ $RETVAL == 0 ]]; then
                     xOK=true
-                    if $VB; then
+                    if [ "${VB}" = true ]; then
                         echo -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
                         xPID=$(pgrep -x $PROG)
                         if [ ! -z $xPID ]; then
@@ -120,7 +120,7 @@ if ! $xOK; then
             vecho "${TAB}unaliasing $PROG..."
             unalias xming 2>/dev/null
         fi
-        if $VB; then
+        if [ "${VB}" = true ]; then
             TAB=${TAB%$fTAB}
         fi
     fi
@@ -160,7 +160,7 @@ if $xOK; then
         if [[ $RETVAL == 0 ]]; then
             vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
         else
-            if $VB; then
+            if [ "${VB}" = true ]; then
                 echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
                 # check other values if FAIL
                 echo "${TAB}building candidate DISPLAY list..."
@@ -203,7 +203,7 @@ if $xOK; then
                 vecho "${TAB}DISPLAY set to $DISPLAY"
             fi
         fi
-        if $VB; then
+        if [ "${VB}" = true ]; then
             TAB=${TAB%$fTAB}
         fi
     fi
@@ -213,7 +213,7 @@ else
     echo "${TAB}DISPLAY set to to $DISPLAY"
 fi
 
-if $VB; then
+if [ "${VB}" = true ]; then
     # reset tab
     TAB=${TAB%$fTAB}
 fi

@@ -5,7 +5,7 @@
 if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
-    if $VB; then
+    if [ "${VB}" = true ]; then
 	# set tab
 	TAB+=${TAB+${fTAB:='   '}}
 	# load formatting
@@ -59,7 +59,7 @@ do
     fi
 done
 
-if $VB; then
+if [ "${VB}" = true ]; then
     # reset tab
     TAB=${TAB%$fTAB}
 fi

@@ -4,7 +4,7 @@
 if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
-    if $VB; then
+    if [ "${VB}" = true ]; then
 	# set tab
 	TAB+=${TAB+${fTAB:='   '}}
 	# print source name at start
@@ -37,7 +37,7 @@ alias close='kill -9 `ps -a | \grep Xming`; kill -9 `ps -a | \grep ssh`;exit'
 #alias ssh='xwin ssh'
 #xwin #start xwin on startup
 
-if $VB; then
+if [ "${VB}" = true ]; then
     # reset tab
     TAB=${TAB%$fTAB}
 fi

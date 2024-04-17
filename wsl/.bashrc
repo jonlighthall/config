@@ -39,7 +39,7 @@ else
     set +eu
 fi
 
-if $VB; then
+if [ "${VB}" = true ]; then
     # determine if being sourced or executed
     if (return 0 2>/dev/null); then
         RUN_TYPE="sourcing"
@@ -97,7 +97,7 @@ if [[ "$LIST" == *"thisroot.sh"* ]]; then
     which root
 fi
 
-if $VB; then
+if [ "${VB}" = true ]; then
     # reset tab
     dtab
 fi
