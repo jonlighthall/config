@@ -44,6 +44,7 @@ alias ping='ping -c 4 -W 1'
 alias pkill='pkill -9 -u ${USER}'
 alias pwd='pwd -L;pwd -P'
 alias up='bash update_repos' # should be sourced?
+alias x='exit'
 
 # diff
 alias d='diffy -s'
