@@ -10,13 +10,13 @@
 # -----------------------------------------------------------------------------------------------
 
 function get_curpos() {
+    # print function name
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+
     # Turn in-function debugging on/off.
     local -i DEBUG=0
     local -i funcDEBUG=0
 
-    # print function name
-    ddecho -e "${TAB}${INVERT}function: ${FUNCNAME}${RESET}"
-    
     # get the cursor position
     echo -en "\E[6n"
     local CURPOS
@@ -63,6 +63,7 @@ function get_curpos() {
 }
 
 function ind() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
     local -i DEBUG=1
     local -i funcDEBUG=1
     
@@ -70,7 +71,6 @@ function ind() {
     local -i y1=0
     local -i x2=0
     local -i y1=0
-
 
     echo -n "indented: "
     # pass variable names, not values
@@ -101,7 +101,8 @@ function ind() {
 # start a new line only if not already on a new line
 # i.e., carriage return with conditional line feed
 function start_new_line() {
-    local -i funcDEBUG=0
+    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    local -i funcDEBUG=1
     # get the cursor position
     local -i x
     get_curpos x
@@ -115,9 +116,10 @@ function start_new_line() {
 }
 
 # print horizontal line
+# SYNTAX
+#   hline [length] [style]
 function hline() {
-    # SYNTAX
-    #   hline [length] [style]
+    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
     
     # number of characters in line (length)
     local -i N
@@ -138,10 +140,10 @@ function hline() {
 }
 
 # print text between two bars
+# SYNTAX
+#   bar [length] [text]
 function bar() {
-    # SYNTAX
-    #   bar [length] [text]
-
+    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
     # number of characters in line (length)
     local -i N
     # text to print between bars
@@ -159,10 +161,10 @@ function bar() {
 }
 
 # define centered bar print
+# SYNTAX
+#   cbar [text]
 function cbar() {
-    # SYNTAX
-    #   cbar [text]
-
+    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
     # get text and add whitespace
     local -r MESSAGE_IN=$(echo " $@ ")
     # remove escape characters

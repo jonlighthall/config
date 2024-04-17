@@ -138,3 +138,7 @@ function decho() {
 function ddecho() {
     xecho "$@"    
 }
+
+function dddecho() {
+    xecho "$@"    
+}
