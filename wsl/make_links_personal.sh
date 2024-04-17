@@ -36,7 +36,7 @@ echo "${TAB}%HOMEPATH% = $win_home_dir"
 onedirve_dir=$(cmd.exe /c "echo %OneDrive%" 2>/dev/null | tr -d '\r')
 echo "${TAB}%ONEDRIVE% = $onedirve_dir"
 # construct WSL-equivalent ONEDRIVE
-# here basename won't work becuase of the file seperators
+# here basename won't work becuase spaces will be interpreted as file seperators
 onedrive_name=$(echo "${onedirve_dir##*\\}")
 decho "${TAB}$onedrive_name"
 onedrive_dir_wsl="${win_home_dir}/${onedrive_name}"
@@ -54,7 +54,7 @@ dtab
 
 dir_list=( "${win_home_dir}" "${onedrive_dir_wsl}" "${onedrive_docs}" "${home_dir}" )
 
-if [ "${home_dir}" != "${target_dir}" ]; then
+if [[ "${home_dir}" != "${target_dir}" ]]; then
     dir_list+=( "${target_dir}" )
 fi
 
@@ -121,11 +121,3 @@ do_link "${onedrive_docs}/MATLAB/" "${HOME}/matlab"
 
 bar 38 "- Done Linking External Directories --" | sed "s/^/${TAB}/"
 #       12345678901234567890123456789012345678
-
-# print time at exit
-echo -en "${TAB}$(date +"%a %b %-d %-l:%M %p %Z") ${BASH_SOURCE##*/} "
-if command -v sec2elap &>/dev/null; then
-    bash sec2elap ${SECONDS}
-else
-    echo "elapsed time is ${WHITE}${SECONDS} sec${RESET}"
-fi
