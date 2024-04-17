@@ -78,13 +78,11 @@ function print_source() {
     # define default run type
     RUN_TYPE=${RUN_TYPE:-"running"}
     get_source
-    set_tab
     # since print_source is itself part of the stack, remove the top of the stack
     ((N_BASH--))
-    dtab
 
     # conditionally add stack level prefix
-    if [ $DEBUG -gt 1 ] || true ; then
+    if [ $DEBUG -gt 1 ]; then
         local prefix="\x1b[7;38;5;132m${N_BASH}"
         if [[ "$-" == *i* ]]; then
             prefix+="i"
@@ -105,7 +103,7 @@ function print_source() {
     # subtract link/path prefix length
     local -i sp=$(($lnr - $lnp))
     fecho "space: $lnr, $lnp, $sp"
-    # if runt type is shorter than prefix, adjust
+    # if run type is shorter than prefix, adjust
     if [ $sp -le 0 ]; then
         fecho "space: $lnr, $lnp, $sp"
         if [ $sp -eq 0 ]; then
@@ -120,6 +118,13 @@ function print_source() {
     
     # define indent
     local spx=$(echo -ne "\E[${sp}C")
+
+    # set tab
+    if [[ "${RUN_TYPE}" =~ "sourcing" ]]; then
+        echo -e "${TAB}\x1b[7;38;5;132m.\x1b[0m"
+        set_tab
+        dtab
+    fi
     
     # print run type and source name
     vecho -e "${TAB}${RUN_TYPE} ${PSDIR}${BASH_SOURCE[1]}${RESET}..."
