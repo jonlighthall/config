@@ -21,12 +21,7 @@ else
     # exit on errors
     set -e
 fi
-# print source name at start
-echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
-src_name=$(readlink -f "$BASH_SOURCE")
-if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-    echo -e "${TAB}${VALID}link${RESET} -> $src_name"
-fi
+print_source
 
 # define directory names
 echo "${TAB}define directories"
