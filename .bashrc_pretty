@@ -75,14 +75,15 @@ function strip_pretty() {
 function print_source() {
     funcDEBUG=$((${DEBUG:-1} - 1))
     ddecho -e "${TAB}${INVERT}function: ${FUNCNAME}${RESET}"
+    get_source
+
     # define default run type
     RUN_TYPE=${RUN_TYPE:-"running"}
-    get_source
-    # since print_source is itself part of the stack, remove the top of the stack
-    ((N_BASH--))
 
     # conditionally add stack level prefix
     if [ $DEBUG -gt 1 ]; then
+        # since print_source is itself part of the stack, remove the top of the stack
+        ((N_BASH--))
         local prefix="\x1b[7;38;5;132m${N_BASH}"
         if [[ "$-" == *i* ]]; then
             prefix+="i"
@@ -121,7 +122,6 @@ function print_source() {
 
     # set tab
     if [[ "${RUN_TYPE}" =~ "sourcing" ]]; then
-        echo -e "${TAB}\x1b[7;38;5;132m.\x1b[0m"
         set_tab
         dtab
     fi
