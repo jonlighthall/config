@@ -24,8 +24,10 @@ else
     declare -i start_time=$(date +%s%N)
     # set "Verbose Bash" for conditional prints
     export VB=false
+    # -------------------------
     # set debug level if unset
-    export DEBUG=${DEBUG=0}  
+    export DEBUG=${DEBUG=0}
+    # -------------------------
     # print source
     if [ ${DEBUG:-0} -gt 0 ]; then
         echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
@@ -35,8 +37,6 @@ else
     fi
     # set "Verbose Bash" for conditional prints
     export VB=true
-    # set debug level if unset
-    export DEBUG=${DEBUG=0}      
     # clear terminal
     clear -x
     if [ ${DEBUG} -gt 0 ]; then
