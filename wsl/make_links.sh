@@ -1,4 +1,21 @@
-#!/bin/bash -u
+#!/bin/bash -eu
+# -----------------------------------------------------------------------------------------------
+#
+# ~/config/wsl/make_links.sh
+#
+# Purpose: 
+#
+# Dependances:
+#    install_packages.sh
+#    make_links_personal.sh
+#    make_links_etc.sh
+#
+# Called by:
+#    get_repos.sh
+#
+#  JCL Jul 2018
+#
+# -----------------------------------------------------------------------------------------------
 
 # get starting time in nanoseconds
 start_time=$(date +%s%N)
@@ -32,8 +49,7 @@ print_source
 
 start_dir=$PWD
 echo "${TAB}starting directory = ${start_dir}"
-src_dir_logi=$(dirname "$src_name")
-cd $src_dir_logi
+cd $src_dir_phys
 
 # run the following configureation files
 prog=install_packages.sh
@@ -49,7 +65,9 @@ if [ -f $prog ]; then
     unset_traps
     read -p "${TAB}Proceed with ${prog}? (y/n) " -n 1 -r -t 3
     set_traps
-    echo
+    if [ $DEBUG -lt 1 ]; then
+        echo
+    fi
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         bash $prog
     fi
