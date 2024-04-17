@@ -54,7 +54,7 @@ function fecho() {
             local -ir IDX=$(( N_FUNC - 2 ))    
             
             # set color
-            echo -ne "${DIM}${dcolor[IDX]}"
+            echo -ne "${TAB}${DIM}${dcolor[IDX]}"
 
             # select element of function stack
             local -i fidx
@@ -70,7 +70,11 @@ function fecho() {
                     # where does this come from?
                 fi
             fi
-            echo -ne "${FUNCNAME[fidx]}: \e[0m${dcolor[IDX]}"
+#           fidx=1
+            
+            echo -n "${FUNCNAME[fidx]}"
+#           echo -n " $fidx of $N_FUNC"
+            echo -ne ": \e[0m${dcolor[IDX]}"
             echo "$@"
             echo -ne "\e[0m"
         fi
