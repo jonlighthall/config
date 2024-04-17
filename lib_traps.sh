@@ -890,4 +890,5 @@ function unset_traps() {
         dtab
         return 1
     fi
+    dtab
 }

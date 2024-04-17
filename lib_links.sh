@@ -114,7 +114,6 @@ function check_link_dir() {
     echo -en "link ${type}${YELLOW}${link}${RESET}... "
     if [ -e "${link_canon}" ]; then
         echo -e "${GOOD}exists${RESET}"
-        dtab
         return 0
     else
         echo -e "${BAD}does not exist"
@@ -395,7 +394,6 @@ function do_link_exe() {
     do_link "$target" "$link_name" || return 1
     return 0
 }
-
 
 function do_make_dir() {
     # METHOD

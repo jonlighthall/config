@@ -11,7 +11,7 @@
 
 function get_curpos() {
     # print function name
-    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
 
     # Turn in-function debugging on/off.
     local -i DEBUG=0
@@ -102,7 +102,7 @@ function ind() {
 # i.e., carriage return with conditional line feed
 function start_new_line() {
     dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
-    local -i funcDEBUG=1
+    local -i funcDEBUG=0
     # get the cursor position
     local -i x
     get_curpos x

@@ -8,9 +8,6 @@ fpretty="${HOME}/config/.bashrc_pretty"
 if [ -e "$fpretty" ]; then
     source "$fpretty"
     set_traps
-    # set tab
-    rtab
-    itab $(( ${#BASH_SOURCE[@]} - 0 ))
 fi
 
 # determine if script is being sourced or executed
@@ -21,6 +18,7 @@ else
     # exit on errors
     set -e
 fi
+DEBUG=${DEBUG:-2}
 print_source
 
 # define directory names
