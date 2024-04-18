@@ -5,7 +5,9 @@
 #
 # Purpose: create links for WSL installation. In addition to calling make_links_external and
 #    make_links_etc, this script creates links to files that are contained within this repo. The
-#    script make_links_external creates links to files and directories outside of the repository.
+#    script make_links_external creates links to files and directories outside of the
+#    repository. The script make_links_etc creates links in the /etc directory, which requires
+#    elevation.
 #
 # Dependances:
 #    make_links_external.sh
@@ -21,7 +23,7 @@
 # get starting time in nanoseconds
 start_time=$(date +%s%N)
 
-DEBUG=${DEBUG:-2}
+DEBUG=${DEBUG:-0}
 
 # load bash utilities
 fpretty="${HOME}/config/.bashrc_pretty"
@@ -47,6 +49,7 @@ start_dir=$PWD
 echo "${TAB}starting directory = ${start_dir}"
 cd $src_dir_phys
 
+# make links to external files and directories
 for prog in make_links_external.sh; do
     echo -n "${TAB}${prog}... "
     if [ -f $prog ]; then
@@ -59,6 +62,7 @@ for prog in make_links_external.sh; do
     fi
 done
 
+# make links to files and directories within repo
 set -e
 
 # set target and link directories
@@ -89,7 +93,7 @@ for my_link in .bash_aliases .bash_logout .bash_profile .emacs.d .gitconfig .hus
 done
 bar 38 "------- Done Linking Repo Files ------" | sed "s/^/${TAB}/"
 
-# run make_links in /etc
+# make links in /etc
 for prog in make_links_etc.sh; do
     echo -n "${TAB}${prog}... "
     if [ -f $prog ]; then

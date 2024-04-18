@@ -18,7 +18,7 @@
 # get starting time in nanoseconds
 start_time=$(date +%s%N)
 
-DEBUG=${DEBUG:-2}
+DEBUG=${DEBUG:-0}
 
 # load bash utilities
 fpretty="${HOME}/config/.bashrc_pretty"
