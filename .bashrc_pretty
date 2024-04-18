@@ -15,6 +15,7 @@ if [ -z ${FPRETTY_LOADED+dummy} ]; then
     declare -grx FPRETTY_LOADED=true
 else
     if [ ! -z "$(declare -f print_pretty_cbar)" ]; then 
+        decho "${TAB}${BASH_SOURCE##*/} already loaded"
         return
     fi
 fi    
@@ -56,9 +57,8 @@ function get_source() {
     src_name=$(readlink -f ${BASH_SOURCE[${FUNC_LEV}]})
     # get short source name
     src_base=$(basename "${src_name}")
-    bin_name=$(basename "${BASH_SOURCE[${FUNC_LEV}]}")
     # get source path
-    ##physical (canonical)
+    ## physical (canonical)
     src_dir_phys=$(dirname "$src_name")
     ## logical (links)
     src_dir_logi=$(dirname "${BASH_SOURCE[${FUNC_LEV}]}")
@@ -73,7 +73,7 @@ function strip_pretty() {
 }
 
 function print_source() {
-    funcDEBUG=$((${DEBUG:-1} - 1))
+    local -i funcDEBUG=$((${DEBUG:-1} - 1))
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     fecho "DEBUG = $DEBUG"
     get_source
@@ -142,6 +142,9 @@ function print_source() {
             vecho -e "${TAB}${spx}${GRAY}phys -> $src_dir_phys${RESET}"
         fi
     fi
+
+    # deallocate variables
+    unset prefix
 }
 
 function print_ribbon() {
@@ -166,27 +169,33 @@ function print_bar() {
 # run get_source to define source directory
 get_source
 
-# load bash utils
-for util in lib_links.sh \
-                lib_traps.sh\
-                lib_tabs.sh \
-                lib_cond_echo.sh \
-                lib_fmt.sh \
-                lib_colors.sh \
-
-do
-    # use the canonical (physical) source directory for reference; this is important if sourcing
-    # this file directly from shell
-    fname="${src_dir_phys}/${util}"
-    if [ -e "${fname}" ]; then
-        if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
-            echo "${TAB}loading $(basename ${fname})"
+function load_libs() {
+    get_source
+    # load bash utils
+    local fname
+    local util    
+    for util in lib_links.sh \
+                    lib_traps.sh\
+                    lib_tabs.sh \
+                    lib_cond_echo.sh \
+                    lib_fmt.sh \
+                    lib_colors.sh 
+    do
+        # use the canonical (physical) source directory for reference; this is important if sourcing
+        # this file directly from shell
+        fname="${src_dir_phys}/${util}"
+        if [ -e "${fname}" ]; then
+            if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
+                echo "${TAB}loading $(basename ${fname})"
+            fi
+            source ${fname}
+        else
+            echo "${fname} not found"
         fi
-        source ${fname}
-    else
-        echo "${fname} not found"
-    fi
-done
+    done
+}
+
+load_libs
 
 # determine if script is being sourced or executed and add conditional behavior
 if (return 0 2>/dev/null); then
