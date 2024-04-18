@@ -114,14 +114,14 @@ done
 bar 38 "------- Done Linking Repo Files ------" | sed "s/^/${TAB}/"
 dtab
 
-exit
-
 # run make_links in /etc
 for prog in make_links_etc.sh; do
     echo -n "${TAB}${prog}... "
     if [ -f $prog ]; then
         echo "found"
+        itab
         bash $prog
+        dtab
     else
         echo "not found"
     fi

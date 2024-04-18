@@ -254,6 +254,7 @@ function do_link() {
     fi # done with SSH settings
 
     # begin linking...
+    itab
     echo -n "${TAB}link name ${link_name}... "
 
     # first, check for existing copy
