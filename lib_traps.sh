@@ -256,7 +256,7 @@ function print_stack_devel() {
 }
 
 function print_stack() {
-    local -i DEBUG=9
+    local -i DEBUG=${DEBUG:=9}
     start_new_line
     # get length of function stack
     local -gi N_FUNC=${#FUNCNAME[@]}
@@ -672,7 +672,7 @@ function print_error() {
 
 function print_int() {
     start_new_line
-    echo -e "${YELLOW}\E[7m INT ${RESET} ${BASH_SOURCE[1]##*/}"
+    echo -e "${AZURE}\E[7m INT ${RESET} ${BASH_SOURCE[1]##*/}"
     echo " Ctrl-C pressed"
     #	echo -e "breaking..."
     #	break
