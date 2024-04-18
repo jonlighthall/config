@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/bin/bash -u
+#
+# JCL Jul 2018
 
 # load formatting
 fpretty=${HOME}/config/.bashrc_pretty
@@ -16,16 +18,11 @@ sudo apt upgrade -y --fix-missing
 
 # install
 bar "install packages..."
-sudo apt install -y git
-sudo apt install -y nautilus
+for PACK in aspell dbus-x11 emacs git nautilus x11-apps xterm; do
+    echo "installing ${PACK}..."
+    sudo apt install -y --fix-missing ${PACK}
+done
 
-# emacs
-sudo apt install -y aspell
-sudo apt install -y emacs
-
-# X11
-sudo apt install -y dbus-x11
-sudo apt install -y x11-apps
 # see github.com/jonlighthall/bash for X11 test
 
 # re-check

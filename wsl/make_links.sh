@@ -3,7 +3,7 @@
 #
 # ~/config/wsl/make_links.sh
 #
-# Purpose: 
+# Purpose: initialize installation with configurations for WSL. This program calls install_packages
 #
 # Dependances:
 #    install_packages.sh
