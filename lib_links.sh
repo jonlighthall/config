@@ -47,7 +47,7 @@ function check_target() {
     check_arg1 $@
 
     # define target (source)
-    local target="$1"
+    local target="$@"
     local target_canon=$(readlink -f "${target}")
 
     # get the cursor position
@@ -63,12 +63,12 @@ function check_target() {
     fi
 
     # determine 
-    [ -L "${target}" ] && type="link "
-    [ -f "${target}" ] && type="file "
-    [ -d "${target}" ] && type="directory "
+    [ -L "${target}" ] && type="link ${VALID}"
+    [ -f "${target}" ] && type="file ${YELLOW}"
+    [ -d "${target}" ] && type="directory ${DIR}"
    
     # check if target exists
-    echo -en "target ${type}${YELLOW}${target}${RESET}... "
+    echo -en "target ${type}${target}${RESET}... "
     if [ -e "${target_canon}" ]; then
         echo -e "${GOOD}exists${RESET}"
         return 0
@@ -85,7 +85,7 @@ function check_link_dir() {
     check_arg1 $@
 
     # define link (destination)
-    local link="$1"
+    local link="$@"
     local link_canon=$(readlink -f "${link}")
 
     # get the cursor position
@@ -101,19 +101,17 @@ function check_link_dir() {
     fi
 
     # determine 
-    [ -L "${link}" ] && type="link "
-    [ -f "${link}" ] && type="file "
-    [ -d "${link}" ] && type="directory "
+    [ -L "${link}" ] && type="link ${VALID}"
+    [ -f "${link}" ] && type="file ${YELLOW}"
+    [ -d "${link}" ] && type="directory ${DIR}"
     
     # check if link exists
-    echo -en "link ${type}${YELLOW}${link}${RESET}... "
+    echo -en "  link ${type}${link}${RESET}... "
     if [ -e "${link_canon}" ]; then
         echo -e "${GOOD}exists${RESET}"
         return 0
     else
         echo -e "${BAD}does not exist"
-        echo -e "this should never be true${RESET}"
-        echo -e "link ${type} ${YELLOW}$1${RESET} is ${RED}HOME${NORMAL}"
         dtab        
         exit 1
     fi
