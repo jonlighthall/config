@@ -8,17 +8,16 @@ Linux-like symbolic links can be made using the `ln -s` command.
 [`make_links`] (make_links.sh)
 [`make_links_etc`] (make_links_etc.sh)
 [`make_links_personal`] (make_links_personal.sh)
-[`run`] (run.sh)
+[`configure`] (configure.sh)
 
 ## Installation
 ````
 cd config/wsl
 ./install_packages.sh
 ./make_links.sh
-./make_links_personal.sh
 ````
 
-or run the script [`run`] (run.sh).
+or run the script [`configure`] (configure.sh).
 
 ## Scripts
 The following commands are executed by the scripts.
