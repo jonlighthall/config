@@ -141,6 +141,18 @@ if [ ! -z "${prePATH}" ]; then
     done
 fi
 
+# deallocate variables
+unset appPATH
+unset e2ansi_args
+unset emacs_args
+unset falias
+unset fe2ansi
+unset femacs
+unset fface
+unset fsilent
+unset prePATH
+unset rep_dir
+
 if [ "${VB}" = true ]; then
     # reset tab
     dtab 2 # once for path, once for file

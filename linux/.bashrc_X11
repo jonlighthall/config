@@ -39,7 +39,7 @@ fi
 if ! $dispOK; then
     if [ "${VB}" = true ]; then
 	      echo "${TAB}building candidate DISPLAY list..."
-	      TAB+=$fTAB
+	      itab
     fi
     display_list="localhost "
     name_list=$(\grep nameserver /etc/resolv.conf | awk '{print $2}')
@@ -77,7 +77,7 @@ if ! $dispOK; then
 	      fi
     done
 
-    TAB=${TAB%$fTAB}
+    dtab
 
     if [ -z "${DISPLAY}" ]; then
 	      echo -e "${TAB}${BAD}ERROR: ${RESET}DISPLAY not set"
@@ -88,5 +88,5 @@ fi
 
 if [ "${VB}" = true ]; then
     # reset tab
-    TAB=${TAB%$fTAB}
+    dtab
 fi

@@ -246,6 +246,14 @@ else
     vecho "${TAB}${ADDPATH} already in PATH"
 fi
 
+# deallocate variables
+unset ADDPATH
+unset do_load_nvidia
+unset do_load_pgi
+unset do_test_git
+unset do_test_color
+unset git_bad
+
 if [ "${VB}" = true ]; then
     # reset tab
     dtab 2 # once for path, once for file

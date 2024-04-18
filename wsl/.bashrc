@@ -97,6 +97,8 @@ if [[ "$LIST" == *"thisroot.sh"* ]]; then
     which root
 fi
 
+unset LIST
+
 if [ "${VB}" = true ]; then
     # reset tab
     dtab

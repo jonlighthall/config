@@ -1,4 +1,4 @@
-# Set DISPLAY for WSL2
+# set DISPLAY for WSL2
 #
 # Note: this file must use unix line endings (LF)!
 if [ -z ${VB:+dummy} ]; then
@@ -39,7 +39,7 @@ if [ ! -z $xPID ]; then
 else
     if [ "${VB}" = true ]; then
         echo "${TAB}attemping to launch ${PROG}..."
-        TAB+=$fTAB
+        itab
     fi
     DIR=/mnt/c/Program\ Files/VcXsrv
     if [ -d "$DIR" ]; then
@@ -73,7 +73,7 @@ else
         unalias vcx 2>/dev/null
     fi
     if [ "${VB}" = true ]; then
-        TAB=${TAB%$fTAB}
+        dtab
     fi
 fi
 
@@ -87,7 +87,7 @@ if ! $xOK; then
     else
         if [ "${VB}" = true ]; then
             echo "${TAB}attemping to launch ${PROG}..."
-            TAB+=$fTAB
+            itab
         fi
         DIR=/mnt/c/Program\ Files\ \(x86\)/Xming
         if [ -d "$DIR" ]; then
@@ -121,10 +121,12 @@ if ! $xOK; then
             unalias xming 2>/dev/null
         fi
         if [ "${VB}" = true ]; then
-            TAB=${TAB%$fTAB}
+            dtab
         fi
     fi
 fi
+
+
 
 if $xOK; then
     dispOK=false
@@ -144,7 +146,7 @@ if $xOK; then
     fi
 
     if ! $dispOK; then
-        TAB+=$fTAB
+        itab
         # try to determine WSL version
         WSL_ver=$(wsl.exe -l -v | \grep -a \* | sed 's/[^[:print:]]//g;s/  */ /g' | cut -d ' ' -f 4)
         vecho "${TAB}applying default DISPLAY for WSL version $WSL_ver"
@@ -164,7 +166,7 @@ if $xOK; then
                 echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
                 # check other values if FAIL
                 echo "${TAB}building candidate DISPLAY list..."
-                TAB+=$fTAB
+                itab
             fi
             display_list="localhost "
             name_list=$(\grep nameserver /etc/resolv.conf | awk '{print $2}')
@@ -195,7 +197,7 @@ if $xOK; then
                     unset DISPLAY
                 fi
             done
-            TAB=${TAB%$fTAB}
+            dtab
 
             if [ -z "${DISPLAY}" ]; then
                 echo -e "${TAB}${BAD}ERROR: ${RESET}DISPLAY not set"
@@ -204,7 +206,7 @@ if $xOK; then
             fi
         fi
         if [ "${VB}" = true ]; then
-            TAB=${TAB%$fTAB}
+            dtab
         fi
     fi
 else
@@ -213,7 +215,13 @@ else
     echo "${TAB}DISPLAY set to to $DISPLAY"
 fi
 
+# deallocate variables
+unset PROG
+unset dispOK
+unset xOK
+unset xPID
+
 if [ "${VB}" = true ]; then
     # reset tab
-    TAB=${TAB%$fTAB}
+    dtab
 fi
