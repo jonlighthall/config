@@ -66,7 +66,7 @@ export  PURPLE='\x1B[38;5;93m' 	#8700ff	(135,  0,255) Purple, violet
 export    ROSE='\x1B[38;5;198m' #ff0087	(255,  0,135) DeepPink1	
 
 # create array of 12 rainbow colors
-declare -ax rcolor=( "${RED}" "${ORANGE}" "${YELLOW}" "${CHARTRU}" "${GREEN}" "${SPGREEN}" "${CYAN}" "${AZURE}" "${BLUE}" "${PURPLE}" "${MAGENTA}" "${ROSE}" )
+export rcolor=( "${RED}" "${ORANGE}" "${YELLOW}" "${CHARTRU}" "${GREEN}" "${SPGREEN}" "${CYAN}" "${AZURE}" "${BLUE}" "${PURPLE}" "${MAGENTA}" "${ROSE}" )
 
 # define monochrome colors
 export    GRAY='\x1B[90m'
@@ -85,6 +85,7 @@ export   VALID='\x1B[1;36m' # bold cyan   : ln valid link
 function define_ls_colors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     if [ -z ${LS_COLORS:+dummy} ]; then
+        echo "${TAB}LS_COLORS not defined"
         return
     fi
     local -r LN=$(declare -p LS_COLORS | sed 's/^.*ln=\([0-9;]*\):.*$/\1/')
@@ -136,12 +137,13 @@ export col09='\x1B[38;5;132m' # 11: 330 Hot Pink            ter - rose
 export col00='\x1B[38;5;102m' # 12:   0 Grey              mon - GRAY
 
 # create rainbow-ordered (hue order) array of 12 debug colors
-declare -ax dcolor=( '\x1B[38;5;131m' '\x1B[38;5;137m' '\x1B[38;5;143m' '\x1B[38;5;107m' '\x1B[38;5;71m'  '\x1B[38;5;72m'  '\x1B[38;5;73m'  '\x1B[38;5;67m'  '\x1B[38;5;61m'  '\x1B[38;5;97m'  '\x1B[38;5;133m' '\x1B[38;5;132m' )
+export dcolor=( '\x1B[38;5;131m' '\x1B[38;5;137m' '\x1B[38;5;143m' '\x1B[38;5;107m' '\x1B[38;5;71m'  '\x1B[38;5;72m'  '\x1B[38;5;73m'  '\x1B[38;5;67m'  '\x1B[38;5;61m'  '\x1B[38;5;97m'  '\x1B[38;5;133m' '\x1B[38;5;132m' )
 
 # print dcolor array in rainbow-order
 # requires lib_traps
 function print_colors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    decho "${TAB}printing contents of ${!dcolor@} in ARRAY order..."
     # add shell options if not alraedy set
     old_opts=$(echo "$-")
     set -u
@@ -168,9 +170,10 @@ function print_colors() {
 # print dcolor array in rainbow-order
 function print_rcolors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    decho "${TAB}printing contents of ${!rcolor@} in ARRAY order..."
     # get length of array
     local -ir N_cols=${#rcolor[@]}    
-    echo "${TAB}$N_cols in array ${!dcolor@}"
+    echo "${TAB}$N_cols in array ${!rcolor@}"
     # declare array index variable
     local -i i
     # print array elements
@@ -187,12 +190,11 @@ function print_rcolors() {
 # requires lib_traps, lib_fmt
 function print_dcolors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    decho "${TAB}printing contents of ${!dcolor@} in DEBUG order..."
     local -i DEBUG=${DEBUG:-2}
     # add shell options if not alraedy set
     old_opts=$(echo "$-")
     set -u
-    set +e
-    unset_traps
 
     # get length of array
     local -ir N_cols=${#dcolor[@]}
@@ -228,7 +230,6 @@ function print_dcolors() {
 
     # reset shell options
     reset_shell ${old_opts} u
-    reset_traps
 }
 
 #--------------------------------------
@@ -330,7 +331,7 @@ function dbg2idx() {
 function print_fcolors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
     local -i DEBUG=${DEBUG:-1}
-    decho "${TAB}printing contents of dcolor..."
+    decho "${TAB}printing contents of ${!dcolor@} in DBG2IDX order..."
     
     # get length of array
     local -ir N_cols=${#dcolor[@]}
@@ -391,6 +392,7 @@ function print_pretty_cbar() {
 function print_ls_colors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
     if [ -z ${LS_COLORS:+dummy} ]; then
+        echo "${TAB}LS_COLORS not defined"
         return
     fi
     # print value of LS_COLORS
@@ -410,6 +412,7 @@ function print_ls_colors() {
 function print_ls_colors_ext() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
     if [ -z ${LS_COLORS:+dummy} ]; then
+        echo "${TAB}LS_COLORS not defined"
         return
     fi
     # print value of LS_COLORS
@@ -434,15 +437,28 @@ function append_ls_colors() {
     LS_COLORS+="mi=05;48;5;232;38;5;15:"
 }
 
+function test_lib_colors() {
+    local -i DEBUG=2
+    decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+
+    for func in test_normal \
+                    define_ls_colors \
+    print_ls_colors \
+    print_ls_colors_ext \
+    print_rcolors \
+    print_colors \
+    print_dcolors \
+    print_fcolors \
+    print_pretty \
+    print_pretty_cbar \
+
+    do
+        echo
+        $func
+    done
+
+}
+
 if [ ${DEBUG:-0} -gt 2 ]; then
-    test_normal
-    define_ls_colors
-    print_colors
-    print_rcolors
-    print_dcolors
-    print_fcolors
-    print_pretty
-    print_pretty_cbar
-    print_ls_colors
-    print_ls_colors_ext
+    test_lib_colors
 fi
