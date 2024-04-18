@@ -119,3 +119,107 @@ do_link "${onedrive_docs}/MATLAB/" "${HOME}/matlab"
 
 bar 38 "- Done Linking External Directories --" | sed "s/^/${TAB}/"
 #       12345678901234567890123456789012345678
+
+# define directory names
+if command -v wsl.exe >/dev/null; then
+	  echo "WSL defined... "
+    # On WSL installations with OneDrive (exterior to WSL, in Windows), three directories will be
+    # be established to hold Git repositories:
+    #   * ~/repos - a local directory, within WSL
+    #   * %ONEDRIVE%/Documents/home/<host>/<distro>/repos
+    #     - outside of WSL, inside OneDrive, "online"
+    #     - links to ~/sync/repos
+    #     - used for backing up local files
+    #   * winhome/Documents/<distro>/repos
+    #     - outside of WSL, outside OneDrive, "offline"
+    #     - links to ~/offline/repos
+    #     - used for saving Win32 scripts (batch and powershell)
+    #
+
+    # Put another way, the following directories should contain a folder named repos:
+    #  * ~
+    #  * ~/sync
+    #  * ~/offline
+    #
+    # The following links should already be defined; they are created in
+    # wsl/make_links_personal.sh    
+    #  * ~/home -> %ONEDRIVE%/Documents/home
+    #  * ~/winhome ->
+    #
+    # The following directories will be created. Since the "online" directory is shared, a
+    # hostname is added to the directory tree. The "offline" directory is local, so the hostname
+    # is ommited
+    #  * ~/repos
+    #  * ~/home/<host>
+    #  * ~/home/<host>/<distro>
+    #  * ~/home/<host>/<distro>/repos
+    #  * ~/winhome/Documents/<distro>
+    #  * ~/winhome/Documents/<distro>/repos
+    #
+    # Finally, the following links should be created
+    #  * ~/sync -> ~/home/<host>/<distro>
+    #  * ~/offline -> ~/winhome/<distro>
+
+    # get host name
+	  host_name=$(hostname)
+
+	  # get distro name
+	  if [ -f /etc/os-release ]; then
+		    distro=$(sed '/^NAME/!d' /etc/os-release | awk -F \" '{print $2}')
+	  else
+		    if command -v lsb_release; then
+			      distro=$(lsb_release -a 2>&1 | sed '/Distributor/!d;s/^.*:[ \t]*//')
+		    else
+			      distro=$(sed '/^NAME/!d' /etc/*release | awk -F\" '{print $2}')
+		    fi
+	  fi
+
+	  # convert to lower case
+	  distro=$(echo "$distro" | tr '[:upper:]' '[:lower:]')
+    
+    #  * ~/winhome/Documents    
+    #  * ~/sync/repos
+    #  * ~/offline/repos
+
+    # set sync directory
+	  host_dir=${HOME}/home/$host_name
+	  distro_dir=${host_dir}/$distro
+
+	  # print summary
+	  (
+		    echo "${TAB}host name: $host_name"
+		    echo "${TAB}distro: $distro"
+		    echo "${TAB}host dir: $host_dir"
+		    echo "${TAB}distro dir: $distro_dir"
+	  ) | column -t -s : -o : -R 1
+
+    #define target (source)
+	  target=${distro_dir}
+	  # define link name (destination)
+	  link_name=${HOME}/sync
+
+	  # make $target and link to $link_name
+	  do_make_link "${target}" "${link_name}"
+
+    echo "${TAB}creating links outside of Onedrive..."
+    # define the offline direcotry and link name
+    
+	  wdir="${HOME}/winhome/Documents/${distro}/repos"
+    echo "${TAB}creating ${wdir}..."
+    
+    odir="${HOME}/offline"
+    echo "${TAB}linking to ${odir}..."
+
+    do_make_link "${wdir}" "${odir}"
+    
+	  # define repository directory
+	  rdir=${distro_dir}/repos
+
+	  # link repo directory to HOME
+	  #define target (source)
+	  target=${rdir}
+	  # define link name (destination)
+	  link_name=${HOME}/repos
+else
+	  echo "WSL not defined."
+fi
