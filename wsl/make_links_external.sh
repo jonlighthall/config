@@ -22,7 +22,7 @@ DEBUG=${DEBUG:-2}
 print_source
 
 # define directory names
-echo "${TAB}define directories"
+echo -e "${TAB}${UL}define directories${RESET}"
 itab
 # get USERNAME
 windows_user=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
@@ -48,35 +48,34 @@ decho "${TAB}$home_dir"
 # set target
 target_dir=${home_dir}
 decho "${TAB}$target_dir"
-dtab
-
-dir_list=( "${win_home_dir}" "${onedrive_dir_wsl}" "${onedrive_docs}" "${home_dir}" )
-
-if [[ "${home_dir}" != "${target_dir}" ]]; then
-    dir_list+=( "${target_dir}" )
-fi
-
-#echo ${dir_list[@]}
-
-echo "${TAB}check directories"
-itab
-# test directories
-for dir in "${dir_list[@]}"; do 
-    echo -n "${TAB}directory $dir... "
-    if [ -e "${dir}" ]; then
-        echo -e "${GOOD}exists${RESET}"
-    else
-        echo -e "${BAD}does not exist${RESET}"
-        exit 1
-    fi
-done
-dtab
-
 # set link directory
 link_dir=$HOME
-check_link_dir $link_dir
+decho "${TAB}$link_dir"
+dtab
 
-bar 38 "---- Start Linking External Files ----" | sed "s/^/${TAB}/"
+# create list of target directories
+target_dir_list=( "${win_home_dir}" "${onedrive_dir_wsl}" "${onedrive_docs}" "${home_dir}" )                     
+if [[ "${home_dir}" != "${target_dir}" ]]; then
+    target_dir_list+=( "${target_dir}" )
+fi
+
+# create list of link directories
+link_dir_list=( "${link_dir}" )
+
+echo -e "${TAB}${UL}check directories${RESET}"
+itab
+# test directories
+for dir in "${target_dir_list[@]}"; do 
+    check_target $dir
+done
+
+for dir in "${link_dir_list[@]}"; do 
+    check_link_dir $dir
+done
+
+dtab
+
+cbar  "Start Linking External Files" | sed "s/^/${TAB}/"
 
 # list of files to be linked
 for my_link in .bash_history; do
@@ -92,9 +91,9 @@ for my_link in .bash_history; do
     do_link "$target" "$link"
 done
 
-bar 38 "----- Done Linking External Files ----" | sed "s/^/${TAB}/"
+cbar "Done Linking External Files" | sed "s/^/${TAB}/"
 
-bar 38 "- Start Linking External Directories -" | sed "s/^/${TAB}/"
+cbar "Start Linking External Directories" | sed "s/^/${TAB}/"
 # Create default directory links in ~
 
 # define winhome
@@ -104,6 +103,9 @@ do_link "${win_home_dir}" "${HOME}/winhome"
 # define links within winhome
 echo -n "${TAB}downloads: "
 do_link "${win_home_dir}/Downloads/" "${HOME}/downloads"
+
+echo -n "${TAB}windocs: "
+do_link "${win_home_dir}/Documents/" "${HOME}/windocs"
 
 # define onedrive
 echo -n "${TAB}onedrive: "
@@ -117,8 +119,7 @@ do_link "${home_dir}" "${HOME}/home"
 echo -n "${TAB}matlab: "
 do_link "${onedrive_docs}/MATLAB/" "${HOME}/matlab"
 
-bar 38 "- Done Linking External Directories --" | sed "s/^/${TAB}/"
-#       12345678901234567890123456789012345678
+cbar "Done Linking External Directories" | sed "s/^/${TAB}/"
 
 # define directory names
 if command -v wsl.exe >/dev/null; then
@@ -141,10 +142,10 @@ if command -v wsl.exe >/dev/null; then
     #  * ~/sync
     #  * ~/offline
     #
-    # The following links should already be defined; they are created in
-    # wsl/make_links_personal.sh    
+    # The following links should already be defined; they are created above
     #  * ~/home -> %ONEDRIVE%/Documents/home
-    #  * ~/winhome ->
+    #  * ~/winhome -> %HOMEPATH%
+    #  * ~/windocs -> %HOMEPATH%/Documents
     #
     # The following directories will be created. Since the "online" directory is shared, a
     # hostname is added to the directory tree. The "offline" directory is local, so the hostname
