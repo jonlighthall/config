@@ -12,6 +12,8 @@
 # -----------------------------------------------------------------------------------------------
 
 function fello() {
+    decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    fecho "DEBUG = $DEBUG"
     hello
     echo $-
 }
@@ -93,9 +95,9 @@ function reset_shell() {
 
         new_opts=$-
 
-        if [ $(echo ${old_opts} | grep ${opt}) ]; then
+        if [[ "${old_opts}" == *"${opt}" ]]; then
             decho "${opt} was set:${old_opts}"
-            if [ $(echo ${new_opts} | grep ${opt}) ]; then
+            if [[ "${new_opts}" == *"${opt}" ]]; then
                 decho -n "${opt} is set:"
             else
                 decho "${opt} is not set:$-"
@@ -106,7 +108,7 @@ function reset_shell() {
             decho -n "$-"
         else
             decho "${opt} was not set:${old_opts}"
-            if [ $(echo ${new_opts} | grep ${opt}) ]; then
+            if [[ "${new_opts}" == *"${opt}" ]]; then
                 decho -n "${opt} is set:"
                 decho -e "${RESET}${new_opts}" | grep ${opt} --color=always
                 decho -n "unsetting ${opt}:"
@@ -702,7 +704,7 @@ function print_return() {
     local -ir N_FUNC=${#FUNCNAME[@]}
     # print summary
     start_new_line
-    echo -e "${TAB}${YELLOW}\E[7m RETURN ${RESET} ${GRAY}RETVAL=${RETURN_RETVAL}${RESET} ${FUNCNAME[$((N_FUNC-2))]}"
+    echo -e "${TAB}${YELLOW}\E[7m RETURN ${RESET} ${GRAY}RETVAL=${RETURN_RETVAL}${RESET} ${BASH_SOURCE[1]##*/}"
 }
 
 # define traps
