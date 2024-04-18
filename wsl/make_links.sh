@@ -3,10 +3,12 @@
 #
 # ~/config/wsl/make_links.sh
 #
-# Purpose: create links for WSL installation.
+# Purpose: create links for WSL installation. In addition to calling make_links_external and
+#    make_links_etc, this script creates links to files that are contained within this repo. The
+#    script make_links_external creates links to files and directories outside of the repository.
 #
 # Dependances:
-#    make_links_personal.sh
+#    make_links_external.sh
 #    make_links_etc.sh
 #
 # Called by:
@@ -45,7 +47,7 @@ start_dir=$PWD
 echo "${TAB}starting directory = ${start_dir}"
 cd $src_dir_phys
 
-for prog in make_links_personal.sh; do
+for prog in make_links_external.sh; do
     echo -n "${TAB}${prog}... "
     if [ -f $prog ]; then
         echo "found"
