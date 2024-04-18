@@ -3,10 +3,9 @@
 #
 # ~/config/wsl/make_links.sh
 #
-# Purpose: initialize installation with configurations for WSL. This program calls install_packages
+# Purpose: create links for WSL installation.
 #
 # Dependances:
-#    install_packages.sh
 #    make_links_personal.sh
 #    make_links_etc.sh
 #
@@ -45,31 +44,6 @@ print_source
 start_dir=$PWD
 echo "${TAB}starting directory = ${start_dir}"
 cd $src_dir_phys
-
-# run the following configureation files
-prog=install_packages.sh
-echo -n "${TAB}$prog..."
-if [ -f $prog ]; then
-    echo "found"
-    itab
-    echo "${TAB}${prog} requires"
-    itab
-    echo "${TAB}* elevation"
-    echo "${TAB}* access to archive.ubuntu.com, security.ubuntu.com, etc"
-    dtab
-    unset_traps
-    read -p "${TAB}Proceed with ${prog}? (y/n) " -n 1 -r -t 3
-    set_traps
-    if [ $DEBUG -lt 1 ]; then
-        echo
-    fi
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        bash $prog
-    fi
-    dtab
-else
-    echo "not found"
-fi
 
 for prog in make_links_personal.sh; do
     echo -n "${TAB}${prog}... "
@@ -112,7 +86,6 @@ for my_link in .bash_aliases .bash_logout .bash_profile .emacs.d .gitconfig .hus
     do_link "${target}" "${link}"
 done
 bar 38 "------- Done Linking Repo Files ------" | sed "s/^/${TAB}/"
-dtab
 
 # run make_links in /etc
 for prog in make_links_etc.sh; do
@@ -129,4 +102,3 @@ done
 
 # return to starting directory
 cd $start_dir
-dtab
