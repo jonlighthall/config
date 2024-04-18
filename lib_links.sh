@@ -66,16 +66,11 @@ function check_target() {
     [ -L "${target}" ] && type="link "
     [ -f "${target}" ] && type="file "
     [ -d "${target}" ] && type="directory "
-
-    if [[ "${target_canon}" == ${HOME} ]]; then
-        echo -e "target ${YELLOW}$1${RESET} is ${RED}HOME${RESET}"
-    fi    
-    
+   
     # check if target exists
     echo -en "target ${type}${YELLOW}${target}${RESET}... "
     if [ -e "${target_canon}" ]; then
         echo -e "${GOOD}exists${RESET}"
-        itab
         return 0
     else
         echo -e "${BAD}does not exist${RESET}"
@@ -118,7 +113,7 @@ function check_link_dir() {
     else
         echo -e "${BAD}does not exist"
         echo -e "this should never be true${RESET}"
-        echo -e "link ${YELLOW}$1${RESET} is ${RED}HOME${NORMAL}"
+        echo -e "link ${type} ${YELLOW}$1${RESET} is ${RED}HOME${NORMAL}"
         dtab        
         exit 1
     fi
@@ -410,9 +405,9 @@ function do_make_dir() {
     local target="$1"
 
     check_target "$target" || {
-        itab 2
+        itab 
         mkdir -pv ${target} &> >(sed "s/^/${TAB}/")
-        dtab 2
+        dtab 
     }
     return $?
 }

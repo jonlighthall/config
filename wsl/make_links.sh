@@ -83,17 +83,17 @@ for prog in make_links_personal.sh; do
     fi
 done
 
-exit
+set -e
 
 # set target and link directories
-sys_name=$(basename "$src_dir_logi")
+sys_name=$(basename "$src_dir_phys")
 config_dir="${HOME}/config"
 target_dir="${config_dir}/${sys_name}"
 link_dir=$HOME
 
 # check directories
 check_target "${target_dir}"
-do_make_dir "$link_dir"
+check_link_dir "$link_dir"
 
 bar 38 "------ Start Linking Repo Files ------" | sed "s/^/${TAB}/"
 
@@ -112,6 +112,9 @@ for my_link in .bash_aliases .bash_logout .bash_profile .emacs.d .gitconfig .hus
     do_link "${target}" "${link}"
 done
 bar 38 "------- Done Linking Repo Files ------" | sed "s/^/${TAB}/"
+dtab
+
+exit
 
 # run make_links in /etc
 for prog in make_links_etc.sh; do
