@@ -589,11 +589,13 @@ function print_error() {
                     # print line number
                     ddecho "${TAB}ERR_LINE = ${ERR_LINENO}"
                     # print summary
-                    ddecho -n "${TAB}line ${ERR_LINENO} in ${BASH_SOURCE[1]}: "
-                    ddecho sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}"
-                    decho "${TAB}"$(sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}")
+                    ddecho "${TAB}line ${ERR_LINENO} in ${BASH_SOURCE[1]}: "
+                    local cmd="sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}""
+                    ddecho "${TAB}${cmd}"
+                    start_new_line
+                    decho "${TAB}$($cmd)"
                     # save offending line
-                    ERR_LINE=$(sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}" | sed "s/^\s*//")
+                    ERR_LINE=$($cmd | sed "s/^\s*//")
                 else
                     ddecho "${TAB}BASH_SOURCE[1] is EMPTY"
                     ERR_LINE="EMPTY"
