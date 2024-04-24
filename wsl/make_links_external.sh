@@ -100,19 +100,21 @@ dtab
 #     - outside of WSL, inside OneDrive, "online"
 #     - links to ~/sync/repos
 #     - used for backing up local files
-#   * winhome/Documents/<distro>/repos
+#     - name ideas: sync, online, cloud
+#   * %HOMEPATH%/Documents/home/<distro>/repos
 #     - outside of WSL, outside OneDrive, "offline"
 #     - links to ~/offline/repos
 #     - used for saving Win32 scripts (batch and powershell)
+#     - name ideas: online, local, win32
 #
-
 # Put another way, the following directories should contain a folder named repos:
 #  * ~
 #  * ~/sync
 #  * ~/offline
+#  these three folders should contain any and all files routinely accessesed by WSL
 #
 # The following links should already be defined; they are created above
-#  * ~/home -> %ONEDRIVE%/Documents/home
+#  * ~/home -> %ONEDRIVE%/Documents/home; this should be redefined as cloud
 #  * ~/winhome -> %HOMEPATH%
 #  * ~/windocs -> %HOMEPATH%/Documents
 #
@@ -132,8 +134,7 @@ dtab
 
 # define directory names
 if command -v wsl.exe >/dev/null; then
-	  echo "WSL defined... "
-
+	  echo "${TAB}WSL defined... "
     # get host name
 	  host_name=$(hostname)
 
@@ -221,14 +222,14 @@ cbar "Start Linking External Directories" | sed "s/^/${TAB}/"
 
 # define winhome
 echo -n "${TAB}winhome: "
-do_link "${win_home_dir}" "${HOME}/winhome"
+do_link "${homepath_dir_wsl}" "${HOME}/winhome"
 
 # define links within winhome
 echo -n "${TAB}downloads: "
-do_link "${win_home_dir}/Downloads/" "${HOME}/downloads"
+do_link "${homepath_dir_wsl}/Downloads/" "${HOME}/downloads"
 
 echo -n "${TAB}windocs: "
-do_link "${win_home_dir}/Documents/" "${HOME}/windocs"
+do_link "${homepath_dir_wsl}/Documents/" "${HOME}/windocs"
 
 # define onedrive
 echo -n "${TAB}onedrive: "
@@ -236,7 +237,7 @@ do_link "${onedrive_dir_wsl}" "${HOME}/onedrive"
 
 # define links within onedrive
 echo -n "${TAB}home: "
-do_link "${home_dir}" "${HOME}/home"
+do_link "${onedrive_home}" "${HOME}/home"
 
 # define matlab
 echo -n "${TAB}matlab: "
