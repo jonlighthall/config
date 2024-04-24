@@ -132,7 +132,17 @@ dtab
 #  * ~/sync -> ~/home/<host>/<distro>
 #  * ~/offline -> ~/winhome/<distro>
 
-# define directory names
+# define home
+# these are the directories where all online and offline files will be stored (outside of WSL)
+# these directories will need to be created
+home="/home"
+onedrive_home="${onedrive_docs}${home}"
+decho "${TAB}OneDrive home = $onedrive_home"
+homepath_home="${homepath_docs}${home}"
+decho "${TAB}HomePath home = $homepath_home"
+make_dir_list=( "${onedrive_home}" "${homepath_home}" )
+
+# define host and distro
 if command -v wsl.exe >/dev/null; then
 	  echo "${TAB}WSL defined... "
     # get host name
@@ -156,9 +166,12 @@ if command -v wsl.exe >/dev/null; then
     #  * ~/sync/repos
     #  * ~/offline/repos
 
-    # set sync directory
-	  host_dir=${HOME}/home/$host_name
-	  distro_dir=${host_dir}/$distro
+    # define online direcotry
+    onedrive_host="${onedrive_home}/$host_name"
+    onedrive_distro="${onedrive_host}/${distro}"
+
+    # set offline directory
+    homepath_distro="${homepath_home}/${distro}"
 
 	  # print summary
 	  (
@@ -204,7 +217,7 @@ cbar  "Start Linking External Files" | sed "s/^/${TAB}/"
 # list of files to be linked
 for my_link in .bash_history; do
     # define target (source)
-    target=${target_dir}/${my_link}
+    target=${online_dir}/${my_link}
     # define link (destination)
     sub_dir=$(dirname "$my_link")
     if [ ! $sub_dir = "." ]; then
