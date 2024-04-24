@@ -93,91 +93,46 @@ for dir in "${link_dir_list[@]}"; do
 done
 dtab
 
-cbar  "Start Linking External Files" | sed "s/^/${TAB}/"
+# On WSL installations with OneDrive (exterior to WSL, in Windows), three directories will be
+# be established to hold Git repositories:
+#   * ~/repos - a local directory, within WSL
+#   * %ONEDRIVE%/Documents/home/<host>/<distro>/repos
+#     - outside of WSL, inside OneDrive, "online"
+#     - links to ~/sync/repos
+#     - used for backing up local files
+#   * winhome/Documents/<distro>/repos
+#     - outside of WSL, outside OneDrive, "offline"
+#     - links to ~/offline/repos
+#     - used for saving Win32 scripts (batch and powershell)
+#
 
-# list of files to be linked
-for my_link in .bash_history; do
-    # define target (source)
-    target=${target_dir}/${my_link}
-    # define link (destination)
-    sub_dir=$(dirname "$my_link")
-    if [ ! $sub_dir = "." ]; then
-        # strip target subdirectory from link name
-        my_link=$(basename "$my_link")
-    fi
-    link=${link_dir}/${my_link}
-    do_link "$target" "$link"
-done
-
-cbar "Done Linking External Files" | sed "s/^/${TAB}/"
-
-cbar "Start Linking External Directories" | sed "s/^/${TAB}/"
-# Create default directory links in ~
-
-# define winhome
-echo -n "${TAB}winhome: "
-do_link "${win_home_dir}" "${HOME}/winhome"
-
-# define links within winhome
-echo -n "${TAB}downloads: "
-do_link "${win_home_dir}/Downloads/" "${HOME}/downloads"
-
-echo -n "${TAB}windocs: "
-do_link "${win_home_dir}/Documents/" "${HOME}/windocs"
-
-# define onedrive
-echo -n "${TAB}onedrive: "
-do_link "${onedrive_dir_wsl}" "${HOME}/onedrive"
-
-# define links within onedrive
-echo -n "${TAB}home: "
-do_link "${home_dir}" "${HOME}/home"
-
-# define matlab
-echo -n "${TAB}matlab: "
-do_link "${onedrive_docs}/MATLAB/" "${HOME}/matlab"
-
-cbar "Done Linking External Directories" | sed "s/^/${TAB}/"
+# Put another way, the following directories should contain a folder named repos:
+#  * ~
+#  * ~/sync
+#  * ~/offline
+#
+# The following links should already be defined; they are created above
+#  * ~/home -> %ONEDRIVE%/Documents/home
+#  * ~/winhome -> %HOMEPATH%
+#  * ~/windocs -> %HOMEPATH%/Documents
+#
+# The following directories will be created. Since the "online" directory is shared, a
+# hostname is added to the directory tree. The "offline" directory is local, so the hostname
+# is ommited
+#  * ~/repos
+#  * ~/home/<host>
+#  * ~/home/<host>/<distro>
+#  * ~/home/<host>/<distro>/repos
+#  * ~/winhome/Documents/<distro>
+#  * ~/winhome/Documents/<distro>/repos
+#
+# Finally, the following links should be created
+#  * ~/sync -> ~/home/<host>/<distro>
+#  * ~/offline -> ~/winhome/<distro>
 
 # define directory names
 if command -v wsl.exe >/dev/null; then
 	  echo "WSL defined... "
-    # On WSL installations with OneDrive (exterior to WSL, in Windows), three directories will be
-    # be established to hold Git repositories:
-    #   * ~/repos - a local directory, within WSL
-    #   * %ONEDRIVE%/Documents/home/<host>/<distro>/repos
-    #     - outside of WSL, inside OneDrive, "online"
-    #     - links to ~/sync/repos
-    #     - used for backing up local files
-    #   * winhome/Documents/<distro>/repos
-    #     - outside of WSL, outside OneDrive, "offline"
-    #     - links to ~/offline/repos
-    #     - used for saving Win32 scripts (batch and powershell)
-    #
-
-    # Put another way, the following directories should contain a folder named repos:
-    #  * ~
-    #  * ~/sync
-    #  * ~/offline
-    #
-    # The following links should already be defined; they are created above
-    #  * ~/home -> %ONEDRIVE%/Documents/home
-    #  * ~/winhome -> %HOMEPATH%
-    #  * ~/windocs -> %HOMEPATH%/Documents
-    #
-    # The following directories will be created. Since the "online" directory is shared, a
-    # hostname is added to the directory tree. The "offline" directory is local, so the hostname
-    # is ommited
-    #  * ~/repos
-    #  * ~/home/<host>
-    #  * ~/home/<host>/<distro>
-    #  * ~/home/<host>/<distro>/repos
-    #  * ~/winhome/Documents/<distro>
-    #  * ~/winhome/Documents/<distro>/repos
-    #
-    # Finally, the following links should be created
-    #  * ~/sync -> ~/home/<host>/<distro>
-    #  * ~/offline -> ~/winhome/<distro>
 
     # get host name
 	  host_name=$(hostname)
@@ -242,3 +197,49 @@ if command -v wsl.exe >/dev/null; then
 else
 	  echo "WSL not defined."
 fi
+
+cbar  "Start Linking External Files" | sed "s/^/${TAB}/"
+
+# list of files to be linked
+for my_link in .bash_history; do
+    # define target (source)
+    target=${target_dir}/${my_link}
+    # define link (destination)
+    sub_dir=$(dirname "$my_link")
+    if [ ! $sub_dir = "." ]; then
+        # strip target subdirectory from link name
+        my_link=$(basename "$my_link")
+    fi
+    link=${link_dir}/${my_link}
+    do_link "$target" "$link"
+done
+
+cbar "Done Linking External Files" | sed "s/^/${TAB}/"
+
+cbar "Start Linking External Directories" | sed "s/^/${TAB}/"
+# Create default directory links in ~
+
+# define winhome
+echo -n "${TAB}winhome: "
+do_link "${win_home_dir}" "${HOME}/winhome"
+
+# define links within winhome
+echo -n "${TAB}downloads: "
+do_link "${win_home_dir}/Downloads/" "${HOME}/downloads"
+
+echo -n "${TAB}windocs: "
+do_link "${win_home_dir}/Documents/" "${HOME}/windocs"
+
+# define onedrive
+echo -n "${TAB}onedrive: "
+do_link "${onedrive_dir_wsl}" "${HOME}/onedrive"
+
+# define links within onedrive
+echo -n "${TAB}home: "
+do_link "${home_dir}" "${HOME}/home"
+
+# define matlab
+echo -n "${TAB}matlab: "
+do_link "${onedrive_docs}/MATLAB/" "${HOME}/matlab"
+
+cbar "Done Linking External Directories" | sed "s/^/${TAB}/"
