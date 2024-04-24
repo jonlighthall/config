@@ -113,7 +113,7 @@ do_link "${onedrive_dir_wsl}" "${HOME}/onedrive"
 
 # define links within onedrive
 echo -n "${TAB}matlab: "
-do_link "${onedrive_docs}" "${HOME}/matlab"
+do_link "${onedrive_docs}/MATLAB" "${HOME}/matlab"
 
 # On WSL installations with OneDrive (exterior to WSL, in Windows), three directories will be
 # be established to hold Git repositories:
@@ -139,15 +139,21 @@ do_link "${onedrive_docs}" "${HOME}/matlab"
 #  * ~/homepath -> %HOMEPATH%
 #  * ~/onedrive -> %ONEDRIVE%
 #
-# The following directories will be created. Since the "online" directory is shared, a
-# hostname is added to the directory tree. The "offline" directory is local, so the hostname
-# is ommited
-#  * ~/repos
-#  * ~/home/<host>
-#  * ~/home/<host>/<distro>
-#  * ~/home/<host>/<distro>/repos
-#  * ~/homepath/Documents/<distro>
-#  * ~/homepath/Documents/<distro>/repos
+# The following directories will be created. The "local" directory may not be visible by the
+# Windows OS. Since the "online" directory is shared, a hostname is added to the directory tree
+# to distinguish files created on other machines. The "offline" directory is local to the
+# machine, so the hostname is ommited.
+#  * local
+#    - ~/repos
+#  * online (synced by OneDrive)
+#    - ~/home -> %ONEDRIVE%/Documents/home; this lik should should be renamed something like cloud
+#    - ~/home/<host>
+#    - ~/home/<host>/<distro>
+#    - ~/home/<host>/<distro>/repos
+#  * offline (not synced by OneDrive, accessible by OS)
+#    - ~/homepath/Documents/home
+#    - ~/homepath/Documents/home/<distro>
+#    - ~/homepath/Documents/home/<distro>/repos
 #
 # Finally, the following links should be created
 #  * ~/sync -> ~/home/<host>/<distro>
@@ -160,10 +166,10 @@ cbar "Create Directories" | sed "s/^/${TAB}/"
 # these directories will need to be created
 decho -e "${TAB}${UL}define home directories${RESET}"
 itab
-home="/home"
-onedrive_home="${onedrive_docs}${home}"
+home_name="home"
+onedrive_home="${onedrive_docs}/${home_name}"
 decho "${TAB}OneDrive home = $onedrive_home"
-homepath_home="${homepath_docs}${home}"
+homepath_home="${homepath_docs}/${home_name}"
 decho "${TAB}HomePath home = $homepath_home"
 make_dir_list=( "${onedrive_home}" "${homepath_home}" )
 dtab
@@ -186,28 +192,28 @@ if command -v wsl.exe >/dev/null; then
 	  fi
 
 	  # convert to lower case
-	  distro=$(echo "$distro" | tr '[:upper:]' '[:lower:]')
+	  distro_name=$(echo "$distro" | tr '[:upper:]' '[:lower:]')
     
     #  * ~/homepath/Documents    
     #  * ~/sync/repos
     #  * ~/offline/repos
 
     # define online direcotry
-    onedrive_host="${onedrive_home}/$host_name"
-    onedrive_distro="${onedrive_host}/${distro}"
+    onedrive_host="${onedrive_home}/${host_name}"
+    onedrive_distro="${onedrive_host}/${distro_name}"
 
-    # set offline directory
-    homepath_distro="${homepath_home}/${distro}"
+    # define offline directory
+    homepath_distro="${homepath_home}/${distro_name}"
 
     echo -e "${TAB}${UL}define distribution directories${RESET}"
     itab
 	  # print summary
 	  (
 		    echo "${TAB}host name: $host_name"
-		    echo "${TAB}distro: $distro"
+		    echo "${TAB}distro: $distro_name"
 		    echo "${TAB}host dir: $onedrive_host"
-		    echo "${TAB}distro dir: $onedrive_distro"
-        echo "${TAB}distro dir: $homepath_distro"
+		    echo "online distro: $onedrive_distro"
+        echo "offline distro: $homepath_distro"
 	  ) | column -t -s : -o : -R 1
 
     make_dir_list+=( "${onedrive_host}" "${onedrive_distro}" "${homepath_distro}" )
@@ -286,8 +292,8 @@ cbar "Start Linking External Directories" | sed "s/^/${TAB}/"
 
 
 # define links within onedrive
-echo -n "${TAB}home: "
-do_link "${onedrive_home}" "${HOME}/home"
+echo -n "${TAB}${home_name}: "
+do_link "${onedrive_home}" "${HOME}/${home_name}"
 
 
 cbar "Done Linking External Directories" | sed "s/^/${TAB}/"
