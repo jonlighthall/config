@@ -43,38 +43,42 @@ echo -e "${TAB}${UL}define directories${RESET}"
 itab
 # define HOMEPATH for WSL
 # construct WSL-equivalent HOMEPATH
-win_home_dir="/mnt/c/Users/$windows_user"
-echo "${TAB}%HOMEPATH% = $win_home_dir"
-# get ONEDRIVE
-onedirve_dir=$(cmd.exe /c "echo %OneDrive%" 2>/dev/null | tr -d '\r')
-echo "${TAB}%ONEDRIVE% = $onedirve_dir"
+# get drive letter
+drive=${onedrive_dir%:*}
+# convert to lower case
+drive=$(echo "$drive" | tr '[:upper:]' '[:lower:]')
+DEBUG=1
+decho "${TAB}     drive = $drive"
+homepath_dir=$(echo "${drive}${homepath}" | sed 's,\\,/,g')
+decho "${TAB} home path = $homepath_dir"
+homepath_dir_wsl="/mnt/${homepath_dir}"
+echo "${TAB}%HOMEPATH% = $homepath_dir_wsl"
+
+# define ONEDRIVE for WSL
 # construct WSL-equivalent ONEDRIVE
 # here basename won't work becuase spaces will be interpreted as file seperators
-onedrive_name=$(echo "${onedirve_dir##*\\}")
-decho "${TAB}$onedrive_name"
-onedrive_dir_wsl="${win_home_dir}/${onedrive_name}"
-decho "${TAB}$onedrive_dir_wsl"
-# get OneDrive Documents
-onedrive_docs="${onedrive_dir_wsl}/Documents"
-decho "${TAB}$onedrive_docs"
-# define home
-home_dir="${onedrive_docs}/home"
-decho "${TAB}$home_dir"
-# set target
-target_dir=${home_dir}
-decho "${TAB}$target_dir"
+onedrive_name=$(echo "${onedrive_dir##*\\}")
+decho "${TAB}OneDrive   = $onedrive_name"
+onedrive_dir_wsl="${homepath_dir_wsl}/${onedrive_name}"
+echo "${TAB}%ONEDRIVE% = $onedrive_dir_wsl"
+
+# get Documents
+doc="/Documents"
+onedrive_docs="${onedrive_dir_wsl}${doc}"
+decho "${TAB}OneDrive docs = $onedrive_docs"
+homepath_docs="${homepath_dir_wsl}${doc}"
+decho "${TAB}HomePath docs = $homepath_docs"
+
 # set link directory
 link_dir=$HOME
-decho "${TAB}$link_dir"
+decho "${TAB}link dir = $link_dir"
 dtab
 
-# create list of target directories
-target_dir_list=( "${win_home_dir}" "${onedrive_dir_wsl}" "${onedrive_docs}" "${home_dir}" )                     
-if [[ "${home_dir}" != "${target_dir}" ]]; then
-    target_dir_list+=( "${target_dir}" )
-fi
+# create list of target directories (these directories must exist)
+target_dir_list=( "${homepath_dir_wsl}" "${homepath_docs}" "${onedrive_dir_wsl}" \
+                                        "${onedrive_docs}" )
 
-# create list of link directories
+# create list of link directories (these directories must exist)
 link_dir_list=( "${link_dir}" )
 
 echo -e "${TAB}${UL}check directories${RESET}"
@@ -87,7 +91,6 @@ done
 for dir in "${link_dir_list[@]}"; do 
     check_link_dir $dir
 done
-
 dtab
 
 cbar  "Start Linking External Files" | sed "s/^/${TAB}/"
