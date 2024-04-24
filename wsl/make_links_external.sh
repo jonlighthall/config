@@ -65,13 +65,15 @@ echo "${TAB}%ONEDRIVE% = $onedrive_dir_wsl"
 # get Documents
 doc="/Documents"
 onedrive_docs="${onedrive_dir_wsl}${doc}"
+dtab
 decho "${TAB}OneDrive docs = $onedrive_docs"
 homepath_docs="${homepath_dir_wsl}${doc}"
 decho "${TAB}HomePath docs = $homepath_docs"
+itab
 
 # set link directory
 link_dir=$HOME
-decho "${TAB}link dir = $link_dir"
+echo "${TAB}  link dir = $link_dir"
 dtab
 
 # create list of target directories (these directories must exist)
