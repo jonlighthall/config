@@ -21,6 +21,8 @@ fi
 DEBUG=${DEBUG:-2}
 print_source
 
+cbar "Define Directories" | sed "s/^/${TAB}/"
+
 # define directory names
 echo -e "${TAB}${UL}get environment variables${RESET}"
 itab
@@ -134,19 +136,24 @@ dtab
 #  * ~/sync -> ~/home/<host>/<distro>
 #  * ~/offline -> ~/winhome/<distro>
 
+cbar "Create Directories" | sed "s/^/${TAB}/"
+
 # define home
 # these are the directories where all online and offline files will be stored (outside of WSL)
 # these directories will need to be created
+decho -e "${TAB}${UL}define home directories${RESET}"
+itab
 home="/home"
 onedrive_home="${onedrive_docs}${home}"
 decho "${TAB}OneDrive home = $onedrive_home"
 homepath_home="${homepath_docs}${home}"
 decho "${TAB}HomePath home = $homepath_home"
 make_dir_list=( "${onedrive_home}" "${homepath_home}" )
+dtab
 
 # define host and distro
 if command -v wsl.exe >/dev/null; then
-	  echo "${TAB}WSL defined... "
+	  decho "${TAB}WSL defined... "  
     # get host name
 	  host_name=$(hostname)
 
@@ -175,16 +182,31 @@ if command -v wsl.exe >/dev/null; then
     # set offline directory
     homepath_distro="${homepath_home}/${distro}"
 
+    echo -e "${TAB}${UL}define distribution directories${RESET}"
+    itab
 	  # print summary
 	  (
 		    echo "${TAB}host name: $host_name"
 		    echo "${TAB}distro: $distro"
-		    echo "${TAB}host dir: $host_dir"
-		    echo "${TAB}distro dir: $distro_dir"
+		    echo "${TAB}host dir: $onedrive_host"
+		    echo "${TAB}distro dir: $onedrive_distro"
+        echo "${TAB}distro dir: $homepath_distro"
 	  ) | column -t -s : -o : -R 1
 
+    make_dir_list+=( "${onedrive_host}" "${onedrive_distro}" "${homepath_distro}" )
+    dtab
+    # create directories
+    echo -e "${TAB}${UL}create directories${RESET}"
+    itab
+    for dir in "${make_dir_list[@]}"; do 
+        do_make_dir $dir
+    done
+    dtab
+
+    exit
+    
     #define target (source)
-	  target=${distro_dir}
+	  target=${onedrive_distro}
 	  # define link name (destination)
 	  link_name=${HOME}/sync
 
@@ -203,7 +225,7 @@ if command -v wsl.exe >/dev/null; then
     do_make_link "${wdir}" "${odir}"
     
 	  # define repository directory
-	  rdir=${distro_dir}/repos
+	  rdir=${onedrive_distro}/repos
 
 	  # link repo directory to HOME
 	  #define target (source)
@@ -213,6 +235,16 @@ if command -v wsl.exe >/dev/null; then
 else
 	  echo "WSL not defined."
 fi
+
+# set targets
+online_dir=${onedrive_home}
+decho "${TAB}  online = $online_dir"
+offline_dir=${homepath_home}
+decho "${TAB} offline = $offline_dir"
+if [[ "${onedrive_home}" != "${online_dir}" ]]; then
+    target_dir_list+=( "${online_dir}" )
+fi
+dtab
 
 cbar  "Start Linking External Files" | sed "s/^/${TAB}/"
 
