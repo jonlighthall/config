@@ -74,7 +74,6 @@ function check_target() {
         return 0
     else
         echo -e "${BAD}does not exist${RESET}"
-        dtab
         return 1
     fi
 }
@@ -112,7 +111,6 @@ function check_link_dir() {
         return 0
     else
         echo -e "${BAD}does not exist"
-        dtab        
         exit 1
     fi
 }
@@ -397,18 +395,34 @@ function do_make_dir() {
     #
     # DEPENDENCIES
     #   check_target
-    
-    check_arg1 $@
+
+    local DEBUG=1
+    check_arg1 $@ 
     
     # define target (source)
     local target="$@"
 
-    check_target "$target" || {
-        itab 
-        mkdir -pv "${target}" &> >(sed "s/^/${TAB}/")
-        dtab 
-    }
-    return $?
+    # Since the specified directory may not exist, a return code of 1 from check_target is
+    # valid. Disable exit on error and turn off traps.
+    if [[ "$-" == *e* ]]; then
+        old_opts=$(echo "$-")
+        set +e
+    fi
+    unset_traps
+
+    check_target "$target"
+    local -i RETVAL=$?
+
+    if [ $RETVAL = 1 ]; then
+        itab
+        echo -n "${TAB}"
+        mkdir -pv "${target}" 
+        RETVAL=$?
+        dtab     
+    fi
+    reset_traps
+    reset_shell ${old_opts-''}
+    return $RETVAL
 }
 
 function do_make_link() {
