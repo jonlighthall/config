@@ -863,7 +863,6 @@ function unset_traps() {
     if [ -z "$(trap -p)" ]; then
         ddecho -e "${TAB}${fTAB}none"
         unset save_traps
-        dtab
     else
         itab
         ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g"
