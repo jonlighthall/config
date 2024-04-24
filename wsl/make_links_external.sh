@@ -22,11 +22,26 @@ DEBUG=${DEBUG:-2}
 print_source
 
 # define directory names
-echo -e "${TAB}${UL}define directories${RESET}"
+echo -e "${TAB}${UL}get environment variables${RESET}"
 itab
-# get USERNAME
+
+# get Windows environment variables
+# USERNAME
 windows_user=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
 echo "${TAB}%USERNAME% = $windows_user"
+
+# HOMEPATH
+homepath=$(cmd.exe /c "echo %HOMEPATH%" 2>/dev/null | tr -d '\r')
+echo "${TAB}%HOMEPATH% = $homepath"
+
+# ONEDRIVE
+onedrive_dir=$(cmd.exe /c "echo %OneDrive%" 2>/dev/null | tr -d '\r')
+echo "${TAB}%ONEDRIVE% = $onedrive_dir"
+
+dtab
+echo -e "${TAB}${UL}define directories${RESET}"
+itab
+# define HOMEPATH for WSL
 # construct WSL-equivalent HOMEPATH
 win_home_dir="/mnt/c/Users/$windows_user"
 echo "${TAB}%HOMEPATH% = $win_home_dir"
