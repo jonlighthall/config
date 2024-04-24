@@ -401,11 +401,11 @@ function do_make_dir() {
     check_arg1 $@
     
     # define target (source)
-    local target="$1"
+    local target="$@"
 
     check_target "$target" || {
         itab 
-        mkdir -pv ${target} &> >(sed "s/^/${TAB}/")
+        mkdir -pv "${target}" &> >(sed "s/^/${TAB}/")
         dtab 
     }
     return $?
