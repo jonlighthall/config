@@ -194,7 +194,7 @@ if command -v wsl.exe >/dev/null; then
 	  # convert to lower case
 	  distro_name=$(echo "$distro" | tr '[:upper:]' '[:lower:]')
     
-    #  * ~/homepath/Documents    
+    #  * ~/repos    
     #  * ~/sync/repos
     #  * ~/offline/repos
 
@@ -217,6 +217,14 @@ if command -v wsl.exe >/dev/null; then
 	  ) | column -t -s : -o : -R 1
 
     make_dir_list+=( "${onedrive_host}" "${onedrive_distro}" "${homepath_distro}" )
+
+    # define repository directories
+    repo_name="repo"
+    onedrive_repo="${onedrive_distro}/${repo_name}"
+    homepath_repo="${homepath_distro}/${repo_name}"
+
+    make_dir_list+=( "${onedrive_repo}" "${homepath_repo}" "~/${repo_name}")
+    
     dtab
     # create directories
     echo -e "${TAB}${UL}create directories${RESET}"
@@ -226,7 +234,15 @@ if command -v wsl.exe >/dev/null; then
     done
     dtab
 
-    exit
+    echo -e "${TAB}${UL}create links${RESET}"
+    itab
+
+    # online dir
+    # -----------
+    echo "${TAB}creating link inside Onedrive..."
+
+    echo -n "${TAB}${home_name}: "
+    do_link "${onedrive_home}" "${HOME}/${home_name}"
     
     #define target (source)
 	  target=${onedrive_distro}
@@ -234,27 +250,21 @@ if command -v wsl.exe >/dev/null; then
 	  link_name=${HOME}/sync
 
 	  # make $target and link to $link_name
-	  do_make_link "${target}" "${link_name}"
+    echo -n "${TAB}online: "
+	  do_link "${target}" "${link_name}"
 
-    echo "${TAB}creating links outside of Onedrive..."
-    # define the offline direcotry and link name
+    # offline dir
+    # ------------
+    echo "${TAB}creating link outside of Onedrive..."
     
-	  wdir="${HOME}/homepath/Documents/${distro}/repos"
-    echo "${TAB}creating ${wdir}..."
-    
+    # define target (source)
+	  wdir="${homepath_distro}"
+    # define link name (destination)
     odir="${HOME}/offline"
-    echo "${TAB}linking to ${odir}..."
+    echo -n "${TAB}offline: "
+    do_link "${wdir}" "${odir}"  
 
-    do_make_link "${wdir}" "${odir}"
-    
-	  # define repository directory
-	  rdir=${onedrive_distro}/repos
-
-	  # link repo directory to HOME
-	  #define target (source)
-	  target=${rdir}
-	  # define link name (destination)
-	  link_name=${HOME}/repos
+    dtab
 else
 	  echo "WSL not defined."
 fi
@@ -289,11 +299,5 @@ cbar "Done Linking External Files" | sed "s/^/${TAB}/"
 
 cbar "Start Linking External Directories" | sed "s/^/${TAB}/"
 # Create default directory links in ~
-
-
-# define links within onedrive
-echo -n "${TAB}${home_name}: "
-do_link "${onedrive_home}" "${HOME}/${home_name}"
-
 
 cbar "Done Linking External Directories" | sed "s/^/${TAB}/"
