@@ -396,7 +396,7 @@ function do_make_dir() {
     # DEPENDENCIES
     #   check_target
 
-    local DEBUG=1
+    local DEBUG=0
     check_arg1 $@ 
     
     # define target (source)
@@ -413,6 +413,7 @@ function do_make_dir() {
     check_target "$target"
     local -i RETVAL=$?
 
+    
     if [ $RETVAL = 1 ]; then
         itab
         echo -n "${TAB}"
@@ -420,8 +421,9 @@ function do_make_dir() {
         RETVAL=$?
         dtab     
     fi
-    reset_traps
+
     reset_shell ${old_opts-''}
+    reset_traps
     return $RETVAL
 }
 
