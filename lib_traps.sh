@@ -745,7 +745,6 @@ function reset_traps() {
     if [ -z "$(trap -p)" ]; then
         decho -e "${TAB}none"
     else
-        decho
         decho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" # | sed 's/^[ ]*$//g'
     fi
     dtab 2
