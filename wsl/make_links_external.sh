@@ -65,11 +65,11 @@ onedrive_dir_wsl="${homepath_dir_wsl}/${onedrive_name}"
 echo "${TAB}%ONEDRIVE% = $onedrive_dir_wsl"
 
 # get Documents
-doc="/Documents"
-onedrive_docs="${onedrive_dir_wsl}${doc}"
+docs="Documents"
+onedrive_docs="${onedrive_dir_wsl}/${docs}"
 dtab
 decho "${TAB}OneDrive docs = $onedrive_docs"
-homepath_docs="${homepath_dir_wsl}${doc}"
+homepath_docs="${homepath_dir_wsl}/${docs}"
 decho "${TAB}HomePath docs = $homepath_docs"
 itab
 
