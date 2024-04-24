@@ -320,16 +320,20 @@ function do_link() {
     # check if target file is authorized_keys
     if [[ "${target}" == *"_keys"* ]]; then
         # make a physical link
-        ln -Pv "${target}" ${link_name} | sed "s/^/${TAB}PHYS: /"
+        echo -n "${TAB}PHYS: "
+        ln -Pv "${target}" ${link_name}
+        RETVAL=$?
     else
         # make a symbolic link
-        ln -sv "${target}" ${link_name} | sed "s/^/${TAB}SYM: /"
+        echo -n "${TAB}SYM: "
+        ln -sv "${target}" ${link_name}
+        RETVAL=$?
     fi
     echo -ne "${TAB}"
     hline 72
     echo -en "${RESET}"
     dtab 2
-    return 0
+    return $RETVAL
 }
 
 function do_link_exe() {
@@ -410,20 +414,30 @@ function do_make_dir() {
     fi
     unset_traps
 
+    # check if target exists
     check_target "$target"
     local -i RETVAL=$?
-
     
+    # if target does not exist, make the directory
     if [ $RETVAL = 1 ]; then
         itab
+        echo -en "${TAB}${GRH}"
+        hline 72
+        echo "${TAB}making directory... "     
         echo -n "${TAB}"
-        mkdir -pv "${target}" 
+        mkdir -pv "${target}"
         RETVAL=$?
-        dtab     
+        echo -ne "${TAB}"
+        hline 72
+        echo -en "${RESET}"
+        dtab
     fi
 
+    # reset shell options and traps
     reset_shell ${old_opts-''}
     reset_traps
+
+    # return value of last relevant command
     return $RETVAL
 }
 
