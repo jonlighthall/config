@@ -224,7 +224,7 @@ if command -v wsl.exe >/dev/null; then
     make_dir_list+=( "${onedrive_host}" "${onedrive_distro}" "${homepath_distro}" )
 
     # define repository directories
-    repo_name="repo"
+    repo_name="repos"
     onedrive_repo="${onedrive_distro}/${repo_name}"
     homepath_repo="${homepath_distro}/${repo_name}"
 
