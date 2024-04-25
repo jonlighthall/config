@@ -118,8 +118,10 @@ function check_link_dir() {
 function do_link() {
     # PURPOSE - create a link to a target
     #
-    # SYNTAX - two arguments are required
+    # SYNTAX
+    #   do_link target link_name
     #   the syntaxt is the same as the 'ln' intrinsic
+    #   two arguments are required
     #
     # DEPENDENCIES
     #   check_target
@@ -339,8 +341,10 @@ function do_link() {
 function do_link_exe() {
     # PURPOSE - create a link to an executable file
     #
-    # SYNTAX - two arguments are required
-    #   the syntaxt is the same to the 'ln' intrinsic
+    # SYNTAX
+    #   do_link_exe target link_name
+    #   the syntaxt is the same as the 'ln' intrinsic
+    #   two arguments are required
     #
     # DEPENDENCIES
     #   check_target
