@@ -443,7 +443,7 @@ function do_make_dir() {
 
 function do_make_link() {
     # DESCRIPTION - check if target directory exists and link to it. If the target directory does
-    # not exist, link to it
+    # not exist, create it.
     #
     # DEPENDENCIES
     #   check_target

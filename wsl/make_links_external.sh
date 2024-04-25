@@ -21,10 +21,10 @@ fi
 DEBUG=${DEBUG:-2}
 print_source
 
-cbar "Define Directories" | sed "s/^/${TAB}/"
+cbar "Define Directories"
 
 # define directory names
-echo -e "${TAB}${UL}get environment variables${RESET}"
+echo -e "${TAB}${UL}get Windows environment variables${RESET}"
 itab
 
 # get Windows environment variables
@@ -41,7 +41,7 @@ onedrive_dir=$(cmd.exe /c "echo %OneDrive%" 2>/dev/null | tr -d '\r')
 echo "${TAB}%ONEDRIVE% = $onedrive_dir"
 
 dtab
-echo -e "${TAB}${UL}define directories${RESET}"
+echo -e "${TAB}${UL}define WSL directories${RESET}"
 itab
 # define HOMEPATH for WSL
 # construct WSL-equivalent HOMEPATH
@@ -97,15 +97,21 @@ for dir in "${link_dir_list[@]}"; do
 done
 dtab
 
+cbar "Start Linking External Directories"
+
 # Create default directory links in ~
+echo -e "${TAB}${UL}create general directory links${RESET}"
+itab
 
 # define homepath
 echo -n "${TAB}homepath: "
 do_link "${homepath_dir_wsl}" "${HOME}/homepath"
+#do_link "${homepath_dir_wsl}" "${HOME}/winhome"
 
 # define links within homepath
 echo -n "${TAB}downloads: "
 do_link "${homepath_dir_wsl}/Downloads/" "${HOME}/downloads"
+#do_link "${homepath_docs}" "${HOME}/windocs"
 
 # define onedrive
 echo -n "${TAB}onedrive: "
@@ -159,12 +165,11 @@ do_link "${onedrive_docs}/MATLAB" "${HOME}/matlab"
 #  * ~/sync -> ~/home/<host>/<distro>
 #  * ~/offline -> ~/homepath/<distro>
 
-cbar "Create Directories" | sed "s/^/${TAB}/"
-
 # define home
 # these are the directories where all online and offline files will be stored (outside of WSL)
 # these directories will need to be created
-decho -e "${TAB}${UL}define home directories${RESET}"
+dtab
+decho -e "${TAB}${UL}define \"home\" directories${RESET}"
 itab
 home_name="home"
 onedrive_home="${onedrive_docs}/${home_name}"
@@ -212,8 +217,8 @@ if command -v wsl.exe >/dev/null; then
 		    echo "${TAB}host name: $host_name"
 		    echo "${TAB}distro: $distro_name"
 		    echo "${TAB}host dir: $onedrive_host"
-		    echo "online distro: $onedrive_distro"
-        echo "offline distro: $homepath_distro"
+		    echo "${TAB}online: $onedrive_distro"
+        echo "${TAB}offline: $homepath_distro"
 	  ) | column -t -s : -o : -R 1
 
     make_dir_list+=( "${onedrive_host}" "${onedrive_distro}" "${homepath_distro}" )
@@ -227,23 +232,22 @@ if command -v wsl.exe >/dev/null; then
     
     dtab
     # create directories
-    echo -e "${TAB}${UL}create directories${RESET}"
+    echo -e "${TAB}${UL}create repository directories${RESET}"
     itab
     for dir in "${make_dir_list[@]}"; do 
         do_make_dir $dir
     done
     dtab
 
-    echo -e "${TAB}${UL}create links${RESET}"
+    echo -e "${TAB}${UL}create spcific directory links${RESET}"
+    # create a link to "home" for access to files created on other machines
     itab
-
-    # online dir
-    # -----------
-    echo "${TAB}creating link inside Onedrive..."
-
+    #echo "${TAB}creating links inside Onedrive..."
     echo -n "${TAB}${home_name}: "
     do_link "${onedrive_home}" "${HOME}/${home_name}"
     
+    # online dir
+    # -----------
     #define target (source)
 	  target=${onedrive_distro}
 	  # define link name (destination)
@@ -255,49 +259,34 @@ if command -v wsl.exe >/dev/null; then
 
     # offline dir
     # ------------
-    echo "${TAB}creating link outside of Onedrive..."
+    #echo "${TAB}creating link outside of Onedrive..."
     
     # define target (source)
 	  wdir="${homepath_distro}"
     # define link name (destination)
     odir="${HOME}/offline"
     echo -n "${TAB}offline: "
-    do_link "${wdir}" "${odir}"  
-
+    do_link "${wdir}" "${odir}"
     dtab
+    cbar "Done Linking External Directories"
 else
 	  echo "WSL not defined."
 fi
 
-# set targets
-online_dir=${onedrive_home}
-decho "${TAB}  online = $online_dir"
-offline_dir=${homepath_home}
-decho "${TAB} offline = $offline_dir"
-if [[ "${onedrive_home}" != "${online_dir}" ]]; then
-    target_dir_list+=( "${online_dir}" )
-fi
-dtab
-
-cbar  "Start Linking External Files" | sed "s/^/${TAB}/"
+cbar  "Start Linking External Files"
 
 # list of files to be linked
 for my_link in .bash_history; do
     # define target (source)
-    target=${online_dir}/${my_link}
+    target=${onedrive_home}/${my_link}
     # define link (destination)
     sub_dir=$(dirname "$my_link")
     if [ ! $sub_dir = "." ]; then
         # strip target subdirectory from link name
         my_link=$(basename "$my_link")
     fi
-    link=${link_dir}/${my_link}
+    link=~/${my_link}
     do_link "$target" "$link"
 done
 
-cbar "Done Linking External Files" | sed "s/^/${TAB}/"
-
-cbar "Start Linking External Directories" | sed "s/^/${TAB}/"
-# Create default directory links in ~
-
-cbar "Done Linking External Directories" | sed "s/^/${TAB}/"
+cbar "Done Linking External Files"

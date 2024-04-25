@@ -56,7 +56,15 @@ for prog in make_links_external.sh; do
         echo "found"
         itab
         bash $prog
+        RETVAL=$?
         dtab
+        echo -en "${TAB}$prog "
+        if [ $RETVAL -eq 0 ]; then
+            echo -en "${GOOD}OK"
+        else
+            echo -en "${BAD}FAIL"
+        fi
+        echo -e "${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     else
         echo "not found"
     fi
@@ -71,12 +79,7 @@ config_dir="${HOME}/config"
 target_dir="${config_dir}/${sys_name}"
 link_dir=$HOME
 
-# check directories
-check_target "${target_dir}"
-check_link_dir "$link_dir"
-
-bar 38 "------ Start Linking Repo Files ------" | sed "s/^/${TAB}/"
-
+cbar "Start Linking Repo Files"
 # list of files to be linked
 for my_link in .bash_aliases .bash_logout .bash_profile .emacs.d .gitconfig .hushlogin .inputrc .rootrc; do
     # define target (source)
@@ -91,7 +94,7 @@ for my_link in .bash_aliases .bash_logout .bash_profile .emacs.d .gitconfig .hus
     # create link
     do_link "${target}" "${link}"
 done
-bar 38 "------- Done Linking Repo Files ------" | sed "s/^/${TAB}/"
+cbar "Done Linking Repo Files"
 
 # make links in /etc
 for prog in make_links_etc.sh; do
@@ -100,7 +103,15 @@ for prog in make_links_etc.sh; do
         echo "found"
         itab
         bash $prog
+        RETVAL=$?
         dtab
+        echo -en "${TAB}$prog "
+        if [ $RETVAL -eq 0 ]; then
+            echo -en "${GOOD}OK"
+        else
+            echo -en "${BAD}FAIL"
+        fi
+        echo -e "${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     else
         echo "not found"
     fi
