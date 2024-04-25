@@ -5,7 +5,7 @@
 #
 # ~/config/wsl/.bashrc
 #
-# Purpose: Load user-dependent interactive shell settings when launching subshells. 
+# Purpose: Load user-dependent interactive shell settings when launching subshells.
 #
 # Usage: In general, ~/.bashrc is executed by bash for non-interactive subshells. That is not
 #   what this file does or what this file is for. This file used to be linked to ~/.bash_aliases
@@ -32,9 +32,9 @@ fi
 # load bash utilities
 fpretty=${HOME}/config/.bashrc_pretty
 if [ -e $fpretty ]; then
-	  source $fpretty
-	  set -e  
-	  set_traps
+    source $fpretty
+    set -e
+    set_traps
 else
     set +eu
 fi
@@ -58,7 +58,20 @@ vecho "${TAB}running list..."
 # required list
 unset LIST
 config_dir=${HOME}/config
-LIST+="${config_dir}/.bashrc_common ${config_dir}/linux/.bashrc_prompt ${config_dir}/wsl/.bashrc_X11"
+LIST+="${config_dir}/.bashrc_common ${config_dir}/linux/.bashrc_prompt"
+
+# get WSL version
+wsl_ver=$(uname -r)
+vecho "${TAB}WSL version: ${wsl_ver}"
+itab
+# if running WSL2, do not load X11
+if [[ "${wsl_ver}" == *"WSL2" ]]; then
+    vecho "${TAB}skipping X11..."
+else
+    vecho "${TAB}loading X11..."
+    LIST+=" ${config_dir}/wsl/.bashrc_X11"
+fi
+dtab
 
 # optional list
 LIST_OPT="$HOME/.bash_local root_v5.34.36/bin/thisroot.sh"
