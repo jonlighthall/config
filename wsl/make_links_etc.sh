@@ -26,11 +26,7 @@ config_dir="${HOME}/config"
 target_dir="${config_dir}/${sys_name}"
 link_dir=/etc
 
-# check directories
-check_target "${target_dir}"
-check_link_dir "$link_dir"
-
-bar 38 "------ Start Linking Repo Files ------" | sed "s/^/${TAB}/"
+cbar "Start Linking Repo Files"
 
 # list of files to be linked
 for my_link in wsl.conf; do
@@ -46,4 +42,4 @@ for my_link in wsl.conf; do
     # make link
     do_link "$target" "$link"
 done
-bar 38 "------- Done Linking Repo Files ------" | sed "s/^/${TAB}/"
+cbar "Done Linking Repo Files"
