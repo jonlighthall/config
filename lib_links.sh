@@ -21,13 +21,16 @@
 # -----------------------------------------------------------------------------------------------
 
 function check_arg1() {
+    ddecho -n "$FUNCNAME: number of arguments = $# "
     # check number of arguments
     if [ $# -lt 1 ]; then
-        echo "number of arguments = $#"
-        echo "One argument is required"
-        echo "Please provide a target name"
-        echo "$FUNCNAME TARGET"
-        exit 1
+        ddecho -e "${BAD}FAIL${RESET}"
+        echo "$FUNCNAME: One argument is required"
+        echo "$FUNCNAME: Please provide a target name"
+        echo "$FUNCNAME: $FUNCNAME TARGET"
+        return 1
+    else
+        ddecho -e "${GOOD}OK${RESET}"
     fi
 }
 
@@ -39,16 +42,21 @@ function check_arg2() {
         echo "Please provide a target and a link name"
         echo "$FUNCNAME TARGET LINK_NAME"
         echo "where TARGET is the source file and LINK_NAME is the destination file"
-        exit 1
+        return 1
     fi
 }
 
 function check_target() {
     check_arg1 $@
-
+    local funcDEBUG=${DEBUG:-0}
     # define target (source)
     local target="$@"
     local target_canon=$(readlink -f "${target}")
+    if [ $funcDEBUG -gt 0 ]; then
+        start_new_line
+        fecho "input: ${target}"
+        fecho " path: ${target_canon}"
+    fi
 
     # get the cursor position
     echo -en "\E[6n"
@@ -57,7 +65,6 @@ function check_target() {
           #}# dummy bracket for emacs indenting
     # get the x-position of the cursor
     local -i x_pos=${CURPOS#*;}
-    #echo "${TAB}x_pos=${x_pos}"
     if [ ${x_pos} -eq 1 ]; then
         echo -n "${TAB}"
     fi
@@ -79,7 +86,7 @@ function check_target() {
 }
 
 # This function is used to check destination link directories that must exist like ${HOME} or
-# /etc. If the directory does not exist, exit with error.
+# /etc. If the directory does not exist, return with error.
 function check_link_dir() {
     check_arg1 $@
 
@@ -111,7 +118,7 @@ function check_link_dir() {
         return 0
     else
         echo -e "${BAD}does not exist"
-        exit 1
+        return 1
     fi
 }
 
@@ -133,7 +140,7 @@ function do_link() {
     #     check the public/private premission of individual files
     #     exclude linking of certain files
     #   LINK
-    #     check if link_name exits
+    #     check if link_name exists
     #       + check if link_name points to target
     #           + already done, LS link_name and RETURN
     #           - check if link_name is writable
@@ -411,7 +418,7 @@ function do_make_dir() {
     local target="$@"
 
     # Since the specified directory may not exist, a return code of 1 from check_target is
-    # valid. Disable exit on error and turn off traps.
+    # valid. Disable exit-on-error and turn off traps.
     if [[ "$-" == *e* ]]; then
         old_opts=$(echo "$-")
         set +e
