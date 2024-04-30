@@ -105,21 +105,21 @@ itab
 
 # define homepath
 echo -n "${TAB}homepath: "
-do_link "${homepath_dir_wsl}" "${HOME}/homepath"
-#do_link "${homepath_dir_wsl}" "${HOME}/winhome"
+do_link "${homepath_dir_wsl}" "${link_dir}/homepath"
+#do_link "${homepath_dir_wsl}" "${link_dir}/winhome"
 
 # define links within homepath
 echo -n "${TAB}downloads: "
-do_link "${homepath_dir_wsl}/Downloads/" "${HOME}/downloads"
-#do_link "${homepath_docs}" "${HOME}/windocs"
+do_link "${homepath_dir_wsl}/Downloads/" "${link_dir}/downloads"
+#do_link "${homepath_docs}" "${link_dir}/windocs"
 
 # define onedrive
 echo -n "${TAB}onedrive: "
-do_link "${onedrive_dir_wsl}" "${HOME}/onedrive"
+do_link "${onedrive_dir_wsl}" "${link_dir}/onedrive"
 
 # define links within onedrive
 echo -n "${TAB}matlab: "
-do_link "${onedrive_docs}/MATLAB" "${HOME}/matlab"
+do_link "${onedrive_docs}/MATLAB" "${link_dir}/matlab"
 
 # On WSL installations with OneDrive (exterior to WSL, in Windows), three directories will be
 # be established to hold Git repositories:
@@ -228,7 +228,7 @@ if command -v wsl.exe >/dev/null; then
     onedrive_repo="${onedrive_distro}/${repo_name}"
     homepath_repo="${homepath_distro}/${repo_name}"
 
-    make_dir_list+=( "${onedrive_repo}" "${homepath_repo}" "${HOME}/${repo_name}")
+    make_dir_list+=( "${onedrive_repo}" "${homepath_repo}" "${link_dir}/${repo_name}")
     
     dtab
     # create directories
@@ -244,14 +244,14 @@ if command -v wsl.exe >/dev/null; then
     itab
     #echo "${TAB}creating links inside Onedrive..."
     echo -n "${TAB}${home_name}: "
-    do_link "${onedrive_home}" "${HOME}/${home_name}"
+    do_link "${onedrive_home}" "${link_dir}/${home_name}"
     
     # online dir
     # -----------
     #define target (source)
 	  target=${onedrive_distro}
 	  # define link name (destination)
-	  link_name=${HOME}/sync
+	  link_name=${link_dir}/sync
 
 	  # make $target and link to $link_name
     echo -n "${TAB}online: "
@@ -264,7 +264,7 @@ if command -v wsl.exe >/dev/null; then
     # define target (source)
 	  wdir="${homepath_distro}"
     # define link name (destination)
-    odir="${HOME}/offline"
+    odir="${link_dir}/offline"
     echo -n "${TAB}offline: "
     do_link "${wdir}" "${odir}"
     dtab
