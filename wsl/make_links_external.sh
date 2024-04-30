@@ -228,7 +228,7 @@ if command -v wsl.exe >/dev/null; then
     onedrive_repo="${onedrive_distro}/${repo_name}"
     homepath_repo="${homepath_distro}/${repo_name}"
 
-    make_dir_list+=( "${onedrive_repo}" "${homepath_repo}" "~/${repo_name}")
+    make_dir_list+=( "${onedrive_repo}" "${homepath_repo}" "${HOME}/${repo_name}")
     
     dtab
     # create directories
