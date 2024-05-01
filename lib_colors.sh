@@ -84,7 +84,7 @@ export   VALID='\x1B[1;36m' # bold cyan   : ln valid link
 
 function load_colors() {
     # turn in-function debugging on/off
-    local -i funcDEBUG=1
+    local -i funcDEBUG=0
 
     fecho "dircolors..."
     if [ -x /usr/bin/dircolors ]; then
@@ -98,8 +98,10 @@ function load_colors() {
         
         fname=.dircolors
         fpath="${srcdir}/${fname}"
-
-        check_target "${fpath}"
+        if [ "${VB}" = true ]; then
+            itab
+            check_target "${fpath}"
+        fi
         
         if [ -r "${fpath}" ]; then 
             fecho -e "and is readable ${GOOD}OK${NORMAL}"
@@ -112,7 +114,12 @@ function load_colors() {
         fi
     else
         fecho -e "does not exist or is not executable ${BAD}FAIL${NORMAL}"
-    fi        
+    fi
+    if [ "${VB}" = true ]; then
+        vecho "${TAB}colors loaded"
+        dtab
+    fi
+
 }
 
 function define_ls_colors() {
