@@ -18,7 +18,7 @@ else
     # exit on errors
     set -e
 fi
-DEBUG=${DEBUG:-2}
+DEBUG=${DEBUG:-1}
 print_source
 
 cbar "Define Directories"
@@ -49,7 +49,6 @@ itab
 drive=${onedrive_dir%:*}
 # convert to lower case
 drive=$(echo "$drive" | tr '[:upper:]' '[:lower:]')
-DEBUG=1
 decho "${TAB}     drive = $drive"
 homepath_dir=$(echo "${drive}${homepath}" | sed 's,\\,/,g')
 decho "${TAB} home path = $homepath_dir"
