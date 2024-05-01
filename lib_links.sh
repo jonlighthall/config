@@ -73,7 +73,7 @@ function check_target() {
     [ -L "${target}" ] && type="link ${VALID}"
     [ -f "${target}" ] && type="file ${YELLOW}"
     [ -d "${target}" ] && type="directory ${DIR}"
-   
+    
     # check if target exists
     echo -en "target ${type}${target}${RESET}... "
     if [ -e "${target_canon}" ]; then
@@ -181,6 +181,7 @@ function do_link() {
     # check if target is an SSH configuration file
     local target_dir=$(dirname "$target")
     if [[ "${target_dir}" == *".ssh" ]]; then
+        itab
         echo "${TAB}Applying options for SSH configuration files..."
 
         # before linking, check parent directory permissions
@@ -242,6 +243,7 @@ function do_link() {
                 fi
             else
                 echo -e "${GOOD}OK${RESET}"
+                dtab
             fi
             dtab
         fi
@@ -250,12 +252,13 @@ function do_link() {
         for fname in keys2 pub. \~ id_dsa _[0-9]{4}-[0-9]{2}-[0-9]{2}; do
             # check both pattern matching and regex
             if [[ ${target##*/} == *"$fname"* ]] || [[ ${target##*/} =~ .*$fname.* ]]  ; then
+                itab
                 echo -e "${TAB}${GRH}exclude${RESET} $fname: ${target##*/}"
-                dtab
+                dtab 2
                 return 0
             fi
         done
-
+        dtab
     fi # done with SSH settings
 
     # begin linking...
