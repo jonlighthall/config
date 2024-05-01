@@ -442,6 +442,16 @@ function print_ls_colors() {
         xargs -L 1 echo -e
 }
 
+function print_dircolors() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    if [ -z ${LS_COLORS:+dummy} ]; then
+        echo "${TAB}LS_COLORS not defined"
+        return
+    fi
+    # print value of dircolors
+    dircolors -p | sed 's/\(^.*\([0-9]\{2\};[0-9]\{2\}[0-9;]*\)\)/\x1B[\2m\1\x1B[0m/ '
+ }
+
 function print_ls_colors_ext() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
     if [ -z ${LS_COLORS:+dummy} ]; then
@@ -476,6 +486,7 @@ function test_lib_colors() {
 
     for func in test_normal \
                     define_ls_colors \
+                    print_dircolors \
                     print_ls_colors \
                     print_ls_colors_ext \
                     print_rcolors \
