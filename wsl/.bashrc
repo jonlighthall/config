@@ -10,13 +10,13 @@
 # Usage: In general, ~/.bashrc is executed by bash for non-interactive subshells. That is not
 #   what this file does or what this file is for. This file used to be linked to ~/.bash_aliases
 #   to be called by interactive subshells. It is now redundant(?). The file which loads
-#   interactive shell settings, ~/.bash_aliases -> ~/config/wsl/.bash_aliases, should be directed
-#   loaded by ~/.bash_profile; and IS loaded directly by bash in subshells.  sessions. Used instead of creating a custom ~/.bashrc file to preserve to
-#   contents of the system-default ~/.bashrc.
-#This file is also
-#   called by ~/config/wsl/.bashrc to keep shell and subshell settings consistient. It should be
-#   called directly by ~/.bash_profile -> ~/config/wsl/.bash_profile, and ~/config/wsl/.bashrc
-#   should be deleted.
+#   interactive shell settings, ~/.bash_aliases -> ~/config/wsl/.bash_aliases, should be directly
+#   loaded by ~/.bash_profile; and IS loaded directly by bash in subshells sessions. Used instead
+#   of creating a custom ~/.bashrc file to preserve to contents of the system-default ~/.bashrc.
+#
+#   This file is also called by ~/config/wsl/.bashrc to keep shell and subshell settings
+#   consistient. It should be called directly by ~/.bash_profile -> ~/config/wsl/.bash_profile,
+#   and ~/config/wsl/.bashrc should be deleted.
 #
 # Note: this file must use unix line endings (LF)!
 #
@@ -30,7 +30,8 @@ if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
 fi
 
 # load bash utilities
-fpretty=${HOME}/config/.bashrc_pretty
+config_dir=${HOME}/config
+fpretty=${config_dir}/.bashrc_pretty
 if [ -e $fpretty ]; then
     source $fpretty
     set -e
@@ -54,10 +55,14 @@ if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
     print_stack
 fi
 
+# enable color support of ls
+# define LS_COLORS using dircolors and .dircolors
+vecho "${TAB}loading colors..."
+load_colors
+
 vecho "${TAB}running list..."
 # required list
 unset LIST
-config_dir=${HOME}/config
 LIST+="${config_dir}/.bashrc_common ${config_dir}/linux/.bashrc_prompt"
 
 # get WSL version
