@@ -113,25 +113,63 @@ else
 	  exit
 fi
 
-# Define the directory into which the repos will be cloned. The clone directory name defaults to
-# the "repo" directory, defined above as ~/repos. This is the default for non-Windows systems. On
-# WSL systems, repos should be cloned to the "online" directory within OneDrive and then linked
-# to the local ~/repos directory. The online directory, typicall ~/sync, should already exist.
+# Define the directory into which the repos will be cloned. The "clone" directory name defaults
+# to the "repo" directory, defined above as ~/repos. This is the default for non-Windows
+# systems. On WSL systems, repos should be cloned to the "online" directory within OneDrive and
+# then linked to the local "repo" directory. The "online" directory, typicall ~/sync, should
+# already exist. If needed, an "offline" directory is also defined for cloning repos outside of
+# both WSL and OneDrive.
 
-# All of the "oneline" repos should be linked to in the "local" repos dir.
+# All of the "online" and "offline" repos should be linked to in the local "repo" dir.
 
 # Links should be created in the group directories, e.g., examps and utils, that point to the
-# cloned repos, contianed or linked to in the "local" repos directory.
+# cloned repos, contianed or linked to in the local "repo" directory.
 
-clone_dir=${HOME}/repos
+# default cloning destination
+clone_dir=${repo_dir}
 
 if command -v wsl.exe >/dev/null; then
 	  echo "${TAB}WSL defined. Redefining cloning destination..."
-    clone_dir=${HOME}/sync/repos
+    online_dir=${HOME}/sync/repos
+    offline_dir=${HOME}/offline/repos
+    clone_dir=${online_dir}
 fi
 
 echo "cloning repos to ${clone_dir}..."
 check_target "${clone_dir}"
+
+# list of example repos to be cloned
+group_name="example"
+echo -e "cloning \x1b[1;32m${group_name}\x1b[m repos..."
+for my_repo in cpp fortran hello nrf python; do
+	  # define target (source)
+	  target="${clone_dir}/${my_repo}"
+	  # define link name (destination)
+	  link_name="${repo_dir}/${my_repo}"
+
+	  # check if target exists
+    echo "checking ${my_repo}"
+    itab
+    # check_target will return 1 if target does not exist
+    set +e
+	  check_target ${target}
+    RETVAL=$?
+		itab
+    if [ $RETVAL -ne 0 ]; then 
+		    echo "${TAB}cloning $my_repo..."
+		    git clone ${github_auth}$my_repo ${target}
+        dtab
+	  fi
+    dtab 2
+    
+	  # begin linking...
+    echo "${TAB}linking $my_repo..."
+    itab
+    do_link "${target}" "${link_name}"
+    do_link "${link_name}" "${edir}/${my_repo}"
+    dtab
+done
+echo -e "done cloning ${group_name} repos"
 
 # list of utility repos to be cloned
 group_name="utility"
@@ -194,21 +232,18 @@ if [[ "$(hostname -f)" == *".mil" ]]; then
     if command -v wsl.exe >/dev/null; then
 	      echo "${TAB}WSL defined."
         # It is assumed that OneDrive is defined if the following directory exists
-        online_dir="${HOME}/sync"
         if [ -e "${online_dir}" ]; then
             echo "${TAB}OneDrive is defined."
             echo "Redefining cloning destination..."
-            clone_dir="${HOME}/offline/repos"
+            clone_dir=${offline_dir}
         fi
     fi
 fi
-
 echo "cloning repos to ${clone_dir}..."
 check_target "${clone_dir}"
 
 # List of Win32 repos to be cloned
 echo -e "cloning \x1b[1;32mWin32 ${group_name}\x1b[m repos..."
-
 for my_repo in batch powershell; do
 	  #define target (source)
 	  target=${clone_dir}/${my_repo}
@@ -252,38 +287,6 @@ done
 echo -e "done cloning ${group_name} repos"
 
 exit
-
-
-# list of example repos to be cloned
-group_name="example"
-echo -e "cloning \x1b[1;32m${group_name}\x1b[m repos..."
-itab
-for my_repo in cpp fortran hello nrf python; do
-	  # define target (source)
-	  target=${repo_dir}/${my_repo}
-	  # define link name (destination)
-	  link_name=${edir}/${my_repo}
-
-	  # check if target exists
-	  echo -ne "${TAB}target dirctory ${YELLOW}${target}${RESET}... "
-	  if [ -e "${target}" ]; then
-		    echo "exits"
-        itab
-        #echo -n "${TAB}pulling... "
-		    #git -C ${target} pull
-		    #echo -n "${TAB}pushing... "
-		    #git -C ${target} push
-        dtab
-	  else
-		    echo "does not exist"
-		    echo "${TAB}cloning $my_repo..."
-		    git clone ${github_auth}$my_repo ${target}
-	  fi
-	  # begin linking...
-    do_link "${target}" "${link_name}"
-done
-dtab
-echo -e "done cloning ${group_name} repos"
 
 # list of other repos to be cloned
 group_name="other"
