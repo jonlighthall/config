@@ -81,7 +81,7 @@ link_dir=$HOME
 
 cbar "Start Linking Repo Files"
 # list of files to be linked
-for my_link in .bash_aliases .bash_logout .bash_profile .emacs.d .gitconfig .hushlogin .inputrc .rootrc; do
+for my_link in .bash_aliases .bash_logout .bash_profile .dircolors .emacs.d .gitconfig .hushlogin .inputrc .rootrc; do
     # define target (source)
     target=${target_dir}/${my_link}
     # define link name (destination)
