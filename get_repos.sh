@@ -79,6 +79,31 @@ if [ $# -eq 1 ]; then
 	  fi
 fi
 
+repo_name=${repo_name:="repos"}
+repo_dir=${HOME}/repos
+
+echo -e "saving repsoitories to \e[33m$repo_dir\e[0m..."
+
+udir=${HOME}/utils
+edir=${HOME}/examp
+
+echo "creating repository directory..."
+for my_dir in $repo_dir $udir $edir; do
+	  if [ ! -d ${my_dir} ]; then
+		    mkdir -vp ${my_dir}
+	  else
+		    echo "${TAB}directory ${my_dir} already exists"
+	  fi
+done
+
+cbar "Start Cloning Repo Files"
+
+# set github user and authentication method
+github_user=jonlighthall
+github_https=https://github.com/${github_user}/
+github_ssh=git@github.com:${github_user}/
+github_auth=${github_ssh}
+
 # check if git is defined
 if command -v git >/dev/null; then
 	  echo "proceeding with Git commands..."
@@ -90,77 +115,64 @@ fi
 # TODO there shold be an online (synced) repos dir, as defined; and a local repos dir. For
 # onedrive conflicts, there should be an offline (un-synced) repo dir. All fo the repos should be
 # linked to in the local repos dir; then examps and utils should link the the local repos dir
-rdir=${HOME}/repos
 
-echo -e "saving repsoitories to \e[33m$rdir\e[0m..."
+# The directory for repos should default to the ~/repos directory. On WSL systems, files should
+# be cloned to the ~/sync or "online" directory within OneDrive and then linked to
+# ~/repos. However, on Navy systems, Flank Speed OneDrive will not allow syncing of .bat or .ps1
+# files. Therefore, if it is a Navy host and OneDrive is defined, clone the repositories into an
+# offline directory.
 
-udir=${HOME}/utils
-edir=${HOME}/examp
+clone_dir=${HOME}/repos
 
-echo "creating repository directory..."
-for my_dir in $rdir $udir $edir; do
-	  if [ ! -d ${my_dir} ]; then
-		    mkdir -vp ${my_dir}
-	  else
-		    echo "${TAB}directory ${my_dir} already exists"
-	  fi
-done
+if command -v wsl.exe >/dev/null; then
+	  echo "${TAB}WSL defined."
+    clone_dir=${HOME}/sync/repos
+fi
 
-echo "--------------------------------------"
-echo "------ Start Cloning Repo Files-------"
-echo "--------------------------------------"
-
-# set github user and authentication method
-github_user=jonlighthall
-github_https=https://github.com/${github_user}/
-github_ssh=git@github.com:${github_user}/
-github_auth=${github_ssh}
+echo "cloning repos to ${clone_dir}..."
+check_target "${clone_dir}"
 
 # list of utility repos to be cloned
 group_name="utility"
 echo -e "cloning \x1b[1;32m${group_name}\x1b[m repos..."
 for my_repo in bash fortran_utilities; do
 	  #define target (source)
-	  target=${rdir}/${my_repo}
+	  target=${clone_dir}/${my_repo}
 	  # define link name (destination)
 	  link_name=${udir}/${my_repo}
 
 	  # check if target exists
-	  echo -ne "${TAB}target dirctory \e[33m${target}\e[0m... "
-	  if [ -e "${target}" ]; then
-		    echo "exists "
-		    itab
+	  check_target ${target}
+    RETVAL=$?
+		itab
+    if [ $RETVAL -eq 0 ]; then 
 		    #echo -n "${TAB}pulling... "
 		    #git -C ${target} pull
 		    #echo -n "${TAB}pushing... "
 		    #git -C ${target} push
-		    dtab
 	  else
-		    echo -e "\e[31mdoes not exist\e[0m"
 		    echo "${TAB}cloning $my_repo..."
 		    git clone ${github_auth}$my_repo ${target}
 	  fi
+    dtab
 
 	  # begin linking...
     do_link "${target}" "${link_name}"
+    do_link "${target}" "${repo_dir}/${my_repo}"
     
 	  # run make_links
 	  make_links_file="${link_name}/make_links.sh"
 	  if [ -e "${make_links_file}" ]; then
 		    cd ${link_name}
 		    bash ${make_links_file}
-		    cd ${rdir}
+		    cd ${clone_dir}
 	  else
 		    echo -e "${TAB}${BAD}${make_links_file} not found${RESET}"
 	  fi
 done
 
-# clone Win32 repos
-echo -e "cloning \x1b[1;32mWin32 utility\x1b[m repos..."
-# The directory for Win32 repos should default to the repo directory. However, OneDrive on Navy
-# systems will not allow syncing of .bat or .ps1 files. Therefore, if it is a Navy host and
-# OneDrive is defined, clone the repositories into an offline directory.
-wdir=$rdir
+exit
+
 # check if host is Navy
 if [[ "$(hostname -f)" == *".mil" ]]; then
     echo -e "${TAB}host: \x1b[31m$(hostname -f)\x1b[m"
@@ -183,6 +195,9 @@ if [[ "$(hostname -f)" == *".mil" ]]; then
 else
 	  echo "${TAB}cloning in ${wdir}..."
 fi
+
+# clone Win32 repos
+echo -e "cloning \x1b[1;32mWin32 utility\x1b[m repos..."
 
 for my_repo in batch powershell; do
 	  #define target (source)
@@ -237,7 +252,7 @@ echo -e "cloning \x1b[1;32m${group_name}\x1b[m repos..."
 itab
 for my_repo in cpp fortran hello nrf python; do
 	  # define target (source)
-	  target=${rdir}/${my_repo}
+	  target=${repo_dir}/${my_repo}
 	  # define link name (destination)
 	  link_name=${edir}/${my_repo}
 
@@ -280,7 +295,7 @@ for my_repo in matlab; do
 	  # define target (source)
 	  target=${matlab_dir}/macros
 	  # define link (destination)
-	  link_name=${rdir}/matlab
+	  link_name=${repo_dir}/matlab
 
 	  # check if target exists
 	  echo -ne "${TAB}target dirctory ${YELLOW}${target}${RESET}... "
