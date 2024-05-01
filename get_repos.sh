@@ -1,5 +1,4 @@
 #!/bin/bash -u
-# set tab
 
 # load formatting
 fpretty="${HOME}/config/.bashrc_pretty"
@@ -23,7 +22,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # set file name to be run in system directory
-make_links_file=make_links.sh
+make_links_name=make_links.sh
 # check if configuration is specified
 if [ $# -eq 1 ]; then
 	  echo "Loading configuration options for $1"
@@ -33,25 +32,25 @@ if [ $# -eq 1 ]; then
 	  if [ -d "${sys_dir}" ]; then
 		    echo "found"
 		    cd "${sys_dir}"
-		    echo -n "${TAB}$make_links_file... "
+		    echo -n "${TAB}$make_links_name... "
 		    # check if make links file exists
-		    if [ -f $make_links_file ]; then
+		    if [ -f $make_links_name ]; then
 			      echo "found"
 			      # link make_links to conig dir (called by ~/utils/bash/git/update_repos.sh)
             # see github.com/jonlighthall/bash
 
 			      #-------------------------------------------------------------
 			      #define target (source)
-			      target=$(readlink -f ${make_links_file})
+			      target=$(readlink -f ${make_links_name})
 			      # define link name (destination)
-			      link_name=${HOME}/config/${make_links_file}
+			      link_name=${HOME}/config/${make_links_name}
 
 			      # begin linking...
 			      do_link "${target}" "${link_name}"
 
 			      #-------------------------------------------------------------
 
-			      bash $make_links_file
+			      bash $make_links_name
 			      # define profile name
 			      profie_name=.bash_profile
 			      echo -n "${TAB}$profie_name... "
@@ -78,6 +77,8 @@ if [ $# -eq 1 ]; then
 		    echo "not found"
 	  fi
 fi
+
+# Define folder names
 
 repo_name=${repo_name:="repos"}
 repo_dir=${HOME}/repos
@@ -112,20 +113,20 @@ else
 	  exit
 fi
 
-# TODO there shold be an online (synced) repos dir, as defined; and a local repos dir. For
-# onedrive conflicts, there should be an offline (un-synced) repo dir. All fo the repos should be
-# linked to in the local repos dir; then examps and utils should link the the local repos dir
+# Define the directory into which the repos will be cloned. The clone directory name defaults to
+# the "repo" directory, defined above as ~/repos. This is the default for non-Windows systems. On
+# WSL systems, repos should be cloned to the "online" directory within OneDrive and then linked
+# to the local ~/repos directory. The online directory, typicall ~/sync, should already exist.
 
-# The directory for repos should default to the ~/repos directory. On WSL systems, files should
-# be cloned to the ~/sync or "online" directory within OneDrive and then linked to
-# ~/repos. However, on Navy systems, Flank Speed OneDrive will not allow syncing of .bat or .ps1
-# files. Therefore, if it is a Navy host and OneDrive is defined, clone the repositories into an
-# offline directory.
+# All of the "oneline" repos should be linked to in the "local" repos dir.
+
+# Links should be created in the group directories, e.g., examps and utils, that point to the
+# cloned repos, contianed or linked to in the "local" repos directory.
 
 clone_dir=${HOME}/repos
 
 if command -v wsl.exe >/dev/null; then
-	  echo "${TAB}WSL defined."
+	  echo "${TAB}WSL defined. Redefining cloning destination..."
     clone_dir=${HOME}/sync/repos
 fi
 
@@ -139,39 +140,52 @@ for my_repo in bash fortran_utilities; do
 	  #define target (source)
 	  target=${clone_dir}/${my_repo}
 	  # define link name (destination)
-	  link_name=${udir}/${my_repo}
+	  link_name="${repo_dir}/${my_repo}"
 
 	  # check if target exists
+    echo "checking ${my_repo}"
+    itab
+    # check_target will return 1 if target does not exist
+    set +e
 	  check_target ${target}
     RETVAL=$?
 		itab
-    if [ $RETVAL -eq 0 ]; then 
-		    #echo -n "${TAB}pulling... "
-		    #git -C ${target} pull
-		    #echo -n "${TAB}pushing... "
-		    #git -C ${target} push
-	  else
-		    echo "${TAB}cloning $my_repo..."
+    if [ $RETVAL -ne 0 ]; then 
+			  echo "${TAB}cloning $my_repo..."
 		    git clone ${github_auth}$my_repo ${target}
+        dtab
+
+	      # run make_links after cloning        
+        prog1=${target}/${make_links_name}
+        prog2=${target}/bin/${make_links_name}
+        echo -ne "${TAB}${make_links_name}... "
+        if [ -f "${prog1}" ] || [ -f "${prog2}" ]; then
+            echo "found"
+            if [ -f "${prog1}" ]; then
+                ${prog1}
+            else
+                ${prog2}
+            fi
+        else
+            echo "not found"
+        fi        
 	  fi
-    dtab
+    dtab 2
 
 	  # begin linking...
+    echo "${TAB}linking $my_repo..."
+    itab
+    # First link from the clone directory to the repo directory. For non-Windows systems, these
+    # directories will be the same and the do_link command will have no effect.
     do_link "${target}" "${link_name}"
-    do_link "${target}" "${repo_dir}/${my_repo}"
-    
-	  # run make_links
-	  make_links_file="${link_name}/make_links.sh"
-	  if [ -e "${make_links_file}" ]; then
-		    cd ${link_name}
-		    bash ${make_links_file}
-		    cd ${clone_dir}
-	  else
-		    echo -e "${TAB}${BAD}${make_links_file} not found${RESET}"
-	  fi
+    # The link from the repo directory to the group directory, in this case "utils".
+    do_link "${link_name}" "${udir}/${my_repo}"
+    dtab
 done
 
-exit
+# On Navy systems, Flank Speed OneDrive will not allow syncing of .bat or .ps1 files. Therefore,
+# if it is a Navy host and OneDrive is defined, clone the repositories into an offline
+# directory. For onedrive conflicts, there should be an offline (un-synced) repo dir.
 
 # check if host is Navy
 if [[ "$(hostname -f)" == *".mil" ]]; then
@@ -179,72 +193,66 @@ if [[ "$(hostname -f)" == *".mil" ]]; then
     # check if WSL is defined
     if command -v wsl.exe >/dev/null; then
 	      echo "${TAB}WSL defined."
-        echo "${TAB}creating links outside of Onedrive..."
-        # define the offline direcotry and link name
-        
-	      wdir="${HOME}/winhome/Documents/${distro}/repos"
-        echo "${TAB}creating ${wdir}..."
-        
-        odir="${HOME}/offline"
-        echo "${TAB}linking to ${odir}..."
-
-        do_make_link "${wdir}" "${odir}"
-    else
-        echo "${TAB}WSL not defined."
+        # It is assumed that OneDrive is defined if the following directory exists
+        online_dir="${HOME}/sync"
+        if [ -e "${online_dir}" ]; then
+            echo "${TAB}OneDrive is defined."
+            echo "Redefining cloning destination..."
+            clone_dir="${HOME}/offline/repos"
+        fi
     fi
-else
-	  echo "${TAB}cloning in ${wdir}..."
 fi
 
-# clone Win32 repos
-echo -e "cloning \x1b[1;32mWin32 utility\x1b[m repos..."
+echo "cloning repos to ${clone_dir}..."
+check_target "${clone_dir}"
+
+# List of Win32 repos to be cloned
+echo -e "cloning \x1b[1;32mWin32 ${group_name}\x1b[m repos..."
 
 for my_repo in batch powershell; do
 	  #define target (source)
-
-	  target=${wdir}/${my_repo}
+	  target=${clone_dir}/${my_repo}
 	  # define link name (destination)
-	  link_name=${udir}/${my_repo}
+	  link_name=${repo_dir}/${my_repo}
 
-	  # check if target exists
-	  echo -ne "${TAB}target dirctory \e[33m${target}\e[0m... "
-	  if [ -e "${target}" ]; then
-		    echo "exists "
-		    itab
-		    #echo -n "${TAB}pulling... "
-		    #git -C ${target} pull
-		    #echo -n "${TAB}pushing... "
-		    #git -C ${target} push
-		    dtab
-	  else
-		    echo -e "\e[31mdoes not exist\e[0m"
-		    echo "${TAB}cloning $my_repo..."
+    # check if target exists
+    echo "checking ${my_repo}"
+    itab
+	  check_target ${target}
+    RETVAL=$?
+		itab
+    if [ $RETVAL -ne 0 ]; then
+        # clone repo
+			  echo "${TAB}cloning $my_repo..."
 		    git clone ${github_auth}$my_repo ${target}
+        dtab
+
+        # run make_links after cloning        
+        prog1=${target}/${make_links_name}
+        prog2=${target}/bin/${make_links_name}
+        echo -ne "${TAB}${make_links_name}... "
+        if [ -f "${prog1}" ] || [ -f "${prog2}" ]; then
+            echo "found"
+            if [ -f "${prog1}" ]; then
+                ${prog1}
+            else
+                ${prog2}
+            fi
+        else
+            echo "not found"
+        fi  
 	  fi
+    dtab 2    
 
 	  # begin linking...
+    echo "${TAB}linking $my_repo..."
     do_link "${target}" "${link_name}"
-
-	  # run make_links
-	  make_links_file="${link_name}/make_links.sh"
-	  if [ -e "${make_links_file}" ]; then
-		    cd ${link_name}
-		    bash ${make_links_file}
-		    cd ${wdir}
-	  else
-		    echo -e "${TAB}${BAD}${make_links_file} not found${RESET}"
-	  fi
+    do_link "${link_name}" "${udir}/${my_repo}"	
 done
 echo -e "done cloning ${group_name} repos"
 
-# load formatting
-if [ -e $fpretty ]; then
-	  source $fpretty
-	  cbar "${MAGENTA}pretty print enabled${RESET}"
-fi
+exit
 
-# reset TAB
-rtab
 
 # list of example repos to be cloned
 group_name="example"
@@ -332,13 +340,12 @@ if [[ ! "$(hostname -f)" == *".mil" ]]; then
 			      git clone ${github_auth}$my_repo $dname
 
 			      # run make_links
-			      make_links_file=make_links.sh
-			      fpath="${dname}/make_links.sh"
+			      fpath="${dname}/${make_links_name}"
 			      echo -n "${TAB}$fpath... "
 			      if [ -f "${fpath}" ]; then
 				        echo "found"
 				        cd $dname
-				        bash $make_links_file
+				        bash $make_links_name
 			      else
 				        echo "not found"
 			      fi
