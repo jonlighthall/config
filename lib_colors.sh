@@ -82,6 +82,39 @@ export     TGT='\x1B[1;32m' # bold green  : ex executable
 export     DIR='\x1B[1;34m' # bold blue   : di directory
 export   VALID='\x1B[1;36m' # bold cyan   : ln valid link
 
+function load_colors() {
+    # turn in-function debugging on/off
+    local -i funcDEBUG=1
+
+    fecho "dircolors..."
+    if [ -x /usr/bin/dircolors ]; then
+
+        fecho -e "exists and is executable ${GOOD}OK${NORMAL}"
+
+        local srcdir=$(dirname $(readlink -f "${BASH_SOURCE}"))
+        fecho "this function is ${FUNCNAME}"        
+        fecho "this file is ${BASH_SOURCE##*/}"
+        fecho "this directory is ${srcdir}"
+        
+        fname=.dircolors
+        fpath="${srcdir}/${fname}"
+
+        check_target "${fpath}"
+        
+        if [ -r "${fpath}" ]; then 
+            fecho -e "and is readable ${GOOD}OK${NORMAL}"
+            eval "$(dircolors -b "${fpath}")"
+        else
+            fecho -e "does not exist or is not readable ${BAD}FAIL${NORMAL}"
+            return
+            fecho "current settings:"
+            eval "$(dircolors -b)"
+        fi
+    else
+        fecho -e "does not exist or is not executable ${BAD}FAIL${NORMAL}"
+    fi        
+}
+
 function define_ls_colors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     if [ -z ${LS_COLORS:+dummy} ]; then
@@ -443,19 +476,19 @@ function test_lib_colors() {
 
     for func in test_normal \
                     define_ls_colors \
-    print_ls_colors \
-    print_ls_colors_ext \
-    print_rcolors \
-    print_colors \
-    print_dcolors \
-    print_fcolors \
-    print_pretty \
-    print_pretty_cbar \
+                    print_ls_colors \
+                    print_ls_colors_ext \
+                    print_rcolors \
+                    print_colors \
+                    print_dcolors \
+                    print_fcolors \
+                    print_pretty \
+                    print_pretty_cbar \
 
-    do
-        echo
-        $func
-    done
+                    do
+                echo
+                $func
+             done
 
 }
 
