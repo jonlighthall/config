@@ -12,31 +12,53 @@
 # -----------------------------------------------------------------------------------------------
 
 function bye() {
+    # print function name 
     decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-    decho "DEBUG = $DEBUG"
-    decho "shell options = $-"
     echo "goodbye...?"
     # add return code for parent script
     if [ $DEBUG -gt 0 ]; then
+        # print debug value
+        decho "DEBUG = $DEBUG"
+        # print shell options
+        decho "shell options = $-"
+        set +T
         trap 'print_return $?; trap - RETURN' RETURN
     fi
     return 1
 }
 
 function fello() {
+    # print function name 
     decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-    fecho "DEBUG = $DEBUG"
-    hello
-    echo $-
+    # define function name
+    func='hello'
+    # test if alias
+    if [[ $(type -t $func) == "alias" ]]; then
+        # evaluate
+        eval $func
+    else
+        # print debug value
+        decho "DEBUG = $DEBUG"
+        # print shell options
+        decho "shell options = $-"
+        # add return code for parent script
+        if [ $DEBUG -gt 0 ]; then
+            trap 'print_return $?; trap - RETURN' RETURN
+        fi        
+        return 1
+    fi
 }
 
 function driver() {
+    # print function name 
+    decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    local -i DEBUG=0
+    set_traps
+
     # -T  If set, the DEBUG and RETURN traps are inherited by shell functions.     
     set -T
     trap 'echo "${FUNCNAME} return"' RETURN
-    local -i DEBUG=0
-    set_traps
-    echo $-
+    decho "shell options = $-"
     fello
 }
 
@@ -554,7 +576,7 @@ function print_error() {
     # e.g.
     # trap 'print_error $LINENO $? $BASH_COMMAND' ERR
 
-    local -i DEBUG=9
+    local -i DEBUG=0
     local -i funcDEBUG=$DEBUG
     
     # parse arguments
@@ -615,13 +637,11 @@ function print_error() {
                     # print line number
                     ddecho "${TAB}ERR_LINE = ${ERR_LINENO}"
                     # print summary
-                    ddecho "${TAB}line ${ERR_LINENO} in ${BASH_SOURCE[1]}: "
-                    local cmd="sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}""
-                    ddecho "${TAB}${cmd}"
-                    start_new_line
-                    decho "${TAB}$($cmd)"
+                    ddecho -n "${TAB}line ${ERR_LINENO} in ${BASH_SOURCE[1]}: "
+                    ddecho sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}"
+                    decho "${TAB}"$(sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}")
                     # save offending line
-                    ERR_LINE=$($cmd | sed "s/^\s*//")
+                    ERR_LINE=$(sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}" | sed "s/^\s*//")
                 else
                     ddecho "${TAB}BASH_SOURCE[1] is EMPTY"
                     ERR_LINE="EMPTY"
