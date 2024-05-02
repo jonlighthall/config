@@ -269,6 +269,14 @@ function do_link() {
     if [ -L "${link_name}" ] || [ -f "${link_name}" ] || [ -d "${link_name}" ]; then
         itab
         echo -n "exists and "
+        # check if link and target are the same
+        if [[ "${target}" == "${link_name}" ]]; then
+            echo -e "${IT}is${NORMAL} ${target}"
+            echo "${TAB}skipping..."
+            dtab 2 # reset status and link tab
+            return 0
+        fi
+        
         # check if link already points to the target
         # in the case of an authorized_keys file, the target must be hardlinked
         if [[ "${target}" -ef "${link_name}" && "${target}" != *"_keys"* ]] || [[ "$(stat -c "%i" ${target})" == "$(stat -c "%i" ${link_name})" ]] ; then
