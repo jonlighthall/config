@@ -190,7 +190,7 @@ function do_link() {
         echo "${permOK}"
         itab
         echo -n "${TAB}checking permissions... "
-        local -i perm=$(stat -c "%a" ${target_dir})
+        local -i perm=$(stat -c "%a" "${target_dir}")
         echo -n "${perm} "
         if [[ ${perm} -gt ${permOK} ]]; then
             echo -e "${BAD}FAIL${RESET}"
@@ -279,7 +279,9 @@ function do_link() {
         
         # check if link already points to the target
         # in the case of an authorized_keys file, the target must be hardlinked
-        if [[ "${target}" -ef "${link_name}" && "${target}" != *"_keys"* ]] || [[ "$(stat -c "%i" ${target})" == "$(stat -c "%i" ${link_name})" ]] ; then
+        local inode_target=$(stat -c "%i" "${target}")
+        local inode_link=$(stat -c "%i" "${link_name}")
+        if [[ "${target}" -ef "${link_name}" && "${target}" != *"_keys"* ]] || [[ "${inode_target})" == "${inode_link}" ]] ; then
             echo "already points to $(basename ${link_name})"
             echo -n "${TAB}"
             if [ "$(stat -c "%i" "${target}")" == "$(stat -c "%i" "${link_name}")" ]; then
@@ -295,7 +297,7 @@ function do_link() {
         else
             # next, check write permissions
             local link_dir=$(dirname "${link_name}")
-            if  [ -w ${link_dir} ] && ([ -w ${link_name} ] || [ ! -e ${link_name} ]); then
+            if  [ -w "${link_dir}" ] && ([ -w "${link_name}" ] || [ ! -e "${link_name}" ]); then
                 # then, delete or backup existing copy
 
                 # check file contents
@@ -310,7 +312,7 @@ function do_link() {
                         local mdate=$(date -r "${link_name}" +'%Y-%m-%d-t%H%M')
                     else
                         echo "is a broken link..."
-                        local mdate=$(stat -c '%y' ${link_name} | sed 's/\(^[0-9-]*\) \([0-9:]*\)\..*$/\1-t\2/' | sed 's/://g')
+                        local mdate=$(stat -c '%y' "${link_name}" | sed 's/\(^[0-9-]*\) \([0-9:]*\)\..*$/\1-t\2/' | sed 's/://g')
                     fi
                     # backup/rename existing file
                     echo -en "${TAB}"
