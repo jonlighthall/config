@@ -286,12 +286,9 @@ for my_repo in batch powershell; do
 done
 echo -e "done cloning ${group_name} repos"
 
-exit
-
 # list of other repos to be cloned
-group_name="other"
+group_name="matlab"
 echo -e "cloning \x1b[1;32m${group_name}\x1b[m repos..."
-itab
 for my_repo in matlab; do
 	  matlab_dir=${HOME}/onedrive/Documents/MATLAB
 	  echo -n "${TAB}${matlab_dir}..."
@@ -308,26 +305,28 @@ for my_repo in matlab; do
 	  # define link (destination)
 	  link_name=${repo_dir}/matlab
 
-	  # check if target exists
-	  echo -ne "${TAB}target dirctory ${YELLOW}${target}${RESET}... "
-	  if [ -e "${target}" ]; then
-		    echo "exits"
-        itab
-        #echo -n "${TAB}pulling... "
-		    #git -C ${target} pull
-		    #echo -n "${TAB}pushing... "
-		    #git -C ${target} push
-        dtab
-	  else
-		    echo "does not exist"
+    itab
+    # check_target will return 1 if target does not exist
+    set +e
+	  check_target ${target}
+    RETVAL=$?
+		itab
+    if [ $RETVAL -ne 0 ]; then 
 		    echo "${TAB}cloning $my_repo..."
 		    git clone ${github_auth}$my_repo ${target}
+        dtab
 	  fi
+    dtab 2
+    
 	  # begin linking...
+    echo "${TAB}linking $my_repo..."
+    itab
     do_link "${target}" "${link_name}"
+    dtab
 done
-dtab
 echo -e "done cloning ${group_name} repos"
+
+exit
 
 # list of private repos to be cloned
 group_name="private"
