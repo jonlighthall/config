@@ -11,6 +11,18 @@
 #
 # -----------------------------------------------------------------------------------------------
 
+function bye() {
+    decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    decho "DEBUG = $DEBUG"
+    decho "shell options = $-"
+    echo "goodbye...?"
+    # add return code for parent script
+    if [ $DEBUG -gt 0 ]; then
+        trap 'print_return $?; trap - RETURN' RETURN
+    fi
+    return 1
+}
+
 function fello() {
     decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     fecho "DEBUG = $DEBUG"
@@ -260,6 +272,12 @@ function print_stack_devel() {
 function print_stack() {
     local -i DEBUG=${DEBUG:=9}
     start_new_line
+
+    # initialize variables
+    unset N_FUNC
+    unset N_BASH
+    unset N_LINE
+    
     # get length of function stack
     local -gi N_FUNC=${#FUNCNAME[@]}
     local -gi N_BASH=${#BASH_SOURCE[@]}
@@ -273,10 +291,15 @@ function print_stack() {
     
     # print length of stack
     echo "${TAB}There are N=$N_FUNC entries in the execution call stack"
+
+    N_STACK=$N_FUNC
     
     # check that all stacks have the same length
     if [ $N_FUNC -ne $N_BASH ]; then 
         echo "${TAB}There are N=$N_BASH entries in the source file name stack"
+        if [ $N_BASH -gt $N_STACK ]; then
+            N_STACK=$N_BASH
+        fi        
     fi
 
     if [ $N_FUNC -ne $N_LINE ]; then 
@@ -284,7 +307,10 @@ function print_stack() {
     fi
 
     if [ $N_FUNC -ne $N_BASH ] || [ $N_FUNC -ne $N_LINE ]; then 
-        echo "${TAB}${N_FUNC} functions, ${N_BASH} files, ${N_LINE]} lines"
+        echo "${TAB}${N_FUNC} functions, ${N_BASH} files, ${N_LINE} lines"
+        if [ $N_LINE -gt $N_STACK ]; then
+            N_STACK=$N_LINE
+        fi                  
     fi
 
     local -ga BASH_LINKS
@@ -306,7 +332,7 @@ function print_stack() {
 
     if false; then
         (
-            for ((i = 0; i < $N_FUNC ; i++)); do
+            for ((i = 0; i < $N_STACK ; i++)); do
                 echo "$i:${FUNCNAME[i]}:${BASH_FNAME[i]}:${BASH_LINENO[i]}"
             done
         ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
@@ -316,7 +342,7 @@ function print_stack() {
         ((idx++))
         echo -ne "${dcolor[idx]}"
         (
-            for ((i = 0; i < $N_FUNC ; i++)); do
+            for ((i = 0; i < $N_STACK ; i++)); do
                 echo "$i:${FUNCNAME[i]}:${BASH_SOURCE[i]}:${BASH_LINENO[i]}"
             done
         ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
@@ -326,7 +352,7 @@ function print_stack() {
         ((idx++))
         echo -ne "${dcolor[idx]}"
         (
-            for ((i = 0; i < $N_FUNC ; i++)); do
+            for ((i = 0; i < $N_STACK ; i++)); do
                 echo "$i:${FUNCNAME[i]}:${BASH_LINK[i]}:${BASH_LINENO[i]}"
             done
         ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
@@ -336,7 +362,7 @@ function print_stack() {
         ((idx++))
         echo -ne "${dcolor[idx]}"    
         (
-            for ((i = 0; i < $N_FUNC ; i++)); do
+            for ((i = 0; i < $N_STACK ; i++)); do
                 echo "$i:${FUNCNAME[i]}:${BASH_SOURCE[i]}:${BASH_LINENO[i]}"
                 if [[ "${BASH_SOURCE[$i]}" != "${BASH_LINK[$i]}" ]]; then
                     decho -ne "$i:${FUNCNAME[i]}:${BASH_LINK[i]}:${BASH_LINENO[i]}"
@@ -360,7 +386,7 @@ function print_stack() {
     done   
 
     (
-        for ((i = 0; i < $N_FUNC ; i++)); do
+        for ((i = 0; i < $N_STACK ; i++)); do
             # print stack element
             echo "$i:${FUNCNAME[i]}:${BASH_DIR[i]}:${BASH_FNAME[i]}:${BASH_LINENO[i]}"
             # check if source is linked
@@ -703,10 +729,19 @@ function print_return() {
     RETURN_RETVAL=$1    
 
     # get size of function stack
-    local -ir N_FUNC=${#FUNCNAME[@]}
+    local -ir N_FUNCs=${#FUNCNAME[@]}
     # print summary
     start_new_line
-    echo -e "${TAB}${YELLOW}\E[7m RETURN ${RESET} ${GRAY}RETVAL=${RETURN_RETVAL}${RESET} ${BASH_SOURCE[1]##*/}"
+    if [ $DEBUG -gt 0 ]; then
+        print_stack
+    fi
+
+    echo -en "${TAB}${YELLOW}\E[7m RETURN ${RESET} ${GRAY}RETVAL=${RETURN_RETVAL}${RESET}"
+    if [ ${N_FUNCs} -gt 1 ]; then
+        echo " ${FUNCNAME[1]##*/}"
+    else
+        echo " ${BASH_SOURCE[1]##*/}"
+    fi
 }
 
 # define traps
