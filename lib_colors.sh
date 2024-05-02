@@ -30,11 +30,15 @@ export      ST='\x1B[9m'    # strikethrough
 
 function test_normal() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    local color=${CHARTRU}
+    local code=${color:5:-1}
     for i in {0..9}; do
         [ $i = 6 ] && continue
         echo -ne "$TAB"
-        [ $i -gt 0 ] && echo -en "${CHARTRU}"
-        echo -e "$i: \x1B[${i}mhello${NORMAL}, world!"
+        [ $i -gt 0 ] && echo -en "$color"
+        printf '%02d;' $i
+        [ $i -gt 0 ] && echo -n ${code} || for ((j = 1; j <= ${#code}; j++)); do echo -n " "; done
+        echo -e ": \x1B[${i}mhello${NORMAL}, world!"
     done
     echo -ne "${RESET}"
 }
