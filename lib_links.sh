@@ -386,29 +386,28 @@ function do_link_exe() {
     check_target "$target" || return 1
 
     # next, check file permissions
-    if true; then
-        echo -n "${TAB}${target##*/} requires specific permissions: "
-        local permOK=500
-        echo "${permOK}"
-        itab
-        echo -n "${TAB}checking permissions... "
-        local perm=$(stat -c "%a" "${target}")
-        echo ${perm}
-        # the target files will have the required permissions added to the existing permissions
-        if [[ ${perm} -le ${permOK} ]] || [[ ! (-f "${target}" && -x "${target}") ]]; then
-            echo -en "${TAB}${GRH}adding permissions${RESET} to ${permOK}... "
-            chmod +${permOK} "${target}" || chmod u+rx "${target}"
-            local RETVAL=$?
-            if [ $RETVAL -eq 0 ]; then
-                echo -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
-            else
-                echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
-            fi
+    itab
+    echo -n "${TAB}${target##*/} requires specific permissions: "
+    local permOK=500
+    echo "${permOK}"
+    itab
+    echo -n "${TAB}checking permissions... "
+    local perm=$(stat -c "%a" "${target}")
+    echo ${perm}
+    # the target files will have the required permissions added to the existing permissions
+    if [[ ${perm} -le ${permOK} ]] || [[ ! (-f "${target}" && -x "${target}") ]]; then
+        echo -en "${TAB}${GRH}adding permissions${RESET} to ${permOK}... "
+        chmod +${permOK} "${target}" || chmod u+rx "${target}"
+        local RETVAL=$?
+        if [ $RETVAL -eq 0 ]; then
+            echo -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
         else
-            echo -e "${TAB}permissions ${GOOD}OK${RESET}"
+            echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
         fi
-        dtab
+    else
+        echo -e "${TAB}permissions ${GOOD}OK${RESET}"
     fi
+    dtab 2
 
     # then link
     do_link "$target" "$link_name" || return 1
