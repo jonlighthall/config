@@ -1,53 +1,74 @@
-# ${HOME}/config/linux/.bashrc
+#!/bin/bash -eu
+# -----------------------------------------------------------------------------------------------
+# SYSTEM-DEPENDENT INTERACTIVE SHELL SETTINGS for Linux
+# -----------------------------------------------------------------------------------------------
 #
-# Interactive shell settings for Linux
+# ~/config/linux/.bashrc
+#
+# Purpose: Load interactive shell settings for Linux.
+#
+# Feb 2017 JCL
+#
+# -----------------------------------------------------------------------------------------------
 
 if [ -z ${VB:+dummy} ]; then
     export VB=false
-else
-    if [ "${VB}" = true ]; then
-	      # load formatting
-	      fpretty=${HOME}/config/.bashrc_pretty
-	      if [ -e $fpretty ]; then
-	          source $fpretty
-	      fi
-	      # print source name at start
-	      if (return 0 2>/dev/null); then
-	          RUN_TYPE="sourcing"
-	      else
-	          RUN_TYPE="executing"
-	      fi
-        print_source
-    fi
 fi
 
+# load bash utilities
+config_dir=${HOME}/config
+fpretty=${config_dir}/.bashrc_pretty
+if [ -e $fpretty ]; then
+    source $fpretty
+fi
+
+if [ "${VB}" = true ]; then
+    # determine if being sourced or executed
+    if (return 0 2>/dev/null); then
+        RUN_TYPE="sourcing"
+    else
+        RUN_TYPE="executing"
+    fi
+    print_source
+fi
+
+# enable color support of ls
+# define LS_COLORS using dircolors and .dircolors
+vecho "${TAB}loading colors..."
+load_colors
+append_ls_colors
+match_ls_colors
+
+vecho "${TAB}running list..."
 # required list
-LIST="/etc/bashrc $HOME/config/.bashrc_common $HOME/config/linux/.bashrc_prompt"
+unset LIST
+LIST="/etc/bashrc ${config_dir}/.bashrc_common ${config_dir}/linux/.bashrc_prompt"
 
 # optional list
-LIST_OPT="$HOME/.bash_local $HOME/.bash_aliases $HOME/config/linux/.bashrc_X11 $HOME/config/linux/.bashrc_libgfortran"
-for FILE in $LIST_OPT
-do
+LIST_OPT="$HOME/.bash_local $HOME/.bash_aliases ${config_dir}/linux/.bashrc_X11 ${config_dir}/linux/.bashrc_libgfortran"
+
+# add optional list to required list if targets exist
+for FILE in $LIST_OPT; do
     if [ -f $FILE ]; then
-	      LIST+=" $FILE"
+        LIST+=" $FILE"
     else
-	      vecho -e "${TAB}$FILE ${UL}not found${RESET}"
+        vecho -e "${TAB}$FILE ${UL}not found${RESET}"
     fi
 done
 
-for FILE in $LIST
-do
+# source list of files
+for FILE in $LIST; do
     vecho "${TAB}loading $FILE..."
     if [ -f $FILE ]; then
-	      source $FILE
-	      RETVAL=$?
-	      if [ $RETVAL -eq 0 ]; then
-	          vecho -e "${TAB}$FILE ${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
-	      else
-	          echo -e "${TAB}$FILE ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
-	      fi
+        source $FILE
+        RETVAL=$?
+        if [ $RETVAL -eq 0 ]; then
+            vecho -e "${TAB}$FILE ${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+        else
+            echo -e "${TAB}$FILE ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+        fi
     else
-	      echo -e "${TAB}$FILE ${UL}not found${RESET}"
+        echo -e "${TAB}$FILE ${UL}not found${RESET}"
     fi
 done
 

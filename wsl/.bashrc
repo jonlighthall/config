@@ -59,11 +59,13 @@ fi
 # define LS_COLORS using dircolors and .dircolors
 vecho "${TAB}loading colors..."
 load_colors
+append_ls_colors
+match_ls_colors
 
 vecho "${TAB}running list..."
 # required list
 unset LIST
-LIST+="${config_dir}/.bashrc_common ${config_dir}/linux/.bashrc_prompt"
+LIST="${config_dir}/.bashrc_common ${config_dir}/linux/.bashrc_prompt"
 
 # get WSL version
 wsl_ver=$(uname -r)

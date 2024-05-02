@@ -86,6 +86,21 @@ export     TGT='\x1B[1;32m' # bold green  : ex executable
 export     DIR='\x1B[1;34m' # bold blue   : di directory
 export   VALID='\x1B[1;36m' # bold cyan   : ln valid link
 
+function match_ls_colors() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    # get link color codes
+    local or_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^or/!d' | sed 's/^.*=//')
+    local ex_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^ex/!d' | sed 's/^.*=//')
+    local di_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^di/!d' | sed 's/^.*=//')
+    local ln_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^ln/!d' | sed 's/^.*=//')
+
+    # update color values    
+    export BROKEN="\x1B[${or_col}m"
+    export    TGT="\x1B[${ex_col}m"
+    export    DIR="\x1B[${di_col}m"
+    export  VALID="\x1B[${ln_col}m"  
+}
+
 function load_colors() {
     # turn in-function debugging on/off
     local -i funcDEBUG=0
@@ -146,6 +161,18 @@ function define_ls_colors() {
     echo -e "${cOR}orphaned links${RESET}"
     echo -e "${cDI}directories${RESET}"
     echo -e "${cEX}executable files${RESET}"    
+}
+
+function match_ls_colors2() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    # get link color codes
+    define_ls_colors
+    
+    # update color values    
+    export BROKEN=${cOR}
+    export    TGT=${cEX}
+    export    DIR=${cDI}
+    export  VALID=${cLN}
 }
 
 # define PS1 colors
