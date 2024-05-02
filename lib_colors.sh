@@ -486,8 +486,13 @@ function print_ls_colors_ext() {
 function append_ls_colors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
     # physical link (hardlink)
-    LS_COLORS+="mh=44;38;5;15:"
-    # missing
+    # get link color code
+    ln_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^ln/!d' | sed 's/^.*=//')
+    # invert
+    mh_col="07;${ln_col}"    
+    #LS_COLORS+="mh=44;38;5;15:"
+    LS_COLORS+="mh=${mh_col}:"
+    # missing    
     LS_COLORS+="mi=05;48;5;232;38;5;15:"
 }
 
