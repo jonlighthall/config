@@ -752,7 +752,7 @@ function print_return() {
     local -ir N_FUNCs=${#FUNCNAME[@]}
     # print summary
     start_new_line
-    if [ $DEBUG -gt 0 ]; then
+    if [ $DEBUG -gt 1 ]; then
         print_stack
     fi
 
@@ -795,12 +795,12 @@ function reset_traps() {
     fi
 
     # print summary
-    decho "${TAB}on ${FUNCNAME} return, the following traps are set"
+    ddecho "${TAB}on ${FUNCNAME} return, the following traps are set"
     itab
     if [ -z "$(trap -p)" ]; then
-        decho -e "${TAB}none"
+        ddecho -e "${TAB}none"
     else
-        decho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" # | sed 's/^[ ]*$//g'
+        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" # | sed 's/^[ ]*$//g'
     fi
     dtab 2
 }
@@ -827,15 +827,15 @@ function set_traps() {
     ddecho "done"
 
     # print summary
-    decho "${TAB}on ${FUNCNAME} return, the following traps are set"
+    ddecho "${TAB}on ${FUNCNAME} return, the following traps are set"
     itab
     if [ -z "$(trap -p)" ]; then
-        decho -e "${TAB}none"
+        ddecho -e "${TAB}none"
         echo "something didn't work..."
         dtab
         return 1
     else
-        decho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" # | sed 's/^[ ]*$//g'
+        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" # | sed 's/^[ ]*$//g'
     fi
     dtab 2
 }
@@ -880,12 +880,12 @@ function clear_traps() {
     trap - RETURN
 
     # print summary
-    decho "${TAB}on ${FUNCNAME} return, the following traps are set"
+    ddecho "${TAB}on ${FUNCNAME} return, the following traps are set"
     itab
     if [ -z $(trap -p) ]; then
-        decho "${TAB}${fTAB}none"
+        ddecho "${TAB}${fTAB}none"
     else
-        ddecho $(trap -p) | sed "$ ! s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" | sed 's/^[ ]*$//g'
+        dddecho $(trap -p) | sed "$ ! s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" | sed 's/^[ ]*$//g'
         echo "something didn't work..."
         dtab
         return 1
@@ -938,11 +938,11 @@ function unset_traps() {
     fi
 
     # print summary
-    decho "${TAB}on ${FUNCNAME} return, the following traps are set"
+    ddecho "${TAB}on ${FUNCNAME} return, the following traps are set"
     if [ -z $(trap -p) ]; then
-        decho "${TAB}${fTAB}none"
+        ddecho "${TAB}${fTAB}none"
     else
-        decho $(trap -p) | sed "$ ! s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" | sed 's/^[ ]*$//g'
+        ddecho $(trap -p) | sed "$ ! s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" | sed 's/^[ ]*$//g'
         echo "something didn't work..."
         dtab
         return 1
