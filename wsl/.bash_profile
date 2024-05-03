@@ -22,8 +22,6 @@ if [[ "$-" != *i* ]]; then
 else
     # get starting time in nanoseconds
     declare -i start_time=$(date +%s%N)
-    # set "Verbose Bash" for conditional prints
-    export VB=false
     # -------------------------
     # set debug level if unset
     export DEBUG=${DEBUG=0}
