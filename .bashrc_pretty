@@ -82,7 +82,7 @@ function print_source() {
     RUN_TYPE=${RUN_TYPE:-"running"}
 
     # conditionally add stack level prefix
-    if [ $DEBUG -gt 1 ]; then
+    if [ ${DEBUG:-0} -gt 1 ]; then 
         # since print_source is itself part of the stack, remove the top of the stack
         ((N_BASH--))
         local prefix="\x1b[7;38;5;132m${N_BASH}"
@@ -133,7 +133,7 @@ function print_source() {
         vecho -e "${TAB}${spx}${prefix}$src_name"
     fi
 
-    if [ $DEBUG -gt 1 ]; then 
+    if [ ${DEBUG:-0} -gt 1 ]; then 
         # print source path
         if [[ "${src_dir_logi}" != "${src_dir_phys}" ]]; then 
             ## logical
