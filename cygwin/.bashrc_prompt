@@ -6,26 +6,20 @@ if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
     if [ "${VB}" = true ]; then
-	# set tab
-	TAB+=${TAB+${fTAB:='   '}}
-	# load formatting
-	fpretty=${HOME}/config/.bashrc_pretty
-	if [ -e $fpretty ]; then
-	    if [ -z ${FPRETTY_LOADED+dummy} ]; then
-	       source $fpretty
-	    fi
-	fi
-	# print source name at start
-	if (return 0 2>/dev/null); then
-	    RUN_TYPE="sourcing"
-	else
-	    RUN_TYPE="executing"
-	fi
-	echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
-	src_name=$(readlink -f $BASH_SOURCE)
-	if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-	    echo -e "${TAB}${VALID}link${RESET} -> $src_name"
-	fi
+	      # load formatting
+	      fpretty=${HOME}/config/.bashrc_pretty
+	      if [ -e $fpretty ]; then
+	          source $fpretty
+            # set tab
+            itab
+	      fi
+        # determine if being sourced or executed
+        if (return 0 2>/dev/null); then
+            RUN_TYPE="sourcing"
+        else
+            RUN_TYPE="executing"
+        fi
+        print_source
     fi
 fi
 
@@ -34,12 +28,12 @@ fi
 # Prompt functions
 git_branch() {
     if  command -v git &>/dev/null; then
-	git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \x1B[0;36m(\1)\x1B[0m/'
-	# 2>/dev/null redirects stderr to null
-	# sed -e '/^[^*]/d' deletes any lines not starting with *
-	# sed -e 's/* \(.*\)/ (\1)/' replaces the first instance of '* ' and add parethesis
+	      git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \x1B[0;36m(\1)\x1B[0m/'
+	      # 2>/dev/null redirects stderr to null
+	      # sed -e '/^[^*]/d' deletes any lines not starting with *
+	      # sed -e 's/* \(.*\)/ (\1)/' replaces the first instance of '* ' and add parethesis
     else
-	:
+	      :
     fi
 }
 
@@ -58,33 +52,33 @@ if [ ! -z "$(command -v __git_ps1)" ]; then
     export PS1='\[\033]0;$TITLEPREFIX:$PWD\007\]\[\033[32m\]\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h \[\033[0;35m\]$MSYSTEM \[\033[33m\]\w\[\033[36m\]`__git_ps1`\n\e[0;32m$\[\e[0m\] ' #remove new line, add time, add space
 else
     if [ -z "$MSYSTEM" ]; then
-	# Non-MSYS prompt
-	if [ -z "$PGI" ]; then
-	    # Cygwin prompt
-	    vecho "${TAB}creating Cygwin prompt..."
-	    export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]\e[35m$(git_branch)\e[32m]$\[\e[0m\] ' #[user@host dir (git)]
-	    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[0;32m\]\e[36m$(git_branch)\n\e[0;32m$\[\e[0m\] ' # pre time, new line, no brackets, highlight host
-	    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[36m$(git_branch)\n\e[0;32m$\[\e[0m\] ' # pre time, new line, no brackets, highlight host, git bash color
-	else
-	    # PGI prompt
-	    TEXT='PGI'
-	    vecho "${TAB}creating $TEXT prompt..."
-	    export PS1='\[\e[1;37;42m\]$TEXT\[\e[0m\]\[\e[1;32m\] [\u@\h \[\e[34m\]\W\[\e[32m\]\e[35m$(git_branch)\e[32m]$\[\e[0m\] ' # text [user@host dir (git)]
-	    export PS1='\[\e[1;37;42m\]$TEXT\[\e[0m\]\[\e[1;32m\] [\u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m]\n$\[\e[0m\] ' # text [user@host dir (git)]
-	    export PS1='\[\e[1;37;42m\]$TEXT\[\e[0m\]\[\e[1;32m\] [\u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m]\n\e[0;37m\A\e[0;32m $\[\e[0m\] ' # text, post time
-	    export PS1='\[\e[1;37;42m\]$TEXT\[\e[0m\] \e[0;37m\A\[\e[1;32m\] \u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m\n$\[\e[0m\] ' # text, pre time, new line, no brackets
-	    export PS1='\[\e[1;37;42m\]$TEXT\[\e[0m\] \e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m$(git_branch)\e[32m\n$\[\e[0m\] ' # text, pre time, new line, no brackets, highlight host
-	    export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m$(git_branch)\n\[\e[1;37;42m\]$TEXT\[\e[0m\] \e[0;32m$\[\e[0m\] ' # pre time, new line with text, no brackets, highlight host
-	    export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;34m\] \e[0;35m\]$TEXT\[\e[0;33m\] \w\[\e[0;32m\]\e[36m$(git_branch)\n\e[0;32m$\[\e[0m\] ' # pre time, new line with text, no brackets, highlight host, git bash color
-	fi
+	      # Non-MSYS prompt
+	      if [ -z "$PGI" ]; then
+	          # Cygwin prompt
+	          vecho "${TAB}creating Cygwin prompt..."
+	          export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W\[\e[32m\]\e[35m$(git_branch)\e[32m]$\[\e[0m\] ' #[user@host dir (git)]
+	          export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[0;32m\]\e[36m$(git_branch)\n\e[0;32m$\[\e[0m\] ' # pre time, new line, no brackets, highlight host
+	          export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w\[\e[0;32m\]\e[36m$(git_branch)\n\e[0;32m$\[\e[0m\] ' # pre time, new line, no brackets, highlight host, git bash color
+	      else
+	          # PGI prompt
+	          TEXT='PGI'
+	          vecho "${TAB}creating $TEXT prompt..."
+	          export PS1='\[\e[1;37;42m\]$TEXT\[\e[0m\]\[\e[1;32m\] [\u@\h \[\e[34m\]\W\[\e[32m\]\e[35m$(git_branch)\e[32m]$\[\e[0m\] ' # text [user@host dir (git)]
+	          export PS1='\[\e[1;37;42m\]$TEXT\[\e[0m\]\[\e[1;32m\] [\u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m]\n$\[\e[0m\] ' # text [user@host dir (git)]
+	          export PS1='\[\e[1;37;42m\]$TEXT\[\e[0m\]\[\e[1;32m\] [\u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m]\n\e[0;37m\A\e[0;32m $\[\e[0m\] ' # text, post time
+	          export PS1='\[\e[1;37;42m\]$TEXT\[\e[0m\] \e[0;37m\A\[\e[1;32m\] \u@\h \[\e[34m\]\w\[\e[32m\]\e[35m$(git_branch)\e[32m\n$\[\e[0m\] ' # text, pre time, new line, no brackets
+	          export PS1='\[\e[1;37;42m\]$TEXT\[\e[0m\] \e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m$(git_branch)\e[32m\n$\[\e[0m\] ' # text, pre time, new line, no brackets, highlight host
+	          export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m$(git_branch)\n\[\e[1;37;42m\]$TEXT\[\e[0m\] \e[0;32m$\[\e[0m\] ' # pre time, new line with text, no brackets, highlight host
+	          export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;34m\] \e[0;35m\]$TEXT\[\e[0;33m\] \w\[\e[0;32m\]\e[36m$(git_branch)\n\e[0;32m$\[\e[0m\] ' # pre time, new line with text, no brackets, highlight host, git bash color
+	      fi
     else
-	# MSYS prompt
-	vecho "${TAB}creating MSYS prompt..."
-	vecho "${TAB}\"$MSYSTEM\""
-	export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m`git_branch`\n\e[0;32m$\[\e[0m\] '
-	export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] $MSYSTEM \w\[\e[32m\]\e[35m`git_branch`\n\e[0;32m$\[\e[0m\] '
-	export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;35m\]\h\[\e[0;34m\] \e[0;33m\]$MSYSTEM\[\e[1;34m\] \w\[\e[32m\]\e[35m`git_branch`\n\e[0;32m$\[\e[0m\] '
-	export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;34m\] \e[0;35m\]$MSYSTEM\[\e[0;33m\] \w\[\e[0;32m\]\e[36m`git_branch`\n\e[0;32m$\[\e[0m\] '
+	      # MSYS prompt
+	      vecho "${TAB}creating MSYS prompt..."
+	      vecho "${TAB}\"$MSYSTEM\""
+	      export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w\[\e[32m\]\e[35m`git_branch`\n\e[0;32m$\[\e[0m\] '
+	      export PS1='\e[0;37m\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] $MSYSTEM \w\[\e[32m\]\e[35m`git_branch`\n\e[0;32m$\[\e[0m\] '
+	      export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;35m\]\h\[\e[0;34m\] \e[0;33m\]$MSYSTEM\[\e[1;34m\] \w\[\e[32m\]\e[35m`git_branch`\n\e[0;32m$\[\e[0m\] '
+	      export PS1='\e[0;37m\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;34m\] \e[0;35m\]$MSYSTEM\[\e[0;33m\] \w\[\e[0;32m\]\e[36m`git_branch`\n\e[0;32m$\[\e[0m\] '
     fi
 fi
 
@@ -106,6 +100,7 @@ fi
 #alias gsview='/cygdrive/c/Program\ Files/Ghostgum/gsview/gsview64.exe'
 
 # Path additions
+# ---------------
 #export PATH=$PATH:/cygdrive/c/Program\ Files\ \(x86\)/emacs-25.1-bin-i686-mingw32/bin/
 #export PATH=$PATH:/cygdrive/c/Program\ Files/Hugin/bin
 #export PATH=$PATH:/cygdrive/c/root/bin
@@ -125,5 +120,5 @@ fi
 
 if [ "${VB}" = true ]; then
     # reset tab
-    TAB=${TAB%$fTAB}
+    dtab
 fi
