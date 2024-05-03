@@ -767,7 +767,12 @@ function print_return() {
 # define traps
 function reset_traps() {
     # set local debug value
-    local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+    if [ $# -eq 1 ]; then
+        # use argument to manually set DEBUG
+        local -i DEBUG=$1
+    else
+        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+    fi
 
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${TAB}${GREEN}\E[7mreset traps${RESET}"
@@ -807,7 +812,12 @@ function reset_traps() {
 
 function set_traps() {
     # set local debug value
-    local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+    if [ $# -eq 1 ]; then
+        # use argument to manually set DEBUG
+        local -i DEBUG=$1
+    else
+        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+    fi
 
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${TAB}${MAGENTA}\E[7mset traps${RESET}"
@@ -842,8 +852,13 @@ function set_traps() {
 
 function clear_traps() {
     # set local debug value
-    local -i DEBUG=${DEBUG:-2} # default value if DEBUG is unset or null
-
+    if [ $# -eq 1 ]; then
+        # use argument to manually set DEBUG
+        local -i DEBUG=$1
+    else
+        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+    fi
+    
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${TAB}${YELLOW}\E[7mclear traps${RESET}"
     itab
@@ -895,8 +910,13 @@ function clear_traps() {
 
 function unset_traps() {
     # set local debug value
-    local -i DEBUG=${DEBUG:-2} # default value if DEBUG is unset or null
-
+    if [ $# -eq 1 ]; then
+        # use argument to manually set DEBUG
+        local -i DEBUG=$1
+    else
+        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+    fi
+    
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${TAB}${CYAN}\E[7mun-set traps${RESET}"
     itab
