@@ -414,6 +414,93 @@ function do_link_exe() {
     return 0
 }
 
+function check_link() {
+    # PURPOSE - checks a link to a target
+    #
+    # SYNTAX
+    #   check_link target link_name
+    #   the syntaxt is the same as the 'ln' intrinsic
+    #   two arguments are required
+    #
+    # DEPENDENCIES
+    #   check_target
+    #
+    # METHOD - 
+    #   FIND check if the target (source) exists
+    #   LINK
+    #     check if link_name exists
+    #       + check if link_name points to target
+    #           + already done, LS link_name and RETURN
+    #           - check if link_name is writable
+    #               + check if link_name and target have the same conents
+    #                   + DELETE
+    #                   - check if exists
+    #                       + get date from date
+    #                       - get date from stat
+    #                     RENAME the existing file occupying the link_name
+    #               - issue error and RETURN
+    #       - proceed with linking
+
+    # check arguments
+    check_arg2 $@
+
+    # define target (source)
+    local target="$1"
+
+    # define link name (destination)
+    local link_name="$2"
+
+    check_target "$target" || return 1
+    check_target "$link_name" || return 1    
+
+    echo -n "${TAB}${target} and ${link_name}... "
+
+    # check if link and target are the same
+    if [[ "${target}" == "${link_name}" ]]; then
+        echo -e "$have the same name"
+    fi
+    
+    # check if link already points to the target
+    # in the case of an authorized_keys file, the target must be hardlinked
+    local inode_target=$(stat -c "%i" "${target}")
+    local inode_link=$(stat -c "%i" "${link_name}")
+    if [[ "${inode_target})" == "${inode_link}" ]] ; then
+        echo "are hardlinked"
+        return 0
+    else
+        echo "are not the same"
+        (
+            echo "${target}: $inode_target"
+            echo "${link_name}: $inode_link"
+        ) | column -t -s: -N file,inode | sed "s/^/${TAB}/"
+    fi
+    
+    if [[ "${target}" -ef "${link_name}" ]]; then 
+        echo "are symlinked"        
+        echo -n "${TAB}"
+        ls -lhG --color=always "${link_name}" | tr -s ' ' | cut -d' ' -f 8-
+        return 0
+    else
+        echo "are not linked"
+        # check file contents
+        if [ $(diff -ebwB "${target}" "${link_name}" 2>&1 | wc -c) -eq 0 ]; then
+            echo "have the same contents"
+            return 0
+        else
+            # get file/link modification date
+            if [ -e "${link_name}" ]; then
+                echo "has different contents"
+                return 1
+            else
+                echo "is a broken link..."
+                return 0
+            fi
+        fi
+    fi
+    dtab
+    
+}
+
 function do_make_dir() {
     # METHOD
     #  check if target directory exists
