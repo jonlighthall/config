@@ -115,8 +115,8 @@ function load_colors() {
         fecho "this file is ${BASH_SOURCE##*/}"
         fecho "this directory is ${srcdir}"
         
-        fname=.dircolors
-        fpath="${srcdir}/${fname}"
+        local fname=.dircolors
+        local fpath="${srcdir}/${fname}"
         if [ "${VB}" = true ]; then
             itab
             check_target "${fpath}"
