@@ -65,7 +65,7 @@ alias gitf='git fetch --all --verbose'
 alias gitdn='git diff --name-status'
 alias gitr='git remote -v'
 alias gits='git status'
-alias gitsi='git status --ignored; echo; git branch -vva  --color=always'
+alias gitsi='git status --ignored; echo; git branch -vva  --color=always;echo; git remote -v'
 alias gitsl='git stash list --date=local'
 
 # grep
