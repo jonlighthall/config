@@ -813,18 +813,18 @@ function set_traps() {
     decho -e "${TAB}${MAGENTA}\E[7mset traps${RESET}"
     itab
 
-    ddecho "${TAB}$-"
+    dddecho "${TAB}$-"
     # set shell options
-    ddecho -n "${TAB}setting shell options... "
+    dddecho -n "${TAB}setting shell options... "
     # trace ERR (subshells inherit ERR trap from shell)
     set -E
-    ddecho "done"
-    ddecho "${TAB}$-"
+    dddecho "done"
+    dddecho "${TAB}$-"
     
-    ddecho -n "${TAB}setting traps... "
+    dddecho -n "${TAB}setting traps... "
     trap 'print_error $LINENO $? $BASH_COMMAND' ERR
     trap 'print_exit $?' EXIT
-    ddecho "done"
+    dddecho "done"
 
     # print summary
     ddecho "${TAB}on ${FUNCNAME} return, the following traps are set"
@@ -848,26 +848,26 @@ function clear_traps() {
     decho -e "${TAB}${YELLOW}\E[7mclear traps${RESET}"
     itab
 
-    ddecho "${TAB}$-"
+    dddecho "${TAB}$-"
     # set shell options
-    ddecho -n "${TAB}setting shell options... "
+    dddecho -n "${TAB}setting shell options... "
     # trace ERR (inherit ERR trap from shell)
     set -E
     # trace RETURN and DEBUG traps
     set -T
     # DO NOT exit on errors
     set +e
-    ddecho "done"
-    ddecho "${TAB}$-"
+    dddecho "done"
+    dddecho "${TAB}$-"
     
-    ddecho -n "${TAB}the current traps are set"
+    dddecho -n "${TAB}the current traps are set"
     if [ -z "$(trap -p)" ]; then
-        ddecho -e "\n${TAB}${fTAB}none"
+        dddecho -e "\n${TAB}${fTAB}none"
         dtab
     else
         itab
-        ddecho
-        ddecho $(trap -p) | sed "$ ! s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" | sed 's/^[ ]*$//g'
+        dddecho
+        dddecho $(trap -p) | sed "$ ! s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" | sed 's/^[ ]*$//g'
         dtab
     fi
 
@@ -885,7 +885,7 @@ function clear_traps() {
     if [ -z $(trap -p) ]; then
         ddecho "${TAB}${fTAB}none"
     else
-        dddecho $(trap -p) | sed "$ ! s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" | sed 's/^[ ]*$//g'
+        ddecho $(trap -p) | sed "$ ! s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" | sed 's/^[ ]*$//g'
         echo "something didn't work..."
         dtab
         return 1
@@ -901,33 +901,33 @@ function unset_traps() {
     decho -e "${TAB}${CYAN}\E[7mun-set traps${RESET}"
     itab
 
-    ddecho "${TAB}$-"
+    dddecho "${TAB}$-"
     # set shell options
-    ddecho -n "${TAB}setting shell options... "
+    dddecho -n "${TAB}setting shell options... "
     # trace ERR (inherit ERR trap from shell)
     set -E
     # trace RETURN and DEBUG traps
     set -T
     # DO NOT exit on errors
     set +e
-    ddecho "done"
-    ddecho "${TAB}$-"
+    dddecho "done"
+    dddecho "${TAB}$-"
     
-    ddecho "${TAB}the current traps are set"
+    dddecho "${TAB}the current traps are set"
     if [ -z "$(trap -p)" ]; then
-        ddecho -e "${TAB}${fTAB}none"
+        dddecho -e "${TAB}${fTAB}none"
         unset save_traps
     else
         itab
-        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g"
+        dddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g"
         dtab
         
         # save traps
         export save_traps=$(trap -p | sed 's/-- //g')
         if [ ! -z "${save_traps}" ]; then
-            ddecho "${TAB}the current traps are saved"
+            dddecho "${TAB}the current traps are saved"
             itab
-            ddecho "${save_traps}" | sed "s/^/${TAB}/"
+            dddecho "${save_traps}" | sed "s/^/${TAB}/"
             dtab
         fi
 
