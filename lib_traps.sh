@@ -291,6 +291,58 @@ function print_stack_devel() {
 
 }
 
+function test_traps() {
+    set -u
+    trap 'print_return $?; trap - RETURN' RETURN
+    # set debug level for testing trap programs
+    local -i localDEBUG=3
+    set_traps ${localDEBUG}
+    unset_traps ${localDEBUG}
+    reset_traps ${localDEBUG}
+    clear_traps ${localDEBUG}
+}
+
+function print_debug() {
+    set -u
+    if [ ${DEBUG:-0} -lt 1 ]; then
+        echo -en "${TAB}${BOLD}DEBUG is "
+        if [ -z ${DEBUG+dummy} ]; then
+            local UNSET='\E[1;33munset\E[0m'
+            echo -e "${UNSET}"
+            return
+        fi
+        if [ -z ${DEBUG:+dummy} ]; then
+            local NULL='\E[1;36mnull\E[0m'
+            echo -e "${NULL}"
+            return
+        fi
+
+        if [ $DEBUG -eq 0 ]; then
+            echo -e "0${RESET}"
+            return
+        fi
+    fi
+    local -i i
+    local prefix=$(for ((i = 1; i <= $DEBUG; i++)); do echo -n "d"; done)
+    echo "prefix: $prefix"
+    local fun_name="${prefix}echo"
+    echo "function: $fun_name"
+    if command -v $fun_name; then
+        echo "${fun_name} is defined"
+
+        echo "var:"
+        $fun_name
+        echo "eval"
+        eval $fun_name
+        ddecho "goodby"
+        
+    else
+        echo "${fun_name} is NOT defined"
+    fi
+    echo "DEBUG = $DEBUG"
+    $fun_name
+}
+
 function print_stack() {
     local -i DEBUG=${DEBUG:=9}
     start_new_line
