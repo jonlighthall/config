@@ -14,20 +14,23 @@ function get_curpos() {
     dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
 
     # Turn in-function debugging on/off.
-    local -i DEBUG=0
+    local -i DEBUG=${DEBUG:-0}
     local -i funcDEBUG=0
 
+    local CURPOS
+    itab
+    local -i THRESHOLD=2
+    if [ $DEBUG -gt $THRESHOLD ]; then
+        ddecho -n "${TAB}cursor text: '"
+    fi
     # get the cursor position
     echo -en "\E[6n"
-    local CURPOS
     # print response
-    if [ $DEBUG -eq 0 ]; then
-        read -sdR CURPOS
-    else
-        decho -n "${TAB}cursor text: '"
-        wait
+    if [ $DEBUG -gt $THRESHOLD ]; then
         read -dR CURPOS
-        decho  "'"
+        ddecho  "'"
+    else
+        read -sdR CURPOS
     fi
 
 	  # parse the cursor position
@@ -60,6 +63,7 @@ function get_curpos() {
         fecho "   arg 2 out: ${!y_out}=${cursor_y_position}"
         y_out=$cursor_y_position        
     fi
+    dtab
 }
 
 function ind() {
@@ -102,17 +106,25 @@ function ind() {
 # i.e., carriage return with conditional line feed
 function start_new_line() {
     dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
-    local -i funcDEBUG=0
+    if [ $DEBUG -ge 3 ]; then 
+        local -i funcDEBUG=1
+    else
+        local -i funcDEBUG=0
+    fi
     # get the cursor position
     local -i x
+    itab
     get_curpos x
     # if the cursor is not at the start of a line, then create a new line
     if [ ${x} -gt 1 ]; then
         fecho -en "\x1b[7mNEW LINE\x1b[m"
-        printf '\e[0;90;40m\u21b5\n\e[m'
+        if [ $DEBUG -gt 0 ]; then 
+            printf '\e[0;90;40m\u21b5\n\e[m'
+        fi
     else
         fecho -en "\x1b[7mNO NEW LINE\x1b[m"
     fi
+    dtab
 }
 
 # print horizontal line
@@ -135,6 +147,7 @@ function hline() {
     else
         m=$2
     fi
+    local -i i
     for ((i = 1; i <= $N; i++)); do echo -n "$m"; done
     echo
 }
