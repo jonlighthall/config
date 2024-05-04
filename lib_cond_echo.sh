@@ -7,6 +7,8 @@
 #
 # PURPOSE: Define conditional echos for printing debugging messages.
 #
+# Mar 2024 JCL
+#
 # -----------------------------------------------------------------------------------------------
 
 # Name:
@@ -87,7 +89,9 @@ function fecho() {
     return 0
 }
 
+# -----------------------------------------------------------------------------------------------
 # define debug echos
+# -----------------------------------------------------------------------------------------------
 
 # generic debug message handler
 # the debugging functions should be named as follows
@@ -95,7 +99,8 @@ function fecho() {
 #  ddecho - level 2: explicitly print values
 # dddecho - level 3: why...?
 # and so on
-function xecho() {     
+function xecho() {
+    #trap -- RETURN
     # use parent function name to specify debug threshold
     local -r PARENT_FUNC=${FUNCNAME[1]}
     # strip "echo" from parent function name
@@ -141,4 +146,45 @@ function ddecho() {
 
 function dddecho() {
     xecho "$@"    
+}
+
+function print_debug() {
+    set -u
+    if [ ${DEBUG:-0} -lt 1 ]; then
+        echo -en "${TAB}${BOLD}DEBUG is "
+        if [ -z ${DEBUG+dummy} ]; then
+            local UNSET='\E[1;33munset\E[0m'
+            echo -e "${UNSET}"
+            return
+        fi
+        if [ -z ${DEBUG:+dummy} ]; then
+            local NULL='\E[1;36mnull\E[0m'
+            echo -e "${NULL}"
+            return
+        fi
+
+        if [ $DEBUG -eq 0 ]; then
+            echo -e "0${RESET}"
+            return
+        fi
+    fi
+    local -i i
+    local prefix=$(for ((i = 1; i <= $DEBUG; i++)); do echo -n "d"; done)
+    echo "prefix: $prefix"
+    local fun_name="${prefix}echo"
+    echo "function: $fun_name"
+    if command -v $fun_name; then
+        echo "${fun_name} is defined"
+
+        echo "var:"
+        $fun_name
+        echo "eval"
+        eval $fun_name
+        ddecho "goodby"
+        
+    else
+        echo "${fun_name} is NOT defined"
+    fi
+    echo "DEBUG = $DEBUG"
+    $fun_name
 }
