@@ -163,8 +163,6 @@ function print_debug() {
         return
     fi
     if [ $DEBUG -eq 0 ]; then
-        echo -e "${TAB}${BOLD}DEBUG is 0${RESET}"
-        echo -e "${TAB}${BOLD}${GRAY}DEBUG is 0${RESET}"
         echo -e "${TAB}${GRAY}DEBUG is 0${RESET}"
         return
     fi
