@@ -7,6 +7,8 @@
 #
 # Purpose: define functions for "pretty-print" text formatting.
 #
+# Mar 2024 JCL
+#
 # -----------------------------------------------------------------------------------------------
 
 function get_curpos() {
