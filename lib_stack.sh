@@ -11,6 +11,137 @@
 #
 # -----------------------------------------------------------------------------------------------
 
+function get_source() {
+    # set local debug value
+    local -i DEBUG=${DEBUG:-0} # substitute default value if DEBUG is unset or null
+
+    # get the length of the execution stack
+    N_BASH=${#BASH_SOURCE[@]}
+    # since this function is part of the stack, reduce N_BASH by one
+    ((N_BASH--))
+    # check stack size
+    if [ $N_BASH -lt 1 ]; then
+        return 0
+    fi
+
+    # define function level
+    local -i FUNC_LEV
+    # check if calling function is print*
+    if [[ "${FUNCNAME[1]}" =~ "print"* ]]; then
+        if [ $N_BASH -lt 2 ]; then
+            return 0
+        fi
+        FUNC_LEV=2
+    else
+        FUNC_LEV=1
+    fi   
+    
+    # get canonical source name
+    src_name=$(readlink -f ${BASH_SOURCE[${FUNC_LEV}]})
+    # get short source name
+    src_base=$(basename "${src_name}")
+    # get source path
+    ## physical (canonical)
+    src_dir_phys=$(dirname "$src_name")
+    ## logical (links)
+    src_dir_logi=$(dirname "${BASH_SOURCE[${FUNC_LEV}]}")
+}
+
+
+function print_source() {
+    local -i funcDEBUG=$((${DEBUG:-1} - 1))
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    fecho "DEBUG = $DEBUG"
+    get_source
+
+    # define default run type
+    RUN_TYPE=${RUN_TYPE:-"running"}
+
+    # conditionally add stack level prefix
+    if [ ${DEBUG:-0} -gt 1 ]; then 
+        # since print_source is itself part of the stack, remove the top of the stack
+        ((N_BASH--))
+        local prefix="\x1b[7;38;5;132m${N_BASH}"
+        if [[ "$-" == *i* ]]; then
+            prefix+="i"
+        fi        
+        prefix+="\x1b[0m"
+        RUN_TYPE="${prefix}${RUN_TYPE}"
+    fi
+    # strip escapes from run type
+    local msgne
+    strip_pretty msgne $RUN_TYPE
+    # get message length
+    local -i lnr=${#msgne}
+    # define prefix prototype
+    prefix="${VALID}link${RESET} -> "    
+    strip_pretty msgne $prefix
+    local -i lnp=${#msgne}
+    
+    # subtract link/path prefix length
+    local -i sp=$(($lnr - $lnp))
+    fecho "space: $lnr, $lnp, $sp"
+    # if run type is shorter than prefix, adjust
+    if [ $sp -le 0 ]; then
+        fecho "space: $lnr, $lnp, $sp"
+        if [ $sp -eq 0 ]; then
+            sp=-1
+        else
+            for ((i = $sp; i < 0; i++)); do
+                RUN_TYPE=" $RUN_TYPE"
+                fecho "$RUN_TYPE: $i"
+            done
+        fi
+    fi    
+    
+    # define indent
+    local spx=$(echo -ne "\E[${sp}C")
+
+    # set tab
+    if [[ "${RUN_TYPE}" =~ "sourcing" ]]; then
+        set_tab
+        dtab
+    fi
+    
+    # print run type and source name
+    vecho -e "${TAB}${RUN_TYPE} ${PSDIR}${BASH_SOURCE[1]}${RESET}..."
+    if [ ! "${BASH_SOURCE[1]}" = "$src_name" ]; then
+        vecho -e "${TAB}${spx}${prefix}$src_name"
+    fi
+
+    if [ ${DEBUG:-0} -gt 1 ]; then 
+        # print source path
+        if [[ "${src_dir_logi}" != "${src_dir_phys}" ]]; then 
+            ## logical
+            vecho -e "${TAB}${spx}${GRAY}logi -> $src_dir_logi${RESET}"
+            ## physical
+            vecho -e "${TAB}${spx}${GRAY}phys -> $src_dir_phys${RESET}"
+        fi
+    fi
+
+    # deallocate variables
+    unset prefix
+}
+
+function print_ribbon() {
+    get_source
+    # since this function is part of the stack, reduce N_BASH by one
+    ((N_BASH--))
+    # print source
+    decho -e "${TAB}\x1b[7;38;5;132m${N_BASH}: ${src_base} :${N_BASH}\x1b[0m"
+}
+
+function print_bar() {
+    get_source
+    
+    # define message
+    msg=$(echo "this file is ${src_base}!")
+    # define line
+    ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
+    # print source
+    decho -e "$ln\n$msg\n$ln" | sed "$ ! s/^/${TAB}/"
+}
+
 function print_stack() {
     local -i DEBUG=${DEBUG:=9}
     start_new_line

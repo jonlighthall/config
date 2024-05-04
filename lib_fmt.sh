@@ -187,3 +187,11 @@ function cbar() {
     # print text with TAB
     echo -e "$ln\n${MESSAGE_IN}\n$ln" | sed "s/^/${TAB}/"
 }
+
+function strip_pretty() {
+    local -n output=$1
+    shift
+
+    # strip escapes    
+    output=$(echo -e "$@" | sed "s/$(echo -e "\E")[^m]*m//g")
+}
