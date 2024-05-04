@@ -180,7 +180,6 @@ function print_debug() {
     # check if function is defined
     if command -v $fun_name &>/dev/null; then
         fecho "${fun_name} is defined"
-        $fun_name "DEBUG = $DEBUG"
     else
         fecho "${fun_name}() is NOT defined"
         fecho "defining ${fun_name}()..."
