@@ -71,14 +71,14 @@ function fecho() {
                 if [ ${N_FUNC} -lt 5 ]; then
                     : #fidx=$(( $N_FUNC - 1 ))
                 else                
-                  : #  fidx=$(( $N_FUNC - 5 ))
+                    : #  fidx=$(( $N_FUNC - 5 ))
                     # where does this come from?
                 fi
             fi
 
             
             echo -n "${FUNCNAME[fidx]}"
-#           echo -n " $fidx of $N_FUNC"
+            #           echo -n " $fidx of $N_FUNC"
             echo -ne ": \e[0m${dcolor[IDX]}"
             echo "$@"
             echo -ne "\e[0m"
@@ -150,41 +150,41 @@ function dddecho() {
 
 function print_debug() {
     set -u
-    if [ ${DEBUG:-0} -lt 1 ]; then
-        echo -en "${TAB}${BOLD}DEBUG is "
-        if [ -z ${DEBUG+dummy} ]; then
-            local UNSET='\E[1;33munset\E[0m'
-            echo -e "${UNSET}"
-            return
-        fi
-        if [ -z ${DEBUG:+dummy} ]; then
-            local NULL='\E[1;36mnull\E[0m'
-            echo -e "${NULL}"
-            return
-        fi
+    funcDEBUG=0
 
-        if [ $DEBUG -eq 0 ]; then
-            echo -e "0${RESET}"
-            return
-        fi
+    if [ -z ${DEBUG+dummy} ]; then
+        local UNSET='\E[1;33munset\E[0m'
+        echo -e "${TAB}${BOLD}DEBUG is ${UNSET}"
+        return
     fi
+    if [ -z ${DEBUG:+dummy} ]; then
+        local NULL='\E[1;36mnull\E[0m' 
+        echo -e "${TAB}${BOLD}DEBUG is ${NULL}"
+        return
+    fi
+    if [ $DEBUG -eq 0 ]; then
+        echo -e "${TAB}${BOLD}DEBUG is 0${RESET}"
+        echo -e "${TAB}${BOLD}${GRAY}DEBUG is 0${RESET}"
+        echo -e "${TAB}${GRAY}DEBUG is 0${RESET}"
+        return
+    fi
+
+    # constuct debug print function name
     local -i i
     local prefix=$(for ((i = 1; i <= $DEBUG; i++)); do echo -n "d"; done)
-    echo "prefix: $prefix"
+    fecho "DEBUG = $DEBUG"
+    fecho "prefix: $prefix"
     local fun_name="${prefix}echo"
-    echo "function: $fun_name"
-    if command -v $fun_name; then
-        echo "${fun_name} is defined"
+    fecho "function: $fun_name"
 
-        echo "var:"
-        $fun_name
-        echo "eval"
-        eval $fun_name
-        ddecho "goodby"
-        
+    # check if function is defined
+    if command -v $fun_name &>/dev/null; then
+        fecho "${fun_name} is defined"
+        $fun_name "DEBUG = $DEBUG"
     else
-        echo "${fun_name} is NOT defined"
+        fecho "${fun_name}() is NOT defined"
+        fecho "defining ${fun_name}()..."
+        eval "${fun_name}() { xecho \"\$@\"; }"
     fi
-    echo "DEBUG = $DEBUG"
-    $fun_name
+    $fun_name "${TAB}DEBUG = $DEBUG"
 }
