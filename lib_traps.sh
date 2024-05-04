@@ -16,16 +16,18 @@
 function bye() {
     # print function name 
     decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-    echo "goodbye...?"
+    itab
+    echo "${TAB}goodbye...?"
     # add return code for parent script
     if [ $DEBUG -gt 0 ]; then
         # print debug value
-        decho "DEBUG = $DEBUG"
+        print_debug
         # print shell options
         decho "shell options = $-"
         set +T
         trap 'print_return $?; trap - RETURN' RETURN
     fi
+    dtab
     return 1
 }
 
@@ -41,7 +43,7 @@ function fello() {
         eval $func
     else
         # print debug value
-        decho "DEBUG = $DEBUG"
+        print_debug
         # print shell options
         decho "shell options = $-"
         # add return code for parent script
