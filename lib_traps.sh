@@ -10,6 +10,7 @@
 #
 # -----------------------------------------------------------------------------------------------
 
+# fuction to test returning an error
 function bye() {
     # print function name 
     decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
@@ -26,6 +27,7 @@ function bye() {
     return 1
 }
 
+# function to test calling an alias from a function
 function fello() {
     # print function name 
     decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
@@ -162,20 +164,11 @@ function reset_shell() {
     #huh
 }
 
+# print shell
 function huh() {
     echo "-> $-"
 }
 
-function test_traps() {
-    set -u
-    trap 'print_return $?; trap - RETURN' RETURN
-    # set debug level for testing trap programs
-    local -i localDEBUG=3
-    set_traps ${localDEBUG}
-    unset_traps ${localDEBUG}
-    reset_traps ${localDEBUG}
-    clear_traps ${localDEBUG}
-}
 
 function print_debug() {
     set -u
@@ -217,6 +210,10 @@ function print_debug() {
     echo "DEBUG = $DEBUG"
     $fun_name
 }
+
+# -----------------------------------------------------------------------------------------------
+# Functions for print EXIT, RETURN, and INT (non-ERR) status
+# -----------------------------------------------------------------------------------------------
 
 # print source name, elapsed time, and timestamp
 function print_done() {
@@ -289,6 +286,54 @@ function print_exit() {
 
     print_done
 }
+
+function print_return() {
+    # expected arguments are $?
+    # e.g.
+    # trap 'print_return $?' RETURN
+    
+    # set local debug value
+    local -i DEBUG=${DEBUG:-0} # substitute default value if DEBUG is unset or null
+
+    if false; then
+        ddecho "${TAB}$-"
+        # set shell options
+        ddecho -n "${TAB}setting shell options... "
+        # trace RETURN and DEBUG traps (subshells inherit RETURN and DEBUG traps from shell)
+        #set -T
+        ddecho "done"
+        ddecho "${TAB}$-"
+    fi
+
+    RETURN_RETVAL=$1    
+
+    # get size of function stack
+    local -ir N_FUNCs=${#FUNCNAME[@]}
+    # print summary
+    start_new_line
+    if [ $DEBUG -gt 1 ]; then
+        print_stack
+    fi
+
+    echo -en "${TAB}${YELLOW}\E[7m RETURN ${RESET} ${GRAY}RETVAL=${RETURN_RETVAL}${RESET}"
+    if [ ${N_FUNCs} -gt 1 ]; then
+        echo " ${FUNCNAME[1]##*/}"
+    else
+        echo " ${BASH_SOURCE[1]##*/}"
+    fi
+}
+
+function print_int() {
+    start_new_line
+    echo -e "${AZURE}\E[7m INT ${RESET} ${BASH_SOURCE[1]##*/}"
+    echo " Ctrl-C pressed"
+    #	echo -e "breaking..."
+    #	break
+}
+
+# -----------------------------------------------------------------------------------------------
+# Print ERR trace
+# -----------------------------------------------------------------------------------------------
 
 function print_error() {
     # expected arguments are $LINENO $? $BASH_COMMAND
@@ -439,96 +484,22 @@ function print_error() {
     echo -e "${spx} ${GRAY}RETVAL=${ERR_RETVAL}${RESET}"
 }
 
-function print_int() {
-    start_new_line
-    echo -e "${AZURE}\E[7m INT ${RESET} ${BASH_SOURCE[1]##*/}"
-    echo " Ctrl-C pressed"
-    #	echo -e "breaking..."
-    #	break
+# -----------------------------------------------------------------------------------------------
+# Functions to set and unset traps
+# -----------------------------------------------------------------------------------------------
+
+function test_traps() {
+    set -u
+    trap 'print_return $?; trap - RETURN' RETURN
+    # set debug level for testing trap programs
+    local -i localDEBUG=3
+    set_traps ${localDEBUG}
+    unset_traps ${localDEBUG}
+    reset_traps ${localDEBUG}
+    clear_traps ${localDEBUG}
 }
 
-function print_return() {
-    # expected arguments are $?
-    # e.g.
-    # trap 'print_return $?' RETURN
-    
-    # set local debug value
-    local -i DEBUG=${DEBUG:-0} # substitute default value if DEBUG is unset or null
-
-    if false; then
-        ddecho "${TAB}$-"
-        # set shell options
-        ddecho -n "${TAB}setting shell options... "
-        # trace RETURN and DEBUG traps (subshells inherit RETURN and DEBUG traps from shell)
-        #set -T
-        ddecho "done"
-        ddecho "${TAB}$-"
-    fi
-
-    RETURN_RETVAL=$1    
-
-    # get size of function stack
-    local -ir N_FUNCs=${#FUNCNAME[@]}
-    # print summary
-    start_new_line
-    if [ $DEBUG -gt 1 ]; then
-        print_stack
-    fi
-
-    echo -en "${TAB}${YELLOW}\E[7m RETURN ${RESET} ${GRAY}RETVAL=${RETURN_RETVAL}${RESET}"
-    if [ ${N_FUNCs} -gt 1 ]; then
-        echo " ${FUNCNAME[1]##*/}"
-    else
-        echo " ${BASH_SOURCE[1]##*/}"
-    fi
-}
-
-# define traps
-function reset_traps() {
-    # set local debug value
-    if [ $# -eq 1 ]; then
-        # use argument to manually set DEBUG
-        local -i DEBUG=$1
-    else
-        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
-    fi
-
-    [ $DEBUG -gt 0 ] && start_new_line
-    decho -e "${TAB}${GREEN}\E[7mreset traps${RESET}"
-    itab
-
-    dddecho "${TAB}$-"
-    # set shell options
-    dddecho -n "${TAB}setting shell options... "
-    # trace ERR (subshells inherit ERR trap from shell)
-    set -E
-    dddecho "done"
-    dddecho "${TAB}$-"
-    
-    dddecho "${TAB}the following traps are saved"
-    itab
-    if [ -z "${save_traps+default}" ]; then
-        dddecho "${TAB}none"
-        dtab
-    else
-        dddecho "${save_traps}" | sed "s/^/${TAB}/"
-        dtab
-        dddecho -n "${TAB}setting saved traps..."
-        eval $(echo "${save_traps}" | sed "s/$/;/g")
-        dddecho "done"
-    fi
-
-    # print summary
-    ddecho "${TAB}on ${FUNCNAME} return, the following traps are set"
-    itab
-    if [ -z "$(trap -p)" ]; then
-        ddecho "${TAB}none"
-    else
-        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g"
-    fi
-    dtab 2
-}
-
+# set ERR and EXIT traps
 function set_traps() {
     # set local debug value
     if [ $# -eq 1 ]; then
@@ -569,62 +540,8 @@ function set_traps() {
     dtab 2
 }
 
-function clear_traps() {
-    # set local debug value
-    if [ $# -eq 1 ]; then
-        # use argument to manually set DEBUG
-        local -i DEBUG=$1
-    else
-        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
-    fi
-    
-    [ $DEBUG -gt 0 ] && start_new_line
-    decho -e "${TAB}${YELLOW}\E[7mclear traps${RESET}"
-    itab
-
-    dddecho "${TAB}$-"
-    # set shell options
-    dddecho -n "${TAB}setting shell options... "
-    # trace ERR (subshells inherit ERR trap from shell)
-    set -E
-    # trace RETURN and DEBUG traps
-    set -T
-    # DO NOT exit on errors
-    set +e
-    dddecho "done"
-    dddecho "${TAB}$-"
-    
-    dddecho "${TAB}the current traps are set"
-    if [ -z "$(trap -p)" ]; then
-        dddecho -e "${TAB}${fTAB}none"
-    else
-        itab
-        dddecho $(trap -p) | sed " s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" 
-        dtab
-    fi
-
-    # clear saved traps
-    unset save_traps
-
-    # clear traps
-    trap - ERR
-    trap - EXIT
-    trap - RETURN
-
-    # print summary
-    ddecho "${TAB}on ${FUNCNAME} return, the following traps are set"
-    itab
-    if [ -z "$(trap -p)" ]; then
-        ddecho "${TAB}none"
-    else
-        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g"
-        echo "something didn't work..."
-        dtab 2
-        return 1
-    fi
-    dtab 2
-}
-
+# unset ERR and EXIT traps, saving current values
+# restore saved values with reset_traps
 function unset_traps() {
     # set local debug value
     if [ $# -eq 1 ]; then
@@ -688,3 +605,108 @@ function unset_traps() {
     fi
     dtab 2
 }
+
+# reset saved traps
+# used in conjuction with unset_traps
+function reset_traps() {
+    # set local debug value
+    if [ $# -eq 1 ]; then
+        # use argument to manually set DEBUG
+        local -i DEBUG=$1
+    else
+        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+    fi
+
+    [ $DEBUG -gt 0 ] && start_new_line
+    decho -e "${TAB}${GREEN}\E[7mreset traps${RESET}"
+    itab
+
+    dddecho "${TAB}$-"
+    # set shell options
+    dddecho -n "${TAB}setting shell options... "
+    # trace ERR (subshells inherit ERR trap from shell)
+    set -E
+    dddecho "done"
+    dddecho "${TAB}$-"
+    
+    dddecho "${TAB}the following traps are saved"
+    itab
+    if [ -z "${save_traps+default}" ]; then
+        dddecho "${TAB}none"
+        dtab
+    else
+        dddecho "${save_traps}" | sed "s/^/${TAB}/"
+        dtab
+        dddecho -n "${TAB}setting saved traps..."
+        eval $(echo "${save_traps}" | sed "s/$/;/g")
+        dddecho "done"
+    fi
+
+    # print summary
+    ddecho "${TAB}on ${FUNCNAME} return, the following traps are set"
+    itab
+    if [ -z "$(trap -p)" ]; then
+        ddecho "${TAB}none"
+    else
+        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g"
+    fi
+    dtab 2
+}
+
+# unset ERR, EXIT, and RETURN traps, erasing current values
+function clear_traps() {
+    # set local debug value
+    if [ $# -eq 1 ]; then
+        # use argument to manually set DEBUG
+        local -i DEBUG=$1
+    else
+        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+    fi
+    
+    [ $DEBUG -gt 0 ] && start_new_line
+    decho -e "${TAB}${YELLOW}\E[7mclear traps${RESET}"
+    itab
+
+    dddecho "${TAB}$-"
+    # set shell options
+    dddecho -n "${TAB}setting shell options... "
+    # trace ERR (subshells inherit ERR trap from shell)
+    set -E
+    # trace RETURN and DEBUG traps
+    set -T
+    # DO NOT exit on errors
+    set +e
+    dddecho "done"
+    dddecho "${TAB}$-"
+    
+    dddecho "${TAB}the current traps are set"
+    if [ -z "$(trap -p)" ]; then
+        dddecho -e "${TAB}${fTAB}none"
+    else
+        itab
+        dddecho $(trap -p) | sed " s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" 
+        dtab
+    fi
+
+    # clear saved traps
+    unset save_traps
+
+    # clear traps
+    trap - ERR
+    trap - EXIT
+    trap - RETURN
+
+    # print summary
+    ddecho "${TAB}on ${FUNCNAME} return, the following traps are set"
+    itab
+    if [ -z "$(trap -p)" ]; then
+        ddecho "${TAB}none"
+    else
+        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g"
+        echo "something didn't work..."
+        dtab 2
+        return 1
+    fi
+    dtab 2
+}
+
