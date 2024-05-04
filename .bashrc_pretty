@@ -179,7 +179,8 @@ function load_libs() {
                     lib_tabs.sh \
                     lib_cond_echo.sh \
                     lib_fmt.sh \
-                    lib_colors.sh 
+                    lib_colors.sh \
+                    lib_stack.sh
     do
         # use the canonical (physical) source directory for reference; this is important if sourcing
         # this file directly from shell
