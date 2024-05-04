@@ -11,130 +11,6 @@
 #
 # -----------------------------------------------------------------------------------------------
 
-# print function stack
-function print_stack_devel() {    
-    local -ir DEBUG=2
-    print_stack
-    
-    echo "BASH_ARGC = $BASH_ARGC"
-    echo "BASH_ARGV = $BASH_ARGV"
-    echo "BASH_COMMAND = $BASH_COMMAND"
-    echo "BASH_SUBSHELL = $BASH_SUBSHELL"    
-    
-    echo "${TAB}list of invocations (links):"
-    (
-        if [ $N_BASH -gt 1 ]; then
-            for ((i = 1; i < $N_BASH; i++)); do
-                vecho "$((i - 1)):+${BASH_SOURCE[$((i - 1))]}+invoked by+${BASH_SOURCE[$i]}"
-            done
-        else
-            called_by=$(ps -o comm= $PPID)
-            echo "0:+${BASH_SOURCE[0]}+invoked by+${called_by}"
-        fi
-    ) | column -t -s + -o " " | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
-
-    echo "${TAB}list of invocations (canonicalized):"
-    (
-        if [ $N_BASH -gt 1 ]; then
-            for ((i = 1; i < $N_BASH; i++)); do
-                vecho "$((i - 1)):+${BASH_LINK[$((i - 1))]}+invoked by+${BASH_LINK[$i]}"
-            done
-        else
-            called_by=$(ps -o comm= $PPID)
-            echo "0:+${BASH_LINK[0]}+invoked by+${called_by}"
-        fi
-    ) | column -t -s + -o " " | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
-    
-    
-    if [ $N_BASH -gt 1 ]; then
-        echo "${TAB}invoking source source:"
-        itab
-        echo "${TAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]##*/}"
-        echo "${TAB}BASH_SOURCE[(($N_BASH-1))] = ${BASH_SOURCE[$N_BASH-1]##*/}"
-        dtab
-    fi
-    
-    itab
-    # (
-    #     for ((i = 0; i < $N_FUNC; i++)); do
-    #         echo -n ":defined in: ${BASH_SOURCE[$i]##*/} "
-    #         echo -n ":called by: "
-    #         if [ -z "${BASH_SOURCE[$i+1]}" ]; then
-    #             echo -n "NULL " 
-    #         else
-    #             echo -n "${BASH_SOURCE[$i+1]##*/} "
-    #         fi
-    #     done
-    # ) | column -t -s : -o ""
-    dtab
-    
-    if [ ${#FUNCNAME[@]} -gt 1 ]; then
-        echo "${TAB}FUNCNAME[$((N_FUNC-2))]=${FUNCNAME[$((N_FUNC-2))]}"
-    fi
-
-    # print_stack() should only be called from other functions, so the length of FUNCNAME should
-    # always be 2 or greater. Start with color 0
-    local -ir IDX=$(( N_FUNC - 2 ))    
-    
-    # set color
-    echo -ne "${dcolor[IDX]}"
-
-    local -i x
-    local -i start
-    local -i stop
-
-    # define function stack printing limits
-    if [[ ${FUNCNAME[1]} == "xecho" ]]; then
-        # xecho
-        start=$(( $N_FUNC - 2 ))
-        stop=2
-    else
-        # function
-        start=$(( $N_FUNC - 5 ))
-        stop=0
-    fi
-
-    # print size of function stack
-    echo -ne "$N_FUNC"
-
-    # print debug type
-    if [[ ${FUNCNAME[1]} == "xecho" ]]; then
-        # xecho
-        echo -ne "x"
-    else
-        # function
-        echo -ne "f"
-    fi
-
-    if [[ ${FUNCNAME[$N_FUNC]} == "main"  ]]; then
-        echo "main"
-    fi
-
-    for (( i=0; i<$N_FUNC; i++ )); do 
-        echo "$i ${FUNCNAME[i]} defined in $(basename ${BASH_SOURCE[i]}) on line ${BASH_LINENO[i]}; and called from $(basename ${BASH_SOURCE[i+1]})"
-    done
-
-    # print contents of function stack...
-    echo -en "["                
-    for (( x=(( $N_FUNC - 0 )); x>-1; x-- )); do
-        if [[ ${FUNCNAME[x]} == "xecho" ]]; then
-            break
-        fi
-        echo -en "$(basename ${BASH_SOURCE[x+1]} 2>/dev/null) ${BASH_LINENO[x]}: ${FUNCNAME[x]}\e[0m${dcolor[IDX]} -> "
-    done
-    echo -en "$(basename ${BASH_SOURCE[x]}) ${BASH_LINENO[x]}] "
-    
-    echo
-    
-    # print contents of function stack...
-    echo -en "["
-    for (( x=$start; x>$stop; x-- )); do
-        echo -en "$(basename ${BASH_SOURCE[x+1]}) ${BASH_LINENO[x]}: ${FUNCNAME[x]}\e[0m${dcolor[IDX]} -> "
-    done
-    echo -en "$(basename ${BASH_SOURCE[x]}) ${BASH_LINENO[x]}] "
-
-}
-
 function print_stack() {
     local -i DEBUG=${DEBUG:=9}
     start_new_line
@@ -272,6 +148,130 @@ function print_stack() {
     dtab
     # unset color
     echo -ne "\e[0m"
+}
+
+# print function stack
+function print_stack_devel() {    
+    local -ir DEBUG=2
+    print_stack
+    
+    echo "BASH_ARGC = $BASH_ARGC"
+    echo "BASH_ARGV = $BASH_ARGV"
+    echo "BASH_COMMAND = $BASH_COMMAND"
+    echo "BASH_SUBSHELL = $BASH_SUBSHELL"    
+    
+    echo "${TAB}list of invocations (links):"
+    (
+        if [ $N_BASH -gt 1 ]; then
+            for ((i = 1; i < $N_BASH; i++)); do
+                vecho "$((i - 1)):+${BASH_SOURCE[$((i - 1))]}+invoked by+${BASH_SOURCE[$i]}"
+            done
+        else
+            called_by=$(ps -o comm= $PPID)
+            echo "0:+${BASH_SOURCE[0]}+invoked by+${called_by}"
+        fi
+    ) | column -t -s + -o " " | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
+
+    echo "${TAB}list of invocations (canonicalized):"
+    (
+        if [ $N_BASH -gt 1 ]; then
+            for ((i = 1; i < $N_BASH; i++)); do
+                vecho "$((i - 1)):+${BASH_LINK[$((i - 1))]}+invoked by+${BASH_LINK[$i]}"
+            done
+        else
+            called_by=$(ps -o comm= $PPID)
+            echo "0:+${BASH_LINK[0]}+invoked by+${called_by}"
+        fi
+    ) | column -t -s + -o " " | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
+    
+    
+    if [ $N_BASH -gt 1 ]; then
+        echo "${TAB}invoking source source:"
+        itab
+        echo "${TAB}BASH_SOURCE[1] = ${BASH_SOURCE[1]##*/}"
+        echo "${TAB}BASH_SOURCE[(($N_BASH-1))] = ${BASH_SOURCE[$N_BASH-1]##*/}"
+        dtab
+    fi
+    
+    itab
+    # (
+    #     for ((i = 0; i < $N_FUNC; i++)); do
+    #         echo -n ":defined in: ${BASH_SOURCE[$i]##*/} "
+    #         echo -n ":called by: "
+    #         if [ -z "${BASH_SOURCE[$i+1]}" ]; then
+    #             echo -n "NULL " 
+    #         else
+    #             echo -n "${BASH_SOURCE[$i+1]##*/} "
+    #         fi
+    #     done
+    # ) | column -t -s : -o ""
+    dtab
+    
+    if [ ${#FUNCNAME[@]} -gt 1 ]; then
+        echo "${TAB}FUNCNAME[$((N_FUNC-2))]=${FUNCNAME[$((N_FUNC-2))]}"
+    fi
+
+    # print_stack() should only be called from other functions, so the length of FUNCNAME should
+    # always be 2 or greater. Start with color 0
+    local -ir IDX=$(( N_FUNC - 2 ))    
+    
+    # set color
+    echo -ne "${dcolor[IDX]}"
+
+    local -i x
+    local -i start
+    local -i stop
+
+    # define function stack printing limits
+    if [[ ${FUNCNAME[1]} == "xecho" ]]; then
+        # xecho
+        start=$(( $N_FUNC - 2 ))
+        stop=2
+    else
+        # function
+        start=$(( $N_FUNC - 5 ))
+        stop=0
+    fi
+
+    # print size of function stack
+    echo -ne "$N_FUNC"
+
+    # print debug type
+    if [[ ${FUNCNAME[1]} == "xecho" ]]; then
+        # xecho
+        echo -ne "x"
+    else
+        # function
+        echo -ne "f"
+    fi
+
+    if [[ ${FUNCNAME[$N_FUNC]} == "main"  ]]; then
+        echo "main"
+    fi
+
+    for (( i=0; i<$N_FUNC; i++ )); do 
+        echo "$i ${FUNCNAME[i]} defined in $(basename ${BASH_SOURCE[i]}) on line ${BASH_LINENO[i]}; and called from $(basename ${BASH_SOURCE[i+1]})"
+    done
+
+    # print contents of function stack...
+    echo -en "["                
+    for (( x=(( $N_FUNC - 0 )); x>-1; x-- )); do
+        if [[ ${FUNCNAME[x]} == "xecho" ]]; then
+            break
+        fi
+        echo -en "$(basename ${BASH_SOURCE[x+1]} 2>/dev/null) ${BASH_LINENO[x]}: ${FUNCNAME[x]}\e[0m${dcolor[IDX]} -> "
+    done
+    echo -en "$(basename ${BASH_SOURCE[x]}) ${BASH_LINENO[x]}] "
+    
+    echo
+    
+    # print contents of function stack...
+    echo -en "["
+    for (( x=$start; x>$stop; x-- )); do
+        echo -en "$(basename ${BASH_SOURCE[x+1]}) ${BASH_LINENO[x]}: ${FUNCNAME[x]}\e[0m${dcolor[IDX]} -> "
+    done
+    echo -en "$(basename ${BASH_SOURCE[x]}) ${BASH_LINENO[x]}] "
+
 }
 
 function print_invo() {
