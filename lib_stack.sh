@@ -11,43 +11,6 @@
 #
 # -----------------------------------------------------------------------------------------------
 
-function get_source() {
-    # set local debug value
-    local -i DEBUG=${DEBUG:-0} # substitute default value if DEBUG is unset or null
-
-    # get the length of the execution stack
-    N_BASH=${#BASH_SOURCE[@]}
-    # since this function is part of the stack, reduce N_BASH by one
-    ((N_BASH--))
-    # check stack size
-    if [ $N_BASH -lt 1 ]; then
-        return 0
-    fi
-
-    # define function level
-    local -i FUNC_LEV
-    # check if calling function is print*
-    if [[ "${FUNCNAME[1]}" =~ "print"* ]]; then
-        if [ $N_BASH -lt 2 ]; then
-            return 0
-        fi
-        FUNC_LEV=2
-    else
-        FUNC_LEV=1
-    fi   
-    
-    # get canonical source name
-    src_name=$(readlink -f ${BASH_SOURCE[${FUNC_LEV}]})
-    # get short source name
-    src_base=$(basename "${src_name}")
-    # get source path
-    ## physical (canonical)
-    src_dir_phys=$(dirname "$src_name")
-    ## logical (links)
-    src_dir_logi=$(dirname "${BASH_SOURCE[${FUNC_LEV}]}")
-}
-
-
 function print_source() {
     local -i funcDEBUG=$((${DEBUG:-1} - 1))
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
