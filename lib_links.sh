@@ -71,7 +71,7 @@ function check_target() {
 
     # determine 
     [ -L "${target}" ] && type="link ${VALID}"
-    [ -f "${target}" ] && type="file ${YELLOW}"
+    [ -f "${target}" ] && type="file ${FILE}"
     [ -d "${target}" ] && type="directory ${DIR}"
     
     # check if target exists
@@ -108,7 +108,7 @@ function check_link_dir() {
 
     # determine 
     [ -L "${link}" ] && type="link ${VALID}"
-    [ -f "${link}" ] && type="file ${YELLOW}"
+    [ -f "${link}" ] && type="file ${FILE}"
     [ -d "${link}" ] && type="directory ${DIR}"
     
     # check if link exists

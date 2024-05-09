@@ -79,8 +79,10 @@ export    GRAY='\x1B[90m'
 export   WHITE='\x1B[1;37m'
 
 # define highlight colors
-export     BAD="${RED}" # red
-export    GOOD="${GREEN}" # green
+export     BAD="${RED}"    # red
+export    GOOD="${GREEN}"  # RETVAL=0; target exists
+export    FILE="${YELLOW}" # file name in scripts
+export     ARG="${CYAN}"   # input argument
 
 # define 'ls' colors
 export  BROKEN='\x1B[1;31m' # bold red    : or orphan link
@@ -182,7 +184,7 @@ export  PSTIME='\x1B[0;37m' # light gray  : \A : time
 export  PSUSER='\x1B[0;32m' # green       : \u : user name, prompt
 export  PSHOST='\x1B[1;34m' # bold blue   : \h : host name
 export   PSDIR='\x1B[0;33m' # yellow      : \w : directory
-export    PSBR='\x1B[0;36m' # blue        :    : branch
+export    PSBR='\x1B[0;36m' # cyan        :    : branch
 
 # define 'grep' colors
 export     GRH='\x1B[1;31m' # bold red    : ms : selected match

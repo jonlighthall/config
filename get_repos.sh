@@ -25,17 +25,18 @@ fi
 make_links_name=make_links.sh
 # check if configuration is specified
 if [ $# -eq 1 ]; then
-	  echo "Loading configuration options for $1"
-	  echo -n "${TAB}$1... "
+	  echo -e "Loading configuration options for ${ARG}$1${RESET}..."
+    itab
+	  echo -en "${TAB}directory ${DIR}$1${RESET}... "
 	  # check if specified directory exists
 	  sys_dir=${src_dir_logi}/$1
 	  if [ -d "${sys_dir}" ]; then
-		    echo "found"
+        echo -e "${GOOD}exists${RESET}"
 		    cd "${sys_dir}"
-		    echo -n "${TAB}$make_links_name... "
+		    echo -en "${TAB}${FILE}$make_links_name${RESET}... "
 		    # check if make links file exists
 		    if [ -f $make_links_name ]; then
-			      echo "found"
+            echo -e "${GOOD}exists${RESET}"
 			      # link make_links to conig dir (called by ~/utils/bash/git/update_repos.sh)
             # see github.com/jonlighthall/bash
 
@@ -52,30 +53,44 @@ if [ $# -eq 1 ]; then
 
 			      bash $make_links_name
 			      # define profile name
-			      profie_name=.bash_profile
-			      echo -n "${TAB}$profie_name... "
+			      profile_name=.bash_profile
+			      echo -n "${TAB}$profile_name... "
             itab
 			      # check if file exists
-			      if [ -f $profie_name ]; then
-				        echo -n "found: "
-				        readlink -f $profie_name
+			      if [ -f $profile_name ]; then
+				        echo -en "found: ${FILE}"
+				        readlink -f $profile_name
+                echo -en "${RESET}"
 				        set +ue
-				        source ${profie_name}
+                itab
+				        source ${profile_name}
+                RETVAL=$?
 				        set -ue
-				        echo "${TAB}configuration applied for $1"
+                dtab
+                echo -en "${TAB}$profile_name "
+                if [ $RETVAL -eq 0 ]; then
+                    echo -en "${GOOD}OK"
+                else
+                    echo -en "${BAD}FAIL"
+                fi
+                echo -e "${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+                dtab
+                clear -x
+				        echo -e "${TAB}${BOLD}configuration applied for ${ARG}$1${RESET}"
 			      else
 				        # profile...
-				        echo "not found"
+                echo -e "${YELLOW}not found${RESET}"
 			      fi
             dtab
 		    else
 			      # make links file...
-			      echo "not found"
+            echo -e "${YELLOW}not found${RESET}"
 		    fi
 	  else
 		    # system name...
-		    echo "not found"
+		    echo -e "${BAD}not found${RESET}"
 	  fi
+    dtab
 fi
 
 # Define folder names
@@ -89,13 +104,11 @@ udir=${HOME}/utils
 edir=${HOME}/examp
 
 echo "creating repository directory..."
+itab
 for my_dir in $repo_dir $udir $edir; do
-	  if [ ! -d ${my_dir} ]; then
-		    mkdir -vp ${my_dir}
-	  else
-		    echo "${TAB}directory ${my_dir} already exists"
-	  fi
+    do_make_dir ${my_dir}
 done
+dtab
 
 cbar "Start Cloning Repo Files"
 
