@@ -182,8 +182,26 @@ function huh() {
 # -----------------------------------------------------------------------------------------------
 
 # print source name, elapsed time, and timestamp
+function print_time() {
+    # check if start time is defined
+    if [ -n "${start_time+alt}" ]; then
+        # get the length of the execution stack
+        local -i N_BASH=${#BASH_SOURCE[@]}
+        # BASH_SOURCE counts from zero; get the bottom of the stack
+        # print file name of the calling function
+        echo -ne "${TAB}${GRAY}${BASH_SOURCE[(($N_BASH - 1))]##*/} "        
+        # print elapsed time and change color
+        print_elap | sed 's/37m/90m/'
+        echo
+    fi
+}
+
+# print source name, elapsed time, and timestamp
 function print_done() {
+    # get the length of the execution stack
     local -i N_BASH=${#BASH_SOURCE[@]}
+    # BASH_SOURCE counts from zero; get the bottom of the stack
+    # print file name of the calling function
     echo -en "${BASH_SOURCE[(($N_BASH - 1))]##*/}${RESET} "
     print_elap
     echo -n " on "
