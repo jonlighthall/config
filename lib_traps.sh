@@ -197,11 +197,11 @@ function timestamp() {
 
 # print elapsed time
 function print_elap() {
-    # get current time (end time)
-    local -i end_time=$(date +%s%N)
-
     # check if start time is defined
     if [ -n "${start_time+alt}" ]; then
+        # get current time (end time)
+        local -i end_time=$(date +%s%N)
+
         # calculate interval (in ns)
         local -i elap_time=$((${end_time} - ${start_time}))
         # convert to seconds
