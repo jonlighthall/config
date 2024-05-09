@@ -57,7 +57,7 @@ fi
 
 # enable color support of ls
 # define LS_COLORS using dircolors and .dircolors
-vecho "${TAB}loading colors..."
+vecho "${TAB}loading ls colors..."
 load_colors
 append_ls_colors
 match_ls_colors

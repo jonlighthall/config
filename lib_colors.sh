@@ -137,7 +137,7 @@ function load_colors() {
         fecho -e "does not exist or is not executable ${BAD}FAIL${NORMAL}"
     fi
     if [ "${VB}" = true ]; then
-        vecho "${TAB}colors loaded"
+        vecho "${TAB}directory colors loaded"
         dtab
     fi
 
