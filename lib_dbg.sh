@@ -1,5 +1,18 @@
 #!/bin/bash -u
 
+# -----------------------------------------------------------------------------------------------
+# DEBUG LIBRARY
+# -----------------------------------------------------------------------------------------------
+#
+# ~/config/lib_dbg.sh
+#
+# PURPOSE: the function "line echo" or lecho() prints the line from which the function is
+#   called. This is designed to be used in place of commands like echo "here", etc.
+#
+# May 2024 JCL
+#
+# -----------------------------------------------------------------------------------------------
+
 # stack echo
 function secho() {
     local -i DEBUG=2
@@ -10,13 +23,7 @@ function secho() {
 function lecho() {
     set -u
 
-    unset sour
-    unset func_line
-    unset func
-    unset line_func_def
-
     # get the lenght of the execution stack
-    fecho "getting length of stack..."
     local -i N_BASH=${#BASH_SOURCE[@]}
     ddecho "thre are ${N_BASH} entries in the call stack"
 
@@ -49,21 +56,26 @@ function lecho() {
     if [[ "${bottom}" == "main" ]] || [[ "${bottom}" == "source" ]]; then
         ddecho "BASH_LINENO refers to file"
         local -i call_line=$func_line
+        # print file line
         echo -n "${TAB}called on line ${call_line} "
         echo "in file ${sour}"           
     else
         ddecho "BASH_LINENO refers to function"
+        # get the line in the file where the function is called
+        # add the line where to the function is defined within the file and the line within the function
         local -i call_line=$(($line_func_def -1 + $func_line))
-
+        # print file line
         echo -n "${TAB}called on line ${call_line} "
         echo "in file ${sour}"    
         itab
+        # print function line
         decho -n "${TAB}called on line ${func_line} "
         decho "in function ${func}()"    
         dtab
     fi
     
     itab
+    # print definition line
     decho -n "${TAB}function ${func}() "
     decho -n "defined on line ${line_func_def} "
     decho "in file ${sour}"    
