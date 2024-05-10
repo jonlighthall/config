@@ -115,3 +115,36 @@ function dello() {
     lecho
 }
 
+# test secho and lecho
+function necho() { #1
+    secho          #2
+    lecho          #3
+    lecho          #4
+    # comment      #5
+    lecho          #6
+    if true; then  #7
+        lecho      #8
+    fi             #9 
+    lecho          #10
+    # comment      #11
+    lecho          #12    
+    print_stack
+}
+
+# test lecho
+function pecho() { #1
+    lecho          #2
+    lecho          #3
+    # comment      #4
+    lecho          #5
+    if true; then  #6
+        lecho      #7
+    fi             #8 
+    lecho          #9
+    # comment      #10
+    lecho          #11
+}
+
+function do_lecho() {
+    lecho
+}
