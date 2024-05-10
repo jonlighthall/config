@@ -4,17 +4,34 @@
 #
 # ~/config/lib_tabs.sh
 #
-# PURPOSE: Define functions for making and controling indentation (tabs).
+# PURPOSE: Define functions for making and controling indentation (tabs). Two variables are
+# defined: TAB and fTAB. TAB is used to store the current level of indentation. fTAB defines the
+# indentation increment (tab).
 #
 # Mar 2024 JCL
 #
 # -----------------------------------------------------------------------------------------------
 
+# define tab
+# the variable fTAB is used for setting, incrementing, and decrementing the TAB variable.
+# initially defined as the "in-file" or "in-function" tab to force additional indentation.
 function set_ftab() {
     # if fTAB is unset or null, then assign default value
     export fTAB=${fTAB:='   '}
 }
 
+# clear tab
+function ctab() {
+    export TAB=''
+}
+
+# reset tab
+function rtab() {
+    set_ftab
+    ctab
+}
+
+# set the indentation according to execution stack size
 function set_tab() {
     local -i funcDEBUG=0
     local -i DEBUG=0
@@ -60,19 +77,8 @@ function set_tab() {
     fi
 }
 
-function ctab() {
-    # clear tab
-    export TAB=''
-}
-
-function rtab() {
-    # reset tab
-    set_ftab
-    ctab
-}
-
+# increment tab
 function itab() {
-    # increment tab
     set_ftab
     # determine how many iteration to run
     local -i N
@@ -89,8 +95,8 @@ function itab() {
     export TAB
 }
 
+# decrement tab
 function dtab() {
-    # decrement tab
     set_ftab
     # determine how many iteration to run
     local -i N
@@ -108,24 +114,27 @@ function dtab() {
 }
 
 function check_tab() {
-    local -i i=0
+    set -u
+
     # check if TAB is set
     if [ -z ${TAB+dummy} ]; then
-        echo -e "TAB ${YELLOW}unset${RESET}"
-    else
-        # get length of TAB
-        i=${#TAB}
+        local UNSET='\E[1;33munset\E[0m'
+        echo -e "${BOLD}TAB is ${UNSET}"
+        return
     fi
     
-    # if TAB is unset, then assign default value
-    export TAB=${TAB=''}
-    set_ftab
+    # check if TAB is null
+    if [ -z ${TAB:+dummy} ]; then
+        local NULL='\E[1;36mnull\E[0m' 
+        echo -e "${TAB}${BOLD}TAB is ${NULL}"
+        return
+    fi
     
-    #get new length of TAB
-    local -i j=${#TAB}
+    # get length of TAB
+    local -i i=0
+    i=${#TAB}
 
-    # if TAB changed length or was unset, print size of TAB
-    if [ $i -ne $j ]; then
-        decho -e "${TAB}TAB = \E[106m${TAB}${RESET} length $j"
-    fi
+    local SPACE='\E[30;106m' # highlight white space
+    # print size of TAB
+    echo -e "${TAB}TAB = ${SPACE}${TAB}${RESET} length $i"
 }
