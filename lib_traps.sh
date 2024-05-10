@@ -37,10 +37,12 @@ function fello() {
     func='hello'
     # test if alias
     if [[ $(type -t $func) == "alias" ]]; then
+        decho "$func type is alias"
         echo -n "${TAB}"
         # evaluate
         eval $func
     else
+        decho "$func type is not alias"
         # print debug value
         print_debug
         # print shell options
