@@ -4,6 +4,7 @@
 fpretty="${HOME}/config/.bashrc_pretty"
 if [ -e "$fpretty" ]; then
     source "$fpretty"
+    set_traps
 fi
 
 # determine if script is being sourced or executed
@@ -182,7 +183,7 @@ for my_repo in cpp fortran hello nrf python; do
     do_link "${link_name}" "${edir}/${my_repo}"
     dtab
 done
-echo -e "done cloning ${group_name} repos"
+echo -e "${BOLD}done cloning ${group_name} repos${RESET}"
 
 # list of utility repos to be cloned
 group_name="utility"
@@ -297,7 +298,7 @@ for my_repo in batch powershell; do
     do_link "${target}" "${link_name}"
     do_link "${link_name}" "${udir}/${my_repo}"	
 done
-echo -e "done cloning ${group_name} repos"
+echo -e "${BOLD}done cloning ${group_name} repos${RESET}"
 
 # list of other repos to be cloned
 group_name="matlab"
@@ -337,9 +338,7 @@ for my_repo in matlab; do
     do_link "${target}" "${link_name}"
     dtab
 done
-echo -e "done cloning ${group_name} repos"
-
-exit
+echo -e "${BOLD}done cloning ${group_name} repos${RESET}"
 
 # list of private repos to be cloned
 group_name="private"
@@ -366,20 +365,16 @@ if [[ ! "$(hostname -f)" == *".mil" ]]; then
 			      fi
 		    else
 			      echo -e "${TAB}dirctory \e[33m$PWD$my_repo\e[0m already exits"
-            itab
-            #echo -n "${TAB}pulling... "
-		        #git -C ${target} pull
-		        #echo -n "${TAB}pushing... "
-		        #git -C ${target} push
-            dtab
 		    fi
 	  done
 	  dtab
-	  echo -e "done cloning ${group_name} repos"
+	  echo -e "${BOLD}done cloning ${group_name} repos${RESET}"
 else
     itab
     echo -e "${TAB}host: \x1b[31m$(hostname -f)\x1b[m"
 	  echo -e "${TAB}\x1b[33mexcluding ${group_name} repos\x1b[m"
     dtab
 fi
-echo "done cloning all repos"
+cbar "done cloning repo files"
+
+set_traps

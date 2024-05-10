@@ -497,8 +497,7 @@ function check_link() {
             fi
         fi
     fi
-    dtab
-    
+    dtab    
 }
 
 function do_make_dir() {

@@ -267,7 +267,6 @@ if command -v wsl.exe >/dev/null; then
     echo -n "${TAB}offline: "
     do_link "${wdir}" "${odir}"
     dtab
-    cbar "Done Linking External Directories"
 else
 	  echo "WSL not defined."
 fi
@@ -287,5 +286,3 @@ for my_link in .bash_history; do
     link=~/${my_link}
     do_link "$target" "$link"
 done
-
-cbar "Done Linking External Files"
