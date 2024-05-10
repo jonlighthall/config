@@ -16,18 +16,16 @@
 function bye() {
     # print function name 
     decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-    itab
     echo "${TAB}goodbye...?"
     # add return code for parent script
-    if [ $DEBUG -gt 0 ]; then
+    if [ ${DEBUG:-0} -gt 0 ]; then
         # print debug value
         print_debug
         # print shell options
-        decho "shell options = $-"
+        decho "${TAB}shell options = $-"
         set +T
         trap 'print_return $?; trap - RETURN' RETURN
     fi
-    dtab
     return 1
 }
 
@@ -39,6 +37,7 @@ function fello() {
     func='hello'
     # test if alias
     if [[ $(type -t $func) == "alias" ]]; then
+        echo -n "${TAB}"
         # evaluate
         eval $func
     else
