@@ -80,42 +80,9 @@ function lecho() {
     decho -n "defined on line ${line_func_def} "
     decho "in file ${sour}"    
     dtab
-    if [ ${DEBUG:-0} -gt 1 ]; then
+    if [ ${DEBUG:-0} -gt 2 ]; then
         print_stack
     fi    
-}
-
-# function to test calling an alias from a function
-function dello() {
-    # print function name 
-    decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-    # define function name
-    func='hello'
-    # test if alias
-    secho
-    if [[ $(type -t $func) == "alias" ]]; then
-        decho "$func type is alias"
-        echo -n "${TAB}"
-        # evaluate
-        eval $func
-    else
-        decho "$func type is not alias"
-        # print debug value
-        print_debug
-        # print shell options
-        decho "shell options = $-"
-        alias $func
-        eval alias $func
-        #        type $func
-        $func
-        eval $func
-        # add return code for parent script
-        if [ $DEBUG -gt 0 ]; then
-            trap 'print_return $?; trap - RETURN' RETURN
-        fi        
-        return 1
-    fi
-    lecho
 }
 
 # test secho and lecho
@@ -134,7 +101,7 @@ function necho() { #1
     print_stack
 }
 
-# test lecho
+# "plain" test lecho
 function pecho() { #1
     lecho          #2
     lecho          #3
