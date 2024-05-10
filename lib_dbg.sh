@@ -1,0 +1,105 @@
+#!/bin/bash -u
+
+# stack echo
+function secho() {
+    local -i DEBUG=2
+    print_stack
+}
+
+# line echo
+function lecho() {
+    set -u
+
+    unset sour
+    unset func_line
+    unset func
+    unset line_func_def
+
+    # get the lenght of the execution stack
+    fecho "getting length of stack..."
+    local -i N_BASH=${#BASH_SOURCE[@]}
+    ddecho "thre are ${N_BASH} entries in the call stack"
+
+    if [ $N_BASH -eq 1 ]; then
+        echo "${TAB}called on line ${BASH_LINENO} from ${BASH##*/}"
+        return
+    fi
+    
+    # get the file of the calling function
+    local sour=${BASH_SOURCE[1]}
+    # get the line of of the calling function
+    local -i func_line=${BASH_LINENO[0]}
+
+    # BASH_SOURCE counts from zero; get the bottom of the stack
+    local bottom=${FUNCNAME[(($N_BASH - 1))]##*/}
+    ddecho "bottom of stack is $bottom"
+
+    # get the calling function 
+    local func=${FUNCNAME[1]}
+
+    if [[ "${func}" == "main" ]] || [[ "${func}" == "source" ]]; then
+        # the function is call from bash
+        echo "called from line ${BASH_LINENO[(($N_BASH-2))]} in file ${BASH_SOURCE[(($N_BASH-1))]##*/}"
+        return
+    else
+        # get the line where the function is defined
+        local line_func_def=$(grep -n "$(declare -f ${func} | head -1 | sed 's/ /[ ]*/')" ${sour} | awk -F: '{print$1}')   
+    fi    
+    
+    if [[ "${bottom}" == "main" ]] || [[ "${bottom}" == "source" ]]; then
+        ddecho "BASH_LINENO refers to file"
+        local -i call_line=$func_line
+        echo -n "${TAB}called on line ${call_line} "
+        echo "in file ${sour}"           
+    else
+        ddecho "BASH_LINENO refers to function"
+        local -i call_line=$(($line_func_def -1 + $func_line))
+
+        echo -n "${TAB}called on line ${call_line} "
+        echo "in file ${sour}"    
+        itab
+        decho -n "${TAB}called on line ${func_line} "
+        decho "in function ${func}()"    
+        dtab
+    fi
+    
+    itab
+    decho -n "${TAB}function ${func}() "
+    decho -n "defined on line ${line_func_def} "
+    decho "in file ${sour}"    
+    dtab
+    if [ ${DEBUG:-0} -gt 1 ]; then
+        print_stack
+    fi    
+}
+
+# function to test calling an alias from a function
+function dello() {
+    # print function name 
+    decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    # define function name
+    func='hello'
+    # test if alias
+    secho
+    if [[ $(type -t $func) == "alias" ]]; then
+        echo -n "${TAB}"
+        # evaluate
+        eval $func
+    else
+        # print debug value
+        print_debug
+        # print shell options
+        decho "shell options = $-"
+        alias $func
+        #        type $func
+        $func
+        eval $func
+        # add return code for parent script
+        if [ $DEBUG -gt 0 ]; then
+            trap 'print_return $?; trap - RETURN' RETURN
+        fi        
+        return 1
+    fi
+    lecho
+}
+
