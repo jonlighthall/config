@@ -165,7 +165,11 @@ function bar() {
     local TXT
     if [ "$#" -lt 2 ]; then
         N=69
-        TXT=$1
+        if [ "$#" -lt 1 ]; then
+            TXT=''
+        else
+            TXT=$1
+        fi
     else
         N=$1
         TXT=$2
