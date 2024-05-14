@@ -118,6 +118,7 @@ function reset_shell() {
         ddecho "not same"
     fi
     decho -n "resetting shell options... "
+    unset_traps
     #(
     for opt in ${option_list}; do          
         set -T
@@ -165,6 +166,7 @@ function reset_shell() {
         fi
         
     done
+    reset_traps
     decho
     # ) | sed '1d' | column -t -s':' -o': ' -R 1 | sed '1 s/^/\n/' | sed "s/^/  /"
     set -T
