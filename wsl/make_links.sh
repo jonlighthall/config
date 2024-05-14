@@ -45,6 +45,7 @@ print_source
 # it is assumed that the fisrt command to be run after cloning the parent
 # repository is make_links.sh (this file)
 
+# save and print starting directory
 start_dir=$PWD
 echo "${TAB}starting directory = ${start_dir}"
 cd $src_dir_phys
@@ -118,4 +119,4 @@ for prog in make_links_etc.sh; do
 done
 
 # return to starting directory
-cd $start_dir
+cd "$start_dir"

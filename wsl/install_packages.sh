@@ -1,5 +1,7 @@
 #!/bin/bash -u
 #
+# install_packages.sh
+#
 # JCL Jul 2018
 
 # load formatting
@@ -16,7 +18,7 @@ sudo apt update
 bar "upgrade and fix missing..."
 sudo apt upgrade -y --fix-missing
 
-# install
+# install packages
 bar "install packages..."
 for PACK in aspell dbus-x11 emacs git nautilus x11-apps xterm; do
     echo "installing ${PACK}..."

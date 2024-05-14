@@ -39,7 +39,7 @@ print_source
 
 start_dir=$PWD
 echo "${TAB}starting directory = ${start_dir}"
-cd $src_dir_phys
+cd "$src_dir_phys"
 
 # run the following configuration files
 
