@@ -21,7 +21,7 @@ else
 fi    
 
 # set debug level
-declare -i DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
+declare -i DEBUG=${DEBUG:=0} # assign default value if DEBUG is unset or null
 
 # If running interactively, print source
 if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
@@ -69,17 +69,18 @@ function load_libs() {
     # load bash utils
     local fname
     local library    
-    for library in lib_links.sh \
-                    lib_traps.sh\
-                    lib_tabs.sh \
-                    lib_cond_echo.sh \
-                    lib_fmt.sh \
-                    lib_colors.sh \
-                    lib_stack.sh
+    for library in links \
+                    traps\
+                    tabs \
+                    cond_echo \
+                    fmt \
+                    colors \
+                    stack \
+                    dbg
     do
         # use the canonical (physical) source directory for reference; this is important if sourcing
         # this file directly from shell
-        fname="${src_dir_phys}/${library}"
+        fname="${src_dir_phys}/lib_${library}.sh"
         if [ -e "${fname}" ]; then
             if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
                 echo "${TAB}loading $(basename ${fname})"
