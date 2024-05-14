@@ -21,11 +21,12 @@ function secho() {
 
 # line echo
 function lecho() {
+    local -i DEBUG=2
     set -u
 
     # get the lenght of the execution stack
     local -i N_BASH=${#BASH_SOURCE[@]}
-    ddecho "thre are ${N_BASH} entries in the call stack"
+    ddecho "there are ${N_BASH} entries in the call stack"
 
     if [ $N_BASH -eq 1 ]; then
         echo "${TAB}called on line ${BASH_LINENO} from ${BASH##*/}"
@@ -34,6 +35,7 @@ function lecho() {
     
     # get the file of the calling function
     local sour=${BASH_SOURCE[1]}
+    ddecho "source is $sour"
     # get the line of of the calling function
     local -i func_line=${BASH_LINENO[0]}
 
@@ -43,6 +45,7 @@ function lecho() {
 
     # get the calling function 
     local func=${FUNCNAME[1]}
+    ddecho "calling function is $func"
 
     if [[ "${func}" == "main" ]] || [[ "${func}" == "source" ]]; then
         # the function is call from bash
@@ -50,7 +53,7 @@ function lecho() {
         return
     else
         # get the line where the function is defined
-        local line_func_def=$(grep -n "$(declare -f ${func} | head -1 | sed 's/ /[ ]*/')" ${sour} | awk -F: '{print$1}')   
+        local line_func_def=$(grep -n "$(declare -f ${func} | head -1 | sed 's/ /[ ]*/')" "${sour}" | awk -F: '{print$1}')   
     fi    
     
     if [[ "${bottom}" == "main" ]] || [[ "${bottom}" == "source" ]]; then
