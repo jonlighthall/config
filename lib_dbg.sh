@@ -21,12 +21,17 @@ function secho() {
 
 # line echo
 function lecho() {
-    local -i DEBUG=2
+    local -i DEBUG=${DEBUG:-1}
     set -u
 
+    if [ ${DEBUG:-0} -gt 0 ]; then
+        decho -n "${TAB}"
+        hline
+    fi
+    
     # get the lenght of the execution stack
     local -i N_BASH=${#BASH_SOURCE[@]}
-    ddecho "there are ${N_BASH} entries in the call stack"
+    ddecho "${TAB}there are ${N_BASH} entries in the call stack"
 
     if [ $N_BASH -eq 1 ]; then
         echo "${TAB}called on line ${BASH_LINENO} from ${BASH##*/}"
@@ -35,17 +40,21 @@ function lecho() {
     
     # get the file of the calling function
     local sour=${BASH_SOURCE[1]}
-    ddecho "source is $sour"
+    local sour_dir=$(dirname "${sour}")
+    local sour_fil=$(basename "${sour}")
+    ddecho "${TAB}source is ${sour}"
+    ddecho "${TAB}source is ${sour_fil} in ${sour_dir}"
+    
     # get the line of of the calling function
     local -i func_line=${BASH_LINENO[0]}
 
     # BASH_SOURCE counts from zero; get the bottom of the stack
     local bottom=${FUNCNAME[(($N_BASH - 1))]##*/}
-    ddecho "bottom of stack is $bottom"
+    ddecho "${TAB}bottom of stack is $bottom"
 
     # get the calling function 
     local func=${FUNCNAME[1]}
-    ddecho "calling function is $func"
+    ddecho "${TAB}calling function is $func"
 
     if [[ "${func}" == "main" ]] || [[ "${func}" == "source" ]]; then
         # the function is call from bash
@@ -57,19 +66,19 @@ function lecho() {
     fi    
     
     if [[ "${bottom}" == "main" ]] || [[ "${bottom}" == "source" ]]; then
-        ddecho "BASH_LINENO refers to file"
+        ddecho "${TAB}BASH_LINENO refers to file"
         local -i call_line=$func_line
         # print file line
-        echo -n "${TAB}called on line ${call_line} "
-        echo "in file ${sour}"           
+        echo -en "${TAB}${GRH}called on line ${call_line} "
+        echo -e "in file ${sour_fil}${RESET}"           
     else
-        ddecho "BASH_LINENO refers to function"
+        ddecho "${TAB}BASH_LINENO refers to function"
         # get the line in the file where the function is called
         # add the line where to the function is defined within the file and the line within the function
         local -i call_line=$(($line_func_def -1 + $func_line))
         # print file line
         echo -n "${TAB}called on line ${call_line} "
-        echo "in file ${sour}"    
+        echo "in file ${sour_fil}"    
         itab
         # print function line
         decho -n "${TAB}called on line ${func_line} "
@@ -81,11 +90,19 @@ function lecho() {
     # print definition line
     decho -n "${TAB}function ${func}() "
     decho -n "defined on line ${line_func_def} "
-    decho "in file ${sour}"    
+    decho "in file ${sour_fil}"
+    decho "${TAB}file ${sour_fil} located in ${sour_dir}"
+    
     dtab
     if [ ${DEBUG:-0} -gt 2 ]; then
         print_stack
-    fi    
+    fi
+
+    if [ ${DEBUG:-0} -gt 0 ]; then
+        decho -n "${TAB}"
+        hline
+    fi
+
 }
 
 # test secho and lecho
