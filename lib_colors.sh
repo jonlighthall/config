@@ -424,6 +424,43 @@ function print_fcolors() {
     ) | column -t -s: -N order,index,color | sed "s/^/${TAB}/"
 }
 
+# set DEBUG color
+function set_dcolor() {
+    # get value of DEBUG
+    # if unset or NULL, substitue default
+    local -i DEBUG=${DEBUG-0}
+    define index
+    local -i idx
+    # get color index
+    dbg2idx $DEBUG idx
+    # set color
+    echo -ne "${dcolor[$idx]}"
+}
+
+# set BASH color
+function set_bcolor() {
+    # get length of call stack
+    local -i N_BASH=${#BASH_SOURCE}
+    define index
+    local -i idx
+    # get color index
+    dbg2idx $N_BASH idx
+    # set color
+    echo -ne "${dcolor[$idx]}"
+}
+
+function set_color() {
+    # get color index
+    local -i idx
+    dbg2idx 3 idx
+    # set color
+    echo -ne "${dcolor[$idx]}"
+}
+
+function unset_color() {
+    echo -ne "\e[0m"
+}
+
 # requires lib_tabs, lib_cond_echo
 function print_pretty() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        

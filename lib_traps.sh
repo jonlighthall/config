@@ -695,3 +695,22 @@ function clear_traps() {
     dtab 2
 }
 
+# optionally override traps
+function exit_on_fail() {
+    echo -e "${TAB}${YELLOW}\x1b[7m${BASH_SOURCE[1]##*/} failed\x1b[0m"
+    # -----------------
+    # set behavior
+    local do_exit=true
+    # -----------------
+    if [[ $do_exit == true ]]; then
+        echo "$FUNCNAME is true"
+        itab
+        print_stack
+        set_traps
+        dtab
+        echo "exiting..."
+        exit 1 || return 1
+    else
+        return 0
+    fi
+}
