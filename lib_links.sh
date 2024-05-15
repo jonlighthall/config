@@ -281,7 +281,7 @@ function do_link() {
         # in the case of an authorized_keys file, the target must be hardlinked
         local inode_target=$(stat -c "%i" "${target}")
         local inode_link=$(stat -c "%i" "${link_name}")
-        if [[ "${target}" -ef "${link_name}" && "${target}" != *"_keys"* ]] || [[ "${inode_target})" == "${inode_link}" ]] ; then
+        if [[ "${target}" -ef "${link_name}" && "${target}" != *"_keys"* ]] || [ ${inode_target} -eq ${inode_link} ] ; then
             echo "already points to $(basename ${link_name})"
             echo -n "${TAB}"
             if [ "$(stat -c "%i" "${target}")" == "$(stat -c "%i" "${link_name}")" ]; then
