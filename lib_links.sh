@@ -457,14 +457,22 @@ function check_link() {
 
     # check if link and target are the same
     if [[ "${target}" == "${link_name}" ]]; then
-        echo -e "$have the same name"
+        echo -e "$have the same logical name"
     fi
     
     # check if link already points to the target
     # in the case of an authorized_keys file, the target must be hardlinked
-    local inode_target=$(stat -c "%i" "${target}")
-    local inode_link=$(stat -c "%i" "${link_name}")
-    if [[ "${inode_target})" == "${inode_link}" ]] ; then
+    local -i inode_target=$(stat -c "%i" "${target}")
+    local -i inode_link=$(stat -c "%i" "${link_name}")
+    decho
+    decho "target: ${inode_target}"
+    decho "  link: ${inode_link}"
+    if [ ${inode_target} -eq ${inode_link} ] ; then
+        decho "same inode"
+    else
+        decho "differnt inode"
+    fi
+    if [ ${inode_target} == ${inode_link} ] ; then
         echo "are hardlinked"
         return 0
     else
