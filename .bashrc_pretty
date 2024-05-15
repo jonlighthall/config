@@ -29,9 +29,6 @@ if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
 fi
 
 function get_source() {
-    # set local debug value
-    local -i DEBUG=${DEBUG:-0} # substitute default value if DEBUG is unset or null
-
     # get the length of the execution stack
     N_BASH=${#BASH_SOURCE[@]}
     # since this function is part of the stack, reduce N_BASH by one
