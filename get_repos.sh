@@ -1,7 +1,9 @@
 #!/bin/bash -u
 
 # load bash utilities
-fpretty="${HOME}/config/.bashrc_pretty"
+config_name="config"
+config_dir="${HOME}/${config_name}"
+fpretty="${config_dir}/.bashrc_pretty"
 if [ -e "$fpretty" ]; then
     source "$fpretty"
     set_traps
@@ -45,7 +47,7 @@ if [ $# -eq 1 ]; then
 			      #define target (source)
 			      target=$(readlink -f ${make_links_name})
 			      # define link name (destination)
-			      link_name=${HOME}/config/${make_links_name}
+			      link_name=${config_dir}/${make_links_name}
 
 			      # begin linking...
 			      do_link "${target}" "${link_name}"
@@ -104,12 +106,14 @@ echo -e "saving repsoitories to \e[33m$repo_dir\e[0m..."
 udir=${HOME}/utils
 edir=${HOME}/examp
 
-echo "creating repository directory..."
+echo "creating repository directories..."
 itab
 for my_dir in $repo_dir $udir $edir; do
     do_make_dir ${my_dir}
 done
 dtab
+
+do_link ${config_dir} ${repo_dir}/${config_name}
 
 cbar "Start Cloning Repo Files"
 
@@ -345,7 +349,7 @@ group_name="private"
 echo -e "cloning \x1b[1;32m${group_name}\x1b[m repos..."
 if [[ ! "$(hostname -f)" == *".mil" ]]; then
     itab
-	  cd ${HOME}/config
+	  cd ${config_dir}
 	  dname=private
 	  for my_repo in config_private; do
 		    if [ ! -d $dname ]; then
