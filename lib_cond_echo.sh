@@ -23,7 +23,7 @@
 #   text to display and echo flags
 
 vecho() {
-    if [ ! -z ${VB:+dummy} ] && ${VB}; then
+    if [ ! -z ${VB:+dummy} ] && [[ "${VB}" == true ]]; then
         # [not (unset or null)] or true -> print if true or null or unset
         echo "$@"
     fi
