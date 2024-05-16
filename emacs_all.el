@@ -263,6 +263,11 @@
 (add-to-list 'auto-mode-alist '("\\.inc\\'" . fortran-mode))
 (add-to-list 'auto-mode-alist '("\\.unm\\'" . fortran-mode))
 
+;; open change logs and readme in text-mode
+(add-to-list 'auto-mode-alist '("read.me\\'" . text-mode))
+(add-to-list 'auto-mode-alist '("README\\'" . text-mode))
+(add-to-list 'auto-mode-alist '("CHANGELOG\\'" . text-mode))
+
 ;; turn off starup message
 (defun display-startup-echo-area-message ()
   (message nil))
