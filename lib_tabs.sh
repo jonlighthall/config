@@ -113,7 +113,7 @@ function dtab() {
     export TAB
 }
 
-function check_tab() {
+function print_tab() {
     set -u
 
     # check if TAB is set

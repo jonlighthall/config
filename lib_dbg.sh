@@ -143,16 +143,19 @@ function print_debug() {
     set -u
     funcDEBUG=0
 
+    # check if DEBUG is unset
     if [ -z ${DEBUG+dummy} ]; then
         local UNSET='\E[1;33munset\E[0m'
         echo -e "${TAB}${BOLD}DEBUG is ${UNSET}"
         return 0
     fi
+    # check if DEBUG is set but NULL
     if [ -z ${DEBUG:+dummy} ]; then
         local NULL='\E[1;36mnull\E[0m' 
         echo -e "${TAB}${BOLD}DEBUG is ${NULL}"
         return 0
     fi
+    # check if DEBUG is zero
     if [ $DEBUG -eq 0 ]; then
         echo -e "${TAB}${GRAY}DEBUG is 0${RESET}"
         return 0
@@ -175,4 +178,98 @@ function print_debug() {
         eval "${fun_name}() { xecho \"\$@\"; }"
     fi
     $fun_name "${TAB}DEBUG = $DEBUG"
+}
+
+function cdb() {
+    export DEBUG=''
+}
+
+function rdb() {
+    export DEBUG=0
+}
+
+function idb() {
+    set -u
+    funcDEBUG=1
+    
+    # check if DEBUG is unset
+    if [ -z ${DEBUG+dummy} ]; then
+        local UNSET='\E[1;33munset\E[0m'
+        fecho -e "${BOLD}DEBUG is ${UNSET}"
+        fecho "setting DEBUG..."
+        export DEBUG=
+        fecho -e "DEBUG = ${DEBUG}"
+        return 0
+    fi
+
+    # check if DEBUG is set but NULL
+    if [ -z ${DEBUG:+dummy} ]; then
+        local NULL='\E[1;36mnull\E[0m' 
+        fecho -e "${BOLD}DEBUG is ${NULL}"
+        fecho "setting DEBUG to zero..."
+        export DEBUG=0
+        fecho -e "DEBUG = ${DEBUG}"
+        return 0
+    fi
+
+    # check if DEBUG is a number
+    local num='^[0-9]+$'
+    fecho -e "DEBUG = ${DEBUG}"
+    if [[ "$DEBUG" =~ $num ]]; then
+        fecho "DEBUG is a number"
+        fecho "incrementing DEBUG..."
+        ((DEBUG++))
+        export DEBUG
+    else
+        fecho "DEBUG is not a number"
+        fecho "setting DEBUG to zero..."
+        export DEBUG=0
+    fi
+    fecho -e "DEBUG = ${DEBUG}"
+}
+
+function ddb() {
+    set -u
+    funcDEBUG=1
+    
+    # check if DEBUG is unset
+    if [ -z ${DEBUG+dummy} ]; then
+        local UNSET='\E[1;33munset\E[0m'
+        fecho -e "${BOLD}DEBUG is ${UNSET}"
+        fecho "setting DEBUG..."
+        export DEBUG=
+        fecho -e "DEBUG = ${DEBUG}"
+        return 0
+    fi
+
+    # check if DEBUG is set but NULL
+    if [ -z ${DEBUG:+dummy} ]; then
+        local NULL='\E[1;36mnull\E[0m' 
+        fecho -e "${BOLD}DEBUG is ${NULL}"
+        fecho "setting DEBUG to zero..."
+        export DEBUG=0
+        fecho -e "DEBUG = ${DEBUG}"
+        return 0
+    fi
+
+    # check if DEBUG is a number
+    local num='^[0-9]+$'
+    fecho -e "DEBUG = ${DEBUG}"
+    if [[ "$DEBUG" =~ $num ]]; then
+        fecho "DEBUG is a number"
+        # check if DEBUG is zero
+        if [ $DEBUG -eq 0 ]; then
+            fecho "no action needed"
+            return 0
+        fi
+        
+        fecho "decrementing DEBUG..."
+        ((DEBUG--))
+        export DEBUG
+    else
+        fecho "DEBUG is not a number"
+        fecho "setting DEBUG to zero..."
+        export DEBUG=0
+    fi
+    fecho -e "DEBUG = ${DEBUG}"
 }
