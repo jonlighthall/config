@@ -181,11 +181,17 @@ function print_debug() {
 }
 
 function cdb() {
+    funcDEBUG=0
+    fecho "clearing DEBUG..."
     export DEBUG=''
+    print_debug
 }
 
 function rdb() {
+    funcDEBUG=0
+    fecho "resetting DEBUG..."    
     export DEBUG=0
+    print_debug
 }
 
 function idb() {
