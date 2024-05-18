@@ -114,4 +114,4 @@ clear -x
 
 # print welcome message
 echo "${TAB}Welcome to ${HOST_NAME}"
-return
+return 0

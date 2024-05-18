@@ -16,7 +16,7 @@ if [ -z ${FPRETTY_LOADED+dummy} ]; then
 else
     if [ ! -z "$(declare -f print_pretty_cbar)" ]; then 
         decho "${TAB}${BASH_SOURCE##*/} already loaded"
-        return
+        return 0
     fi
 fi    
 

@@ -35,7 +35,7 @@ function lecho() {
 
     if [ $N_BASH -eq 1 ]; then
         echo "${TAB}called on line ${BASH_LINENO} from ${BASH##*/}"
-        return
+        return 0
     fi
     
     # get the file of the calling function
@@ -59,7 +59,7 @@ function lecho() {
     if [[ "${func}" == "main" ]] || [[ "${func}" == "source" ]]; then
         # the function is call from bash
         echo "called from line ${BASH_LINENO[(($N_BASH-2))]} in file ${BASH_SOURCE[(($N_BASH-1))]##*/}"
-        return
+        return 0
     else
         # get the line where the function is defined
         local line_func_def=$(grep -n "$(declare -f ${func} | head -1 | sed 's/ /[ ]*/')" "${sour}" | awk -F: '{print$1}')   

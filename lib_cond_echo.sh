@@ -155,16 +155,16 @@ function print_debug() {
     if [ -z ${DEBUG+dummy} ]; then
         local UNSET='\E[1;33munset\E[0m'
         echo -e "${TAB}${BOLD}DEBUG is ${UNSET}"
-        return
+        return 0
     fi
     if [ -z ${DEBUG:+dummy} ]; then
         local NULL='\E[1;36mnull\E[0m' 
         echo -e "${TAB}${BOLD}DEBUG is ${NULL}"
-        return
+        return 0
     fi
     if [ $DEBUG -eq 0 ]; then
         echo -e "${TAB}${GRAY}DEBUG is 0${RESET}"
-        return
+        return 0
     fi
 
     # constuct debug print function name

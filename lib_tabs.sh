@@ -120,14 +120,14 @@ function check_tab() {
     if [ -z ${TAB+dummy} ]; then
         local UNSET='\E[1;33munset\E[0m'
         echo -e "${BOLD}TAB is ${UNSET}"
-        return
+        return 0
     fi
     
     # check if TAB is null
     if [ -z ${TAB:+dummy} ]; then
         local NULL='\E[1;36mnull\E[0m' 
         echo -e "${TAB}${BOLD}TAB is ${NULL}"
-        return
+        return 0
     fi
     
     # get length of TAB

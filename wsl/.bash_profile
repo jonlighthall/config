@@ -145,7 +145,7 @@ unset fname
 unset fpretty
 unset hist_file
 
-return
+return 0
 
 # test formatting
 source ~/utils/bash/git/lib_git.sh
