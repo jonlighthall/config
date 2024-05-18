@@ -309,13 +309,13 @@ function do_cmd_script() {
         # check cursor position
         local -i x1c
         get_curpos x1c
-        decho -n "$x1c"
+        ddecho -n "$x1c"
         # set the "carriage return" value for the first non-empty line of the command ouput
         if [ $x1c -gt 1 ]; then
             # if the cursor is not at the start of a line, start a new line
             local cr='\n'
             if [ $DEBUG -gt 0 ]; then 
-                cr="$(printf '\u21b5')\n"
+                cr="new line$(printf '\u21b5')\n"
             fi
         else
             # if the cursor is already  at the start of a new line, do nothing

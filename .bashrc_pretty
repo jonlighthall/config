@@ -11,9 +11,7 @@
 # -----------------------------------------------------------------------------------------------
 
 # add read-only variable to check if this file has already been loaded
-if [ -z ${FPRETTY_LOADED+dummy} ]; then      
-    declare -grx FPRETTY_LOADED=true
-else
+if [ ! -z ${FPRETTY_LOADED+dummy} ]; then      
     if [ ! -z "$(declare -f print_pretty_cbar)" ]; then 
         decho "${TAB}${BASH_SOURCE##*/} already loaded"
         return 0
@@ -62,18 +60,24 @@ function get_source() {
 }
 
 function load_libs() {
+    if command -v decho &>/dev/null; then
+        # print function name 
+        decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+        itab
+    fi
     get_source
     # load bash utils
     local fname
-    local library    
+    local library
+
     for library in links \
-                    traps\
-                    tabs \
-                    cond_echo \
-                    fmt \
-                    colors \
-                    stack \
-                    dbg
+                       traps\
+                       tabs \
+                       cond_echo \
+                       fmt \
+                       colors \
+                       stack \
+                       dbg
     do
         # use the canonical (physical) source directory for reference; this is important if sourcing
         # this file directly from shell
@@ -87,6 +91,15 @@ function load_libs() {
             echo "${fname} not found"
         fi
     done
+    if [ ! -z ${FPRETTY_LOADED+dummy} ]; then      
+        dtab # lib tabs
+        cbar "libraries loaded" # lib_fmt
+        if [ $DEBUG -gt 1 ]; then
+            lecho # lib_dbg
+            print_ribbon #lib_stack
+            print_return # lib_traps
+        fi
+    fi
 }
 
 load_libs
@@ -119,3 +132,5 @@ fi
 if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
     print_pretty_cbar
 fi
+
+declare -grx FPRETTY_LOADED=true

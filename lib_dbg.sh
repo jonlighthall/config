@@ -190,7 +190,7 @@ function rdb() {
 
 function idb() {
     set -u
-    funcDEBUG=1
+    funcDEBUG=0
     
     # check if DEBUG is unset
     if [ -z ${DEBUG+dummy} ]; then
@@ -226,11 +226,14 @@ function idb() {
         export DEBUG=0
     fi
     fecho -e "DEBUG = ${DEBUG}"
+    if [ $funcDEBUG -eq 0 ];then
+        print_debug
+    fi
 }
 
 function ddb() {
     set -u
-    funcDEBUG=1
+    funcDEBUG=0
     
     # check if DEBUG is unset
     if [ -z ${DEBUG+dummy} ]; then
@@ -260,9 +263,11 @@ function ddb() {
         # check if DEBUG is zero
         if [ $DEBUG -eq 0 ]; then
             fecho "no action needed"
+            if [ $funcDEBUG -eq 0 ];then
+                print_debug
+            fi
             return 0
-        fi
-        
+        fi        
         fecho "decrementing DEBUG..."
         ((DEBUG--))
         export DEBUG
@@ -272,4 +277,7 @@ function ddb() {
         export DEBUG=0
     fi
     fecho -e "DEBUG = ${DEBUG}"
+    if [ $funcDEBUG -eq 0 ];then
+        print_debug
+    fi
 }

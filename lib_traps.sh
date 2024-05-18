@@ -292,7 +292,7 @@ function print_return() {
         ddecho "${TAB}$-"
     fi
 
-    RETURN_RETVAL=$1    
+    RETURN_RETVAL=${1:-''}    
 
     # get size of function stack
     local -ir N_FUNCs=${#FUNCNAME[@]}
@@ -302,7 +302,10 @@ function print_return() {
         print_stack
     fi
 
-    echo -en "${TAB}${YELLOW}\E[7m RETURN ${RESET} ${GRAY}RETVAL=${RETURN_RETVAL}${RESET}"
+    echo -en "${TAB}${YELLOW}\E[7m RETURN ${RESET}"
+    if [ -z ${RETURN_RETVAL:-dummy} ]; then
+        echo -en " ${GRAY}RETVAL=${RETURN_RETVAL}${RESET}"
+    fi
     if [ ${N_FUNCs} -gt 1 ]; then
         echo " ${FUNCNAME[1]##*/}"
     else
