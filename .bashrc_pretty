@@ -93,7 +93,7 @@ function load_libs() {
     done
     if [ ! -z ${FPRETTY_LOADED+dummy} ]; then      
         dtab # lib tabs
-        cbar "libraries loaded" # lib_fmt
+        cbar "${BOLD}libraries loaded${NORMAL}" # lib_fmt
         if [ $DEBUG -gt 1 ]; then
             lecho # lib_dbg
             print_ribbon #lib_stack
