@@ -138,3 +138,41 @@ function pecho() { #1
 function do_lecho() {
     lecho
 }
+
+function print_debug() {
+    set -u
+    funcDEBUG=0
+
+    if [ -z ${DEBUG+dummy} ]; then
+        local UNSET='\E[1;33munset\E[0m'
+        echo -e "${TAB}${BOLD}DEBUG is ${UNSET}"
+        return 0
+    fi
+    if [ -z ${DEBUG:+dummy} ]; then
+        local NULL='\E[1;36mnull\E[0m' 
+        echo -e "${TAB}${BOLD}DEBUG is ${NULL}"
+        return 0
+    fi
+    if [ $DEBUG -eq 0 ]; then
+        echo -e "${TAB}${GRAY}DEBUG is 0${RESET}"
+        return 0
+    fi
+
+    # constuct debug print function name
+    local -i i
+    local prefix=$(for ((i = 1; i <= $DEBUG; i++)); do echo -n "d"; done)
+    fecho "DEBUG = $DEBUG"
+    fecho "prefix: $prefix"
+    local fun_name="${prefix}echo"
+    fecho "function: $fun_name"
+
+    # check if function is defined
+    if command -v $fun_name &>/dev/null; then
+        fecho "${fun_name} is defined"
+    else
+        fecho "${fun_name}() is NOT defined"
+        fecho "defining ${fun_name}()..."
+        eval "${fun_name}() { xecho \"\$@\"; }"
+    fi
+    $fun_name "${TAB}DEBUG = $DEBUG"
+}

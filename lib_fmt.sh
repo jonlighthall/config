@@ -68,6 +68,7 @@ function get_curpos() {
     dtab
 }
 
+# test cursor position
 function ind() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
     local -i DEBUG=1
