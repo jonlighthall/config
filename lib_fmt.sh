@@ -203,6 +203,10 @@ function strip_pretty() {
     output=$(echo -e "$@" | sed "s/$(echo -e "\E")[^m]*m//g")
 }
 
+# -----------------------------------------------------------------------------------------------
+# Functions to colorize and indent command output
+# -----------------------------------------------------------------------------------------------
+
 # format command output
 # handling is included for a variety of commands
 # conditionally calls do_cmd_script, and do_cmd_stdbuf
@@ -223,18 +227,23 @@ function do_cmd() {
     # set color
     echo -ne "${dcolor[$idx]}"
 
-    local -i x1c
-    get_curpos x1c
-    decho -n "$x1c"
-    if [ $x1c -gt 1 ]; then
-        local cr='\n'
-    else
-        local cr=''
-    fi
-
     # the ideal solution is to use unbuffer
     # check if unbuffer is defined
     if command -v unbuffer >/dev/null; then
+        # check cursor position
+        local -i x1c
+        get_curpos x1c
+        decho -n "$x1c"
+        # set the "carriage return" value for the first non-empty line of the command ouput
+        if [ $x1c -gt 1 ]; then
+            # if the cursor is not at the start of a line, start a new line
+            local cr='\n'
+            cr="$(printf '\u21b5')\n"
+        else
+            # if the cursor is already  at the start of a new line, do nothing
+            local cr='->'
+        fi
+        
         ddecho "${TAB}printing unbuffered command ouput..."
         # set shell options
         set -o pipefail        
@@ -292,8 +301,23 @@ function do_cmd_script() {
     dbg2idx 5 idx
     # set color
     echo -ne "${dcolor[$idx]}"
+    
     # check if typescript is defined
     if command -v script >/dev/null; then
+        # check cursor position
+        local -i x1c
+        get_curpos x1c
+        decho -n "$x1c"
+        # set the "carriage return" value for the first non-empty line of the command ouput
+        if [ $x1c -gt 1 ]; then
+            # if the cursor is not at the start of a line, start a new line
+            local cr='\n'
+            cr="$(printf '\u21b5')\n"
+        else
+            # if the cursor is already  at the start of a new line, do nothing
+            local cr=''
+        fi
+        
         ddecho "${TAB}printing command ouput typescript..."
         # set shell options
         set -o pipefail
@@ -308,19 +332,22 @@ function do_cmd_script() {
                 | sed "s/\r.*//g;s/.*\r//g" \
                 | sed 's/^[[:space:]].*//g' \
                 | sed "/^$/d;s/^/${TAB}${dcolor[$idx]}/" \
-                | sed '1 s/^/\n/' 
+                | sed "1 s/^[\s]*[^\s]/${cr}&/"
         fi
         local -i RETVAL=$?
         # reset shell options
         set +o pipefail
         # remove temporary file
-        local fname=typescript
-        if [ -f $fname ]; then
+        local temp_file=typescript
+        if [ -f $temp_file ]; then
             rm typescript
         fi
     else
         ddecho "${TAB}printing unformatted ouput..."
-        echo "no wrapper"
+        dbg2idx 9 idx
+        # set color
+        echo -ne "${dcolor[$idx]}"
+        
         dtab
         # print buffered command output
         $cmd
@@ -337,50 +364,67 @@ function do_cmd_script() {
 # save ouput to file, print file, delete file
 # developed for use when unbuffer and script are unavailable
 function do_cmd_stdbuf() {    
+    # save command as variable
     cmd=$(echo $@)
-    # define temp file
-    temp_file=temp
     # format output
     itab    
     if [ $DEBUG -gt 0 ]; then
         start_new_line
     fi
-    ddecho "${TAB}redirecting command ouput to $temp_file..."
+
+    # get color index
+    local -i idx
+    dbg2idx 7 idx
+    # set color
+    echo -ne "${dcolor[$idx]}"    
+
+    # define temp file
+    temp_file=temp
+    ddecho "${TAB}STDBUF: redirecting command ouput to $temp_file..."
+
     # unbuffer command output and save to file    
     stdbuf -i0 -o0 -e0 $cmd &>$temp_file
     RETVAL=$?
-    # colorize and indent command output
+
+    # check if ouputfile is empty
     if [ -s ${temp_file} ]; then
-        # get color index
-        local -i idx
-        dbg2idx 3 idx
-        # set color
-        echo -ne "${dcolor[$idx]}"
-
-        # format output
-        start_new_line
-        ddecho -e "${TAB}${IT}buffer:${NORMAL}"
-
-        # print output
-        \cat $temp_file \
-            | sed -u '1 s/[A-Z]/\n&/' \
-            | sed -u "s/\r$//g;s/.*\r/${TAB}/g;s/^/${TAB}/" \
-            | sed -u "/^[^%|]*|/s/^/${dcolor[$idx+1]}/g; s/$/${dcolor[$idx]}/; /|/s/+/${GOOD}&/g; /|/s/-/${BAD}&/g; /modified:/s/^.*$/${BAD}&/g; /^\s*M\s/s/^.*$/${BAD}&/g"  
-        
-        # reset formatting
-        unset_color
-        if [ $DEBUG -gt 0 ]; then
-            dtab
+        # check cursor position
+        local -i x1c
+        get_curpos x1c
+        decho -n "$x1c"
+        # set the "carriage return" value for the first non-empty line of the command ouput
+        if [ $x1c -gt 1 ]; then
+            # if the cursor is not at the start of a line, start a new line
+            local cr='\n'
+            cr="$(printf '\u21b5')\n"
+        else
+            # if the cursor is already  at the start of a new line, do nothing
+            local cr=''
         fi
+
+        ddecho -e "${TAB}${IT}buffer:${NORMAL}"
+        # print command output
+        \cat $temp_file \
+            | sed -u "s/\r$//g;s/.*\r/${TAB}/g;s/^/${TAB}/" \
+            | sed -u "/^[^%|]*|/s/^/${dcolor[$idx+1]}/g; s/$/${dcolor[$idx]}/; /|/s/+/${GOOD}&/g; /|/s/-/${BAD}&/g; /modified:/s/^.*$/${BAD}&/g; /^\s*M\s/s/^.*$/${BAD}&/g" \
+            | sed "1 s/^[\s]*[^\s]/${cr}&/"
+        
     else
         itab
         ddecho "${TAB}${temp_file} empty"
         dtab
     fi
-    # delete temp file
+    
+    # remove temporary file
     if [ -f ${temp_file} ]; then
         rm ${temp_file}
     fi    
+
+    # reset formatting
+    unset_color
+    if [ $DEBUG -gt 0 ]; then
+        dtab
+    fi
     return $RETVAL
 }
 
@@ -408,14 +452,12 @@ function do_cmd_safe() {
 
     dtab
     do_cmd $cmd
-    RETVAL=$?
-    
+    RETVAL=$?    
     itab
-    reset_shell ${old_opts-''}
-    reset_traps
-    
-    # reset formatting
-    unset_color
 
+    # reset shell options
+    reset_shell ${old_opts-''}
+    reset_traps    
+  
     return $RETVAL
 }

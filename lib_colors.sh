@@ -304,7 +304,7 @@ export col12='\x1B[38;5;143m' #  2:  60 Dark Khaki          sec - YELLOW
 export col07='\x1B[38;5;107m' #  3:  90 Dark Olive Green    ter - chartreuse
 export col03='\x1B[38;5;71m'  #  4: 120 Dark Sea Green    pri - GREEN/lime
 export col04='\x1B[38;5;72m'  #  5: 150 Cadet Blue          ter - spring green
-export col04='\x1B[38;5;73m'  #  6: 180 Cadet Blue          sec - CYAN/aqua
+export col05='\x1B[38;5;73m'  #  6: 180 Cadet Blue          sec - CYAN/aqua
 export col02='\x1B[38;5;67m'  #  7: 210 Steel Blue          ter - azure
 export col01='\x1B[38;5;61m'  #  8: 240 Slate Blue        pri - BLUE
 export col06='\x1B[38;5;97m'  #  9: 270 Medium Purple       ter - violet
@@ -314,7 +314,7 @@ export col09='\x1B[38;5;132m' # 11: 330 Hot Pink            ter - rose
 export col00='\x1B[38;5;102m' # 12:   0 Grey              mon - GRAY
 
 # create rainbow-ordered (hue order) array of 12 debug colors
-export dcolor=( '\x1B[38;5;131m' '\x1B[38;5;137m' '\x1B[38;5;143m' '\x1B[38;5;107m' '\x1B[38;5;71m'  '\x1B[38;5;72m'  '\x1B[38;5;73m'  '\x1B[38;5;67m'  '\x1B[38;5;61m'  '\x1B[38;5;97m'  '\x1B[38;5;133m' '\x1B[38;5;132m' )
+export dcolor=( "${col08}" "${col11}" "${col12}" "${col07}" "${col03}" "${col04}" "${col05}" "${col02}" "${col01}" "${col06}" "${col10}" "${col09}" )
 
 # print dcolor array in rainbow-order
 # requires lib_traps
