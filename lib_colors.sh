@@ -20,6 +20,10 @@
 # clear all formatting
 export   RESET='\x1B[0m'    # reset
 
+# -----------------------------------------------------------------------------------------------
+# Text mode variables
+# -----------------------------------------------------------------------------------------------
+
 # define graphics mode accents
 export  NORMAL='\x1B[21;22;23;24;25;27;28;29m' # normal
 export    BOLD='\x1B[1m'    # bold
@@ -53,6 +57,14 @@ export    BF='\x1B[1m'  # bold face
 export    IT='\x1B[3m'  # italics
 export UNDERLINE='\x1B[4m'  # underline
 
+# -----------------------------------------------------------------------------------------------
+# Standard colors
+# -----------------------------------------------------------------------------------------------
+
+# define monochrome colors
+export    GRAY='\x1B[90m'
+export   WHITE='\x1B[1;37m'
+
 # define primary colors	(foreground)
 export     RED='\x1B[31m'
 export   GREEN='\x1B[32m'   # lime
@@ -74,9 +86,28 @@ export    ROSE='\x1B[38;5;198m' #ff0087	(255,  0,135) DeepPink1
 # create array of 12 rainbow colors
 export rcolor=( "${RED}" "${ORANGE}" "${YELLOW}" "${CHARTRU}" "${GREEN}" "${SPGREEN}" "${CYAN}" "${AZURE}" "${BLUE}" "${PURPLE}" "${MAGENTA}" "${ROSE}" )
 
-# define monochrome colors
-export    GRAY='\x1B[90m'
-export   WHITE='\x1B[1;37m'
+# print rcolor array in rainbow-order
+function print_rcolors() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    decho "${TAB}printing contents of ${!rcolor@} in ARRAY order..."
+    # get length of array
+    local -ir N_cols=${#rcolor[@]}    
+    echo "${TAB}$N_cols in array ${!rcolor@}"
+    # declare array index variable
+    local -i i
+    # print array elements
+    itab
+    for ((i=0;i<$N_cols;i++));do
+        echo -e "${TAB}${rcolor[$i]}$i"
+    done
+    dtab
+    # reset color
+    echo -en "\x1B[m"
+}
+
+# -----------------------------------------------------------------------------------------------
+# Context colors
+# -----------------------------------------------------------------------------------------------
 
 # define highlight colors
 export     BAD="${RED}"    # red
@@ -90,20 +121,22 @@ export     TGT='\x1B[1;32m' # bold green  : ex executable
 export     DIR='\x1B[1;34m' # bold blue   : di directory
 export   VALID='\x1B[1;36m' # bold cyan   : ln valid link
 
-function match_ls_colors() {
-    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
-    # get link color codes
-    local or_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^or/!d' | sed 's/^.*=//')
-    local ex_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^ex/!d' | sed 's/^.*=//')
-    local di_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^di/!d' | sed 's/^.*=//')
-    local ln_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^ln/!d' | sed 's/^.*=//')
+# define PS1 colors
+export  PSTIME='\x1B[0;37m' # light gray  : \A : time
+export  PSUSER='\x1B[0;32m' # green       : \u : user name, prompt
+export  PSHOST='\x1B[1;34m' # bold blue   : \h : host name
+export   PSDIR='\x1B[0;33m' # yellow      : \w : directory
+export    PSBR='\x1B[0;36m' # cyan        :    : branch
 
-    # update color values    
-    export BROKEN="\x1B[${or_col}m"
-    export    TGT="\x1B[${ex_col}m"
-    export    DIR="\x1B[${di_col}m"
-    export  VALID="\x1B[${ln_col}m"  
-}
+# define 'grep' colors
+export     GRH='\x1B[1;31m' # bold red    : ms : selected match
+export     GRL='\x1B[0;32m' # green       : ln : line number 
+export     GRF='\x1B[0;35m' # magenta     : fn : file name
+export     GRS='\x1B[0;36m' # cyan        : se : seperator
+
+# -----------------------------------------------------------------------------------------------
+# List Directory (ls) colors
+# -----------------------------------------------------------------------------------------------
 
 function load_colors() {
     # turn in-function debugging on/off
@@ -145,6 +178,16 @@ function load_colors() {
 
 }
 
+function print_dircolors() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    if [ -z ${LS_COLORS:+dummy} ]; then
+        echo "${TAB}LS_COLORS not defined"
+        return
+    fi
+    # print value of dircolors
+    dircolors -p | sed 's/\(^.*\([0-9]\{2\};[0-9]\{2\}[0-9;]*\)\)/\x1B[\2m\1\x1B[0m/ '
+ }
+
 function define_ls_colors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     if [ -z ${LS_COLORS:+dummy} ]; then
@@ -167,6 +210,21 @@ function define_ls_colors() {
     echo -e "${cEX}executable files${RESET}"    
 }
 
+function match_ls_colors() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    # get link color codes
+    local or_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^or/!d' | sed 's/^.*=//')
+    local ex_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^ex/!d' | sed 's/^.*=//')
+    local di_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^di/!d' | sed 's/^.*=//')
+    local ln_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^ln/!d' | sed 's/^.*=//')
+
+    # update color values    
+    export BROKEN="\x1B[${or_col}m"
+    export    TGT="\x1B[${ex_col}m"
+    export    DIR="\x1B[${di_col}m"
+    export  VALID="\x1B[${ln_col}m"  
+}
+
 function match_ls_colors2() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
     # get link color codes
@@ -179,18 +237,62 @@ function match_ls_colors2() {
     export  VALID=${cLN}
 }
 
-# define PS1 colors
-export  PSTIME='\x1B[0;37m' # light gray  : \A : time
-export  PSUSER='\x1B[0;32m' # green       : \u : user name, prompt
-export  PSHOST='\x1B[1;34m' # bold blue   : \h : host name
-export   PSDIR='\x1B[0;33m' # yellow      : \w : directory
-export    PSBR='\x1B[0;36m' # cyan        :    : branch
+function print_ls_colors() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    if [ -z ${LS_COLORS:+dummy} ]; then
+        echo "${TAB}LS_COLORS not defined"
+        return
+    fi
+    # print value of LS_COLORS
+    declare -p LS_COLORS |
+        # isolate definitions
+        sed 's/^[^"]*"//;s/"$//' |
+        # print each definition on its own line
+        sed '$ s/:/\n/g;/^$/d' |
+        # remove file extension definitions
+        sed '/^\*/d' |
+        # add echo wrapper with escapes
+        sed 's/\(^[^=]*\)=\(.*$\)/"\1 \\x1B[\2m\2\\x1B[m"/' |
+        # echo outputs
+        xargs -L 1 echo -e
+}
 
-# define 'grep' colors
-export     GRH='\x1B[1;31m' # bold red    : ms : selected match
-export     GRL='\x1B[0;32m' # green       : ln : line number 
-export     GRF='\x1B[0;35m' # magenta     : fn : file name
-export     GRS='\x1B[0;36m' # cyan        : se : seperator
+function print_ls_colors_ext() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    if [ -z ${LS_COLORS:+dummy} ]; then
+        echo "${TAB}LS_COLORS not defined"
+        return
+    fi
+    # print value of LS_COLORS
+    declare -p LS_COLORS |
+        # isolate definitions
+        sed 's/^[^"]*"//;s/"$//' |
+        # print each definition on its own line
+        sed '$ s/:/\n/g;/^$/d' |
+        # remove file extension definitions
+        sed '/^\*/!d' |
+        # add echo wrapper with escapes
+        sed 's/\(^[^=]*\)=\(.*$\)/"\1 \\x1B[\2m\2\\x1B[m"/' | sort -n |
+        # echo outputs
+        xargs -L 1 echo -e | column -t -o ' '
+}
+
+function append_ls_colors() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    # physical link (hardlink)
+    # get link color code
+    ln_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^ln/!d' | sed 's/^.*=//')
+    # invert
+    mh_col="07;${ln_col}"    
+    #LS_COLORS+="mh=44;38;5;15:"
+    LS_COLORS+="mh=${mh_col}:"
+    # missing    
+    LS_COLORS+="mi=05;48;5;232;38;5;15:"
+}
+
+# -----------------------------------------------------------------------------------------------
+# DEBUG colors
+# -----------------------------------------------------------------------------------------------
 
 # subtle colors for readability
 # hue=(N*30), saturation=33%, lightness=52%; sorted by hue
@@ -242,24 +344,6 @@ function print_colors() {
     reset_shell ${old_opts} u
 }
 
-# print dcolor array in rainbow-order
-function print_rcolors() {
-    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-    decho "${TAB}printing contents of ${!rcolor@} in ARRAY order..."
-    # get length of array
-    local -ir N_cols=${#rcolor[@]}    
-    echo "${TAB}$N_cols in array ${!rcolor@}"
-    # declare array index variable
-    local -i i
-    # print array elements
-    itab
-    for ((i=0;i<$N_cols;i++));do
-        echo -e "${TAB}${rcolor[$i]}$i"
-    done
-    dtab
-    # reset color
-    echo -en "\x1B[m"
-}
 
 # print dcolor array in debug order
 # requires lib_traps, lib_fmt
@@ -461,6 +545,10 @@ function unset_color() {
     echo -ne "\e[0m"
 }
 
+# -----------------------------------------------------------------------------------------------
+# Demo Functions for .bashrc_pretty
+# -----------------------------------------------------------------------------------------------
+
 # requires lib_tabs, lib_cond_echo
 function print_pretty() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
@@ -499,69 +587,6 @@ function print_pretty_cbar() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     local -i DEBUG=0
     cbar $(print_pretty) 
-}
-
-function print_ls_colors() {
-    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
-    if [ -z ${LS_COLORS:+dummy} ]; then
-        echo "${TAB}LS_COLORS not defined"
-        return
-    fi
-    # print value of LS_COLORS
-    declare -p LS_COLORS |
-        # isolate definitions
-        sed 's/^[^"]*"//;s/"$//' |
-        # print each definition on its own line
-        sed '$ s/:/\n/g;/^$/d' |
-        # remove file extension definitions
-        sed '/^\*/d' |
-        # add echo wrapper with escapes
-        sed 's/\(^[^=]*\)=\(.*$\)/"\1 \\x1B[\2m\2\\x1B[m"/' |
-        # echo outputs
-        xargs -L 1 echo -e
-}
-
-function print_dircolors() {
-    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
-    if [ -z ${LS_COLORS:+dummy} ]; then
-        echo "${TAB}LS_COLORS not defined"
-        return
-    fi
-    # print value of dircolors
-    dircolors -p | sed 's/\(^.*\([0-9]\{2\};[0-9]\{2\}[0-9;]*\)\)/\x1B[\2m\1\x1B[0m/ '
- }
-
-function print_ls_colors_ext() {
-    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
-    if [ -z ${LS_COLORS:+dummy} ]; then
-        echo "${TAB}LS_COLORS not defined"
-        return
-    fi
-    # print value of LS_COLORS
-    declare -p LS_COLORS |
-        # isolate definitions
-        sed 's/^[^"]*"//;s/"$//' |
-        # print each definition on its own line
-        sed '$ s/:/\n/g;/^$/d' |
-        # remove file extension definitions
-        sed '/^\*/!d' |
-        # add echo wrapper with escapes
-        sed 's/\(^[^=]*\)=\(.*$\)/"\1 \\x1B[\2m\2\\x1B[m"/' | sort -n |
-        # echo outputs
-        xargs -L 1 echo -e | column -t -o ' '
-}
-
-function append_ls_colors() {
-    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
-    # physical link (hardlink)
-    # get link color code
-    ln_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^ln/!d' | sed 's/^.*=//')
-    # invert
-    mh_col="07;${ln_col}"    
-    #LS_COLORS+="mh=44;38;5;15:"
-    LS_COLORS+="mh=${mh_col}:"
-    # missing    
-    LS_COLORS+="mi=05;48;5;232;38;5;15:"
 }
 
 function test_lib_colors() {
