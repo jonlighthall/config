@@ -233,6 +233,7 @@ function idb() {
     fi
     fecho -e "DEBUG = ${DEBUG}"
     if [ $funcDEBUG -eq 0 ];then
+        start_new_line
         print_debug
     fi
 }
@@ -270,6 +271,7 @@ function ddb() {
         if [ $DEBUG -eq 0 ]; then
             fecho "no action needed"
             if [ $funcDEBUG -eq 0 ];then
+                start_new_line
                 print_debug
             fi
             return 0
@@ -284,6 +286,7 @@ function ddb() {
     fi
     fecho -e "DEBUG = ${DEBUG}"
     if [ $funcDEBUG -eq 0 ];then
-        print_debug
+        start_new_line
+        rint_debug
     fi
 }
