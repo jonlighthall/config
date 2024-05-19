@@ -185,7 +185,7 @@ function print_dircolors() {
         return
     fi
     # print value of dircolors
-    dircolors -p | sed 's/\(^.*\([0-9]\{2\};[0-9]\{2\}[0-9;]*\)\)/\x1B[\2m\1\x1B[0m/ '
+    dircolors -p | sed 's/\(^.*\([0-9]\{2\};[0-9]\{2\}[0-9;]*\)\)/\x1B[\2m\1\x1B[0m/' | sed "s/^/${TAB}/"
  }
 
 function define_ls_colors() {
@@ -204,10 +204,10 @@ function define_ls_colors() {
     export cDI="\x1B[${DI}m"
     export cEX="\x1B[${EX}m"
 
-    echo -e "${cLN}links${RESET}"
-    echo -e "${cOR}orphaned links${RESET}"
-    echo -e "${cDI}directories${RESET}"
-    echo -e "${cEX}executable files${RESET}"    
+    echo -e "${TAB}${cLN}links${RESET}"
+    echo -e "${TAB}${cOR}orphaned links${RESET}"
+    echo -e "${TAB}${cDI}directories${RESET}"
+    echo -e "${TAB}${cEX}executable files${RESET}"    
 }
 
 function match_ls_colors() {
@@ -254,7 +254,7 @@ function print_ls_colors() {
         # add echo wrapper with escapes
         sed 's/\(^[^=]*\)=\(.*$\)/"\1 \\x1B[\2m\2\\x1B[m"/' |
         # echo outputs
-        xargs -L 1 echo -e
+        xargs -L 1 echo -e | sed "s/^/${TAB}/"
 }
 
 function print_ls_colors_ext() {
@@ -274,7 +274,7 @@ function print_ls_colors_ext() {
         # add echo wrapper with escapes
         sed 's/\(^[^=]*\)=\(.*$\)/"\1 \\x1B[\2m\2\\x1B[m"/' | sort -n |
         # echo outputs
-        xargs -L 1 echo -e | column -t -o ' '
+        xargs -L 1 echo -e | column -t -o ' ' | sed "s/^/${TAB}/"
 }
 
 function append_ls_colors() {
@@ -573,7 +573,7 @@ function print_pretty() {
         if [[ "$let" == " " ]]; then
             :
         else
-            ((pos++))
+            ((++pos))
         fi
         dbg2idx $pos idx
         # set color
