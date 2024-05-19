@@ -12,6 +12,14 @@
 #
 # -----------------------------------------------------------------------------------------------
 
+# simple fuction to return an error
+function s() {
+    local -i RETVAL=1
+    echo "returing $RETVAL..."
+    echo "enter 'exit' to restart"
+    return 1
+}
+
 # fuction to test returning an error
 function bye() {
     # print function name 
