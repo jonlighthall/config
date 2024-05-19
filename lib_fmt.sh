@@ -260,7 +260,8 @@ function do_cmd() {
         local -i RETVAL=$?
 
         # reset shell options
-        set +o pipefail        
+        set +o pipefail
+        dtab
     else
         # check if script is defined
         if command -v script >/dev/null; then
@@ -276,10 +277,10 @@ function do_cmd() {
         fi
         local -i RETVAL=$?
     fi
-    dtab
     
     # reset formatting
     unset_color
+    dtab
     if [ $DEBUG -gt 0 ]; then
         dtab
     fi
@@ -468,6 +469,6 @@ function do_cmd_safe() {
     # reset shell options
     reset_shell ${old_opts-''}
     reset_traps    
-  
+    
     return $RETVAL
 }
