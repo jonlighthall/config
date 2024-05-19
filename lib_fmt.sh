@@ -431,6 +431,7 @@ function do_cmd_stdbuf() {
 
     # reset formatting
     unset_color
+    dtab
     if [ $DEBUG -gt 0 ]; then
         dtab
     fi
