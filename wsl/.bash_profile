@@ -22,6 +22,7 @@ if [[ "$-" != *i* ]]; then
 else
     # get starting time in nanoseconds
     declare -i start_time=$(date +%s%N)
+    clear
     # -------------------------
     # set debug level if unset
     export DEBUG=${DEBUG=0}
