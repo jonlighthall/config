@@ -210,6 +210,9 @@ function strip_pretty() {
 # format command output
 # handling is included for a variety of commands
 # conditionally calls do_cmd_script, and do_cmd_stdbuf
+
+export FMT_COLOR=3
+
 function do_cmd() {
     local -i DEBUG=0
     # save command as variable
@@ -223,7 +226,7 @@ function do_cmd() {
     
     # get color index
     local -i idx
-    dbg2idx 3 idx
+    dbg2idx $FMT_COLOR idx
     # set color
     echo -ne "${dcolor[$idx]}"
 
@@ -300,7 +303,7 @@ function do_cmd_script() {
     
     # get color index
     local -i idx
-    dbg2idx 5 idx
+    dbg2idx $FMT_COLOR idx
     # set color
     echo -ne "${dcolor[$idx]}"
     
@@ -348,7 +351,7 @@ function do_cmd_script() {
         fi
     else
         ddecho "${TAB}printing unformatted ouput..."
-        dbg2idx 9 idx
+        dbg2idx $FMT_COLOR idx
         # set color
         echo -ne "${dcolor[$idx]}"
         
@@ -378,7 +381,7 @@ function do_cmd_stdbuf() {
 
     # get color index
     local -i idx
-    dbg2idx 7 idx
+    dbg2idx $FMT_COLOR idx
     # set color
     echo -ne "${dcolor[$idx]}"    
 
@@ -395,7 +398,7 @@ function do_cmd_stdbuf() {
         # check cursor position
         local -i x1c
         get_curpos x1c
-        decho -n "$x1c"
+        echo -ne "${dcolor[$idx]}"    
         # set the "carriage return" value for the first non-empty line of the command ouput
         if [ $x1c -gt 1 ]; then
             # if the cursor is not at the start of a line, start a new line
