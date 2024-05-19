@@ -55,9 +55,8 @@ for prog in install_packages.sh; do
         echo "${TAB}* access to archive.ubuntu.com, security.ubuntu.com, etc"
         dtab
         unset_traps
-        read -p "${TAB}Proceed with ${prog}? (y/n) " -n 1 -r -t 3
-       
-        set_traps
+        read -p "${TAB}Proceed with ${prog}? (y/n) " -n 1 -r -t 3      
+        reset_traps
         if [ $DEBUG -lt 1 ]; then
             echo
         fi
