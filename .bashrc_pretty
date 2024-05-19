@@ -91,9 +91,19 @@ function load_libs() {
             echo "${fname} not found"
         fi
     done
+    fname="${HOME}/utils/bash/git/lib_git.sh"
+    if [ -e "${fname}" ]; then
+        if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
+            echo "${TAB}loading $(basename ${fname})"
+        fi
+        source ${fname}
+    fi
+
     if [ ! -z ${FPRETTY_LOADED+dummy} ]; then      
         dtab # lib tabs
-        cbar "${BOLD}libraries loaded${NORMAL}" # lib_fmt
+        if [[ "$-" == *i* ]]; then
+           cbar "${BOLD}libraries loaded${NORMAL}" # lib_fmt
+        fi
         if [ $DEBUG -gt 1 ]; then
             lecho # lib_dbg
             print_ribbon #lib_stack
