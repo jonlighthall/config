@@ -539,6 +539,46 @@ function set_traps() {
     dtab 2
 }
 
+# set EXIT trap
+function set_exit() {
+    # set local debug value
+    if [ $# -eq 1 ]; then
+        # use argument to manually set DEBUG
+        local -i DEBUG=$1
+    else
+        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+    fi
+
+    [ $DEBUG -gt 0 ] && start_new_line
+    decho -e "${TAB}${MAGENTA}\E[7mset exit${RESET}"
+    itab
+
+    dddecho "${TAB}$-"
+    # set shell options
+    dddecho -n "${TAB}setting shell options... "
+    # trace ERR (subshells inherit ERR trap from shell)
+    set -E
+    dddecho "done"
+    dddecho "${TAB}$-"
+    
+    dddecho -n "${TAB}setting traps... "
+    trap 'print_exit $?' EXIT
+    dddecho "done"
+
+    # print summary
+    ddecho "${TAB}on ${FUNCNAME} return, the following traps are set"
+    itab
+    if [ -z "$(trap -p)" ]; then
+        ddecho -e "${TAB}none"
+        echo "something didn't work..."
+        dtab
+        return 1
+    else
+        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" # | sed 's/^[ ]*$//g'
+    fi
+    dtab 2
+}
+
 # unset ERR and EXIT traps, saving current values
 # restore saved values with reset_traps
 function unset_traps() {
