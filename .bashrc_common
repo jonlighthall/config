@@ -46,7 +46,7 @@ export HISTSIZE=
 # Don't put duplicate lines in the history
 export HISTCONTROL=ignoredups
 # commands to ignore
-export HISTIGNORE=$'exit'
+export HISTIGNORE=$'exit:x'
 # append to the history file, don't overwrite it
 shopt -s histappend
 # append history after every command (real time history)
