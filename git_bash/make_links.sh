@@ -8,13 +8,6 @@ fpretty="${HOME}/config/.bashrc_pretty"
 if [ -e "$fpretty" ]; then
     source "$fpretty"
     set_traps
-    # set tab
-    N=${#BASH_SOURCE[@]}
-    if [ $N -gt 1 ]; then
-        itab
-    else
-        rtab
-    fi
 fi
 
 # determine if script is being sourced or executed

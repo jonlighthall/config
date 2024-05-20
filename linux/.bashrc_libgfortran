@@ -7,77 +7,64 @@ if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
     if [ "${VB}" = true ]; then
-	# set tab
-	TAB+=${TAB+${fTAB:='   '}}
-	# load formatting
-	fpretty=${HOME}/config/.bashrc_pretty
-	if [ -e $fpretty ]; then
-	    if [ -z ${FPRETTY_LOADED+dummy} ]; then
-	       source $fpretty
-	    fi
-	fi
-	# print source name at start
-	if (return 0 2>/dev/null); then
-	    RUN_TYPE="sourcing"
-	else
-	    RUN_TYPE="executing"
-	fi
-	echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
-	src_name=$(readlink -f $BASH_SOURCE)
-	if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-	    echo -e "${TAB}${VALID}link${RESET} -> $src_name"
-	fi
+	      # print source name at start
+	      if (return 0 2>/dev/null); then
+	          RUN_TYPE="sourcing"
+	      else
+	          RUN_TYPE="executing"
+	      fi
+        print_source
     fi
 fi
 
 host_list="hybrid1"
 if [[ $HOSTNAME =~ ${host_list} ]]; then
-# Find path
+    # Find path
     if [ "${VB}" = true ]; then
-	echo "${TAB}LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
+	      echo "${TAB}LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
     fi
     FINDLIB=libgfortran.so.5
     echo -n "${TAB}locating $FINDLIB..."
     LIBPATH=$(locate $FINDLIB -l 1)
     if [[ $? == 0 ]]; then
-	echo "found"
-	LIBPATH=$(echo $LIBPATH | sed 's|\(.*\)/.*|\1|')
-	echo "${TAB}$FINDLIB path is $LIBPATH"
-	# Path addition
-	ADDPATH=${LIBPATH}
-	if [[ ":$LD_LIBRARY_PATH" != *":${ADDPATH}"*  ]]; then
-	    if [ -d "${ADDPATH}" ] ; then
-		if [ "${VB}" = true ]; then
-		    echo "${TAB}${ADDPATH} not found in LD_LIBRARY_PATH"
-		    echo -n "${TAB}adding ${ADDPATH} to LD_LIBRARY_PATH..."
-		fi
-		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ADDPATH
-		if [ "${VB}" = true ]; then
-		    if [[ $? == 0 ]]; then
-			echo "OK"
-		    else
-			echo "FAILED"
-		    fi
-		    echo "${TAB}LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
-		fi
-	    else
-		echo "${TAB}${ADDPATH} not found"
-	    fi
-	else
-	    if [ "${VB}" = true ]; then
-		echo "${TAB}${ADDPATH} already in LD_LIBRARY_PATH"
-	    fi
-	fi
+	      echo "found"
+	      LIBPATH=$(echo $LIBPATH | sed 's|\(.*\)/.*|\1|')
+	      echo "${TAB}$FINDLIB path is $LIBPATH"
+	      # Path addition
+	      ADDPATH=${LIBPATH}
+	      if [[ ":$LD_LIBRARY_PATH" != *":${ADDPATH}"*  ]]; then
+	          if [ -d "${ADDPATH}" ] ; then
+		            if [ "${VB}" = true ]; then
+		                echo "${TAB}${ADDPATH} not found in LD_LIBRARY_PATH"
+		                echo -n "${TAB}adding ${ADDPATH} to LD_LIBRARY_PATH..."
+		            fi
+		            export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ADDPATH
+		            if [ "${VB}" = true ]; then
+		                if [[ $? == 0 ]]; then
+			                  echo "OK"
+		                else
+			                  echo "FAILED"
+		                fi
+		                echo "${TAB}LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
+		            fi
+	          else
+		            echo "${TAB}${ADDPATH} not found"
+	          fi
+	      else
+	          if [ "${VB}" = true ]; then
+		            echo "${TAB}${ADDPATH} already in LD_LIBRARY_PATH"
+	          fi
+	      fi
     else
-	echo "not found"
+	      echo "not found"
     fi
 else
     if [ "${VB}" = true ]; then
-	echo "${TAB}hostname $HOSTNAME not recognized"
+	      echo "${TAB}hostname $HOSTNAME not recognized"
     fi
 fi
 
 if [ "${VB}" = true ]; then
     # reset tab
-    TAB=${TAB%$fTAB}
+    dtab
 fi
