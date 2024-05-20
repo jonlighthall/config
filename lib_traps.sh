@@ -338,7 +338,7 @@ function print_error() {
     # e.g.
     # trap 'print_error $LINENO $? $BASH_COMMAND' ERR
 
-    local -i DEBUG=0
+    local -i DEBUG=2
     local -i funcDEBUG=$DEBUG
     
     # parse arguments
@@ -367,7 +367,7 @@ function print_error() {
     ddecho "${TAB}N_BOTTOM = $N_BOTTOM"
     ddecho "${TAB}FUNCNAME[$N_BOTTOM] = ${FUNCNAME[$N_BOTTOM]}"
     ddecho "${TAB}BASH_SOURCE[$N_BOTTOM] = ${BASH_SOURCE[$N_BOTTOM]}"
-    if [[ ${BASH_SOURCE[${N_BOTTOM}]} =~ "bash" ]]; then
+    if [[ ${BASH_SOURCE[${N_BOTTOM}]} == "bash" ]]; then
         ddecho "${TAB}bottom of stack is bash"
     else
         ddecho "${TAB}bottom of stack is NOT bash"
@@ -380,7 +380,7 @@ function print_error() {
     itab
 
     # check if error came from shell
-    if [[ ${BASH_SOURCE[${N_BOTTOM}]} =~ "bash" ]]; then
+    if [[ ${BASH_SOURCE[${N_BOTTOM}]} == "bash" ]]; then
         # bash
         ddecho "${TAB}error did not come from a file, it came from bash"
         local ERR_LINE=$ERR_CMD
@@ -401,6 +401,7 @@ function print_error() {
                     # print summary
                     ddecho -n "${TAB}line ${ERR_LINENO} in ${BASH_SOURCE[1]}: "
                     ddecho sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}"
+                    ddecho
                     decho "${TAB}"$(sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}")
                     # save offending line
                     ERR_LINE=$(sed -n "${ERR_LINENO}p" "${BASH_SOURCE[1]}" | sed "s/^\s*//")
@@ -422,7 +423,7 @@ function print_error() {
     echo -n ${ERR_PRINT}
     
     # print grep-like line match    
-    if [[ ${BASH_SOURCE[${N_BOTTOM}]} =~ "bash" ]]; then
+    if [[ ${BASH_SOURCE[${N_BOTTOM}]} == "bash" ]]; then
         echo -ne " ${GRF}${FUNCNAME[N_BOTTOM]}${RESET}${GRS}:${RESET} "
     else
         if [ ${N_BOTTOM} -eq 0 ]; then
