@@ -550,17 +550,9 @@ function set_exit() {
     fi
 
     [ $DEBUG -gt 0 ] && start_new_line
-    decho -e "${TAB}${MAGENTA}\E[7mset exit${RESET}"
+    decho -e "${TAB}${ORANGE}\E[7mset exit${RESET}"
     itab
-
-    dddecho "${TAB}$-"
-    # set shell options
-    dddecho -n "${TAB}setting shell options... "
-    # trace ERR (subshells inherit ERR trap from shell)
-    set -E
-    dddecho "done"
-    dddecho "${TAB}$-"
-    
+   
     dddecho -n "${TAB}setting traps... "
     trap 'print_exit $?' EXIT
     dddecho "done"
