@@ -35,7 +35,7 @@ function rtab() {
 function set_tab() {
     local -i funcDEBUG=0
     local -i DEBUG=0
-    
+
     # reset TAB
     rtab
 
@@ -64,12 +64,11 @@ function set_tab() {
     fi
     fecho "stack size is $N_BASH"
 
-    if [ $N_BASH -gt 0 ]; then 
-        
+    if [ $N_BASH -gt 0 ]; then
         # set the tab length
         local -ir N_TAB=$(($N_BASH-1))
         fecho "indent $N_TAB tabs"
-        
+
         # set tab
         fecho "${TAB}."
         itab $N_TAB
@@ -88,7 +87,7 @@ function set_tab_shell() {
     local SPACE='\E[30;106m' # highlight white space
     # print size of TAB
     fecho -e "TAB = ${SPACE}${TAB}${RESET} length $i"
-    
+
     # reset TAB
     rtab
 
@@ -96,11 +95,21 @@ function set_tab_shell() {
     fecho "getting shell level..."
     local -i N_SHL=$SHLVL
     fecho "SHLVL = $SHLVL"
-    
-    # since this is a function, reduce N_SHL by one
-    fecho "reducing level..."
-    ((N_SHL--))
-    fecho "N_SHL = $N_SHL"
+
+    # get the lenght of the execution stack
+    fecho "getting length of stack..."
+    local -i N_BASH=${#BASH_SOURCE[@]}
+    fecho "N_BASH = $N_BASH"
+    if [[ "$-" == *i* ]]; then
+        fecho "interactive"
+    fi
+
+    if [ $N_BASH -lt $N_SHL ]; then
+        # since this is a function, reduce N_SHL by one
+        fecho "reducing level..."
+        ((N_SHL--))
+        fecho "N_SHL = $N_SHL"
+    fi
 
     # minimum shell level is one, which corresponds to zero tab size
     # set the tab length
@@ -116,16 +125,8 @@ function set_tab_shell() {
     else
         fecho "TAB length changed"
     fi
-    
-    return 0
 
-    # get the lenght of the execution stack
-    fecho "getting length of stack..."
-    local -i N_BASH=${#BASH_SOURCE[@]}
-    fecho "N_BASH = $N_BASH"
-    if [[ "$-" == *i* ]]; then
-        fecho "interactive"
-    fi   
+    return 0
 }
 
 # increment tab
@@ -173,14 +174,14 @@ function print_tab() {
         echo -e "${BOLD}TAB is ${UNSET}"
         return 0
     fi
-    
+
     # check if TAB is null
     if [ -z ${TAB:+dummy} ]; then
-        local NULL='\E[1;36mnull\E[0m' 
+        local NULL='\E[1;36mnull\E[0m'
         echo -e "${TAB}${BOLD}TAB is ${NULL}"
         return 0
     fi
-    
+
     # get length of TAB
     local -i i=0
     i=${#TAB}
