@@ -64,6 +64,8 @@ function print_source() {
     if [[ "${RUN_TYPE}" =~ "sourcing" ]]; then
         set_tab
         dtab
+    else
+        set_tab_shell
     fi
     
     # print run type and source name
@@ -435,4 +437,8 @@ function print_invo() {
     dtab
     echo $LINENO
     dtab
+}
+
+function print_shlvl() {
+    echo -e "shell level = ${PSSH}$SHLVL${RESET}"
 }

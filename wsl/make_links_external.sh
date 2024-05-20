@@ -286,3 +286,5 @@ for my_link in .bash_history; do
     link=~/${my_link}
     do_link "$target" "$link"
 done
+
+set_traps

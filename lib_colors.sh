@@ -127,6 +127,7 @@ export  PSUSER='\x1B[0;32m' # green       : \u : user name, prompt
 export  PSHOST='\x1B[1;34m' # bold blue   : \h : host name
 export   PSDIR='\x1B[0;33m' # yellow      : \w : directory
 export    PSBR='\x1B[0;36m' # cyan        :    : branch
+export    PSSH='\x1B[1;31m' # bold red    :    : shell
 
 # define 'grep' colors
 export     GRH='\x1B[1;31m' # bold red    : ms : selected match

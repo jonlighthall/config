@@ -141,7 +141,6 @@ clear -x
 echo "${TAB}Welcome to ${HOST_NAME}"
 
 # deallocate variables
-unset config_dir
 unset fname
 unset fpretty
 unset hist_file

@@ -1,5 +1,14 @@
-# User-dependent .bash_profile for Git Bash
+#!/bin/bash -eu
+# -----------------------------------------------------------------------------------------------
+# User-dependent LOGIN SHELL SETTINGS for Git Bash
+# -----------------------------------------------------------------------------------------------
+# ~/bash_profile -> ~/config/git_bash/.bash_profile
+#
 # Note: this file must use Unix line endings (LF)!
+#
+# Jul 2023 JCL
+#
+# -----------------------------------------------------------------------------------------------
 
 # If not running interactively, don't do anything
 if [[ "$-" != *i* ]]; then
@@ -43,8 +52,6 @@ if [ "${VB}" = true ]; then
     fi    
     print_source
     decho -e "${TAB}verbose bash printing is... ${GOOD}$VB${RESET}"
-    # set tab
-    itab
 fi
 
 # system dependencies
@@ -107,7 +114,6 @@ clear -x
 echo "${TAB}Welcome to ${HOST_NAME}"
 
 # deallocate variables
-unset config_dir
 unset fname
 unset fpretty
 unset hist_file

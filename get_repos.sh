@@ -55,6 +55,7 @@ if [ $# -eq 1 ]; then
 			      #-------------------------------------------------------------
 
 			      bash $make_links_name
+            dtab
 			      # define profile name
 			      profile_name=.bash_profile
 			      echo -n "${TAB}$profile_name... "
@@ -244,6 +245,8 @@ done
 # directory. For onedrive conflicts, there should be an offline (un-synced) repo dir.
 
 # check if host is Navy
+echo "${TAB}checking host... "
+itab
 if [[ "$(hostname -f)" == *".mil" ]]; then
     echo -e "${TAB}host: \x1b[31m$(hostname -f)\x1b[m"
     # check if WSL is defined
@@ -256,7 +259,10 @@ if [[ "$(hostname -f)" == *".mil" ]]; then
             clone_dir=${offline_dir}
         fi
     fi
+else
+    echo -e "${TAB}host: \x1b[32m$(hostname -f)\x1b[m"
 fi
+dtab
 echo "cloning repos to ${clone_dir}..."
 check_target "${clone_dir}"
 
