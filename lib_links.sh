@@ -580,3 +580,9 @@ function do_make_link() {
     do_link "$target" "$link_name" || return 1
     return 0
 }
+
+function find_broken() {
+    # find links
+    find -L ./ \( -type l -o -xtype l \) | xargs ~/utils/bash/rm_broken_dupes.sh
+}
+
