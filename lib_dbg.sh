@@ -27,6 +27,7 @@ function lecho() {
     if [ ${DEBUG:-0} -gt 0 ]; then
         decho -n "${TAB}"
         hline
+        trap 'decho -n "${TAB}";hline' RETURN        
     fi
     
     # get the lenght of the execution stack
@@ -34,7 +35,7 @@ function lecho() {
     ddecho "${TAB}there are ${N_BASH} entries in the call stack"
 
     if [ $N_BASH -eq 1 ]; then
-        echo "${TAB}called on line ${BASH_LINENO} from ${BASH##*/}"
+        echo "${TAB}called on line ${GRL}${BASH_LINENO}${RESET} from ${BASH##*/}"
         return 0
     fi
     
@@ -58,7 +59,7 @@ function lecho() {
 
     if [[ "${func}" == "main" ]] || [[ "${func}" == "source" ]]; then
         # the function is call from bash
-        echo "called from line ${BASH_LINENO[(($N_BASH-2))]} in file ${BASH_SOURCE[(($N_BASH-1))]##*/}"
+        echo "called on line ${GRL}${BASH_LINENO[(($N_BASH-2))]}${RESET} in file ${BASH_SOURCE[(($N_BASH-1))]##*/}"
         return 0
     else
         # get the line where the function is defined
