@@ -350,7 +350,7 @@ function print_int() {
 # Print ERR trace
 # -----------------------------------------------------------------------------------------------
 
-function print_error() {
+function print_error() {   
     # expected arguments are $LINENO $? $BASH_COMMAND
     # e.g.
     # trap 'print_error $LINENO $? $BASH_COMMAND' ERR
@@ -358,7 +358,7 @@ function print_error() {
     TAB=${TAB=''}
     local ERR_PRINT=$(echo -e "${TAB}\E[37;41m ERROR ${RESET} ")
     [ $DEBUG -gt 0 ] && start_new_line
-    echo -n ${TAB}
+    echo -n "${TAB}"
     hline
     echo "${ERR_PRINT}"
     eTAB=$(echo -e "${RED}|${RESET}")
@@ -369,7 +369,7 @@ function print_error() {
     # substitute default value if DEBUG is unset or null
     local -i DEBUG=${DEBUG:-0}
     # set manually
-    DEBUG=2
+    #DEBUG=2
     local -i funcDEBUG=$DEBUG
 
     # parse arguments
@@ -458,9 +458,7 @@ function print_error() {
     fi
 
     ERR_LINE="$ERR_CMD"
-    lecho
     dtab
-    lecho
 
     # print summary
     start_new_line
@@ -527,7 +525,7 @@ function print_error() {
         fi
     fi
     echo -e "${spx} ${GRAY}RETVAL=${ERR_RETVAL}${RESET}"
-    echo -n ${TAB}
+    echo -n "${TAB}"
     hline
 }
 
