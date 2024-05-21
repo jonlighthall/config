@@ -82,8 +82,10 @@ function set_tab() {
         fi
     fi
 #    fecho" ${RUN_TYPE}"
-    if [[ "${RUN_TYPE}" =~ "sourcing" ]]; then        
-        fecho -e "${DIM}${FUNCNAME[1]}${NORMAL} will reduce tab"
+    if [[ "${RUN_TYPE}" =~ "sourcing" ]]; then
+        if [ $N_BASH -gt 1 ]; then
+            fecho -e "${DIM}${FUNCNAME[1]}${NORMAL} will reduce tab"
+        fi
     fi    
 }
 
@@ -93,7 +95,9 @@ function set_tab_shell() {
 
     # get length of TAB
     local -i i=0
-    i=${#TAB}
+     local tab
+    strip_pretty tab "$TAB"
+    i=${#tab}
 
     local SPACE='\E[30;106m' # highlight white space
     # print size of TAB
@@ -130,7 +134,8 @@ function set_tab_shell() {
 
     # set tab
     itab $N_TAB
-    j=${#TAB}
+    strip_pretty tab "$TAB"
+    j=${#tab}
     fecho -e "TAB = ${SPACE}${TAB}${RESET} length $j"
     if [ $i -eq $j ];then
         fecho "TAB length unchanged"
@@ -196,7 +201,9 @@ function print_tab() {
 
     # get length of TAB
     local -i i=0
-    i=${#TAB}
+    local tab
+    strip_pretty tab "$TAB"
+    i=${#tab}
 
     local SPACE='\E[30;106m' # highlight white space
     # print size of TAB
