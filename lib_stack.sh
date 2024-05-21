@@ -111,10 +111,8 @@ function print_bar() {
 
 function print_stack() {
     local -i DEBUG=${DEBUG:=0}
-    local -i funcDEBUG=$DEBUG
-
     start_new_line
-    [ $DEBUG -gt 0 ] && (fecho -n; print_debug)
+    [ $DEBUG -gt 0 ] && print_debug
     # initialize variables
     unset N_FUNC
     unset N_BASH
