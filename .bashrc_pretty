@@ -10,10 +10,13 @@
 #
 # -----------------------------------------------------------------------------------------------
 
+TAB=${TAB=''}
+
 # add read-only variable to check if this file has already been loaded
-if [ ! -z ${FPRETTY_LOADED+dummy} ]; then      
+# if the argument '-f' is used, force loading the file
+if [ ! -z ${FPRETTY_LOADED+dummy} ] && [[ "$@" != "-f" ]]; then      
     if [ ! -z "$(declare -f print_pretty_cbar)" ]; then 
-        decho "${TAB}" $(print_pretty "${BASH_SOURCE##*/} already loaded")
+        decho "${TAB}"$(print_pretty "${BASH_SOURCE##*/} already loaded")
         return 0
     fi
 fi    
@@ -60,6 +63,7 @@ function get_source() {
 }
 
 function load_libs() {
+    TAB=${TAB=''}
     if command -v decho &>/dev/null; then
         # print function name 
         decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
@@ -104,7 +108,7 @@ function load_libs() {
         if [[ "$-" == *i* ]]; then
            cbar "${BOLD}libraries loaded${NORMAL}" # lib_fmt
         fi
-        if [ $DEBUG -gt 1 ]; then
+        if [ ${DEBUG:-0} -gt 1 ]; then
             lecho # lib_dbg
             print_ribbon #lib_stack
             print_return # lib_traps
@@ -144,4 +148,8 @@ if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
     print_pretty_cbar
 fi
 
-declare -grx FPRETTY_LOADED=true
+if [ -z ${FPRETTY_LOADED+dummy} ]; then      
+    declare -grx FPRETTY_LOADED=true
+else
+    echo "${TAB}${BASH_SOURCE##*/} reloaded"
+fi
