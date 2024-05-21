@@ -13,7 +13,7 @@
 # add read-only variable to check if this file has already been loaded
 if [ ! -z ${FPRETTY_LOADED+dummy} ]; then      
     if [ ! -z "$(declare -f print_pretty_cbar)" ]; then 
-        decho "${TAB}${BASH_SOURCE##*/} already loaded"
+        decho -n "${TAB}" $(print_pretty "${BASH_SOURCE##*/} already loaded")
         return 0
     fi
 fi    
@@ -113,6 +113,7 @@ function load_libs() {
 }
 
 load_libs
+print_ribbon
 
 # determine if script is being sourced or executed and add conditional behavior
 if (return 0 2>/dev/null); then

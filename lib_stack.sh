@@ -63,10 +63,12 @@ function print_source() {
     # set tab
     if [[ "${RUN_TYPE}" =~ "sourcing" ]]; then
         set_tab
+        decho -e "${TAB}${DIM}${FUNCNAME}${NORMAL}: ${RUN_TYPE}: reducing tab..."
         dtab
     else
         set_tab_shell
     fi
+    export TAB
     
     # print run type and source name
     vecho -e "${TAB}${RUN_TYPE} ${PSDIR}${BASH_SOURCE[1]}${RESET}..."
@@ -440,5 +442,5 @@ function print_invo() {
 }
 
 function print_shlvl() {
-    echo -e "shell level = ${PSSH}$SHLVL${RESET}"
+    echo -e "${TAB}shell level = ${PSSH}$SHLVL${RESET}"
 }

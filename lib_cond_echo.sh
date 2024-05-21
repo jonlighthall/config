@@ -80,7 +80,7 @@ function fecho() {
             echo -n "${FUNCNAME[fidx]}"
             #           echo -n " $fidx of $N_FUNC"
             echo -ne ": \e[0m${dcolor[IDX]}"
-            echo "$@"
+            echo "$@" | sed "s/\x1B\[0m/\x1B[0m${dcolor[IDX]}/"
             echo -ne "\e[0m"
         fi
     fi

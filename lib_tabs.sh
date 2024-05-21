@@ -34,7 +34,6 @@ function rtab() {
 # set the indentation according to execution stack size
 function set_tab() {
     local -i funcDEBUG=0
-    local -i DEBUG=0
 
     # reset TAB
     rtab
@@ -42,27 +41,26 @@ function set_tab() {
     # get the lenght of the execution stack
     fecho "getting length of stack..."
     local -i N_BASH=${#BASH_SOURCE[@]}
-    decho -n "${TAB}$N_BASH"
+    fecho "${fTAB}stack size is $N_BASH"
     if [[ "$-" == *i* ]]; then
-        decho -n "i"
+        fecho "${fTAB}shell is interactive"
     fi
-    decho " ($FUNCNAME)"
-    decho "${TAB}call stack:"
+
+    # print the execution stack
+    fecho "printing stack..."
     local -i i
     for ((i = 0; i < $N_BASH ; i++)); do
-        decho "   $i:${FUNCNAME[i]}:${BASH_SOURCE[i]##*/}:${BASH_LINENO[i]}"
+        fecho "${fTAB}$i:${FUNCNAME[i]}:${BASH_SOURCE[i]##*/}:${BASH_LINENO[i]}"
     done
-
-    fecho "stack size is $N_BASH"
 
     # since this is a function, reduce N_BASH by one
     fecho "reducing stack..."
     ((N_BASH--))
-    fecho "SHLVL = $SHLVL"
+    fecho "${fTAB}SHLVL = $SHLVL"
     if [ $SHLVL -gt 1 ]; then
         ((N_BASH--))
     fi
-    fecho "stack size is $N_BASH"
+    fecho "${fTAB}stack size is $N_BASH"
 
     if [ $N_BASH -gt 0 ]; then
         # set the tab length
@@ -70,9 +68,18 @@ function set_tab() {
         fecho "indent $N_TAB tabs"
 
         # set tab
-        fecho "${TAB}."
+        local SPACE='\E[30;106m' # highlight white space
+        # print size of TAB
+        i=${#TAB}
+        fecho -e "TAB = ${SPACE}${TAB}${RESET} length $i"
         itab $N_TAB
-        fecho "${TAB}."
+        j=${#TAB}
+        fecho -e "TAB = ${SPACE}${TAB}${RESET} length $j"
+        if [ $i -eq $j ];then
+            fecho "TAB length unchanged"
+        else
+            fecho "TAB length changed"
+        fi
     fi
 }
 
@@ -104,12 +111,13 @@ function set_tab_shell() {
         fecho "interactive"
     fi
 
-    if [ $N_BASH -lt $N_SHL ]; then
-        # since this is a function, reduce N_SHL by one
-        fecho "reducing level..."
-        ((N_SHL--))
-        fecho "N_SHL = $N_SHL"
+    if [ $N_BASH -ne $N_SHL ]; then
+        fecho -e "${GRH}shell/stack mis-match${RESET}"
     fi
+    # since this is a function, reduce N_SHL by one
+    fecho "reducing level..."
+    ((N_SHL--))
+    fecho "N_SHL = $N_SHL"
 
     # minimum shell level is one, which corresponds to zero tab size
     # set the tab length

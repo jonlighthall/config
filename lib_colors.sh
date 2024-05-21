@@ -556,7 +556,12 @@ function print_pretty() {
     # set default debug level
     local -i DEBUG=${DEBUG:-1}
     # define message
-    local msg="pretty-print enabled"
+    if [ $# -eq 0 ]; then
+        local msg="pretty-print enabled"
+    else
+        local msg="$@"
+        DEBUG=0
+    fi
     # determine message length
     decho -n "${TAB}'$msg' "
     local -i ln=${#msg}
