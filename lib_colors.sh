@@ -552,9 +552,9 @@ function unset_color() {
 
 # requires lib_tabs, lib_cond_echo
 function print_pretty() {
-    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
     # set default debug level
     local -i DEBUG=${DEBUG:-1}
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
     # define message
     if [ $# -eq 0 ]; then
         local msg="pretty-print enabled"

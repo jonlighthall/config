@@ -27,7 +27,8 @@ function lecho() {
     if [ ${DEBUG:-0} -gt 0 ]; then
         decho -n "${TAB}"
         hline
-        trap 'decho -n "${TAB}";hline' RETURN        
+        print_debug
+        trap 'decho -n "${TAB}";hline;trap -- RETURN' RETURN        
     fi
     
     # get the lenght of the execution stack
@@ -70,8 +71,8 @@ function lecho() {
         ddecho "${TAB}BASH_LINENO refers to file"
         local -i call_line=$func_line
         # print file line
-        echo -en "${TAB}${GRH}called on line ${GRL}${call_line} "
-        echo -e "in file ${YELLOW}${sour_fil}${RESET}"           
+        echo -en "${TAB}called on line ${GRL}${call_line}${RESET} "
+        echo -e "in file ${RESET}${YELLOW}${sour_fil}${RESET}"           
     else
         ddecho "${TAB}BASH_LINENO refers to function"
         # get the line in the file where the function is called
@@ -79,7 +80,7 @@ function lecho() {
         local -i call_line=$(($line_func_def -1 + $func_line))
         # print file line
         echo -n "${TAB}called on line ${call_line} "
-        echo "in file ${YELLOW}${sour_fil}${RESET}"    
+        echo -e "in file ${YELLOW}${sour_fil}${RESET}"    
         itab
         # print function line
         decho -n "${TAB}called on line ${func_line} "
@@ -90,20 +91,15 @@ function lecho() {
     itab
     # print definition line
     decho -n "${TAB}function ${func}() "
-    decho -n "defined on line ${GRL}${line_func_def}${RESET} "
-    decho "in file ${YELLOW}${sour_fil}${RESET}"
-    decho "${TAB}file ${YELLOW}${sour_fil}${RESET} located in ${DIR}${sour_dir}${RESET}"
+    decho -ne "defined on line ${GRL}${line_func_def}${RESET} "
+    decho -e "in file ${YELLOW}${sour_fil}${RESET}"
+    decho -e "${TAB}file ${YELLOW}${sour_fil}${RESET} located in ${DIR}${sour_dir}${RESET}"
     
     dtab
     if [ ${DEBUG:-0} -gt 2 ]; then
         print_stack
     fi
-
-    if [ ${DEBUG:-0} -gt 0 ]; then
-        decho -n "${TAB}"
-        hline
-    fi
-
+    
 }
 
 # test secho and lecho
@@ -197,8 +193,8 @@ function rdb() {
 
 function idb() {
     set -u
-    funcDEBUG=0
-    
+    funcDEBUG=1
+
     # check if DEBUG is unset
     if [ -z ${DEBUG+dummy} ]; then
         local UNSET='\E[1;33munset\E[0m'
@@ -225,13 +221,14 @@ function idb() {
     if [[ "$DEBUG" =~ $num ]]; then
         fecho "DEBUG is a number"
         fecho "incrementing DEBUG..."
-        ((DEBUG++))
+        ((++DEBUG))
         export DEBUG
     else
         fecho "DEBUG is not a number"
         fecho "setting DEBUG to zero..."
         export DEBUG=0
     fi
+
     fecho -e "DEBUG = ${DEBUG}"
     if [ $funcDEBUG -eq 0 ];then
         start_new_line
@@ -288,6 +285,6 @@ function ddb() {
     fecho -e "DEBUG = ${DEBUG}"
     if [ $funcDEBUG -eq 0 ];then
         start_new_line
-        rint_debug
+        print_debug
     fi
 }

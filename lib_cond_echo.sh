@@ -111,7 +111,7 @@ function xecho() {
     local -ir THRESHOLD=$(( PREFIX_LENGTH - 1 ))
 
     # if DEBUG is (unset or null) or greater than threshold
-    if [ -z ${DEBUG:+dummy} ] || [ $DEBUG -gt $THRESHOLD ]; then
+    if [ -z ${DEBUG:+dummy} ] || [ ${DEBUG:-0} -gt $THRESHOLD ]; then
         # get color index
         local -i idx
         dbg2idx $PREFIX_LENGTH idx
@@ -121,9 +121,9 @@ function xecho() {
         # must be included on same line to maintain formatting
         # check if argument is escaped
         if [[ "$@" =~ -[nE]*e[nE]* ]]; then
-            echo "$@\e[0m"
+            echo "$@\e[0m" | sed "s/\x1B\[0m/\x1B[0m${dcolor[idx]}/"
         else
-            echo -n "$@"                
+            echo -n "$@" | sed "s/\x1B\[0m/\x1B[0m${dcolor[idx]}/"            
             echo -ne "\e[0m"
             # check if argument includes newline
             if [[ "$@" =~ -[E]*n[E]* ]]; then

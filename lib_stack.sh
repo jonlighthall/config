@@ -110,9 +110,11 @@ function print_bar() {
 }
 
 function print_stack() {
-    local -i DEBUG=${DEBUG:=9}
-    start_new_line
+    local -i DEBUG=${DEBUG:=0}
+    local -i funcDEBUG=$DEBUG
 
+    start_new_line
+    [ $DEBUG -gt 0 ] && (fecho -n; print_debug)
     # initialize variables
     unset N_FUNC
     unset N_BASH
@@ -230,7 +232,7 @@ function print_stack() {
             # print stack element
             echo "$i:${FUNCNAME[i]}:${BASH_DIR[i]}:${BASH_FNAME[i]}:${BASH_LINENO[i]}"
             # check if source is linked
-            if [[ "${BASH_SOURCE[$i]}" != "${BASH_LINK[$i]}" ]]; then
+            if [[ "${BASH_SOURCE[$i]}" != "${BASH_LINK[$i]}" ]] && [ $DEBUG -gt 0 ]; then
                 # set color
                 ((idx++))
                 echo -ne "${dcolor[idx]}"
