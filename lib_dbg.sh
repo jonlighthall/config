@@ -35,7 +35,7 @@ function lecho() {
     ddecho "${TAB}there are ${N_BASH} entries in the call stack"
 
     if [ $N_BASH -eq 1 ]; then
-        echo "${TAB}called on line ${GRL}${BASH_LINENO}${RESET} from ${BASH##*/}"
+        echo -e "${TAB}called on line ${GRL}${BASH_LINENO}${RESET} from ${BASH##*/}"
         return 0
     fi
     
@@ -59,7 +59,7 @@ function lecho() {
 
     if [[ "${func}" == "main" ]] || [[ "${func}" == "source" ]]; then
         # the function is call from bash
-        echo "called on line ${GRL}${BASH_LINENO[(($N_BASH-2))]}${RESET} in file ${BASH_SOURCE[(($N_BASH-1))]##*/}"
+        echo -e "called on line ${GRL}${BASH_LINENO[(($N_BASH-2))]}${RESET} in file ${YELLOW}${BASH_SOURCE[(($N_BASH-1))]##*/}${RESET}"
         return 0
     else
         # get the line where the function is defined
@@ -70,8 +70,8 @@ function lecho() {
         ddecho "${TAB}BASH_LINENO refers to file"
         local -i call_line=$func_line
         # print file line
-        echo -en "${TAB}${GRH}called on line ${call_line} "
-        echo -e "in file ${sour_fil}${RESET}"           
+        echo -en "${TAB}${GRH}called on line ${GRL}${call_line} "
+        echo -e "in file ${YELLOW}${sour_fil}${RESET}"           
     else
         ddecho "${TAB}BASH_LINENO refers to function"
         # get the line in the file where the function is called
@@ -79,7 +79,7 @@ function lecho() {
         local -i call_line=$(($line_func_def -1 + $func_line))
         # print file line
         echo -n "${TAB}called on line ${call_line} "
-        echo "in file ${sour_fil}"    
+        echo "in file ${YELLOW}${sour_fil}${RESET}"    
         itab
         # print function line
         decho -n "${TAB}called on line ${func_line} "
@@ -90,9 +90,9 @@ function lecho() {
     itab
     # print definition line
     decho -n "${TAB}function ${func}() "
-    decho -n "defined on line ${line_func_def} "
-    decho "in file ${sour_fil}"
-    decho "${TAB}file ${sour_fil} located in ${sour_dir}"
+    decho -n "defined on line ${GRL}${line_func_def}${RESET} "
+    decho "in file ${YELLOW}${sour_fil}${RESET}"
+    decho "${TAB}file ${YELLOW}${sour_fil}${RESET} located in ${DIR}${sour_dir}${RESET}"
     
     dtab
     if [ ${DEBUG:-0} -gt 2 ]; then
