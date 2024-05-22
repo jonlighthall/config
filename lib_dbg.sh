@@ -24,10 +24,10 @@ function lecho() {
     local -i DEBUG=${DEBUG:-1}
     set -u
 
-    if [ ${DEBUG:-0} -gt 0 ]; then
+    if [ ${DEBUG:-0} -gt 0 ] || [ $# -gt 0 ] ; then
         decho -n "${TAB}"
         hline
-        print_debug
+        echo -n "$@ "
         trap 'decho -n "${TAB}";hline;trap -- RETURN' RETURN        
     fi
     
