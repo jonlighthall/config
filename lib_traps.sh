@@ -186,8 +186,13 @@ function reset_shell() {
 
 # print shell
 function huh() {
-    echo "shell options: $-"
-    echo -n "traps: "
+    local -i DEBUG=1
+    # print function name
+    decho -e "${TAB}${INVERT}${FUNCNAME}?${RESET}"
+
+    itab
+    echo "${TAB}shell options: $-"
+    echo -n "${TAB}traps: "
     if [ -z "$(trap -p)" ]; then
         echo "${TAB}none"
     else
@@ -199,10 +204,11 @@ function huh() {
 
     print_debug
     print_tab
-
+    dtab
     if [ ${DEBUG-0} -gt 0 ]; then
         trap 'print_return $?; trap - RETURN' RETURN
     fi
+    return 0
 }
 
 # -----------------------------------------------------------------------------------------------
@@ -350,7 +356,7 @@ function print_int() {
 # Print ERR trace
 # -----------------------------------------------------------------------------------------------
 
-function print_error() {   
+function print_error() {
     # expected arguments are $LINENO $? $BASH_COMMAND
     # e.g.
     # trap 'print_error $LINENO $? $BASH_COMMAND' ERR
@@ -399,7 +405,7 @@ function print_error() {
 
     if [ ${N_BOTTOM} -gt 0 ]; then
         ddecho "${TAB}FUNCNAME[$N_BOTTOM] = ${FUNCNAME[$N_BOTTOM]}"
-        ddecho "${TAB}BASH_SOURCE[$N_BOTTOM] = ${BASH_SOURCE[$N_BOTTOM]}"
+        decho "${TAB}BASH_SOURCE[$N_BOTTOM] = ${BASH_SOURCE[$N_BOTTOM]}"
 
         if [[ ${BASH_SOURCE[${N_BOTTOM}]} == "bash" ]]; then
             ddecho "${TAB}bottom of stack is bash"
@@ -455,9 +461,9 @@ function print_error() {
     else
         ddecho "${TAB}error came from ${SHELL##*/} prompt"
         ((--ERR_LINENO))
+        ERR_LINE="$ERR_CMD"
     fi
 
-    ERR_LINE="$ERR_CMD"
     dtab
 
     # print summary
@@ -788,41 +794,49 @@ function clear_traps() {
     dtab 2
 }
 
-# optionally override traps
+#
+function enable_exit_on_fail() {
+    trap 'echo "${TAB}${BASH_SOURCE[0]##*/}: line $LINENO: trapping ERR $BASH_COMMAND"; return 0 2>/dev/null' ERR
+}
+
+# Rrovide a way to cleanly exit on errors, whether the file is sourced or executed, that does not
+# cause the shell to exit.
 function exit_on_fail() {
     echo -e "${TAB}${YELLOW}\x1b[7m${BASH_SOURCE[1]##*/} failed\x1b[0m"
     # -----------------
     # set behavior
     local do_exit=true
     # -----------------
-    if [[ $do_exit == true ]]; then
-        echo "${TAB}$FUNCNAME is true"
-        itab
-        print_stack
-        dtab
+    # decho "${TAB}$FUNCNAME is $do_exit"
+    if [[ $do_exit == true ]]; then        
+        #itab
+        #print_stack
+        #dtab
 
-        # turn off exit-on-errors, otherwise shell will exit
-        echo "${TAB}shell options: $-"
+        #decho "${TAB}shell options: $-"
         if [[ "$-" == *i* ]]; then
-            itab
-            echo "${TAB}shell is interactive"
+            #  itab
+            #  decho "${TAB}shell is interactive"
             if [[ "$-" == *e* ]]; then
-                echo "${TAB}turning off exit-on-errors..."
+                #decho -e "${TAB}turning off exit-on-errors..."
+                # turn off exit-on-errors, otherwise shell will exit
                 set +e
-                dtab
-                echo "${TAB}shell options: $-"
-                echo "${TAB}$FUNCNAME exiting..."
-                exit 1
+                #dtab
+                #decho "${TAB}shell options: $-"
+                #decho "${TAB}$FUNCNAME exiting..."
+                # return 1 to trigger error
+                # then trap error with return
+                #itab
+                #  huh
+                return 1
             fi
         else
-            echo "${TAB}returning..."
+            #   decho "${TAB}shell is NOT interactive"
+            decho "${TAB}returning..."
             return 1
-
         fi
-
-        set_traps
-        dtab
     else
+        # decho "${TAB}continuing..."
         return 0
     fi
 }
