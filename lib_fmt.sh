@@ -45,8 +45,8 @@ function get_curpos() {
 	  fecho -e "cursor position: x=$cursor_x_position y=$cursor_y_position"
 
     fecho "number of args: $#"
-    
-    # output values to parent   
+
+    # output values to parent
     if [ $# -gt 0 ]; then
         fecho "outputting..."
         local -n x_out=$1
@@ -54,7 +54,7 @@ function get_curpos() {
             fecho "   arg 1 in : ${!x_out}=$x_out"
         fi
         fecho "   arg 1 out: ${!x_out}=${cursor_x_position}"
-        x_out=$cursor_x_position        
+        x_out=$cursor_x_position
     fi
 
     if [ $# -gt 1 ]; then
@@ -63,17 +63,17 @@ function get_curpos() {
             fecho "   arg 2 in : ${!y_out}=$y_out"
         fi
         fecho "   arg 2 out: ${!y_out}=${cursor_y_position}"
-        y_out=$cursor_y_position        
+        y_out=$cursor_y_position
     fi
     dtab
 }
 
 # test cursor position
 function ind() {
-    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     local -i DEBUG=1
     local -i funcDEBUG=1
-    
+
     local -i x1=0
     local -i y1=0
     local -i x2=0
@@ -95,21 +95,21 @@ function ind() {
     if [ $x1 = $x2 ]; then
         echo "x-position did not change"
     fi
-    
+
     if [ $y1 = $y2 ]; then
         echo "y-position did not change"
     fi
 
-    if [ $x1 = $x2 ] && [ $y1 = $y2 ]; then         
+    if [ $x1 = $x2 ] && [ $y1 = $y2 ]; then
         echo "cursor position did not change"
-    fi   
+    fi
 }
 
 # start a new line only if not already on a new line
 # i.e., carriage return with conditional line feed
 function start_new_line() {
-    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
-    if [ $DEBUG -ge 3 ]; then 
+    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    if [ $DEBUG -ge 3 ]; then
         local -i funcDEBUG=1
     else
         local -i funcDEBUG=0
@@ -121,7 +121,7 @@ function start_new_line() {
     # if the cursor is not at the start of a line, then create a new line
     if [ ${x} -gt 1 ]; then
         fecho -en "\x1b[7mNEW LINE\x1b[m"
-        if [ $DEBUG -gt 0 ]; then 
+        if [ $DEBUG -gt 0 ]; then
             printf '\e[0;90;40m\u21b5\n\e[m'
         fi
     else
@@ -151,6 +151,7 @@ function hline() {
         m=$2
     fi
     local -i i
+    echo -ne "${TAB}"
     for ((i = 1; i <= $N; i++)); do echo -n "$m"; done
     echo
 }
@@ -159,7 +160,7 @@ function hline() {
 # SYNTAX
 #   bar [length] [text]
 function bar() {
-    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     # number of characters in line (length)
     local -i N
     # text to print between bars
@@ -176,7 +177,7 @@ function bar() {
         TXT=$2
     fi
     hline $N
-    echo "$TXT"
+    echo "$TXT" | sed "s/^/${TAB}/"
     hline $N
 }
 
@@ -184,7 +185,7 @@ function bar() {
 # SYNTAX
 #   cbar [text]
 function cbar() {
-    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     # get text and add whitespace
     local -r MESSAGE_IN=$(echo " $@ ")
     # remove escape characters
@@ -199,7 +200,7 @@ function strip_pretty() {
     local -n output=$1
     shift
 
-    # strip escapes    
+    # strip escapes
     output=$(echo -e "$@" | sed "s/$(echo -e "\E")[^m]*m//g")
 }
 
@@ -222,8 +223,8 @@ function do_cmd() {
     if [ $DEBUG -gt 0 ]; then
         start_new_line
     fi
-    decho "${TAB}running command $cmd... " 
-    
+    decho "${TAB}running command $cmd... "
+
     # get color index
     local -i idx
     dbg2idx $FMT_COLOR idx
@@ -241,17 +242,17 @@ function do_cmd() {
         if [ $x1c -gt 1 ]; then
             # if the cursor is not at the start of a line, start a new line
             local cr='\n'
-            if [ $DEBUG -gt 0 ]; then 
+            if [ $DEBUG -gt 0 ]; then
                 cr="$(printf '\u21b5')\n"
             fi
         else
             # if the cursor is already  at the start of a new line, do nothing
             local cr=''
         fi
-        
+
         ddecho "${TAB}printing unbuffered command ouput..."
         # set shell options
-        set -o pipefail        
+        set -o pipefail
         # print unbuffered command output
         unbuffer $cmd \
             | sed -u "s/\r$//g;s/.*\r/${TAB}/g;s/^/${TAB}/" \
@@ -269,7 +270,7 @@ function do_cmd() {
             # print typescript command ouput
             dtab
             do_cmd_script $cmd
-        else            
+        else
             ddecho "${TAB}printing buffered command ouput..."
             # print buffered command output
             dtab
@@ -277,7 +278,7 @@ function do_cmd() {
         fi
         local -i RETVAL=$?
     fi
-    
+
     # reset formatting
     unset_color
     dtab
@@ -300,14 +301,14 @@ function do_cmd_script() {
     if [ $DEBUG -gt 0 ]; then
         start_new_line
     fi
-    decho "${TAB}SCRIPT: running command $cmd... " 
-    
+    decho "${TAB}SCRIPT: running command $cmd... "
+
     # get color index
     local -i idx
     dbg2idx $FMT_COLOR idx
     # set color
     echo -ne "${dcolor[$idx]}"
-    
+
     # check if typescript is defined
     if command -v script >/dev/null; then
         # check cursor position
@@ -318,14 +319,14 @@ function do_cmd_script() {
         if [ $x1c -gt 1 ]; then
             # if the cursor is not at the start of a line, start a new line
             local cr='\n'
-            if [ $DEBUG -gt 0 ]; then 
+            if [ $DEBUG -gt 0 ]; then
                 cr="new line$(printf '\u21b5')\n"
             fi
         else
             # if the cursor is already  at the start of a new line, do nothing
             local cr=''
         fi
-        
+
         ddecho "${TAB}printing command ouput typescript..."
         # set shell options
         set -o pipefail
@@ -355,27 +356,27 @@ function do_cmd_script() {
         dbg2idx $FMT_COLOR idx
         # set color
         echo -ne "${dcolor[$idx]}"
-        
+
         dtab
         # print buffered command output
         $cmd
         local -i RETVAL=$?
     fi
-    
+
     # reset formatting
     unset_color
-    dtab    
+    dtab
     return $RETVAL
 }
 
 # format buffered command ouput
 # save ouput to file, print file, delete file
 # developed for use when unbuffer and script are unavailable
-function do_cmd_stdbuf() {    
+function do_cmd_stdbuf() {
     # save command as variable
     cmd=$(echo $@)
     # format output
-    itab    
+    itab
     if [ $DEBUG -gt 0 ]; then
         start_new_line
     fi
@@ -384,13 +385,13 @@ function do_cmd_stdbuf() {
     local -i idx
     dbg2idx $FMT_COLOR idx
     # set color
-    echo -ne "${dcolor[$idx]}"    
+    echo -ne "${dcolor[$idx]}"
 
     # define temp file
     temp_file=temp
     ddecho "${TAB}STDBUF: redirecting command ouput to $temp_file..."
 
-    # unbuffer command output and save to file    
+    # unbuffer command output and save to file
     stdbuf -i0 -o0 -e0 $cmd &>$temp_file
     RETVAL=$?
 
@@ -399,12 +400,12 @@ function do_cmd_stdbuf() {
         # check cursor position
         local -i x1c
         get_curpos x1c
-        echo -ne "${dcolor[$idx]}"    
+        echo -ne "${dcolor[$idx]}"
         # set the "carriage return" value for the first non-empty line of the command ouput
         if [ $x1c -gt 1 ]; then
             # if the cursor is not at the start of a line, start a new line
             local cr='\n'
-            if [ $DEBUG -gt 0 ]; then 
+            if [ $DEBUG -gt 0 ]; then
                 cr="$(printf '\u21b5')\n"
             fi
         else
@@ -418,17 +419,17 @@ function do_cmd_stdbuf() {
             | sed -u "s/\r$//g;s/.*\r/${TAB}/g;s/^/${TAB}/" \
             | sed -u "/^[^%|]*|/s/^/${dcolor[$idx+1]}/g; s/$/${dcolor[$idx]}/; /|/s/+/${GOOD}&/g; /|/s/-/${BAD}&/g; /modified:/s/^.*$/${BAD}&/g; /^\s*M\s/s/^.*$/${BAD}&/g" \
             | sed "1 s/^[\s]*[^\s]/${cr}&/"
-        
+
     else
         itab
         ddecho "${TAB}${temp_file} empty"
         dtab
     fi
-    
+
     # remove temporary file
     if [ -f ${temp_file} ]; then
         rm ${temp_file}
-    fi    
+    fi
 
     # reset formatting
     unset_color
@@ -449,12 +450,12 @@ function do_cmd_safe() {
     if [ $DEBUG -gt 0 ]; then
         start_new_line
     fi
-    decho "${TAB}SAFE: running command $cmd... " 
+    decho "${TAB}SAFE: running command $cmd... "
 
     # set shell options
     unset_traps
     if [[ "$-" == *e* ]]; then
-        echo -n "${TAB}setting shell options..."    
+        echo -n "${TAB}setting shell options..."
         old_opts=$(echo "$-")
         # exit on errors must be turned off; otherwise shell will exit...
         set +e
@@ -463,12 +464,12 @@ function do_cmd_safe() {
 
     dtab
     do_cmd $cmd
-    RETVAL=$?    
+    RETVAL=$?
     itab
 
     # reset shell options
     reset_shell ${old_opts-''}
-    reset_traps    
-    
+    reset_traps
+
     return $RETVAL
 }
