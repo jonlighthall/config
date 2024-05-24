@@ -19,7 +19,17 @@ function print_source() {
 
     # define default run type
     RUN_TYPE=${RUN_TYPE:-"running"}
-
+    
+    # set tab
+    if [[ "${RUN_TYPE}" =~ "sourcing" ]]; then
+        set_tab
+        decho -e "${TAB}${DIM}${FUNCNAME}${NORMAL}: ${RUN_TYPE}: reducing tab..."
+        dtab
+    else
+        set_tab_shell
+    fi
+    export TAB
+    
     # conditionally add stack level prefix
     if [ ${DEBUG:-0} -gt 1 ]; then 
         # since print_source is itself part of the stack, remove the top of the stack
@@ -29,7 +39,7 @@ function print_source() {
             prefix+="i"
         fi        
         prefix+="\x1b[0m"
-        RUN_TYPE="${prefix}${RUN_TYPE}"
+        RUN_TYPE="${prefix} ${RUN_TYPE}"
     fi
     # strip escapes from run type
     local msgne
@@ -60,16 +70,8 @@ function print_source() {
     # define indent
     local spx=$(echo -ne "\E[${sp}C")
 
-    # set tab
-    if [[ "${RUN_TYPE}" =~ "sourcing" ]]; then
-        set_tab
-        decho -e "${TAB}${DIM}${FUNCNAME}${NORMAL}: ${RUN_TYPE}: reducing tab..."
-        dtab
-    else
-        set_tab_shell
-    fi
-    export TAB
-    
+    lecho
+      
     # print run type and source name
     vecho -e "${TAB}${RUN_TYPE} ${PSDIR}${BASH_SOURCE[1]}${RESET}..."
     if [ ! "${BASH_SOURCE[1]}" = "$src_name" ]; then
@@ -94,8 +96,14 @@ function print_ribbon() {
     get_source
     # since this function is part of the stack, reduce N_BASH by one
     ((N_BASH--))
+
+    local decor="${N_BASH}"
+    if [[ "$-" == *i* ]]; then
+        : #decor+="i"
+    fi       
+    
     # print source
-    decho -e "${TAB}\x1b[7;38;5;132m${N_BASH}: ${src_base} :${N_BASH}\x1b[0m"
+    decho -e "${TAB}\x1b[7;38;5;132m${decor}: ${src_base} :${decor}\x1b[0m"
 }
 
 function print_bar() {
