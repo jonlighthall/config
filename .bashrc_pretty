@@ -16,7 +16,9 @@ TAB=${TAB=''}
 # if the argument '-f' is used, force loading the file
 if [ ! -z ${FPRETTY_LOADED+dummy} ] && [[ "$@" != "-f" ]]; then      
     if [ ! -z "$(declare -f print_pretty_cbar)" ]; then 
-        decho "${TAB}"$(print_pretty "${BASH_SOURCE##*/} already loaded")
+        if [ $DEBUG -gt 0 ]; then
+            print_pretty "${BASH_SOURCE##*/} already loaded" | sed "s/^/${TAB}/"
+        fi
         return 0
     fi
 fi    
