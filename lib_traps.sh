@@ -362,12 +362,15 @@ function print_error() {
     # trap 'print_error $LINENO $? $BASH_COMMAND' ERR
     DEBUG=3
 
+    decho -e "${TAB}${RED}${INVERT}${FUNCNAME}${RESET}"
+    
     TAB=${TAB=''}
     local ERR_PRINT=$(echo -e "${TAB}\E[37;41m ERROR ${RESET} ")
     [ $DEBUG -gt 0 ] && start_new_line
     echo -n "${TAB}"
     hline
     echo "${ERR_PRINT}"
+    
     eTAB=$(echo -e "${RED}|${RESET}")
     eTAB=$fTAB
 
@@ -546,9 +549,73 @@ function test_traps() {
     # set debug level for testing trap programs
     local -i localDEBUG=3
     set_traps ${localDEBUG}
+    print_clear ${localDEBUG}
+    
     unset_traps ${localDEBUG}
     reset_traps ${localDEBUG}
+    echo "traps: "
+    trap -p
+    
     clear_traps ${localDEBUG}
+    echo "traps: "
+    trap -p
+    set_exit ${localDEBUG}
+    echo "traps: "
+    trap -p
+}
+
+function print_set() {
+    # set local debug value
+    if [ $# -eq 1 ]; then
+        # use argument to manually set DEBUG
+        local -i DEBUG=$1
+    else
+        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+    fi
+    # print summary
+    ddecho "${TAB}on ${FUNCNAME[1]} return, the following traps are set"
+    itab
+    if [ -z "$(trap -p)" ]; then
+        ddecho -e "${TAB}none"
+        dtab
+        echo -e "${BAD}traps not set${RESET}"
+        dtab
+        return 1
+    else
+        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" # | sed 's/^[ ]*$//g'
+    fi
+
+    dtab 2
+}
+
+do_clear() {
+    # clear traps
+    for itrap in $(trap -p | sed 's/.* //;/^[^A-Z]/d'); do
+        trap - $itrap
+    done
+}
+
+print_clear() {
+# set local debug value
+    if [ $# -eq 1 ]; then
+        # use argument to manually set DEBUG
+        local -i DEBUG=$1
+    else
+        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+    fi
+    # print summary
+    ddecho "${TAB}on ${FUNCNAME[1]} return, the following traps are set"
+    itab
+    if [ -z "$(trap -p)" ]; then
+        ddecho "${TAB}none"
+    else
+        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g"
+        dtab
+        echo -e "${BAD}traps not cleared${RESET}"
+        dtab
+        return 1
+    fi
+    dtab 2
 }
 
 # set ERR and EXIT traps
@@ -579,18 +646,8 @@ function set_traps() {
     trap 'print_exit $?' EXIT
     dddecho "done"
 
-    # print summary
-    ddecho "${TAB}on ${FUNCNAME} return, the following traps are set"
-    itab
-    if [ -z "$(trap -p)" ]; then
-        ddecho -e "${TAB}none"
-        echo "something didn't work..."
-        dtab
-        return 1
-    else
-        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" # | sed 's/^[ ]*$//g'
-    fi
-    dtab 2
+    print_set
+
 }
 
 # set EXIT trap
@@ -611,18 +668,7 @@ function set_exit() {
     trap 'print_exit $?' EXIT
     dddecho "done"
 
-    # print summary
-    ddecho "${TAB}on ${FUNCNAME} return, the following traps are set"
-    itab
-    if [ -z "$(trap -p)" ]; then
-        ddecho -e "${TAB}none"
-        echo "something didn't work..."
-        dtab
-        return 1
-    else
-        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" # | sed 's/^[ ]*$//g'
-    fi
-    dtab 2
+    print_set
 }
 
 # unset ERR and EXIT traps, saving current values
@@ -672,23 +718,9 @@ function unset_traps() {
         fi
     fi
 
-    # clear traps
-    for itrap in $(trap -p | sed 's/.* //'); do
-        trap - $itrap
-    done
+    do_clear
+    print_clear
 
-    # print summary
-    ddecho "${TAB}on ${FUNCNAME} return, the following traps are set"
-    itab
-    if [ -z "$(trap -p)" ]; then
-        ddecho "${TAB}none"
-    else
-        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g"
-        echo "something didn't work..."
-        dtab 2
-        return 1
-    fi
-    dtab 2
 }
 
 # reset saved traps
@@ -776,23 +808,8 @@ function clear_traps() {
     # clear saved traps
     unset save_traps
 
-    # clear traps
-    for itrap in $(trap -p | sed 's/.* //'); do
-        trap - $itrap
-    done
-
-    # print summary
-    ddecho "${TAB}on ${FUNCNAME} return, the following traps are set"
-    itab
-    if [ -z "$(trap -p)" ]; then
-        ddecho "${TAB}none"
-    else
-        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g"
-        echo "something didn't work..."
-        dtab 2
-        return 1
-    fi
-    dtab 2
+    do_clear
+    print_clear
 }
 
 #
@@ -806,19 +823,18 @@ function exit_on_fail() {
     echo -e "${TAB}${YELLOW}\x1b[7m${BASH_SOURCE[1]##*/} failed\x1b[0m"
     lecho
     plecho
-        
+
     return 1
     # -----------------
     # set behavior
     local do_exit=true
     # -----------------
     # decho "${TAB}$FUNCNAME is $do_exit"
-    if [[ $do_exit == true ]]; then        
+    if [[ $do_exit == true ]]; then
         #itab
         #print_stack
         #dtab
 
-        
         #decho "${TAB}shell options: $-"
         if [[ "$-" == *i* ]]; then
             #  itab
