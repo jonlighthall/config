@@ -360,6 +360,7 @@ function print_error() {
     # expected arguments are $LINENO $? $BASH_COMMAND
     # e.g.
     # trap 'print_error $LINENO $? $BASH_COMMAND' ERR
+    DEBUG=3
 
     TAB=${TAB=''}
     local ERR_PRINT=$(echo -e "${TAB}\E[37;41m ERROR ${RESET} ")
@@ -803,6 +804,10 @@ function enable_exit_on_fail() {
 # cause the shell to exit.
 function exit_on_fail() {
     echo -e "${TAB}${YELLOW}\x1b[7m${BASH_SOURCE[1]##*/} failed\x1b[0m"
+    lecho
+    plecho
+        
+    return 1
     # -----------------
     # set behavior
     local do_exit=true
@@ -813,6 +818,7 @@ function exit_on_fail() {
         #print_stack
         #dtab
 
+        
         #decho "${TAB}shell options: $-"
         if [[ "$-" == *i* ]]; then
             #  itab
