@@ -313,6 +313,13 @@ function print_return() {
     # set local debug value
     local -i DEBUG=${DEBUG:-0} # substitute default value if DEBUG is unset or null
 
+    # print summary
+    start_new_line
+    if [ $DEBUG -gt 1 ]; then
+        decho -e "${TAB}${YELLOW}${INVERT}${FUNCNAME}${RESET}"
+        print_stack
+    fi
+
     if false; then
         ddecho "${TAB}$-"
         # set shell options
@@ -323,18 +330,19 @@ function print_return() {
         ddecho "${TAB}$-"
     fi
 
+    if [ $# -eq 0 ]; then
+        decho "no arg"
+    else
+        decho "arg = $@"
+    fi
+
     RETURN_RETVAL=${1:-''}
 
     # get size of function stack
     local -ir N_FUNCs=${#FUNCNAME[@]}
-    # print summary
-    start_new_line
-    if [ $DEBUG -gt 1 ]; then
-        print_stack
-    fi
 
     echo -en "${TAB}${YELLOW}\E[7m RETURN ${RESET}"
-    if [ -z ${RETURN_RETVAL:-dummy} ]; then
+    if [ ! -z ${RETURN_RETVAL:-dummy} ]; then
         echo -en " ${GRAY}RETVAL=${RETURN_RETVAL}${RESET}"
     fi
     if [ ${N_FUNCs} -gt 1 ]; then
@@ -362,14 +370,13 @@ function print_error() {
     # trap 'print_error $LINENO $? $BASH_COMMAND' ERR
     DEBUG=3
 
-    decho -e "${TAB}${RED}${INVERT}${FUNCNAME}${RESET}"
+    decho -e "${TAB}\E[37;41m${FUNCNAME}${RESET}"
 
     TAB=${TAB=''}
     local ERR_PRINT=$(echo -e "${TAB}\E[37;41m ERROR ${RESET} ")
     [ $DEBUG -gt 0 ] && start_new_line
     echo -n "${TAB}"
     hline
-    echo "${ERR_PRINT}"
 
     eTAB=$(echo -e "${RED}|${RESET}")
     eTAB=$fTAB
@@ -544,11 +551,15 @@ function print_error() {
 # -----------------------------------------------------------------------------------------------
 
 function test_traps() {
-    set -u
+    set -u    
     trap 'print_return $?; trap - RETURN' RETURN
     # set debug level for testing trap programs
     local -i localDEBUG=3
+    print_traps ${localDEBUG}
     set_traps ${localDEBUG}
+    # check error trapping
+    echo "${TAB}checking ERR trap..."
+    itab
     check_traps_clear ${localDEBUG}
 
     unset_traps ${localDEBUG}
@@ -565,17 +576,23 @@ function test_traps() {
 }
 
 function print_traps() {
-
+    # set local debug value
+    if [ $# -eq 1 ]; then
+        # use argument to manually set DEBUG
+        local -i DEBUG=$1
+    else
+        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+    fi
     # print summary
     ddecho "the following traps are set"
     itab
     if [ -z "$(trap -p)" ]; then
         ddecho -e "${TAB}none"
     else
-        echo $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" # | sed 's/^[ ]*$//g'
+        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" # | sed 's/^[ ]*$//g'
     fi
+    ddecho -ne ${RESET}
     dtab
-
 }
 
 function check_traps_set() {
@@ -611,7 +628,7 @@ check_traps_clear() {
     ddecho -n "${TAB}on ${FUNCNAME[1]} return, "
     print_traps
     if [ ! -z "$(trap -p)" ]; then
-        echo -e "${BAD}traps not cleared${RESET}"
+        echo -e "${TAB}${BAD}traps not cleared${RESET}"
         dtab
         return 1
     fi
@@ -621,8 +638,6 @@ check_traps_clear() {
 do_clear() {
     if false; then
         local -i DEBUG=3
-        ddecho -en "${TAB}"
-        print_traps
 
         echo "traps:"
         echo -e "${INVERT}normal print:${NORMAL}"
@@ -636,18 +651,16 @@ do_clear() {
         echo -e "${INVERT}traps echo sig tr:${NORMAL}"
         echo $(trap -p) | sed "s/ \(trap\)/\n\1/g" |  sed 's/.* //' | tr  '\n' ' '
 
-
-
         echo "sig = ${sig}"
         echo "sig@ = ${sig[@]}"
         echo "#sig = ${#sig[@]}"
     fi
 
     local -a sig="$(echo $(trap -p) | sed "s/ \(trap\)/\n\1/g" |  sed 's/.* //' | tr  '\n' ' ')"
-    
+
     # clear traps
     for itrap in ${sig[@]}; do
-        decho "${TAB}unsetting $itrap..."
+        decho "${TAB}unsetting trap $itrap..."
         trap - $itrap
     done
 }
@@ -794,14 +807,9 @@ function reset_traps() {
     fi
 
     # print summary
-    ddecho "${TAB}on ${FUNCNAME} return, the following traps are set"
-    itab
-    if [ -z "$(trap -p)" ]; then
-        ddecho "${TAB}none"
-    else
-        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g"
-    fi
-    dtab 2
+    ddecho -n "${TAB}on ${FUNCNAME} return, "
+    print_traps
+    dtab
 }
 
 # unset ERR, EXIT, and RETURN traps, erasing current values
