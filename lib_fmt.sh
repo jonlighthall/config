@@ -118,6 +118,7 @@ function start_new_line() {
     local -i x
     itab
     get_curpos x
+    dtab
     # if the cursor is not at the start of a line, then create a new line
     if [ ${x} -gt 1 ]; then
         fecho -en "\x1b[7mNEW LINE\x1b[m"
@@ -127,7 +128,6 @@ function start_new_line() {
     else
         fecho -en "\x1b[7mNO NEW LINE\x1b[m"
     fi
-    dtab
 }
 
 # print horizontal line
