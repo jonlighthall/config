@@ -363,14 +363,14 @@ function print_error() {
     DEBUG=3
 
     decho -e "${TAB}${RED}${INVERT}${FUNCNAME}${RESET}"
-    
+
     TAB=${TAB=''}
     local ERR_PRINT=$(echo -e "${TAB}\E[37;41m ERROR ${RESET} ")
     [ $DEBUG -gt 0 ] && start_new_line
     echo -n "${TAB}"
     hline
     echo "${ERR_PRINT}"
-    
+
     eTAB=$(echo -e "${RED}|${RESET}")
     eTAB=$fTAB
 
@@ -549,13 +549,13 @@ function test_traps() {
     # set debug level for testing trap programs
     local -i localDEBUG=3
     set_traps ${localDEBUG}
-    print_clear ${localDEBUG}
-    
+    check_traps_clear ${localDEBUG}
+
     unset_traps ${localDEBUG}
     reset_traps ${localDEBUG}
     echo "traps: "
     trap -p
-    
+
     clear_traps ${localDEBUG}
     echo "traps: "
     trap -p
@@ -564,7 +564,21 @@ function test_traps() {
     trap -p
 }
 
-function print_set() {
+function print_traps() {
+
+    # print summary
+    ddecho "the following traps are set"
+    itab
+    if [ -z "$(trap -p)" ]; then
+        ddecho -e "${TAB}none"
+    else
+        echo $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" # | sed 's/^[ ]*$//g'
+    fi
+    dtab
+
+}
+
+function check_traps_set() {
     # set local debug value
     if [ $# -eq 1 ]; then
         # use argument to manually set DEBUG
@@ -573,30 +587,19 @@ function print_set() {
         local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
     fi
     # print summary
-    ddecho "${TAB}on ${FUNCNAME[1]} return, the following traps are set"
-    itab
+    ddecho -n "${TAB}on ${FUNCNAME[1]} return, "
+    print_traps
     if [ -z "$(trap -p)" ]; then
-        ddecho -e "${TAB}none"
-        dtab
         echo -e "${BAD}traps not set${RESET}"
         dtab
         return 1
-    else
-        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" # | sed 's/^[ ]*$//g'
     fi
+    dtab
 
-    dtab 2
 }
 
-do_clear() {
-    # clear traps
-    for itrap in $(trap -p | sed 's/.* //;/^[^A-Z]/d'); do
-        trap - $itrap
-    done
-}
-
-print_clear() {
-# set local debug value
+check_traps_clear() {
+    # set local debug value
     if [ $# -eq 1 ]; then
         # use argument to manually set DEBUG
         local -i DEBUG=$1
@@ -604,18 +607,49 @@ print_clear() {
         local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
     fi
     # print summary
-    ddecho "${TAB}on ${FUNCNAME[1]} return, the following traps are set"
-    itab
-    if [ -z "$(trap -p)" ]; then
-        ddecho "${TAB}none"
-    else
-        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g"
-        dtab
+    # print summary
+    ddecho -n "${TAB}on ${FUNCNAME[1]} return, "
+    print_traps
+    if [ ! -z "$(trap -p)" ]; then
         echo -e "${BAD}traps not cleared${RESET}"
         dtab
         return 1
     fi
-    dtab 2
+    dtab
+}
+
+do_clear() {
+    if false; then
+        local -i DEBUG=3
+        ddecho -en "${TAB}"
+        print_traps
+
+        echo "traps:"
+        echo -e "${INVERT}normal print:${NORMAL}"
+        trap -p
+        echo -e "${INVERT}traps echo:${NORMAL}"
+        echo $(trap -p) | sed "s/ \(trap\)/\n\1/g"
+
+        echo -e "${INVERT}traps echo sig:${NORMAL}"
+        echo $(trap -p) | sed "s/ \(trap\)/\n\1/g" |  sed 's/.* //'
+
+        echo -e "${INVERT}traps echo sig tr:${NORMAL}"
+        echo $(trap -p) | sed "s/ \(trap\)/\n\1/g" |  sed 's/.* //' | tr  '\n' ' '
+
+
+
+        echo "sig = ${sig}"
+        echo "sig@ = ${sig[@]}"
+        echo "#sig = ${#sig[@]}"
+    fi
+
+    local -a sig="$(echo $(trap -p) | sed "s/ \(trap\)/\n\1/g" |  sed 's/.* //' | tr  '\n' ' ')"
+    
+    # clear traps
+    for itrap in ${sig[@]}; do
+        decho "${TAB}unsetting $itrap..."
+        trap - $itrap
+    done
 }
 
 # set ERR and EXIT traps
@@ -646,7 +680,7 @@ function set_traps() {
     trap 'print_exit $?' EXIT
     dddecho "done"
 
-    print_set
+    check_traps_set
 
 }
 
@@ -668,7 +702,7 @@ function set_exit() {
     trap 'print_exit $?' EXIT
     dddecho "done"
 
-    print_set
+    check_traps_set
 }
 
 # unset ERR and EXIT traps, saving current values
@@ -719,7 +753,7 @@ function unset_traps() {
     fi
 
     do_clear
-    print_clear
+    check_traps_clear
 
 }
 
@@ -809,7 +843,7 @@ function clear_traps() {
     unset save_traps
 
     do_clear
-    print_clear
+    check_traps_clear
 }
 
 #
