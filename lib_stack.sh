@@ -227,21 +227,27 @@ function print_stack() {
 
     (
         for ((i = 0; i < $N_STACK ; i++)); do
+            if [ $i == 0 ]; then
+                j="-"
+            else
+                j=$(($i-1))
+            fi
+
             # print stack element
-            echo "$i:${FUNCNAME[i]}:${BASH_DIR[i]}:${BASH_FNAME[i]}:${BASH_LINENO[i]}"
+            echo "$j:$i:${FUNCNAME[i]}:${BASH_DIR[i]}:${BASH_FNAME[i]}:${BASH_LINENO[i]}"
             # check if source is linked
             if [[ "${BASH_SOURCE[$i]}" != "${BASH_LINK[$i]}" ]] && [ $DEBUG -gt 0 ]; then
                 # set color
                 ((idx++))
                 echo -ne "${dcolor[idx]}"
                 # print link
-                echo -ne "$i:${FUNCNAME[i]}:${BASH_LINK_DIR[i]}:${BASH_LINK[i]##*/}:${BASH_LINENO[i]}"
+                echo -ne "$j:$i:${FUNCNAME[i]}:${BASH_LINK_DIR[i]}:${BASH_LINK[i]##*/}:${BASH_LINENO[i]}"
                 # reset color
                 ((idx--))
                 echo -e "${dcolor[idx]}"
             fi
         done
-    ) | column -t -s: -N "index,function,directory,source,line no" -R1 | sed "s/^/${TAB}/" 
+    ) | column -t -s: -N "index,index,function,directory,source,line no" -R1 | sed "s/^/${TAB}/" 
 
     dtab
     # unset color
