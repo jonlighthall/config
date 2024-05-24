@@ -14,14 +14,14 @@ TAB=${TAB=''}
 
 # add read-only variable to check if this file has already been loaded
 # if the argument '-f' is used, force loading the file
-if [ ! -z ${FPRETTY_LOADED+dummy} ] && [[ "$@" != "-f" ]]; then      
-    if [ ! -z "$(declare -f print_pretty_cbar)" ]; then 
+if [ ! -z ${FPRETTY_LOADED+dummy} ] && [[ "$@" != "-f" ]]; then
+    if [ ! -z "$(declare -f print_pretty_cbar)" ]; then
         if [ $DEBUG -gt 0 ]; then
             print_pretty "${BASH_SOURCE##*/} already loaded" | sed "s/^/${TAB}/"
         fi
         return 0
     fi
-fi    
+fi
 
 # set debug level
 declare -i DEBUG=${DEBUG:=0} # assign default value if DEBUG is unset or null
@@ -51,8 +51,8 @@ function get_source() {
         FUNC_LEV=2
     else
         FUNC_LEV=1
-    fi   
-    
+    fi
+
     # get canonical source name
     src_name=$(readlink -f ${BASH_SOURCE[${FUNC_LEV}]})
     # get short source name
@@ -65,13 +65,35 @@ function get_source() {
 }
 
 function load_libs() {
+    # assign NULL to TAB if undefined
     TAB=${TAB=''}
+    get_source
+    # if running from bash, reset TAB and DEBUG
+    if [ $N_BASH -eq 1 ]; then
+        # reset TAB
+        if [ ${#TAB} -gt 0 ]; then
+            if command -v rtab &>/dev/null; then
+                rtab
+            else
+                TAB=''
+            fi
+        fi
+        # reset DEBUG
+        if [ ${DEBUG:-0} -gt 0 ]; then
+            if command -v rdb &>/dev/null; then
+                rdb
+            else
+                DEBUG=0
+            fi
+        fi
+    fi
+
     if command -v decho &>/dev/null; then
-        # print function name 
+        # print function name
         decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
         itab
     fi
-    get_source
+
     # load bash utils
     local fname
     local library
@@ -105,10 +127,10 @@ function load_libs() {
         source ${fname}
     fi
 
-    if [ ! -z ${FPRETTY_LOADED+dummy} ]; then      
+    if [ ! -z ${FPRETTY_LOADED+dummy} ]; then
         dtab # lib tabs
         if [[ "$-" == *i* ]]; then
-           cbar "${BOLD}libraries loaded${NORMAL}" # lib_fmt
+            cbar "${BOLD}libraries loaded${NORMAL}" # lib_fmt
         fi
         if [ ${DEBUG:-0} -gt 1 ]; then
             lecho # lib_dbg
@@ -150,7 +172,7 @@ if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
     print_pretty_cbar
 fi
 
-if [ -z ${FPRETTY_LOADED+dummy} ]; then      
+if [ -z ${FPRETTY_LOADED+dummy} ]; then
     declare -grx FPRETTY_LOADED=true
 else
     echo "${TAB}${BASH_SOURCE##*/} reloaded"
