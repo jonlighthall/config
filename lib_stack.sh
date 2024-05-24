@@ -70,8 +70,6 @@ function print_source() {
     # define indent
     local spx=$(echo -ne "\E[${sp}C")
 
-    lecho
-      
     # print run type and source name
     vecho -e "${TAB}${RUN_TYPE} ${PSDIR}${BASH_SOURCE[1]}${RESET}..."
     if [ ! "${BASH_SOURCE[1]}" = "$src_name" ]; then
