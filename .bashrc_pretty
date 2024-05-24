@@ -14,12 +14,14 @@ TAB=${TAB=''}
 
 # add read-only variable to check if this file has already been loaded
 # if the argument '-f' is used, force loading the file
-if [ ! -z ${FPRETTY_LOADED+dummy} ] && [[ "$@" != "-f" ]]; then
-    if [ ! -z "$(declare -f print_pretty_cbar)" ]; then
-        if [ $DEBUG -gt 0 ]; then
-            print_pretty "${BASH_SOURCE##*/} already loaded" | sed "s/^/${TAB}/"
+if [[ "$@" == "-f" ]];then
+    decho "reloading ${BASH_SOURCE##*/}"
+else
+    if [ ! -z ${FPRETTY_LOADED+dummy} ]; then
+        if [ ! -z "$(declare -f print_pretty_cbar)" ]; then
+            decho "${TAB}"$(print_pretty "${BASH_SOURCE##*/} already loaded")
+            return 0
         fi
-        return 0
     fi
 fi
 
@@ -176,25 +178,7 @@ if [ -z ${FPRETTY_LOADED+dummy} ]; then
     declare -grx FPRETTY_LOADED=true
     vecho "${TAB}${BASH_SOURCE##*/} loaded"
 else
-
-    set +e
-    echo "${TAB}$FPRETTY_LOADED = ${FPRETTY_LOADED}"
-    echo "${TAB}arguments: $@"
-    itab
-    if [ -z "$@" ]; then
-        echo "${TAB}empty"
-    else
-        echo "${TAB}non-empty"
-
-        if [[ "$@" == "-f" ]]; then
-            echo "${TAB}force"
-        else
-            echo "${TAB}regular"
-        fi
-    fi
-    dtab
-
-    echo "${TAB}${BASH_SOURCE##*/} REloaded"
+    decho "${TAB}"$(print_pretty "${BASH_SOURCE##*/} reloaded")
 fi
 
 return 0
