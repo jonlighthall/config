@@ -12,13 +12,14 @@
 # -----------------------------------------------------------------------------------------------
 
 function get_curpos() {
-    # print function name
-    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-
     # Turn in-function debugging on/off.
     local -i DEBUG=${DEBUG:-0}
+    DEBUG=0
     local -i funcDEBUG=0
 
+    # print function name
+    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    
     local CURPOS
     itab
     local -i THRESHOLD=2
@@ -108,6 +109,10 @@ function ind() {
 # start a new line only if not already on a new line
 # i.e., carriage return with conditional line feed
 function start_new_line() {
+    local -i DEBUG=${DEBUG:-0}
+    # Turn in-function debugging on/off.
+    DEBUG=0
+    
     dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     if [ $DEBUG -ge 3 ]; then
         local -i funcDEBUG=1
@@ -134,6 +139,10 @@ function start_new_line() {
 # SYNTAX
 #   hline [length] [style]
 function hline() {
+    local -i DEBUG=${DEBUG:-0}
+    # Turn in-function debugging on/off.
+    DEBUG=0
+    
     dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
     
     # number of characters in line (length)
