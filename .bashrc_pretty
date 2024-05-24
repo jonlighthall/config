@@ -174,6 +174,27 @@ fi
 
 if [ -z ${FPRETTY_LOADED+dummy} ]; then
     declare -grx FPRETTY_LOADED=true
+    vecho "${TAB}${BASH_SOURCE##*/} loaded"
 else
-    echo "${TAB}${BASH_SOURCE##*/} reloaded"
+
+    set +e
+    echo "${TAB}$FPRETTY_LOADED = ${FPRETTY_LOADED}"
+    echo "${TAB}arguments: $@"
+    itab
+    if [ -z "$@" ]; then
+        echo "${TAB}empty"
+    else
+        echo "${TAB}non-empty"
+
+        if [[ "$@" == "-f" ]]; then
+            echo "${TAB}force"
+        else
+            echo "${TAB}regular"
+        fi
+    fi
+    dtab
+
+    echo "${TAB}${BASH_SOURCE##*/} REloaded"
 fi
+
+return 0
