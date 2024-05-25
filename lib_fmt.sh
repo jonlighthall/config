@@ -19,13 +19,34 @@ function get_curpos() {
 
     # print function name
     dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-    
+
     local CURPOS
     itab
     local -i THRESHOLD=2
     if [ $DEBUG -gt $THRESHOLD ]; then
         ddecho -n "${TAB}cursor text: '"
     fi
+
+    # check if output is being redirected
+    if [ ! -t 1 ] ; then
+        # stdout isn't a terminal
+        echo "${FUNCNAME}: output is NOT terminal"
+        echo "...then how are you seeing this?"
+
+        # output values to parent
+        if [ $# -gt 0 ]; then
+            local -n x_out=$1
+            x_out=0
+        fi
+
+        if [ $# -gt 1 ]; then
+            local -n y_out=$2
+            y_out=0
+        fi
+        echo "goodby..."
+        return 1
+    fi
+
     # get the cursor position
     echo -en "\E[6n"
     # print response
@@ -112,7 +133,7 @@ function start_new_line() {
     local -i DEBUG=${DEBUG:-0}
     # Turn in-function debugging on/off.
     DEBUG=0
-    
+
     dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     if [ $DEBUG -ge 3 ]; then
         local -i funcDEBUG=1
@@ -142,9 +163,9 @@ function hline() {
     local -i DEBUG=${DEBUG:-0}
     # Turn in-function debugging on/off.
     DEBUG=0
-    
-    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
-    
+
+    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+
     # number of characters in line (length)
     local -i N
     if [ "$#" -lt 1 ]; then
