@@ -44,6 +44,7 @@ function get_curpos() {
             y_out=0
         fi
         echo "goodby..."
+        dtab
         return 1
     fi
 

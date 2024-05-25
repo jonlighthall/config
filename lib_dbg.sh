@@ -103,16 +103,21 @@ function find_func_line() {
 }
 
 # line echo
-lecho()
-{
+lecho() {
+    # set local debug level
     local -i DEBUG=${DEBUG:-1}
+    local -i oldDEBUG=$DEBUG
+    if [ $DEBUG -lt 1 ]; then
+        idb >/dev/null
+    fi
+
     # DEBUG=2
     dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     set -u
 
     if [ ${DEBUG:-0} -gt 0 ] || [ ! -z "$@" ] ; then
         hline
-        trap 'hline;trap -- RETURN' RETURN
+        trap 'hline;DEBUG=$oldDEBUG;trap -- RETURN' RETURN
     fi
 
     # get the lenght of the execution stack
@@ -437,7 +442,7 @@ function rdb() {
 
 function idb() {
     set -u
-    funcDEBUG=1
+    funcDEBUG=0
 
     # check if DEBUG is unset
     if [ -z ${DEBUG+dummy} ]; then
