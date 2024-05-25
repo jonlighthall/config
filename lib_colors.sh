@@ -621,3 +621,15 @@ function test_lib_colors() {
 if [ ${DEBUG:-0} -gt 2 ]; then
     test_lib_colors
 fi
+
+# test parent line echo
+function tplecho() {
+    set_tab_shell
+    print_tab
+    echo -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    itab
+    tlecho "$@"
+    dtab
+    rdb
+    trap 'print_return $?; trap - RETURN' RETURN
+}

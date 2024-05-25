@@ -916,3 +916,15 @@ function exit_on_fail() {
         return 0
     fi
 }
+
+# test line echo
+function tlecho() {
+    echo -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    DEBUG=3
+    itab
+    lecho "$@"
+    plecho "$@"
+    dtab
+    rdb
+    trap 'print_return $?; trap - RETURN' RETURN
+}
