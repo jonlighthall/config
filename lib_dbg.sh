@@ -122,10 +122,10 @@ function lecho() {
         hline
         trap 'hline;DEBUG=$oldDEBUG;trap -- RETURN' RETURN
     fi
-
+a
     # get the lenght of the execution stack
     local -i N_BASH=${#BASH_SOURCE[@]}
-    ddecho "${TAB}there are ${N_BASH} entries in the call stack"
+    ddecho "${TAB}there are ${N_BASH} entries in the ${FUNCNAME}() call stack"
 
     # get the line where THIS function is defined
     line_def=$(find_func_line "${FUNCNAME}" "${BASH_SOURCE}" 2>/dev/null);
@@ -162,7 +162,7 @@ function lecho() {
         ddecho "exiting ${FUNCNAME} on line ${LINENO}"
         return 0
     else
-        ddecho "${TAB}not bash"
+        ddecho "${TAB}not called by ${SHELL##*/}"
         # get the line where the function is defined
         local line_func_def=$(find_func_line "${func}" "${sour}" 2>/dev/null);
     fi
@@ -235,8 +235,7 @@ function plecho() {
 
     # get the lenght of the execution stack
     local -i N_BASH=${#BASH_SOURCE[@]}
-
-    ddecho "${TAB}there are ${N_BASH} entries in the call stack"
+    ddecho "${TAB}there are ${N_BASH} entries in the ${FUNCNAME}() call stack"
 
     # get the line where THIS function is defined
     line_def=$(find_func_line "${FUNCNAME}" "${BASH_SOURCE}" 2>/dev/null);
@@ -318,7 +317,7 @@ function plecho() {
         local -i call_line=$func_line
         # print file line
         in_line "$@"
-        echo -en "called on line ${GRL}${call_line}${RESET} "
+        echo -en "${FUNCNAME}() called on line ${GRL}${call_line}${RESET} "
         echo -e "in file ${RESET}${YELLOW}${sour_fil}${RESET}"
     else
         ddecho "${TAB}BASH_LINENO refers to function"
@@ -342,14 +341,12 @@ function plecho() {
     decho -ne "defined on line ${GRL}${line_func_def}${RESET} "
     decho -e "in file ${YELLOW}${sour_fil}${RESET}"
     decho -e "${TAB}file ${YELLOW}${sour_fil}${RESET} located in ${DIR}${sour_dir}${RESET}"
+    ddecho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
 
     dtab
     if [ ${DEBUG:-0} -gt 2 ]; then
         print_stack
     fi
-    itab
-    ddecho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
-    dtab
 
     # reset shell options
     reset_shell ${old_opts}
