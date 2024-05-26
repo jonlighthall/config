@@ -103,7 +103,10 @@ function find_func_line() {
 }
 
 # line echo
-lecho() {
+function lecho() {
+    # save shell options
+    old_opts=$(echo "$-")
+
     # set local debug level
     local -i DEBUG=${DEBUG:-1}
     local -i oldDEBUG=$DEBUG
@@ -199,6 +202,9 @@ lecho() {
     if [ ${DEBUG:-0} -gt 2 ]; then
         print_stack
     fi
+
+    # reset shell options
+    reset_shell ${old_opts}
 }
 
 function tlecho() {
@@ -211,8 +217,11 @@ function tlecho() {
 
 # parent line echo
 function plecho() {
+    # save shell options
+    old_opts=$(echo "$-")
+
     local -i DEBUG=${DEBUG:-1}
-    #    DEBUG=2
+    # DEBUG=2
     dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     set -u
 
@@ -246,7 +255,7 @@ function plecho() {
         else
             N_off=1;
             decho "${TAB}showing regular lecho results"
-        fi        
+        fi
 
         if [ $N_BASH -ge $N_off ]; then
             ddecho "${TAB}N_BASH = ${N_BASH}"
@@ -283,13 +292,6 @@ function plecho() {
     local func=${FUNCNAME[${func_lev}]}
     ddecho "${TAB}calling function is $func"
 
-    itab
-    odb=$DEBUG;
-    DEBUG=1;
-    #lecho "${FUNCNAME}";
-    DEBUG=$odb
-    dtab
-    
     if [[ "${func}" == "main" ]] || [[ "${func}" == "source" ]]; then
         # the function is call from bash
         ddecho -e "${TAB}called by ${SHELL##*/}"
@@ -301,7 +303,6 @@ function plecho() {
         ((--func_lev))
         decho -e "${TAB}${BASH_SOURCE[$func_lev]##*/}${RESET} called by ${SHELL##*/}"
         decho -e "${TAB}${FUNCNAME[(($func_lev-1))]}() called on line ${GRL}${BASH_LINENO[(($func_lev-1))]}${RESET} in file ${YELLOW}${BASH_SOURCE[$func_lev]##*/}${RESET}"
-
 
         decho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
         dtab
@@ -349,6 +350,9 @@ function plecho() {
     itab
     ddecho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
     dtab
+
+    # reset shell options
+    reset_shell ${old_opts}
 }
 
 # test secho and lecho
