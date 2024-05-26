@@ -122,7 +122,10 @@ function lecho() {
         hline
         trap 'hline;DEBUG=$oldDEBUG;trap -- RETURN' RETURN
     fi
-a
+    if [ ${DEBUG:-0} -gt 0 ]; then
+        print_stack
+    fi
+
     # get the lenght of the execution stack
     local -i N_BASH=${#BASH_SOURCE[@]}
     ddecho "${TAB}there are ${N_BASH} entries in the ${FUNCNAME}() call stack"
@@ -205,14 +208,6 @@ a
 
     # reset shell options
     reset_shell ${old_opts}
-}
-
-function tlecho() {
-    echo "here"
-    DEBUG=2
-    lecho "$@"
-    plecho "$@"
-    echo "there"
 }
 
 # parent line echo
