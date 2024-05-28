@@ -187,14 +187,12 @@ function print_tab() {
 
     # check if TAB is set
     if [ -z ${TAB+dummy} ]; then
-        local UNSET='\E[1;33munset\E[0m'
         echo -e "${BOLD}TAB is ${UNSET}"
         return 0
     fi
 
     # check if TAB is null
     if [ -z ${TAB:+dummy} ]; then
-        local NULL='\E[1;36mnull\E[0m'
         echo -e "${TAB}${BOLD}TAB is ${NULL}"
         return 0
     fi
@@ -205,7 +203,6 @@ function print_tab() {
     strip_pretty tab "$TAB"
     i=${#tab}
 
-    local SPACE='\E[30;106m' # highlight white space
     # print size of TAB
     echo -e "${TAB}TAB = ${SPACE}${TAB}${RESET} length $i"
 }
