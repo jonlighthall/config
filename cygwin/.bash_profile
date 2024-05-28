@@ -9,7 +9,7 @@ export VB=true
 if [ "${VB}" = true ]; then
     # set tab
     TAB+=${TAB+${fTAB:='   '}}
-    # load formatting
+    # load bash utilities
     fpretty=${HOME}/config/.bashrc_pretty
     if [ -e $fpretty ]; then
 	if [ -z ${FPRETTY_LOADED+dummy} ]; then

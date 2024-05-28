@@ -4,7 +4,7 @@
 #
 # JCL Jul 2018
 
-# load formatting
+# load bash utilities
 fpretty=${HOME}/config/.bashrc_pretty
 if [ -e $fpretty ]; then
     source $fpretty    

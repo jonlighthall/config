@@ -6,7 +6,7 @@ if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
     if [ "${VB}" = true ]; then
-	      # load formatting
+	      # load bash utilities
 	      fpretty=${HOME}/config/.bashrc_pretty
 	      if [ -e $fpretty ]; then
 	          source $fpretty
