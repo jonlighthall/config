@@ -19,7 +19,7 @@ function print_source() {
 
     # define default run type
     RUN_TYPE=${RUN_TYPE:-"running"}
-    
+
     # set tab
     if [[ "${RUN_TYPE}" =~ "sourcing" ]]; then
         set_tab
@@ -29,15 +29,15 @@ function print_source() {
         set_tab_shell
     fi
     export TAB
-    
+
     # conditionally add stack level prefix
-    if [ ${DEBUG:-0} -gt 1 ]; then 
+    if [ ${DEBUG:-0} -gt 1 ]; then
         # since print_source is itself part of the stack, remove the top of the stack
         ((N_BASH--))
         local prefix="\x1b[7;38;5;132m${N_BASH}"
         if [[ "$-" == *i* ]]; then
             prefix+="i"
-        fi        
+        fi
         prefix+="\x1b[0m"
         RUN_TYPE="${prefix} ${RUN_TYPE}"
     fi
@@ -47,10 +47,10 @@ function print_source() {
     # get message length
     local -i lnr=${#msgne}
     # define prefix prototype
-    prefix="${VALID}link${RESET} -> "    
+    prefix="${VALID}link${RESET} -> "
     strip_pretty msgne $prefix
     local -i lnp=${#msgne}
-    
+
     # subtract link/path prefix length
     local -i sp=$(($lnr - $lnp))
     fecho "space: $lnr, $lnp, $sp"
@@ -65,8 +65,8 @@ function print_source() {
                 fecho "$RUN_TYPE: $i"
             done
         fi
-    fi    
-    
+    fi
+
     # define indent
     local spx=$(echo -ne "\E[${sp}C")
 
@@ -76,9 +76,9 @@ function print_source() {
         vecho -e "${TAB}${spx}${prefix}$src_name"
     fi
 
-    if [ ${DEBUG:-0} -gt 1 ]; then 
+    if [ ${DEBUG:-0} -gt 1 ]; then
         # print source path
-        if [[ "${src_dir_logi}" != "${src_dir_phys}" ]]; then 
+        if [[ "${src_dir_logi}" != "${src_dir_phys}" ]]; then
             ## logical
             vecho -e "${TAB}${spx}${GRAY}logi -> $src_dir_logi${RESET}"
             ## physical
@@ -98,15 +98,15 @@ function print_ribbon() {
     local decor="${N_BASH}"
     if [[ "$-" == *i* ]]; then
         : #decor+="i"
-    fi       
-    
+    fi
+
     # print source
     decho -e "${TAB}\x1b[7;38;5;132m${decor}: ${src_base} :${decor}\x1b[0m"
 }
 
 function print_bar() {
     get_source
-    
+
     # define message
     msg=$(echo "this file is ${src_base}!")
     # define line
@@ -116,14 +116,21 @@ function print_bar() {
 }
 
 function print_stack() {
-    local -i DEBUG=${DEBUG:=0}
+    # set local debug value
+    if [ $# -eq 1 ]; then
+        # use argument to manually set DEBUG
+        local -i DEBUG=$1
+    else
+        # substitute default value if DEBUG is unset or null
+        local -i DEBUG=${DEBUG:-1}
+    fi
     start_new_line
-    [ $DEBUG -gt 0 ] && print_debug
+    [ $DEBUG -gt 0 ] && (decho -n "${FUNCNAME}: "; print_debug)
     # initialize variables
     unset N_FUNC
     unset N_BASH
     unset N_LINE
-    
+
     # get length of function stack
     local -gi N_FUNC=${#FUNCNAME[@]}
     local -gi N_BASH=${#BASH_SOURCE[@]}
@@ -134,29 +141,29 @@ function print_stack() {
     dbg2idx $N_BASH idx
     # set color
     echo -ne "${dcolor[idx]}"
-    
+
     # print length of stack
     echo "${TAB}There are N=$N_FUNC entries in the execution call stack"
 
     N_STACK=$N_FUNC
-    
+
     # check that all stacks have the same length
-    if [ $N_FUNC -ne $N_BASH ]; then 
+    if [ $N_FUNC -ne $N_BASH ]; then
         echo "${TAB}There are N=$N_BASH entries in the source file name stack"
         if [ $N_BASH -gt $N_STACK ]; then
             N_STACK=$N_BASH
-        fi        
+        fi
     fi
 
-    if [ $N_FUNC -ne $N_LINE ]; then 
+    if [ $N_FUNC -ne $N_LINE ]; then
         echo "${TAB}There are N=$N_LINE entries in the line number stack"
     fi
 
-    if [ $N_FUNC -ne $N_BASH ] || [ $N_FUNC -ne $N_LINE ]; then 
+    if [ $N_FUNC -ne $N_BASH ] || [ $N_FUNC -ne $N_LINE ]; then
         echo "${TAB}${N_FUNC} functions, ${N_BASH} files, ${N_LINE} lines"
         if [ $N_LINE -gt $N_STACK ]; then
             N_STACK=$N_LINE
-        fi                  
+        fi
     fi
 
     local -ga BASH_LINKS
@@ -206,7 +213,7 @@ function print_stack() {
 
         # set color
         ((idx++))
-        echo -ne "${dcolor[idx]}"    
+        echo -ne "${dcolor[idx]}"
         (
             for ((i = 0; i < $N_STACK ; i++)); do
                 echo "$i:${FUNCNAME[i]}:${BASH_SOURCE[i]}:${BASH_LINENO[i]}"
@@ -218,7 +225,7 @@ function print_stack() {
         ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
         echo
     fi
-    
+
     # get directories
     local -ga BASH_DIR
     for ((i = 0; i < $N_BASH; i++)); do
@@ -229,7 +236,7 @@ function print_stack() {
     local -ga BASH_LINK_DIR
     for ((i = 0; i < $N_BASH; i++)); do
         BASH_LINK_DIR[$i]="$(dirname "${BASH_LINK[$i]}")"
-    done   
+    done
 
     (
         for ((i = 0; i < $N_STACK ; i++)); do
@@ -253,7 +260,7 @@ function print_stack() {
                 echo -e "${dcolor[idx]}"
             fi
         done
-    ) | column -t -s: -N "index,index,function,directory,source,line no" -R1 | sed "s/^/${TAB}/" 
+    ) | column -t -s: -N "index,index,function,directory,source,line no" -R1 | sed "s/^/${TAB}/"
 
     dtab
     # unset color
@@ -261,15 +268,15 @@ function print_stack() {
 }
 
 # print function stack
-function print_stack_devel() {    
+function print_stack_devel() {
     local -ir DEBUG=2
     print_stack
-    
+
     echo "BASH_ARGC = $BASH_ARGC"
     echo "BASH_ARGV = $BASH_ARGV"
     echo "BASH_COMMAND = $BASH_COMMAND"
-    echo "BASH_SUBSHELL = $BASH_SUBSHELL"    
-    
+    echo "BASH_SUBSHELL = $BASH_SUBSHELL"
+
     echo "${TAB}list of invocations (links):"
     (
         if [ $N_BASH -gt 1 ]; then
@@ -293,8 +300,7 @@ function print_stack_devel() {
             echo "0:+${BASH_LINK[0]}+invoked by+${called_by}"
         fi
     ) | column -t -s + -o " " | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
-    
-    
+
     if [ $N_BASH -gt 1 ]; then
         echo "${TAB}invoking source source:"
         itab
@@ -302,29 +308,29 @@ function print_stack_devel() {
         echo "${TAB}BASH_SOURCE[(($N_BASH-1))] = ${BASH_SOURCE[$N_BASH-1]##*/}"
         dtab
     fi
-    
+
     itab
     # (
     #     for ((i = 0; i < $N_FUNC; i++)); do
     #         echo -n ":defined in: ${BASH_SOURCE[$i]##*/} "
     #         echo -n ":called by: "
     #         if [ -z "${BASH_SOURCE[$i+1]}" ]; then
-    #             echo -n "NULL " 
+    #             echo -n "NULL "
     #         else
     #             echo -n "${BASH_SOURCE[$i+1]##*/} "
     #         fi
     #     done
     # ) | column -t -s : -o ""
     dtab
-    
+
     if [ ${#FUNCNAME[@]} -gt 1 ]; then
         echo "${TAB}FUNCNAME[$((N_FUNC-2))]=${FUNCNAME[$((N_FUNC-2))]}"
     fi
 
     # print_stack() should only be called from other functions, so the length of FUNCNAME should
     # always be 2 or greater. Start with color 0
-    local -ir IDX=$(( N_FUNC - 2 ))    
-    
+    local -ir IDX=$(( N_FUNC - 2 ))
+
     # set color
     echo -ne "${dcolor[IDX]}"
 
@@ -359,12 +365,12 @@ function print_stack_devel() {
         echo "main"
     fi
 
-    for (( i=0; i<$N_FUNC; i++ )); do 
+    for (( i=0; i<$N_FUNC; i++ )); do
         echo "$i ${FUNCNAME[i]} defined in $(basename ${BASH_SOURCE[i]}) on line ${BASH_LINENO[i]}; and called from $(basename ${BASH_SOURCE[i+1]})"
     done
 
     # print contents of function stack...
-    echo -en "["                
+    echo -en "["
     for (( x=(( $N_FUNC - 0 )); x>-1; x-- )); do
         if [[ ${FUNCNAME[x]} == "xecho" ]]; then
             break
@@ -372,9 +378,9 @@ function print_stack_devel() {
         echo -en "$(basename ${BASH_SOURCE[x+1]} 2>/dev/null) ${BASH_LINENO[x]}: ${FUNCNAME[x]}\e[0m${dcolor[IDX]} -> "
     done
     echo -en "$(basename ${BASH_SOURCE[x]}) ${BASH_LINENO[x]}] "
-    
+
     echo
-    
+
     # print contents of function stack...
     echo -en "["
     for (( x=$start; x>$stop; x-- )); do
@@ -389,16 +395,16 @@ function print_invo() {
     print_stack
     # since print stack is itself part of the stack, remove the top of the stack
     ((N_FUNC--))
-    ((N_BASH--))    
-    ((N_LINE--))    
-    
+    ((N_BASH--))
+    ((N_LINE--))
+
     echo "${TAB}invocations:"
     itab
     for ((i = 0; i < (($N_FUNC -2)); i++)); do
         echo "${TAB}$i: ${FUNCNAME[i]} ${BASH_FNAME[i]} ${BASH_LINENO[i+1]}"
     done
     dtab
-    
+
     echo "${TAB}shell function invocations:"
     itab
     for ((i = 0; i < (($N_FUNC - 1 )); i++)); do
@@ -421,7 +427,7 @@ function print_invo() {
     local -i N_BOTTOM=$(($N_FUNC - 1))
     echo "N_BOTTOM = $N_BOTTOM"
     echo "FUNCNAME[$N_BOTTOM] = ${FUNCNAME[$N_BOTTOM]}"
-    
+
     if [[ "${FUNCNAME[$N_BOTTOM]}" =~ "main" ]]; then
         echo "bottom of stack is main"
         echo "root invocation ${BASH_FNAME[$N_BOTTOM]} is a script"
@@ -437,7 +443,7 @@ function print_invo() {
     done
     dtab
     echo "${TAB}shell function invocations:"
-    
+
     if [ $N_FUNC -gt 1 ]; then
         echo "${FUNCNAME[0]} (defined in ${BASH_FNAME[0]}) called from ${FUNCNAME[1]} (defined in ${BASH_FNAME[1]}) line ${BASH_LINENO[0]}"
     else
