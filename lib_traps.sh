@@ -581,7 +581,8 @@ function print_traps() {
         # use argument to manually set DEBUG
         local -i DEBUG=$1
     else
-        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+        # substitute default value if DEBUG is unset or null
+        local -i DEBUG=${DEBUG:-2} 
     fi
     # print summary
     ddecho "the following traps are set"
