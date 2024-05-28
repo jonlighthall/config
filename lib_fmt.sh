@@ -257,7 +257,10 @@ function do_cmd() {
     decho "${TAB}running command $cmd... "
 
     # get color index
-    set_color $FMT_COLOR
+    local -i idx
+    dbg2idx $FMT_COLOR idx
+    # set color
+    echo -ne "${dcolor[$idx]}"
 
     # the ideal solution is to use unbuffer
     # check if unbuffer is defined
