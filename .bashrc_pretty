@@ -72,10 +72,13 @@ function load_libs() {
     get_source
     # if running from bash, reset TAB and DEBUG
     if [ $N_BASH -eq 1 ]; then
+        echo "resetting..."
         # reset TAB
         if [ ${#TAB} -gt 0 ]; then
             if command -v rtab &>/dev/null; then
                 rtab
+                echo -ne "$fTAB"
+                print_tab
             else
                 TAB=''
             fi
@@ -83,6 +86,7 @@ function load_libs() {
         # reset DEBUG
         if [ ${DEBUG:-0} -gt 0 ]; then
             if command -v rdb &>/dev/null; then
+                echo -ne "$fTAB"
                 rdb
             else
                 DEBUG=0
