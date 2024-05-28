@@ -30,7 +30,7 @@ export    BOLD='\x1B[1m'    # bold
 export     DIM='\x1B[2m'    # dim/faint
 export      IT='\x1B[3m'    # italics
 export      UL='\x1B[4m'    # underline
-export   BLINK='\x1B[5m'    # blinking 
+export   BLINK='\x1B[5m'    # blinking
 export  INVERT='\x1B[7m'    # invert
 export      ST='\x1B[9m'    # strikethrough
 
@@ -81,7 +81,7 @@ export CHARTRU='\x1B[38;5;118m' #87ff00	(135,255,  0) Chartreuse
 export SPGREEN='\x1B[38;5;46m'  #00ff87	(  0,255,135) Spring Green, aquamarine
 export   AZURE='\x1B[38;5;33m' 	#0087ff	(  0,135,255) (Brooklyn) Dodger Blue, Brescian Blue
 export  PURPLE='\x1B[38;5;93m' 	#8700ff	(135,  0,255) Purple, violet
-export    ROSE='\x1B[38;5;198m' #ff0087	(255,  0,135) DeepPink1	
+export    ROSE='\x1B[38;5;198m' #ff0087	(255,  0,135) DeepPink1
 
 # create array of 12 rainbow colors
 export rcolor=( "${RED}" "${ORANGE}" "${YELLOW}" "${CHARTRU}" "${GREEN}" "${SPGREEN}" "${CYAN}" "${AZURE}" "${BLUE}" "${PURPLE}" "${MAGENTA}" "${ROSE}" )
@@ -91,7 +91,7 @@ function print_rcolors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     decho "${TAB}printing contents of ${!rcolor@} in ARRAY order..."
     # get length of array
-    local -ir N_cols=${#rcolor[@]}    
+    local -ir N_cols=${#rcolor[@]}
     echo "${TAB}$N_cols in array ${!rcolor@}"
     # declare array index variable
     local -i i
@@ -131,7 +131,7 @@ export    PSSH='\x1B[1;31m' # bold red    :    : shell
 
 # define 'grep' colors
 export     GRH='\x1B[1;31m' # bold red    : ms : selected match
-export     GRL='\x1B[0;32m' # green       : ln : line number 
+export     GRL='\x1B[0;32m' # green       : ln : line number
 export     GRF='\x1B[0;35m' # magenta     : fn : file name
 export     GRS='\x1B[0;36m' # cyan        : se : seperator
 
@@ -149,18 +149,18 @@ function load_colors() {
         fecho -e "exists and is executable ${GOOD}OK${NORMAL}"
 
         local srcdir=$(dirname $(readlink -f "${BASH_SOURCE}"))
-        fecho "this function is ${FUNCNAME}"        
+        fecho "this function is ${FUNCNAME}"
         fecho "this file is ${BASH_SOURCE##*/}"
         fecho "this directory is ${srcdir}"
-        
+
         local fname=.dircolors
         local fpath="${srcdir}/${fname}"
         if [ "${VB}" = true ]; then
             itab
             check_target "${fpath}"
         fi
-        
-        if [ -r "${fpath}" ]; then 
+
+        if [ -r "${fpath}" ]; then
             fecho -e "and is readable ${GOOD}OK${NORMAL}"
             eval "$(dircolors -b "${fpath}")"
         else
@@ -180,14 +180,14 @@ function load_colors() {
 }
 
 function print_dircolors() {
-    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     if [ -z ${LS_COLORS:+dummy} ]; then
         echo "${TAB}LS_COLORS not defined"
         return
     fi
     # print value of dircolors
     dircolors -p | sed 's/\(^.*\([0-9]\{2\};[0-9]\{2\}[0-9;]*\)\)/\x1B[\2m\1\x1B[0m/' | sed "s/^/${TAB}/"
- }
+}
 
 function define_ls_colors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
@@ -208,30 +208,30 @@ function define_ls_colors() {
     echo -e "${TAB}${cLN}links${RESET}"
     echo -e "${TAB}${cOR}orphaned links${RESET}"
     echo -e "${TAB}${cDI}directories${RESET}"
-    echo -e "${TAB}${cEX}executable files${RESET}"    
+    echo -e "${TAB}${cEX}executable files${RESET}"
 }
 
 function match_ls_colors() {
-    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     # get link color codes
     local or_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^or/!d' | sed 's/^.*=//')
     local ex_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^ex/!d' | sed 's/^.*=//')
     local di_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^di/!d' | sed 's/^.*=//')
     local ln_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^ln/!d' | sed 's/^.*=//')
 
-    # update color values    
+    # update color values
     export BROKEN="\x1B[${or_col}m"
     export    TGT="\x1B[${ex_col}m"
     export    DIR="\x1B[${di_col}m"
-    export  VALID="\x1B[${ln_col}m"  
+    export  VALID="\x1B[${ln_col}m"
 }
 
 function match_ls_colors2() {
-    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     # get link color codes
     define_ls_colors
-    
-    # update color values    
+
+    # update color values
     export BROKEN=${cOR}
     export    TGT=${cEX}
     export    DIR=${cDI}
@@ -239,7 +239,7 @@ function match_ls_colors2() {
 }
 
 function print_ls_colors() {
-    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     if [ -z ${LS_COLORS:+dummy} ]; then
         echo "${TAB}LS_COLORS not defined"
         return
@@ -259,7 +259,7 @@ function print_ls_colors() {
 }
 
 function print_ls_colors_ext() {
-    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     if [ -z ${LS_COLORS:+dummy} ]; then
         echo "${TAB}LS_COLORS not defined"
         return
@@ -279,15 +279,15 @@ function print_ls_colors_ext() {
 }
 
 function append_ls_colors() {
-    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     # physical link (hardlink)
     # get link color code
     ln_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^ln/!d' | sed 's/^.*=//')
     # invert
-    mh_col="07;${ln_col}"    
+    mh_col="07;${ln_col}"
     #LS_COLORS+="mh=44;38;5;15:"
     LS_COLORS+="mh=${mh_col}:"
-    # missing    
+    # missing
     LS_COLORS+="mi=05;48;5;232;38;5;15:"
 }
 
@@ -339,12 +339,11 @@ function print_colors() {
     dtab
     # reset color
     echo -en "\x1B[m"
-    
+
     # reset shell options
     local -i DEBUG=${DEBUG:-1}
     reset_shell ${old_opts} u
 }
-
 
 # print dcolor array in debug order
 # requires lib_traps, lib_fmt
@@ -428,7 +427,7 @@ function set_dbg2idx() {
         fecho "decrementing array indicies"
     else
         fecho "something else..."
-    fi   
+    fi
 }
 
 #--------------------------------------
@@ -441,7 +440,7 @@ function set_dbg2idx() {
 #   start
 # Dependancies:
 #   lib_cond_echo
-#--------------------------------------    
+#--------------------------------------
 function dbg2idx() {
     if [ $# -lt 2 ]; then
         (
@@ -455,7 +454,7 @@ function dbg2idx() {
 
     # turn in-function debugging on/off
     local -i funcDEBUG=0
-    
+
     # get input DEBUG value
     local -ir dbg_in=$1
     fecho "dbg_in = $dbg_in"
@@ -463,36 +462,36 @@ function dbg2idx() {
     # get output variable
     local -n var_out=$2
     fecho "var_out = ${!var_out}"
-    
+
     local -i N_cols
     local -i N_max
     local -i start
     local -i direction
 
     set_dbg2idx
-    
+
     # since DEBUG=0 does not print and DEBUG=1 corresponds to starting color, or array index 0,
     # decrement input value
     local -ir offset=-1
     local -i dbg_idx=$(( ( $dbg_in + ${offset} ) % ${N_cols} ))
     fecho "dbg_idx = $dbg_idx"
-    
+
     #define array index
     idx=$(( ( ${N_max} + $direction * ($dbg_idx) + $start + 1 ) % ${N_cols} ))
     fecho "idx = $idx"
 
     fecho -e "${dcolor[$idx]}\x1B[7m${dbg_in}\x1B[m"
-    
+
     return 0
 }
 
 # print dcolor array in debug order
 # requires lib_cond_echo
 function print_fcolors() {
-    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     local -i DEBUG=${DEBUG:-1}
     decho "${TAB}printing contents of ${!dcolor@} in DBG2IDX order..."
-    
+
     # get length of array
     local -ir N_cols=${#dcolor[@]}
     local -i idx
@@ -535,11 +534,38 @@ function set_bcolor() {
 }
 
 function set_color() {
-    # get color index
-    local -i idx
-    dbg2idx 3 idx
-    # set color
-    echo -ne "${dcolor[$idx]}"
+    # default color
+    local -i N=3
+
+    # use argument to manually set color
+    if [ $# -eq 1 ]; then
+        N=$1
+    fi
+
+    if [ $N -ne 0 ]; then
+        # get color index
+        local -i idx
+        dbg2idx $N idx
+        # set color
+        echo -ne "${dcolor[$idx]}"
+    fi
+}
+
+function test_set_color() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    local -i DEBUG=${DEBUG:-1}
+    decho "${TAB}printing contents of ${!dcolor@} in DBG2IDX order..."
+
+    # get length of array
+    local -ir N_cols=${#dcolor[@]}
+
+    # loop over valid non-zero values of debug
+    for ((i=-${N_cols};i<=$N_cols;i++));do
+        set_color $i
+        printf '%3d: %s\n' $i $FUNCNAME
+        unset_color
+    done
+
 }
 
 function unset_color() {
@@ -554,7 +580,7 @@ function unset_color() {
 function print_pretty() {
     # set default debug level
     local -i DEBUG=${DEBUG:-1}
-    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     # define message
     if [ $# -eq 0 ]; then
         local msg="pretty-print enabled"
@@ -592,12 +618,12 @@ function print_pretty() {
 function print_pretty_cbar() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     local -i DEBUG=0
-    cbar $(print_pretty) 
+    cbar $(print_pretty)
 }
 
 function test_lib_colors() {
     local -i DEBUG=2
-    decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"        
+    decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
 
     for func in test_normal \
                     define_ls_colors \
