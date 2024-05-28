@@ -243,7 +243,7 @@ function strip_pretty() {
 # handling is included for a variety of commands
 # conditionally calls do_cmd_script, and do_cmd_stdbuf
 
-export FMT_COLOR=3
+export FMT_COLOR=0
 
 function do_cmd() {
     local -i DEBUG=0
@@ -257,10 +257,7 @@ function do_cmd() {
     decho "${TAB}running command $cmd... "
 
     # get color index
-    local -i idx
-    dbg2idx $FMT_COLOR idx
-    # set color
-    echo -ne "${dcolor[$idx]}"
+    set_color $FMT_COLOR
 
     # the ideal solution is to use unbuffer
     # check if unbuffer is defined
