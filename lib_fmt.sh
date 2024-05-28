@@ -243,7 +243,7 @@ function strip_pretty() {
 # handling is included for a variety of commands
 # conditionally calls do_cmd_script, and do_cmd_stdbuf
 
-export FMT_COLOR=0
+export FMT_COLOR=3
 
 function do_cmd() {
     local -i DEBUG=0
