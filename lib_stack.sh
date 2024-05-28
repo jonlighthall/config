@@ -125,7 +125,7 @@ function print_stack() {
         local -i DEBUG=${DEBUG:-1}
     fi
     start_new_line
-    [ $DEBUG -gt 0 ] && (decho -n "${FUNCNAME}: "; print_debug)
+    [ $DEBUG -gt 0 ] && (decho -n "${TAB}${FUNCNAME}: "; print_debug | sed 's/^ *//' )
     # initialize variables
     unset N_FUNC
     unset N_BASH
