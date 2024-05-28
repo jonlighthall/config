@@ -13,10 +13,16 @@
 #
 # -----------------------------------------------------------------------------------------------
 
+# define variable status keywords
+export   UNSET='\x1B[1;33munset\x1B[0m' # unbound variable
+export    NULL='\x1B[1;36mnull\x1B[0m'  # empty variable
+export   SPACE='\x1B[30;106m'             # highlight white space
+export    TRUE='\x1B[1;32mtrue\x1B[0m'  #
+export   FALSE='\x1B[1;31mfalse\x1B[0m' #
+
 # stack echo
 function secho() {
-    local -i DEBUG=2
-    print_stack
+    print_stack 2
 }
 
 function in_line() {
@@ -188,17 +194,17 @@ function lecho() {
         echo -e "in file ${YELLOW}${sour_fil}${RESET}"
         itab
         # print function line
-        decho -n "${TAB}called on line ${func_line} "
-        decho "in function ${func}()"
+        ddecho -n "${TAB}called on line ${func_line} "
+        ddecho "in function ${func}()"
         dtab
     fi
 
     itab
     # print definition line
-    decho -n "${TAB}function ${func}() "
-    decho -ne "defined on line ${GRL}${line_func_def}${RESET} "
-    decho -e "in file ${YELLOW}${sour_fil}${RESET}"
-    decho -e "${TAB}file ${YELLOW}${sour_fil}${RESET} located in ${DIR}${sour_dir}${RESET}"
+    ddecho -n "${TAB}function ${func}() "
+    ddecho -ne "defined on line ${GRL}${line_func_def}${RESET} "
+    ddecho -e "in file ${YELLOW}${sour_fil}${RESET}"
+    ddecho -e "${TAB}file ${YELLOW}${sour_fil}${RESET} located in ${DIR}${sour_dir}${RESET}"
     ddecho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
 
     dtab
@@ -238,14 +244,14 @@ function plecho() {
     if [ $N_BASH -eq 1 ]; then
         in_line "$@"
         echo -e "called on line ${GRL}${BASH_LINENO}${RESET} from ${BASH##*/}"
-        decho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
+        ddecho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
         return 0
     else
         # define ofset
         local -i N_off
         if [ $N_BASH -ge 3 ]; then
             N_off=2;
-            decho "${TAB}showing parent line"
+            ddecho "${TAB}showing parent line"
         else
             N_off=1;
             decho "${TAB}showing regular lecho results"
@@ -271,12 +277,12 @@ function plecho() {
     # get the line of of the calling function
     local -i func_line=${BASH_LINENO[0]}
 
-    decho "${TAB}${FUNCNAME}"
+    ddecho "${TAB}${FUNCNAME}"
     ddecho "${TAB}FUNCNAME stack = ${FUNCNAME[@]}"
     ddecho "${TAB}N_BASH = ${N_BASH}"
     local -i func_lev=$(($N_BASH - 1 + ${N_off}))
-    decho "${TAB}function level = $func_lev"
-    decho "${TAB}function : ${FUNCNAME[$func_lev]}"
+    ddecho "${TAB}function level = $func_lev"
+    ddecho "${TAB}function : ${FUNCNAME[$func_lev]}"
 
     # BASH_SOURCE counts from zero; get the bottom of the stack
     local bottom=${FUNCNAME[${func_lev}]##*/}
@@ -295,8 +301,8 @@ function plecho() {
         echo -e "${FUNCNAME[(($func_lev-1))]}() called on line ${GRL}${BASH_LINENO[(($func_lev-1))]}${RESET} in file ${YELLOW}${BASH_SOURCE[$func_lev]##*/}${RESET}"
         itab
         ((--func_lev))
-        decho -e "${TAB}${BASH_SOURCE[$func_lev]##*/}${RESET} called by ${SHELL##*/}"
-        decho -e "${TAB}${FUNCNAME[(($func_lev-1))]}() called on line ${GRL}${BASH_LINENO[(($func_lev-1))]}${RESET} in file ${YELLOW}${BASH_SOURCE[$func_lev]##*/}${RESET}"
+        ddecho -e "${TAB}${BASH_SOURCE[$func_lev]##*/}${RESET} called by ${SHELL##*/}"
+        ddecho -e "${TAB}${FUNCNAME[(($func_lev-1))]}() called on line ${GRL}${BASH_LINENO[(($func_lev-1))]}${RESET} in file ${YELLOW}${BASH_SOURCE[$func_lev]##*/}${RESET}"
 
         decho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
         dtab
@@ -325,8 +331,8 @@ function plecho() {
         echo -e "in file ${YELLOW}${sour_fil}${RESET}"
         itab
         # print function line
-        decho -n "${TAB}called on line ${func_line} "
-        decho "in function ${func}()"
+        ddecho -n "${TAB}called on line ${func_line} "
+        ddecho "in function ${func}()"
         dtab
     fi
 
@@ -387,13 +393,11 @@ function print_debug() {
 
     # check if DEBUG is unset
     if [ -z ${DEBUG+dummy} ]; then
-        local UNSET='\E[1;33munset\E[0m'
         echo -e "${TAB}${BOLD}DEBUG is ${UNSET}"
         return 0
     fi
     # check if DEBUG is set but NULL
     if [ -z ${DEBUG:+dummy} ]; then
-        local NULL='\E[1;36mnull\E[0m'
         echo -e "${TAB}${BOLD}DEBUG is ${NULL}"
         return 0
     fi
@@ -442,7 +446,6 @@ function idb() {
 
     # check if DEBUG is unset
     if [ -z ${DEBUG+dummy} ]; then
-        local UNSET='\E[1;33munset\E[0m'
         fecho -e "${BOLD}DEBUG is ${UNSET}"
         fecho "setting DEBUG..."
         export DEBUG=
@@ -452,7 +455,6 @@ function idb() {
 
     # check if DEBUG is set but NULL
     if [ -z ${DEBUG:+dummy} ]; then
-        local NULL='\E[1;36mnull\E[0m'
         fecho -e "${BOLD}DEBUG is ${NULL}"
         fecho "setting DEBUG to zero..."
         export DEBUG=0
@@ -487,7 +489,6 @@ function ddb() {
 
     # check if DEBUG is unset
     if [ -z ${DEBUG+dummy} ]; then
-        local UNSET='\E[1;33munset\E[0m'
         fecho -e "${BOLD}DEBUG is ${UNSET}"
         fecho "setting DEBUG..."
         export DEBUG=
@@ -497,7 +498,6 @@ function ddb() {
 
     # check if DEBUG is set but NULL
     if [ -z ${DEBUG:+dummy} ]; then
-        local NULL='\E[1;36mnull\E[0m'
         fecho -e "${BOLD}DEBUG is ${NULL}"
         fecho "setting DEBUG to zero..."
         export DEBUG=0
@@ -532,4 +532,119 @@ function ddb() {
         start_new_line
         print_debug
     fi
+}
+
+function print_() {
+    set -u
+    funcDEBUG=1
+    set_tab_shell
+
+    # parse inputs
+    if [ $# -eq 0 ]; then
+	      echo "${TAB}no input received"
+	      echo "${TAB}possibilities:"
+        itab
+	      echo "${TAB}- no argument given"
+	      echo "${TAB}- value passed (e.g. \$VB) instead of name (e.g. VB) and:"
+        itab
+	      echo -e "${TAB}- input is ${UNSET}"
+	      echo -e "${TAB}- input is ${NULL}"
+        dtab
+	      if ! (return 0 2>/dev/null); then
+		        echo "${TAB}- input is not exported"
+	      fi
+        dtab
+        return 1
+    else
+	      decho -n "${TAB}argument"
+	      if [ $# -gt 1 ]; then
+		        decho -n "s"
+	      fi
+	      decho ": $@ "
+	      input=$@
+    fi
+
+    if [ $# -gt 1 ]; then
+        decho -n "${TAB}looping over variables:"
+    else
+        decho -n "${TAB}testing variable"
+    fi
+    decho " $input..."
+
+    # test inputs
+    for VAR in $input; do      
+
+        if [ ${DEBUG:-0} -gt 0 ]; then
+            set_tab_shell
+            echo -e "${TAB}${BOLD}${VAR}${RESET}"
+            itab
+        fi
+
+        # check if VAR is unset
+        if [ -z ${!VAR+dummy} ]; then
+            echo -e "${TAB}${BOLD}$VAR is ${UNSET}"
+            continue
+        fi
+        decho "${TAB}${VAR} is set"
+
+        # check if VAR is called VAR
+        if [[ "${VAR}" == "${!VAR}" ]]; then
+		        echo -e "${TAB}${BAD}value of variable name matches FOR loop variable name${RESET}"
+            echo "${TAB}breaking..."
+		        break
+	      fi
+
+        # check if VAR is NULL
+        if [ -z ${!VAR:+dummy} ]; then
+            echo -e "${TAB}${BOLD}${VAR} is ${NULL}"
+            continue
+        fi
+        decho "${TAB}${VAR} is not empty"
+
+        # check if VAR is an integer
+				if [[ "${!VAR}" =~ ^[0-9]+$ ]]; then
+            decho "${TAB}${VAR} is an integer"
+            # check if !VAR is zero
+            if [ ${!VAR} -eq 0 ]; then
+                echo -e "${TAB}${GRAY}${VAR} is 0${RESET}"
+                continue
+            fi
+
+            echo "${TAB}${VAR} = ${!VAR}"
+            continue
+
+        fi
+        decho "${TAB}${VAR} is not an integer"
+
+        # check if VAR contains any spaces
+		    if [[ "${!VAR}" =~ " " ]]; then
+            decho "${TAB}${VAR} contians whitespace"
+            if [[ "${!VAR}" == " "* ]]; then
+                decho "${TAB}${VAR} is only whitespace"
+                echo -n "${TAB}${VAR} = "
+                echo -e "${!VAR}" | sed "s/ /${SPACE} ${RESET}/g"
+            else
+                echo "${TAB}${VAR} = ${!VAR}"
+            fi
+            continue
+        fi
+        decho "${TAB}${VAR} does not contians whitespace"
+
+        # check if VAR is true or false
+				if [ ${!VAR} = true ] || [ ${!VAR} = false ]; then
+            decho "${TAB}${VAR} is boolean"
+            echo -n "${TAB}${VAR} is "
+					  if ${!VAR}; then # fails when what
+						    echo -e "${TRUE}"
+					  else
+						    echo -e "${FALSE}"
+					  fi
+            continue
+        fi
+        decho "${TAB}${VAR} is not boolean"
+
+        echo "${TAB}${VAR} = ${!VAR}"
+
+    done
+
 }
