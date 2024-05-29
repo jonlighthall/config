@@ -56,7 +56,7 @@ function fecho() {
             local -ir IDX=$(( N_FUNC - 2 ))    
             
             # set color
-            echo -ne "${TAB}${DIM}${dcolor[IDX]}"
+            echo -ne "${TAB}${DIM}${dcolor[$IDX]}"
 
             # select element of function stack
             local -i fidx
@@ -79,8 +79,8 @@ function fecho() {
             
             echo -n "${FUNCNAME[fidx]}"
             #           echo -n " $fidx of $N_FUNC"
-            echo -ne ": \e[0m${dcolor[IDX]}"
-            echo "$@" | sed "s/\x1B\[0m/\x1B[0m${dcolor[IDX]}/"
+            echo -ne ": \e[0m${dcolor[$IDX]}"
+            echo "$@" | sed "s/\x1B\[0m/\x1B[0m${dcolor[$IDX]}/"
             echo -ne "\e[0m"
         fi
     fi

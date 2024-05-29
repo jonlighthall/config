@@ -45,7 +45,7 @@ function get_curpos() {
         fi
         echo "goodby..."
         dtab
-        return 1
+        return 0
     fi
 
     # get the cursor position
@@ -146,6 +146,9 @@ function start_new_line() {
     itab
     get_curpos x
     dtab
+    if [ ${x} -eq 0 ]; then
+        return 0
+    fi
     # if the cursor is not at the start of a line, then create a new line
     if [ ${x} -gt 1 ]; then
         fecho -en "\x1b[7mNEW LINE\x1b[m"
@@ -243,7 +246,7 @@ function strip_pretty() {
 # handling is included for a variety of commands
 # conditionally calls do_cmd_script, and do_cmd_stdbuf
 
-export FMT_COLOR=3
+export FMT_COLOR=0
 
 function do_cmd() {
     local -i DEBUG=0
@@ -284,10 +287,13 @@ function do_cmd() {
         ddecho "${TAB}printing unbuffered command ouput..."
         # set shell options
         set -o pipefail
-        # print unbuffered command output
+        # define highlight color
+        local -i idx2
+        dbg2idx $((idx+1)) idx2        
+        # print unbuffered command output        
         unbuffer $cmd \
             | sed -u "s/\r$//g;s/.*\r/${TAB}/g;s/^/${TAB}/" \
-            | sed -u "/^[^%|]*|/s/^/${dcolor[$idx+1]}/g; s/$/${dcolor[$idx]}/; /|/s/+/${GOOD}&/g; /|/s/-/${BAD}&/g; /modified:/s/^.*$/${BAD}&/g; /^\s*M\s/s/^.*$/${BAD}&/g" \
+            | sed -u "/^[^%|]*|/s/^/${dcolor[$idx2]}/g; s/$/${dcolor[$idx]}/; /|/s/+/${GOOD}&/g; /|/s/-/${BAD}&/g; /modified:/s/^.*$/${BAD}&/g; /^\s*M\s/s/^.*$/${BAD}&/g" \
             | sed -u "1 s/^[\s]*[^\s]/${cr}&/"
         local -i RETVAL=$?
 
@@ -445,10 +451,13 @@ function do_cmd_stdbuf() {
         fi
 
         ddecho -e "${TAB}${IT}buffer:${NORMAL}"
+        # define highlight color
+        local -i idx3
+        dbg2idx $((idx+1)) idx3
         # print command output
         \cat $temp_file \
             | sed -u "s/\r$//g;s/.*\r/${TAB}/g;s/^/${TAB}/" \
-            | sed -u "/^[^%|]*|/s/^/${dcolor[$idx+1]}/g; s/$/${dcolor[$idx]}/; /|/s/+/${GOOD}&/g; /|/s/-/${BAD}&/g; /modified:/s/^.*$/${BAD}&/g; /^\s*M\s/s/^.*$/${BAD}&/g" \
+            | sed -u "/^[^%|]*|/s/^/${dcolor[$idx3]}/g; s/$/${dcolor[$idx]}/; /|/s/+/${GOOD}&/g; /|/s/-/${BAD}&/g; /modified:/s/^.*$/${BAD}&/g; /^\s*M\s/s/^.*$/${BAD}&/g" \
             | sed "1 s/^[\s]*[^\s]/${cr}&/"
 
     else

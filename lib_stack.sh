@@ -332,7 +332,7 @@ function print_stack_devel() {
     local -ir IDX=$(( N_FUNC - 2 ))
 
     # set color
-    echo -ne "${dcolor[IDX]}"
+    echo -ne "${dcolor[$IDX]}"
 
     local -i x
     local -i start
@@ -375,7 +375,7 @@ function print_stack_devel() {
         if [[ ${FUNCNAME[x]} == "xecho" ]]; then
             break
         fi
-        echo -en "$(basename ${BASH_SOURCE[x+1]} 2>/dev/null) ${BASH_LINENO[x]}: ${FUNCNAME[x]}\e[0m${dcolor[IDX]} -> "
+        echo -en "$(basename ${BASH_SOURCE[x+1]} 2>/dev/null) ${BASH_LINENO[x]}: ${FUNCNAME[x]}\e[0m${dcolor[$IDX]} -> "
     done
     echo -en "$(basename ${BASH_SOURCE[x]}) ${BASH_LINENO[x]}] "
 
@@ -384,7 +384,7 @@ function print_stack_devel() {
     # print contents of function stack...
     echo -en "["
     for (( x=$start; x>$stop; x-- )); do
-        echo -en "$(basename ${BASH_SOURCE[x+1]}) ${BASH_LINENO[x]}: ${FUNCNAME[x]}\e[0m${dcolor[IDX]} -> "
+        echo -en "$(basename ${BASH_SOURCE[x+1]}) ${BASH_LINENO[x]}: ${FUNCNAME[x]}\e[0m${dcolor[$IDX]} -> "
     done
     echo -en "$(basename ${BASH_SOURCE[x]}) ${BASH_LINENO[x]}] "
 
