@@ -476,17 +476,27 @@ function dbg2idx() {
     fi
 
     # since DEBUG=0 does not print and DEBUG=1 corresponds to starting color, or array index 0,
-    # decrement input value
-    local -ir offset=0
+    # the input value decremented by one
+    local -i offset=1
+    # however, idx=0 corresponds to no color or gray printing, so the offset is zero and idx=DEBUG
+    offset=0
+    # if the index is negative (for some reason), continue from the previous color
+    if [ $dbg_in -lt 0 ]; then
+        offset=1
+    fi
+
+    # specify the number of colors to skip at the end of the array
     local -ir N_mod=$((N_cols-1))
     
+    # calculate the corresponding "debug" index, modulo number of colors
     local -i dbg_idx=$(( ( $dbg_in + ${offset} ) % ${N_mod} ))
     fecho "dbg_idx = $dbg_idx"
 
-    #define array index
+    #define array index, based on values defined in set_dbg2idx
     idx=$(( ( ${N_max} + $direction * ($dbg_idx) + $start + 1 ) % ${N_mod} ))
     fecho "idx = $idx"
 
+    # print result
     fecho -e "${dcolor[$idx]}\x1B[7m${dbg_in}\x1B[m"
 
     return 0
