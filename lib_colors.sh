@@ -471,7 +471,7 @@ function dbg2idx() {
     set_dbg2idx
 
     if [ $dbg_in -eq 0 ]; then
-        idx=$N_max
+        var_out=$N_max
         return 0
     fi
 
@@ -493,7 +493,7 @@ function dbg2idx() {
     fecho "dbg_idx = $dbg_idx"
 
     #define array index, based on values defined in set_dbg2idx
-    idx=$(( ( ${N_max} + $direction * ($dbg_idx) + $start + 1 ) % ${N_mod} ))
+    var_out=$(( ( ${N_max} + $direction * ($dbg_idx) + $start + 1 ) % ${N_mod} ))
     fecho "idx = $idx"
 
     # print result
