@@ -470,9 +470,14 @@ function dbg2idx() {
 
     set_dbg2idx
 
+    if [ $dbg_in -eq 0 ]; then
+        idx=$N_max
+        return 0
+    fi
+
     # since DEBUG=0 does not print and DEBUG=1 corresponds to starting color, or array index 0,
     # decrement input value
-    local -ir offset=-1
+    local -ir offset=0
     local -ir N_mod=$((N_cols-1))
     
     local -i dbg_idx=$(( ( $dbg_in + ${offset} ) % ${N_mod} ))
@@ -499,7 +504,7 @@ function print_fcolors() {
     local -i idx
     (
         # loop over valid non-zero values of debug
-        for ((i=1;i<=$N_cols;i++));do
+        for ((i=0;i<=$N_cols-1;i++));do
             #define array index
             dbg2idx $i idx
             # print indices
