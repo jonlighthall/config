@@ -315,7 +315,7 @@ export col09='\x1B[38;5;132m' # 11: 330 Hot Pink            ter - rose
 export col00='\x1B[38;5;102m' # 12:   0 Grey              mon - GRAY
 
 # create rainbow-ordered (hue order) array of 12 debug colors
-export dcolor=( "${col08}" "${col11}" "${col12}" "${col07}" "${col03}" "${col04}" "${col05}" "${col02}" "${col01}" "${col06}" "${col10}" "${col09}" )
+export dcolor=( "${col08}" "${col11}" "${col12}" "${col07}" "${col03}" "${col04}" "${col05}" "${col02}" "${col01}" "${col06}" "${col10}" "${col09}" "${col00}" )
 
 # print dcolor array in rainbow-order
 # requires lib_traps
@@ -473,11 +473,13 @@ function dbg2idx() {
     # since DEBUG=0 does not print and DEBUG=1 corresponds to starting color, or array index 0,
     # decrement input value
     local -ir offset=-1
-    local -i dbg_idx=$(( ( $dbg_in + ${offset} ) % ${N_cols} ))
+    local -ir N_mod=$((N_cols-1))
+    
+    local -i dbg_idx=$(( ( $dbg_in + ${offset} ) % ${N_mod} ))
     fecho "dbg_idx = $dbg_idx"
 
     #define array index
-    idx=$(( ( ${N_max} + $direction * ($dbg_idx) + $start + 1 ) % ${N_cols} ))
+    idx=$(( ( ${N_max} + $direction * ($dbg_idx) + $start + 1 ) % ${N_mod} ))
     fecho "idx = $idx"
 
     fecho -e "${dcolor[$idx]}\x1B[7m${dbg_in}\x1B[m"
