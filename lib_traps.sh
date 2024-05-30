@@ -330,11 +330,11 @@ function print_return() {
         ddecho "${TAB}$-"
     fi
 
-    decho -n "${TAB}${FUNCNAME}: "
+    ddecho -n "${TAB}${FUNCNAME}: "
     if [ $# -eq 0 ]; then
-        decho "no arg"
+        ddecho "no arg"
     else
-        decho "arg = $@"
+        ddecho "arg = $@"
     fi
 
     RETURN_RETVAL=${1:-''}
