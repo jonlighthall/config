@@ -383,7 +383,7 @@ function do_cmd_script() {
         # reset shell options
         set +o pipefail
         # remove temporary file
-        local temp_file=typescript
+        local temp_file=typescript_$(date +'%Y-%m-%d-t%H%M%S')
         if [ -f $temp_file ]; then
             rm typescript
         fi
@@ -424,7 +424,7 @@ function do_cmd_stdbuf() {
     echo -ne "${dcolor[$idx]}"
 
     # define temp file
-    temp_file=temp
+    temp_file=stdbuf_$(date +'%Y-%m-%d-t%H%M%S')
     ddecho "${TAB}STDBUF: redirecting command ouput to $temp_file..."
 
     # unbuffer command output and save to file
