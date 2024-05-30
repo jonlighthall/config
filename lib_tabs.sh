@@ -20,6 +20,12 @@ function set_ftab() {
     export fTAB=${fTAB:='   '}
 }
 
+function guide_tabs() {
+    ctab
+    export fTAB='|--'
+}
+
+
 # clear tab
 function ctab() {
     export TAB=''
