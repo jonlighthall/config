@@ -314,6 +314,10 @@ export col09='\x1B[38;5;132m' # 11: 330 Hot Pink            ter - rose
 
 export col00='\x1B[38;5;102m' # 12:   0 Grey              mon - GRAY
 
+# define debug highlight colors
+export  dBAD="${col08}"  # red
+export dGOOD="${col03}"  # RETVAL=0; target exists
+
 # create rainbow-ordered (hue order) array of 12 debug colors
 export dcolor=( "${col08}" "${col11}" "${col12}" "${col07}" "${col03}" "${col04}" "${col05}" "${col02}" "${col01}" "${col06}" "${col10}" "${col09}" "${col00}" )
 

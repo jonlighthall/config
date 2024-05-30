@@ -246,7 +246,7 @@ function strip_pretty() {
 # handling is included for a variety of commands
 # conditionally calls do_cmd_script, and do_cmd_stdbuf
 
-export FMT_COLOR=0
+export FMT_COLOR=1
 
 function do_cmd() {
     local -i DEBUG=0
@@ -293,7 +293,7 @@ function do_cmd() {
         # print unbuffered command output        
         unbuffer $cmd \
             | sed -u "s/\r$//g;s/.*\r/${TAB}/g;s/^/${TAB}/" \
-            | sed -u "/^[^%|]*|/s/^/${dcolor[$idx2]}/g; s/$/${dcolor[$idx]}/; /|/s/+/${GOOD}&/g; /|/s/-/${BAD}&/g; /modified:/s/^.*$/${BAD}&/g; /^\s*M\s/s/^.*$/${BAD}&/g" \
+            | sed -u "/^[^%|]*|/s/^/${dcolor[$idx2]}/g; s/$/${dcolor[$idx]}/; /|/s/+/${dGOOD}&/g; /|/s/-/${dBAD}&/g; /modified:/s/^.*$/${dBAD}&/g; /^\s*M\s/s/^.*$/${dBAD}&/g" \
             | sed -u "1 s/^[\s]*[^\s]/${cr}&/"
         local -i RETVAL=$?
 
@@ -457,7 +457,7 @@ function do_cmd_stdbuf() {
         # print command output
         \cat $temp_file \
             | sed -u "s/\r$//g;s/.*\r/${TAB}/g;s/^/${TAB}/" \
-            | sed -u "/^[^%|]*|/s/^/${dcolor[$idx3]}/g; s/$/${dcolor[$idx]}/; /|/s/+/${GOOD}&/g; /|/s/-/${BAD}&/g; /modified:/s/^.*$/${BAD}&/g; /^\s*M\s/s/^.*$/${BAD}&/g" \
+            | sed -u "/^[^%|]*|/s/^/${dcolor[$idx3]}/g; s/$/${dcolor[$idx]}/; /|/s/+/${dGOOD}&/g; /|/s/-/${dBAD}&/g; /modified:/s/^.*$/${dBAD}&/g; /^\s*M\s/s/^.*$/${dBAD}&/g" \
             | sed "1 s/^[\s]*[^\s]/${cr}&/"
 
     else
