@@ -330,6 +330,7 @@ function print_return() {
         ddecho "${TAB}$-"
     fi
 
+    decho -n "${TAB}${FUNCNAME}: "
     if [ $# -eq 0 ]; then
         decho "no arg"
     else
@@ -348,7 +349,7 @@ function print_return() {
     if [ ${N_FUNCs} -gt 1 ]; then
         echo " ${FUNCNAME[1]##*/}"
     else
-        echo " ${BASH_SOURCE[1]##*/}"
+        echo " ${BASH_SOURCE[0]##*/}"
     fi
 }
 
