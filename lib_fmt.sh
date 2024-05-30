@@ -246,7 +246,7 @@ function strip_pretty() {
 # handling is included for a variety of commands
 # conditionally calls do_cmd_script, and do_cmd_stdbuf
 
-export FMT_COLOR=1
+export FMT_COLOR=0
 
 function do_cmd() {
     local -i DEBUG=0
@@ -289,12 +289,14 @@ function do_cmd() {
         set -o pipefail
         # define highlight color
         local -i idx2
-        dbg2idx $((idx+1)) idx2        
-        # print unbuffered command output        
+        dbg2idx $((idx+1)) idx2
+        # print unbuffered command output
+        lecho unbuffer
         unbuffer $cmd \
             | sed -u "s/\r$//g;s/.*\r/${TAB}/g;s/^/${TAB}/" \
             | sed -u "/^[^%|]*|/s/^/${dcolor[$idx2]}/g; s/$/${dcolor[$idx]}/; /|/s/+/${dGOOD}&/g; /|/s/-/${dBAD}&/g; /modified:/s/^.*$/${dBAD}&/g; /^\s*M\s/s/^.*$/${dBAD}&/g" \
-            | sed -u "1 s/^[\s]*[^\s]/${cr}&/"
+            | sed -u "1 s/^[\s]*[^\s]/${cr}&/" | sed -u "s/\x1B\[m/\x1B[m${dcolor[$idx]}/g"
+        
         local -i RETVAL=$?
 
         # reset shell options
@@ -318,7 +320,6 @@ function do_cmd() {
 
     # reset formatting
     unset_color
-    dtab
     if [ $DEBUG -gt 0 ]; then
         dtab
     fi
@@ -368,6 +369,7 @@ function do_cmd_script() {
         # set shell options
         set -o pipefail
         # print command output
+        lecho script
         if false; then
             # command output is unbuffered only if "sed -u" is used!
             # however, this interfers with formatting the output
@@ -378,7 +380,7 @@ function do_cmd_script() {
                 | sed "s/\r.*//g;s/.*\r//g" \
                 | sed 's/^[[:space:]].*//g' \
                 | sed "/^$/d;s/^/${TAB}${dcolor[$idx]}/" \
-                | sed "1 s/^[\s]*[^\s]/${cr}&/"
+                | sed "1 s/^[\s]*[^\s]/${cr}&/" | sed "s/\x1B\[m/&${dcolor[$idx]}/g"
         fi
         local -i RETVAL=$?
         # reset shell options
@@ -396,6 +398,7 @@ function do_cmd_script() {
 
         dtab
         # print buffered command output
+        lecho "unformatted"
         $cmd
         local -i RETVAL=$?
     fi
@@ -454,11 +457,12 @@ function do_cmd_stdbuf() {
         # define highlight color
         local -i idx3
         dbg2idx $((idx+1)) idx3
+        lecho stdbuf
         # print command output
         \cat $temp_file \
             | sed -u "s/\r$//g;s/.*\r/${TAB}/g;s/^/${TAB}/" \
             | sed -u "/^[^%|]*|/s/^/${dcolor[$idx3]}/g; s/$/${dcolor[$idx]}/; /|/s/+/${dGOOD}&/g; /|/s/-/${dBAD}&/g; /modified:/s/^.*$/${dBAD}&/g; /^\s*M\s/s/^.*$/${dBAD}&/g" \
-            | sed "1 s/^[\s]*[^\s]/${cr}&/"
+            | sed "1 s/^[\s]*[^\s]/${cr}&/" | sed "s/\x1B\[m/&${dcolor[$idx]}/g"
 
     else
         itab
@@ -468,7 +472,7 @@ function do_cmd_stdbuf() {
 
     # remove temporary file
     if [ -f ${temp_file} ]; then
-        rm ${temp_file}
+        : # rm ${temp_file}
     fi
 
     # reset formatting
@@ -503,6 +507,7 @@ function do_cmd_safe() {
     fi
 
     dtab
+    lecho safe
     do_cmd $cmd
     RETVAL=$?
     itab
