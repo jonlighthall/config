@@ -291,7 +291,6 @@ function do_cmd() {
         local -i idx2
         dbg2idx $((idx+1)) idx2
         # print unbuffered command output
-        lecho unbuffer
         unbuffer $cmd \
             | sed -u "s/\r$//g;s/.*\r/${TAB}/g;s/^/${TAB}/" \
             | sed -u "1 s/^[\s]*[^\s]/${cr}&/" | sed -u "s/\x1B\[m/\x1B[m${dcolor[$idx]}/g"
@@ -368,7 +367,6 @@ function do_cmd_script() {
         # set shell options
         set -o pipefail
         # print command output
-        lecho script
         if false; then
             # command output is unbuffered only if "sed -u" is used!
             # however, this interfers with formatting the output
@@ -397,7 +395,6 @@ function do_cmd_script() {
 
         dtab
         # print buffered command output
-        lecho "unformatted"
         $cmd
         local -i RETVAL=$?
     fi
@@ -456,7 +453,6 @@ function do_cmd_stdbuf() {
         # define highlight color
         local -i idx3
         dbg2idx $((idx+1)) idx3
-        lecho stdbuf
         # print command output
         \cat $temp_file \
             | sed -u "s/\r$//g;s/.*\r/${TAB}/g;s/^/${TAB}/" \
@@ -505,7 +501,6 @@ function do_cmd_safe() {
     fi
 
     dtab
-    lecho safe
     do_cmd $cmd
     RETVAL=$?
     itab
