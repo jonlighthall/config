@@ -69,7 +69,7 @@ function check_target() {
         echo -n "${TAB}"
     fi
 
-    # determine 
+    # determine type
     [ -L "${target}" ] && type="link ${VALID}"
     [ -f "${target}" ] && type="file ${FILE}"
     [ -d "${target}" ] && type="directory ${DIR}"
