@@ -129,7 +129,7 @@ function lecho() {
 
     if [ ${DEBUG:-0} -gt 0 ] || [ ! -z "$@" ] ; then
         local -i tab_wid=${#TAB}
-        local -i term_wid=${COLUMNS}
+        local -i term_wid=${COLUMNS:-72}
         local -i hr_wid=$(($term_wid - (2 * $tab_wid)))
         hline $hr_wid
         trap 'hline $hr_wid;DEBUG=$oldDEBUG;echo -e "$RESET";trap -- RETURN' RETURN
