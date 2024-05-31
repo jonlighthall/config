@@ -34,7 +34,10 @@ function in_line() {
 }
 
 function lec_mes () {
-    echo -en "line $BASH_LINENO called on line ${GRL}"
+    if [ $N_BASH -gt 1 ]; then
+        echo -en "line $BASH_LINENO "
+    fi
+    echo -en "called on line ${GRL}"
 }
 
 function find_func_line() {
@@ -123,7 +126,6 @@ function lecho() {
     if [ $DEBUG -lt 1 ]; then
         idb >/dev/null
     fi
-    DEBUG=2
     local -i idx
     dbg2idx 9 idx
     fcol=${dcolor[idx]}
@@ -136,7 +138,7 @@ function lecho() {
         local -i term_wid=${COLUMNS:-72}
         local -i hr_wid=$(($term_wid - (2 * $tab_wid)))
         hline $hr_wid
-        trap 'hline $hr_wid;DEBUG=$oldDEBUG;echo -e "$RESET";trap -- RETURN' RETURN
+        trap 'echo -ne "${fcol}";hline $hr_wid;DEBUG=$oldDEBUG;echo -en "$RESET";trap -- RETURN' RETURN
     fi
     if [ ${DEBUG:-0} -gt 1 ]; then
         print_stack
@@ -151,7 +153,7 @@ function lecho() {
 
     if [ $N_BASH -eq 1 ]; then
         in_line "$@"
-        echo -e "$(lec_mes)${BASH_LINENO}${fcol} from ${BASH##*/}"
+        echo -e "${FUNCNAME}() $(lec_mes)${BASH_LINENO}${fcol} from ${BASH##*/}"
         ddecho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
         return 0
     fi
@@ -177,7 +179,7 @@ function lecho() {
     if [[ "${func}" == "main" ]] || [[ "${func}" == "source" ]]; then
         # the function is call from bash
         in_line "$@"
-        echo -e "$(lec_mes)${BASH_LINENO[(($N_BASH-2))]}${fcol} in file ${YELLOW}${BASH_SOURCE[(($N_BASH-1))]##*/}${fcol}"
+        echo -e "${FUNCNAME}() $(lec_mes)${BASH_LINENO[(($N_BASH-2))]}${fcol} in file ${YELLOW}${BASH_SOURCE[(($N_BASH-1))]##*/}${fcol}"
         ddecho "exiting ${FUNCNAME} on line ${LINENO}"
         return 0
     else
@@ -200,7 +202,7 @@ function lecho() {
         local -i call_line=$(($line_func_def -1 + $func_line))
         # print file line
         in_line "$@"
-        echo -n "$(lec_mes)${call_line} "
+        echo -n "${FUNCNAME}() $(lec_mes)${call_line} "
         echo -e "in file ${YELLOW}${sour_fil}${fcol}"
         itab
         # print function line
@@ -253,7 +255,7 @@ function plecho() {
 
     if [ $N_BASH -eq 1 ]; then
         in_line "$@"
-        echo -e "$(lec_mes)${BASH_LINENO}${RESET} from ${BASH##*/}"
+        echo -e "${FUNCNAME}() $(lec_mes)${BASH_LINENO}${RESET} from ${BASH##*/}"
         ddecho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
         return 0
     else
@@ -337,7 +339,7 @@ function plecho() {
         local -i call_line=$(($line_func_def -1 + $func_line))
         # print file line
         in_line "$@"
-        echo -n "$(lec_mes)${call_line} "
+        echo -n "${FUNCNAME}() $(lec_mes)${call_line} "
         echo -e "in file ${YELLOW}${sour_fil}${RESET}"
         itab
         # print function line
