@@ -115,6 +115,26 @@ function find_func_line() {
     echo $lin
 }
 
+function this_line() {
+    # get calling function
+    local get_func
+    if [ ${#FUNCNAME[@]} -gt 1 ]; then
+        get_func=${FUNCNAME[1]}
+    else
+        get_func=${FUNCNAME[0]}
+    fi
+    decho "func: $get_func"
+
+    # get line definition
+    local -i line_def=$(find_func_line "${get_func}" "${BASH_SOURCE}" 2>/dev/null);
+
+    decho "line: $line_def"
+
+    in_line "$@"
+    echo "${FUNCNAME[1]}() line $((${line_def}+${BASH_LINENO[0]}-1))"
+    return 0
+}
+
 # line echo
 function lecho() {
     # save shell options
@@ -490,7 +510,7 @@ function idb() {
         fecho "setting DEBUG to zero..."
         unset DEBUG
         declare -ix DEBUG=0
-        ((--N))        
+        ((--N))
         if [ $N -eq 0 ]; then
             fecho -e "DEBUG = ${DEBUG}"
             return 0
