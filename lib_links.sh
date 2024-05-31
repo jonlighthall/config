@@ -336,7 +336,7 @@ function do_link() {
     fi
     # finally, link target to link_name
     itab
-    echo -en "${TAB}${GRH}"
+    echo -en "${GRH}"
     hline 72
     echo "${TAB}making link... "
     # check if target file is authorized_keys
@@ -351,7 +351,6 @@ function do_link() {
         ln -sv "${target}" ${link_name}
         RETVAL=$?
     fi
-    echo -ne "${TAB}"
     hline 72
     echo -en "${RESET}"
     dtab 2

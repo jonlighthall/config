@@ -376,7 +376,6 @@ function print_error() {
     TAB=${TAB=''}
     local ERR_PRINT=$(echo -e "${TAB}\E[37;41m ERROR ${RESET} ")
     [ $DEBUG -gt 0 ] && start_new_line
-    echo -n "${TAB}"
     hline
 
     eTAB=$(echo -e "${RED}|${RESET}")
@@ -543,7 +542,6 @@ function print_error() {
         fi
     fi
     echo -e "${spx} ${GRAY}RETVAL=${ERR_RETVAL}${RESET}"
-    echo -n "${TAB}"
     hline
 }
 
