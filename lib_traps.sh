@@ -583,15 +583,20 @@ function print_traps() {
         local -i DEBUG=$1
     else
         # substitute default value if DEBUG is unset or null
-        local -i DEBUG=${DEBUG:-2} 
+        local -i DEBUG=${DEBUG:-2}
+        [ ${#BASH_SOURCE[@]} -eq 1 ] && DEBUG=2
     fi
     # print summary
+    local -i xpos
+    get_curpos xpos
+    [ $xpos -eq 1 ] && ddecho -n "${TAB}"
     ddecho "the following traps are set"
     itab
     if [ -z "$(trap -p)" ]; then
         ddecho -e "${TAB}none"
     else
-        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g" # | sed 's/^[ ]*$//g'
+        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g"
+        start_new_line
     fi
     ddecho -ne ${RESET}
     dtab
