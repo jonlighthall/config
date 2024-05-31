@@ -248,7 +248,81 @@ function strip_pretty() {
 
 # set both to zero for un-altered output
 export FMT_COLOR=0
-export FMT_TAB=1
+export FMT_TAB=0
+
+function extract_color() {
+    set -u
+    local DEBUG=2
+
+    # get color
+    local input_color=${dcolor[idx]}
+
+    decho -e "${UL}input color${NORMAL}"
+    itab
+    decho -en "${TAB}color: ${input_color}"
+    decho -n "${input_color}"
+    decho -e "${RESET}"
+
+    # get color code
+    export input_code=$(echo ${input_color} | sed 's/^.*\[\([0-9;]*\)m/\1/')
+    decho -e "${TAB}code:\x1B[${input_code}m $input_code"
+
+    if [[ $input_code =~ ";" ]]; then
+        ddecho "${TAB}${input_code} has seperators"
+        ddecho "${TAB}assuming 256 colors"
+        input_set=$(echo "${input_code%;*};")
+        local -i input_num=${input_code##*;}
+
+        local -i num_start=17
+        local -i num_end=230
+        local -i num_mod=$((num_end-num_start))
+        local -i num_shift=6
+
+    else
+        ddecho "${TAB}${input_code} does not have seperators"
+        ddecho "${TAB}assuming 16 colors"
+        input_set=${input_code: :-1}
+        local -i input_num=${input_code: -1}
+
+        local -i num_start=1
+        local -i num_end=6
+        local -i num_mod=$((num_end-num_start))
+        local -i num_shift=-1
+    fi
+
+    ddecho "${TAB}set: $input_set"
+    decho "${TAB}number:  $input_num"
+    dtab
+
+    ddecho -e "${UL}calculate${NORMAL}"
+    itab
+    ddecho "${TAB}value start: $num_start"
+    ddecho "${TAB}value end: $num_end"
+    ddecho "${TAB}modulo: $num_mod"
+    ddecho "${TAB}shift: $num_shift"
+
+    local -i output_arg=$(( input_num - num_start  + num_shift ))
+    ddecho "${TAB}arg: $output_arg"
+    local -i output_mod=$(( ( ( input_num - num_start  + num_shift ) % ( num_mod + 1 ) ) ))
+    ddecho "${TAB}mod: $output_mod"
+    local -i output_num=$(( ( ( input_num - num_start  + num_shift ) % ( num_mod +1 ) + num_start ) ))
+    
+    export output_code=$(echo "${input_set}${output_num}")
+    declare output_color=$(echo "\x1B[${output_code}m")
+
+    dtab
+    
+    decho -e "${UL}output color${NORMAL}"
+    itab
+    decho "${TAB}number: $output_num"
+    decho -e "${TAB}code: \x1B[${output_code}m$output_code${RESET}"
+
+    decho -en "${TAB}color: ${output_color}"
+    decho -n "${output_color}"
+    decho -e "${RESET}"
+    dtab
+
+}
 
 function do_cmd() {
     local -i DEBUG=0
@@ -266,6 +340,7 @@ function do_cmd() {
     dbg2idx $FMT_COLOR idx
     # set color
     echo -ne "${dcolor[$idx]}"
+    extract_color
 
     # the ideal solution is to use unbuffer
     # check if unbuffer is defined
@@ -293,55 +368,10 @@ function do_cmd() {
         # define highlight color
         local -i idx2
         dbg2idx $((idx+1)) idx2
-        # get col
-        color_code=$(echo ${dcolor[idx]} | sed 's/^.*\[\([0-9;]*\)m/\1/')
-        #        echo -e "\x1B[${color_code}m $color_code"
-
-        if [[ $color_code =~ ";" ]]; then
-            #echo yes
-            col_set=$(echo "${color_code%;*};")
-            local -i col_num=${color_code##*;}
-
-            local -i cstart=17
-            local -i cend=230
-            local -i cmod=$((cend-cstart))
-            local -i num_shift=6
-
-        else
-            #echo no
-            col_set=${color_code: :-1}
-            local -i col_num=${color_code: -1}
-
-            local -i cstart=1
-            local -i cend=6
-            local -i cmod=$((cend-cstart))
-            local -i num_shift=-1
-        fi
-
-        if false; then
-            echo "set: $col_set"
-            echo "num: $col_num"
-            echo "modulo: $cmod"
-
-            local -i rep_num=$(( col_num - cstart  + num_shift ))
-            echo "arg: $rep_num"
-            rep_num=$(( ( ( col_num - cstart  + num_shift ) % ( cmod + 1 ) ) ))
-            echo "mod: $rep_num"
-
-            echo "shift: $rep_num"
-            echo "col: $col_new"
-
-            echo "$color_code $rep_code"
-            echo -e "\x1B[${color_code}m $color_code"
-            echo -e "\x1B[${rep_code}m $rep_code"
-        fi
-
-        local -i rep_num=$(( ( ( col_num - cstart  + num_shift ) % ( cmod +1 ) + cstart ) ))
-        rep_code=$(echo "${col_set}${rep_num}")
 
         # print unbuffered command output
         unbuffer $cmd \
-            | sed -u "s/\r$//g;s/.*\r//g;s/^/${TAB}/" | sed -u "s/\x1B\[${color_code}m/\x1B[${rep_code}m/g"\
+            | sed -u "s/\r$//g;s/.*\r//g;s/^/${TAB}/" | sed -u "s/\x1B\[${input_code}m/\x1B[${output_code}m/g"\
             | sed -u "1 s/^[\s]*[^\s]/${cr}&/" | sed -u "s/\x1B\[m/\x1B[m${dcolor[$idx]}/g"
 
         local -i RETVAL=$?
