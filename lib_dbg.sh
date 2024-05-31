@@ -126,7 +126,7 @@ function lecho() {
     DEBUG=2
     local -i idx
     dbg2idx 9 idx
-    local fcol=${dcolor[idx]}
+    fcol=${dcolor[idx]}
     echo -ne "${fcol}"
     dddecho -e "${TAB}${INVERT}${FUNCNAME}${fcol}"
     set -u
