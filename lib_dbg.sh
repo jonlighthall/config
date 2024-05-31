@@ -136,7 +136,7 @@ function lecho() {
     if [ ${DEBUG:-0} -gt 0 ] || [ ! -z "$@" ] ; then
         local -i tab_wid=${#TAB}
         local -i term_wid=${COLUMNS:-72}
-        local -i hr_wid=$(($term_wid - (2 * $tab_wid)))
+        declare -i hr_wid=$(($term_wid - (2 * $tab_wid)))
         hline $hr_wid
         trap 'echo -ne "${fcol}";hline $hr_wid;DEBUG=$oldDEBUG;echo -en "$RESET";trap -- RETURN' RETURN
     fi
