@@ -509,7 +509,7 @@ function idb() {
         [ $N -eq 0 ] && return 0
         fecho "setting DEBUG to zero..."
         unset DEBUG
-        declare -ix DEBUG=0
+        declare -igx DEBUG=0
         ((--N))
         if [ $N -eq 0 ]; then
             fecho -e "DEBUG = ${DEBUG}"
@@ -532,7 +532,7 @@ function idb() {
         fecho "DEBUG is not a number"
         fecho "setting DEBUG to zero..."
         unset DEBUG
-        declare -ix DEBUG=0
+        declare -igx DEBUG=0
         if [ $N -gt 1 ]; then
             # increment DEBUG by N -1
             fecho "incrementing DEBUG..."
@@ -551,24 +551,35 @@ function idb() {
 
 function ddb() {
     set -u
-    funcDEBUG=0
+    funcDEBUG=1
+
+    # determine how many iteration to run
+    local -i i
+    local -i N
+    if [ $# -eq 0 ]; then
+        N=1
+    else
+        N=$1
+    fi
+    fecho "decrementing DEBUG by $N"
 
     # check if DEBUG is unset
     if [ -z ${DEBUG+dummy} ]; then
         fecho -e "${BOLD}DEBUG is ${UNSET}"
         fecho "setting DEBUG..."
         export DEBUG=
-        fecho -e "DEBUG = ${DEBUG}"
-        return 0
     fi
 
     # check if DEBUG is set but NULL
     if [ -z ${DEBUG:+dummy} ]; then
         fecho -e "${BOLD}DEBUG is ${NULL}"
         fecho "setting DEBUG to zero..."
-        export DEBUG=0
-        fecho -e "DEBUG = ${DEBUG}"
-        return 0
+        unset DEBUG
+        declare -igx DEBUG=0
+        if [ $N -eq 0 ]; then
+            fecho -e "DEBUG = ${DEBUG}"
+            return 0
+        fi
     fi
 
     # check if DEBUG is a number
@@ -586,12 +597,21 @@ function ddb() {
             return 0
         fi
         fecho "decrementing DEBUG..."
-        ((DEBUG--))
+        if [ $N -gt $DEBUG ]; then
+            fecho "resetting DEBUG to zero..."
+            DEBUG=0
+        else
+            # increment DEBUG by N
+            for ((i = 1; i <= $N; i++)); do
+                ((--DEBUG))
+            done
+        fi
         export DEBUG
     else
         fecho "DEBUG is not a number"
         fecho "setting DEBUG to zero..."
-        export DEBUG=0
+        unset DEBUG
+        declare -igx DEBUG=0
     fi
     fecho -e "DEBUG = ${DEBUG}"
     if [ $funcDEBUG -eq 0 ];then
