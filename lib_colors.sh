@@ -36,15 +36,20 @@ export      ST='\x1B[9m'    # strikethrough
 
 function test_normal() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-    local color=${CHARTRU}
-    local code=${color:5:-1}
-    for i in {0..9}; do
-        [ $i = 6 ] && continue
-        echo -ne "$TAB"
-        [ $i -gt 0 ] && echo -en "$color"
-        printf '%02d;' $i
-        [ $i -gt 0 ] && echo -n ${code} || for ((j = 1; j <= ${#code}; j++)); do echo -n " "; done
-        echo -e ": \x1B[${i}mhello${NORMAL}, world!"
+    for k in {3,9}; do
+        for j in {1..7}; do
+            local color="\x1B[${k}${j}m"
+            local code=${color:5:-1}
+            for i in {0..9}; do
+                [ $i = 6 ] || [ $i = 8 ] && continue
+                [ $k = 9 ] && [ $i = 1 ] && continue
+                echo -ne "$TAB"
+                echo -en "$color"
+                printf '%02d;' $i
+                echo -n ${code}
+                echo -e ": \x1B[${i}m${color}hello${NORMAL}, world!"
+            done
+        done
     done
     echo -ne "${RESET}"
 }
@@ -319,7 +324,7 @@ export  dBAD="${col08}"  # red
 export dGOOD="${col03}"  # RETVAL=0; target exists
 
 # create rainbow-ordered (hue order) array of 12 debug colors
-export dcolor=( "${col08}" "${col11}" "${col12}" "${col07}" "${col03}" "${col04}" "${col05}" "${col02}" "${col01}" "${col06}" "${col10}" "${col09}" "${col00}" )
+export dcolor=( "${col08}" "${col11}" "${col12}" "${col07}" "${col03}" "${col04}" "${col05}" "${col02}" "${col01}" "${col06}" "${col10}" "${col09}" "\x1B[36m" )
 
 # print dcolor array in rainbow-order
 # requires lib_traps
@@ -491,7 +496,7 @@ function dbg2idx() {
 
     # specify the number of colors to skip at the end of the array
     local -ir N_mod=$((N_cols-1))
-    
+
     # calculate the corresponding "debug" index, modulo number of colors
     local -i dbg_idx=$(( ( $dbg_in + ${offset} ) % ${N_mod} ))
     fecho "dbg_idx = $dbg_idx"
