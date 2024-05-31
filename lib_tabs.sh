@@ -25,7 +25,6 @@ function guide_tabs() {
     export fTAB='|--'
 }
 
-
 # clear tab
 function ctab() {
     export TAB=''
@@ -87,12 +86,12 @@ function set_tab() {
             fecho "TAB length changed"
         fi
     fi
-#    fecho" ${RUN_TYPE}"
+
     if [[ "${RUN_TYPE}" =~ "sourcing" ]]; then
         if [ $N_BASH -gt 1 ]; then
             fecho -e "${DIM}${FUNCNAME[1]}${NORMAL} will reduce tab"
         fi
-    fi    
+    fi
 }
 
 # set the indentation according to the shell level
@@ -101,7 +100,7 @@ function set_tab_shell() {
 
     # get length of TAB
     local -i i=0
-     local tab
+    local tab
     strip_pretty tab "$TAB"
     i=${#tab}
 
@@ -109,16 +108,23 @@ function set_tab_shell() {
     # print size of TAB
     fecho -e "TAB = ${SPACE}${TAB}${RESET} length $i"
 
-    # reset TAB
-    rtab
-
     # get the shell level
     fecho "getting shell level..."
     local -i N_SHL=$SHLVL
     fecho "${fTAB}SHLVL = $SHLVL"
 
+    # set the tab length
+    local -i N_TAB=$N_SHL
+    # minimum shell level is one, which corresponds to zero tab size
+    ((N_TAB--))
+
+    # since this is a function, reduce N_SHL by one
+    ((N_TAB--))
+    fecho "${fTAB}SHLVL indent $N_TAB tabs"
+    
     # get the lenght of the execution stack
     fecho "getting length of stack..."
+    [ $funcDEBUG -gt 0 ] && print_stack
     local -i N_BASH=${#BASH_SOURCE[@]}
     fecho "${fTAB}N_BASH = $N_BASH"
     if [[ "$-" == *i* ]]; then
@@ -127,17 +133,11 @@ function set_tab_shell() {
 
     if [ $N_BASH -ne $N_SHL ]; then
         fecho -e "${fTAB}${GRH}shell/stack mis-match${RESET}"
+        fecho "${fTAB}increasing level..."
+        ((++N_TAB))
+        fecho "${fTAB}BASH indent $N_TAB tabs"
     fi
-    # since this is a function, reduce N_SHL by one
-    fecho "reducing level..."
-    ((N_SHL--))
-    fecho "${fTAB}N_SHL = $N_SHL"
-
-    # minimum shell level is one, which corresponds to zero tab size
-    # set the tab length
-    local -ir N_TAB=$(($N_SHL-1))
-    fecho "indent $N_TAB tabs"
-
+    
     # set tab
     itab $N_TAB
     strip_pretty tab "$TAB"
