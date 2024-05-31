@@ -247,7 +247,7 @@ function strip_pretty() {
 # conditionally calls do_cmd_script, and do_cmd_stdbuf
 
 # set both to zero for un-altered output
-export FMT_COLOR=3
+export FMT_COLOR=0
 export FMT_TAB=1
 
 function do_cmd() {
@@ -275,15 +275,16 @@ function do_cmd() {
         get_curpos x1c
         decho -n "$x1c"
         # set the "carriage return" value for the first non-empty line of the command ouput
+        local cr=
         if [ $x1c -gt 1 ]; then
             # if the cursor is not at the start of a line, start a new line
-            local cr='\n'
+            cr='\n'
             if [ $DEBUG -gt 0 ]; then
                 cr="$(printf '\u21b5')\n"
             fi
         else
             # if the cursor is already  at the start of a new line, do nothing
-            local cr=''
+            :
         fi
 
         ddecho "${TAB}printing unbuffered command ouput..."
@@ -292,9 +293,55 @@ function do_cmd() {
         # define highlight color
         local -i idx2
         dbg2idx $((idx+1)) idx2
+        # get col
+        color_code=$(echo ${dcolor[idx]} | sed 's/^.*\[\([0-9;]*\)m/\1/')
+        #        echo -e "\x1B[${color_code}m $color_code"
+
+        if [[ $color_code =~ ";" ]]; then
+            #echo yes
+            col_set=$(echo "${color_code%;*};")
+            local -i col_num=${color_code##*;}
+
+            local -i cstart=17
+            local -i cend=230
+            local -i cmod=$((cend-cstart))
+            local -i num_shift=6
+
+        else
+            #echo no
+            col_set=${color_code: :-1}
+            local -i col_num=${color_code: -1}
+
+            local -i cstart=1
+            local -i cend=6
+            local -i cmod=$((cend-cstart))
+            local -i num_shift=-1
+        fi
+
+        if false; then
+            echo "set: $col_set"
+            echo "num: $col_num"
+            echo "modulo: $cmod"
+
+            local -i rep_num=$(( col_num - cstart  + num_shift ))
+            echo "arg: $rep_num"
+            rep_num=$(( ( ( col_num - cstart  + num_shift ) % ( cmod + 1 ) ) ))
+            echo "mod: $rep_num"
+
+            echo "shift: $rep_num"
+            echo "col: $col_new"
+
+            echo "$color_code $rep_code"
+            echo -e "\x1B[${color_code}m $color_code"
+            echo -e "\x1B[${rep_code}m $rep_code"
+        fi
+
+        local -i rep_num=$(( ( ( col_num - cstart  + num_shift ) % ( cmod +1 ) + cstart ) ))
+        rep_code=$(echo "${col_set}${rep_num}")
+
         # print unbuffered command output
         unbuffer $cmd \
-            | sed -u "s/\r$//g;s/.*\r/${TAB}/g;s/^/${TAB}/" \
+            | sed -u "s/\r$//g;s/.*\r//g;s/^/${TAB}/" | sed -u "s/\x1B\[${color_code}m/\x1B[${rep_code}m/g"\
             | sed -u "1 s/^[\s]*[^\s]/${cr}&/" | sed -u "s/\x1B\[m/\x1B[m${dcolor[$idx]}/g"
 
         local -i RETVAL=$?
