@@ -623,24 +623,28 @@ function check_traps_set() {
 function get_sigs() {
     if [ ! -z "$(trap -p)" ]; then
         if [ ${DEBUG} -gt 0 ]; then
-            decho "traps:"
-            decho -e "${INVERT}normal print:${NORMAL}"
+            decho "${TAB}traps:"
+            decho -e "${TAB}${INVERT}normal print:${NORMAL}"
+            echo $(trap -p)
 
-            decho -e "${INVERT}traps echo:${NORMAL}"
-            echo $(trap -p) | sed "s/ \(trap -- \)/\n\1/g"
+            decho -e "${TAB}${INVERT}function print:${NORMAL}"
+            print_traps
 
-            decho -e "${INVERT}traps echo sig:${NORMAL}"
+            decho -e "${TAB}${INVERT}traps echo:${NORMAL}"
+            echo $(trap -p) | sed "s/ \(trap -- \)/\n\1/g;s/^/${TAB}/"
+
+            decho -e "${TAB}${INVERT}traps echo sig:${NORMAL}"
             echo $(trap -p) | sed "s/ \(trap -- \)/\n\1/g" |  sed 's/.* //'
 
-            decho -e "${INVERT}traps echo sig tr:${NORMAL}"
+            decho -e "${TAB}${INVERT}traps echo sig tr:${NORMAL}"
             echo $(trap -p) | sed "s/ \(trap -- \)/\n\1/g" |  sed 's/.* //' | tr  '\n' ' '
             decho
         fi
         export sig="$(echo $(trap -p) | sed "s/ \(trap -- \)/\n\1/g" |  sed 's/.* //' | tr  '\n' ' ')"
         if [ ${DEBUG} -gt 0 ]; then
-            decho "sig = ${sig}"
-            decho "sig@ = ${sig[@]}"
-            decho "#sig = ${#sig[@]}"
+            decho "${TAB}sig = ${sig}"
+            decho "${TAB}sig@ = ${sig[@]}"
+            decho "${TAB}#sig = ${#sig[@]}"
         fi
     else
         export sig=''
@@ -657,7 +661,9 @@ check_traps_clear() {
         local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
     fi
     # print summary
-    ddecho -n "${TAB}on ${FUNCNAME[1]} return, "
+    if [ ${#FUNCNAME[@]} -gt 1 ]; then 
+        ddecho -n "${TAB}on ${FUNCNAME[1]} return, "
+    fi
     print_traps
     if [ ! -z "$(trap -p)" ]; then
         echo -e "${TAB}${BAD}traps not cleared${RESET}"
