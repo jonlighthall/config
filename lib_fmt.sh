@@ -246,14 +246,16 @@ function strip_pretty() {
 # handling is included for a variety of commands
 # conditionally calls do_cmd_script, and do_cmd_stdbuf
 
+# set both to zero for un-altered output
 export FMT_COLOR=3
+export FMT_TAB=1
 
 function do_cmd() {
     local -i DEBUG=0
     # save command as variable
     cmd=$(echo $@)
     # format output
-    itab
+    itab ${FMT_TAB}
     if [ $DEBUG -gt 0 ]; then
         start_new_line
     fi
@@ -299,18 +301,18 @@ function do_cmd() {
 
         # reset shell options
         set +o pipefail
-        dtab
+        dtab ${FMT_TAB}
     else
         # check if script is defined
         if command -v script >/dev/null; then
             ddecho "${TAB}printing command ouput typescript..."
             # print typescript command ouput
-            dtab
+            dtab ${FMT_TAB}
             do_cmd_script $cmd
         else
             ddecho "${TAB}printing buffered command ouput..."
             # print buffered command output
-            dtab
+            dtab ${FMT_TAB}
             do_cmd_stdbuf $cmd
         fi
         local -i RETVAL=$?
@@ -319,6 +321,7 @@ function do_cmd() {
     # reset formatting
     unset_color
     if [ $DEBUG -gt 0 ]; then
+        lecho "why?"
         dtab
     fi
     return $RETVAL
@@ -333,7 +336,7 @@ function do_cmd_script() {
     # save command as variable
     cmd=$(echo $@)
     # format output
-    itab
+    itab ${FMT_TAB}
     if [ $DEBUG -gt 0 ]; then
         start_new_line
     fi
@@ -393,7 +396,7 @@ function do_cmd_script() {
         # set color
         echo -ne "${dcolor[$idx]}"
 
-        dtab
+        dtab ${FMT_TAB}
         # print buffered command output
         $cmd
         local -i RETVAL=$?
@@ -401,7 +404,7 @@ function do_cmd_script() {
 
     # reset formatting
     unset_color
-    dtab
+    dtab ${FMT_TAB}
     return $RETVAL
 }
 
@@ -412,7 +415,7 @@ function do_cmd_stdbuf() {
     # save command as variable
     cmd=$(echo $@)
     # format output
-    itab
+    itab ${FMT_TAB}
     if [ $DEBUG -gt 0 ]; then
         start_new_line
     fi
@@ -471,8 +474,9 @@ function do_cmd_stdbuf() {
 
     # reset formatting
     unset_color
-    dtab
+    dtab ${FMT_TAB}
     if [ $DEBUG -gt 0 ]; then
+        lecho "why?"
         dtab
     fi
     return $RETVAL
@@ -484,7 +488,7 @@ function do_cmd_safe() {
     # save command as variable
     cmd=$(echo $@)
     # format output
-    itab
+    itab ${FMT_TAB}
     if [ $DEBUG -gt 0 ]; then
         start_new_line
     fi
@@ -500,7 +504,7 @@ function do_cmd_safe() {
         echo "done"
     fi
 
-    dtab
+    dtab ${FMT_TAB}
     do_cmd $cmd
     RETVAL=$?
     itab
