@@ -454,24 +454,47 @@ function rdb() {
 
 function idb() {
     set -u
-    funcDEBUG=0
+    funcDEBUG=1
+
+    # determine how many iteration to run
+    local -i i
+    local -i N
+    if [ $# -eq 0 ]; then
+        N=1
+    else
+        N=$1
+    fi
+    fecho "incrementing DEBUG by $N"
 
     # check if DEBUG is unset
     if [ -z ${DEBUG+dummy} ]; then
         fecho -e "${BOLD}DEBUG is ${UNSET}"
         fecho "setting DEBUG..."
         export DEBUG=
-        fecho -e "DEBUG = ${DEBUG}"
-        return 0
+        ((--N))
+        if [ $N -eq 0 ]; then
+            if [ -z ${DEBUG:+dummy} ]; then
+                fecho -e "${BOLD}DEBUG is ${NULL}"
+                return 0
+            else
+                fecho "didn't work"
+                fecho -e "DEBUG = ${DEBUG}"
+            fi
+        fi
     fi
 
     # check if DEBUG is set but NULL
     if [ -z ${DEBUG:+dummy} ]; then
         fecho -e "${BOLD}DEBUG is ${NULL}"
+        [ $N -eq 0 ] && return 0
         fecho "setting DEBUG to zero..."
-        export DEBUG=0
-        fecho -e "DEBUG = ${DEBUG}"
-        return 0
+        unset DEBUG
+        declare -ix DEBUG=0
+        ((--N))        
+        if [ $N -eq 0 ]; then
+            fecho -e "DEBUG = ${DEBUG}"
+            return 0
+        fi
     fi
 
     # check if DEBUG is a number
@@ -480,12 +503,23 @@ function idb() {
     if [[ "$DEBUG" =~ $num ]]; then
         fecho "DEBUG is a number"
         fecho "incrementing DEBUG..."
-        ((++DEBUG))
+        # increment DEBUG by N
+        for ((i = 1; i <= $N; i++)); do
+            ((++DEBUG))
+        done
         export DEBUG
     else
         fecho "DEBUG is not a number"
         fecho "setting DEBUG to zero..."
-        export DEBUG=0
+        unset DEBUG
+        declare -ix DEBUG=0
+        if [ $N -gt 1 ]; then
+            # increment DEBUG by N -1
+            fecho "incrementing DEBUG..."
+            for ((i = 1; i < $N; i++)); do
+                ((++DEBUG))
+            done
+        fi
     fi
 
     fecho -e "DEBUG = ${DEBUG}"
@@ -584,7 +618,7 @@ function print_() {
     decho " $input..."
 
     # test inputs
-    for VAR in $input; do      
+    for VAR in $input; do
 
         if [ ${DEBUG:-0} -gt 0 ]; then
             set_tab_shell
