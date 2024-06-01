@@ -247,12 +247,12 @@ function strip_pretty() {
 # conditionally calls do_cmd_script, and do_cmd_stdbuf
 
 # set both to zero for un-altered output
-export FMT_COLOR=0
-export FMT_TAB=0
+export FMT_COLOR=3
+export FMT_TAB=1
 
 function extract_color() {
     set -u
-    local DEBUG=2
+    local DEBUG=0
 
     # get color
     local input_color=${dcolor[idx]}
@@ -348,6 +348,11 @@ function do_cmd() {
     # the ideal solution is to use unbuffer
     # check if unbuffer is defined
     if command -v unbuffer >/dev/null; then
+        # check if command is git to turn off pager
+        if [[ "$cmd" =~ "git"* ]]; then
+             cmd=$(echo "$cmd" | sed 's/git /&--no-pager /')
+        fi
+
         # check cursor position
         local -i x1c
         get_curpos x1c
@@ -374,8 +379,10 @@ function do_cmd() {
 
         # print unbuffered command output
         unbuffer $cmd \
-            | sed -u "s/\r$//g;s/.*\r//g;s/^/${TAB}/" | sed -u "s/\x1B\[${input_code}m/\x1B[${output_code}m/g"\
-            | sed -u "1 s/^[\s]*[^\s]/${cr}&/" | sed -u "s/\x1B\[m/\x1B[m${dcolor[$idx]}/g"
+            | sed -u "s/\r$//g;s/.*\r//g;s/^/${TAB}/" \
+            | sed -u "s/\x1B\[${input_code}m/\x1B[${output_code}m/g" \
+            | sed -u "1 s/^[\s]*[^\s]/${cr}&/" \
+            | sed -u "s/\x1B\[m/\x1B[m${dcolor[$idx]}/g"
 
         local -i RETVAL=$?
 
@@ -430,6 +437,11 @@ function do_cmd_script() {
 
     # check if typescript is defined
     if command -v script >/dev/null; then
+        # check if command is git to turn off pager
+        if [[ "$cmd" =~ "git"* ]]; then
+             cmd=$(echo "$cmd" | sed 's/git /&--no-pager /')
+        fi
+        
         # check cursor position
         local -i x1c
         get_curpos x1c
@@ -457,10 +469,10 @@ function do_cmd_script() {
                 | sed -u 's/$\r/\n\r/g'
         else
             script -eq -c "$cmd" \
-                | sed "s/\r.*//g;s/.*\r//g" \
-                | sed 's/^[[:space:]].*//g' \
-                | sed "/^$/d;s/^/${TAB}${dcolor[$idx]}/" \
-                | sed "1 s/^[\s]*[^\s]/${cr}&/" | sed "s/\x1B\[m/&${dcolor[$idx]}/g"
+                | sed  "s/\r$//g;s/.*\r//g;s/^/${TAB}/" \
+                | sed  "s/\x1B\[${input_code}m/\x1B[${output_code}m/g" \
+                | sed  "1 s/^[\s]*[^\s]/${cr}&/" \
+                | sed  "s/\x1B\[m/\x1B[m${dcolor[$idx]}/g"
         fi
         local -i RETVAL=$?
         # reset shell options
@@ -510,7 +522,12 @@ function do_cmd_stdbuf() {
     temp_file=stdbuf_$(date +'%Y-%m-%d-t%H%M%S')
     ddecho "${TAB}STDBUF: redirecting command ouput to $temp_file..."
 
-    # unbuffer command output and save to file
+    # check if command is git to colorize output
+    if [[ "$cmd" =~ "git"* ]]; then
+        cmd+=" --color=always"
+    fi
+
+    # unbuffer command output and save to file    
     stdbuf -i0 -o0 -e0 $cmd &>$temp_file
     RETVAL=$?
 
@@ -538,9 +555,10 @@ function do_cmd_stdbuf() {
         dbg2idx $((idx+1)) idx3
         # print command output
         \cat $temp_file \
-            | sed -u "s/\r$//g;s/.*\r/${TAB}/g;s/^/${TAB}/" \
-            | sed "1 s/^[\s]*[^\s]/${cr}&/" | sed "s/\x1B\[m/&${dcolor[$idx]}/g"
-
+            | sed "s/\r$//g;s/.*\r//g;s/^/${TAB}/" \
+            | sed "s/\x1B\[${input_code}m/\x1B[${output_code}m/g" \
+            | sed "1 s/^[\s]*[^\s]/${cr}&/" \
+            | sed "s/\x1B\[m/\x1B[m${dcolor[$idx]}/g"
     else
         itab
         ddecho "${TAB}${temp_file} empty"
