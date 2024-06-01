@@ -154,10 +154,11 @@ function lecho() {
     local -i idx
     dbg2idx 9 idx
     fcol=${dcolor[idx]}
+    start_new_line
     echo -ne "${fcol}"
     dddecho -e "${TAB}${INVERT}${FUNCNAME}${fcol}"
     set -u
-
+    
     if [ ${DEBUG:-0} -gt 0 ] || [ ! -z "$@" ] ; then
         local -i tab_wid=${#TAB}
         local -i term_wid=${COLUMNS:-72}
