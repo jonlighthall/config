@@ -18,7 +18,7 @@ else
         # load bash utilities
         fpretty=${HOME}/config/.bashrc_pretty
         if [ -e $fpretty ]; then
-            source $fpretty            
+            source $fpretty
             print_ribbon
         fi
         # determine if being sourced or executed
@@ -152,7 +152,12 @@ if $do_test_git; then
 	          vecho " git branch ${BAD}timed out${RESET}"
 	          git_bad=true
 	      else
-	          vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+	          vecho -en "${GOOD}OK${RESET}"
+            if [[ $RETVAL -eq 0 ]]; then
+       	        vecho
+            else
+                vecho -e " ${GRAY}RETVAL=$RETVAL${RESET}"
+            fi
 	          git_bad=false
 	      fi
     else
@@ -180,7 +185,12 @@ if $do_test_color; then
 	      unalias ls
 	      echo -e "${TAB}--color=auto removed from ls alias"
     else
-	      vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+	      vecho -en "${GOOD}OK${RESET}"
+        if [[ $RETVAL -eq 0 ]]; then
+       	    vecho
+        else
+            vecho -e " ${GRAY}RETVAL=$RETVAL${RESET}"
+        fi
     fi
 fi
 
