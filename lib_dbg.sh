@@ -26,8 +26,9 @@ function secho() {
 }
 
 function in_line() {
+    local -I fcol=${fcol-${RED}}
     if [ ! -z "$@" ]; then
-        echo -en "${TAB}${INVERT}$@${NORMAL} <- ${fcol}"
+        echo -en "${TAB}${fcol}${INVERT}$@${NORMAL} <- ${fcol}"
     else
         echo -en "${TAB}${fcol}"
     fi
@@ -116,22 +117,26 @@ function find_func_line() {
 }
 
 function this_line() {
+    local DEBUG=0
     # get calling function
-    local get_func
+    local -i lev
     if [ ${#FUNCNAME[@]} -gt 1 ]; then
-        get_func=${FUNCNAME[1]}
+        lev=1
     else
-        get_func=${FUNCNAME[0]}
+        lev=0
     fi
+    local get_func=${FUNCNAME[lev]}
     decho "func: $get_func"
 
     # get line definition
-    local -i line_def=$(find_func_line "${get_func}" "${BASH_SOURCE}" 2>/dev/null);
+    local -i line_def=$(find_func_line "${get_func}" "${BASH_SOURCE[lev]}" 2>/dev/null);
 
     decho "line: $line_def"
 
     in_line "$@"
-    echo "${FUNCNAME[1]}() line $((${line_def}+${BASH_LINENO[0]}-1))"
+
+    echo "in ${FUNCNAME[1]}() on ${BASH_SOURCE[lev]##*/} line $((${line_def}+${BASH_LINENO[0]}-1))"
+    echo -ne ${RESET}
     return 0
 }
 
@@ -173,6 +178,7 @@ function lecho() {
 
     if [ $N_BASH -eq 1 ]; then
         in_line "$@"
+        this_line
         echo -e "${FUNCNAME}() $(lec_mes)${BASH_LINENO}${fcol} from ${BASH##*/}"
         ddecho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
         return 0
@@ -199,6 +205,7 @@ function lecho() {
     if [[ "${func}" == "main" ]] || [[ "${func}" == "source" ]]; then
         # the function is call from bash
         in_line "$@"
+        this_line
         echo -e "${FUNCNAME}() $(lec_mes)${BASH_LINENO[(($N_BASH-2))]}${fcol} in file ${YELLOW}${BASH_SOURCE[(($N_BASH-1))]##*/}${fcol}"
         ddecho "exiting ${FUNCNAME} on line ${LINENO}"
         return 0
@@ -213,6 +220,7 @@ function lecho() {
         local -i call_line=$func_line
         # print file line
         in_line "$@"
+        this_line
         echo -en "${FUNCNAME}() $(lec_mes)${call_line}${fcol} "
         echo -e "in file ${fcol}${YELLOW}${sour_fil}${fcol}"
     else
@@ -222,10 +230,12 @@ function lecho() {
         local -i call_line=$(($line_func_def -1 + $func_line))
         # print file line
         in_line "$@"
+        this_line
         echo -n "${FUNCNAME}() $(lec_mes)${call_line} "
         echo -e "in file ${YELLOW}${sour_fil}${fcol}"
         itab
         # print function line
+        this_line
         ddecho -n "${TAB}$(lec_mes)${func_line} "
         ddecho "in function ${func}()"
         dtab
@@ -275,6 +285,7 @@ function plecho() {
 
     if [ $N_BASH -eq 1 ]; then
         in_line "$@"
+        this_line
         echo -e "${FUNCNAME}() $(lec_mes)${BASH_LINENO}${RESET} from ${BASH##*/}"
         ddecho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
         return 0
@@ -330,10 +341,12 @@ function plecho() {
         ddecho "${TAB}N_BASH = ${N_BASH}"
         ddecho "${TAB}function level = $func_lev"
         in_line "$@"
+        this_line
         echo -e "${FUNCNAME[(($func_lev-1))]}() $(lec_mes)${BASH_LINENO[(($func_lev-1))]}${RESET} in file ${YELLOW}${BASH_SOURCE[$func_lev]##*/}${RESET}"
         itab
         ((--func_lev))
         ddecho -e "${TAB}${BASH_SOURCE[$func_lev]##*/}${RESET} called by ${SHELL##*/}"
+        this_line
         ddecho -e "${TAB}${FUNCNAME[(($func_lev-1))]}() $(lec_mes)${BASH_LINENO[(($func_lev-1))]}${RESET} in file ${YELLOW}${BASH_SOURCE[$func_lev]##*/}${RESET}"
 
         decho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
@@ -350,6 +363,7 @@ function plecho() {
         local -i call_line=$func_line
         # print file line
         in_line "$@"
+        this_line
         echo -en "${FUNCNAME}() $(lec_mes)${call_line}${RESET} "
         echo -e "in file ${RESET}${YELLOW}${sour_fil}${RESET}"
     else
@@ -359,10 +373,12 @@ function plecho() {
         local -i call_line=$(($line_func_def -1 + $func_line))
         # print file line
         in_line "$@"
+        this_line
         echo -n "${FUNCNAME}() $(lec_mes)${call_line} "
         echo -e "in file ${YELLOW}${sour_fil}${RESET}"
         itab
         # print function line
+        this_line
         ddecho -n "${TAB}$(lec_mes)${func_line} "
         ddecho "in function ${func}()"
         dtab
@@ -476,6 +492,17 @@ function idb() {
     set -u
     funcDEBUG=1
 
+    echo "n func = ${#FUNCNAME[@]}"
+    if [ ${#FUNCNAME[@]} -gt 1 ]; then
+        if [[ ${FUNCNAME[1]} == "lecho" ]]; then
+            echo "skip"
+        else
+            lecho
+        fi
+    else
+        lecho
+    fi
+
     # check if DEBUG is unset
     if [ -z ${DEBUG+dummy} ]; then
         fecho -e "${BOLD}DEBUG is ${UNSET}"
@@ -575,7 +602,7 @@ function ddb() {
     else
         N=$1
     fi
-    
+
     if [ $N -gt $DEBUG ]; then
         fecho "DEBUG level exceeded"
         fecho "resetting DEBUG to zero..."
@@ -588,7 +615,7 @@ function ddb() {
         done
     fi
     export DEBUG
-    
+
     fecho -e "DEBUG = ${DEBUG}"
     if [ $funcDEBUG -eq 0 ];then
         start_new_line
@@ -599,6 +626,14 @@ function ddb() {
 function print_() {
     set -u
     funcDEBUG=1
+
+    # this function modifies the value of TAB, so save the value if it is included in the
+    # arguments
+    if [[ "$@" =~ "$TAB" ]]; then
+        local -I TAB_input=$TAB
+    fi
+
+    # set tab
     set_tab_shell
 
     # parse inputs
@@ -635,30 +670,41 @@ function print_() {
 
     # test inputs
     for VAR in $input; do
-
-        if [ ${DEBUG:-0} -gt 0 ]; then
+        if [ ${DEBUG:-1} -gt 0 ]; then
             set_tab_shell
             echo -e "${TAB}${BOLD}${VAR}${RESET}"
             itab
         fi
 
+        # check if VAR is called VAR
+        if [[ "${VAR}" == "${!VAR-dummy}" ]]; then
+		        echo -e "${TAB}${BAD}${!VAR} matches FOR loop variable name${RESET}"
+            decho "${TAB}${VAR} name: ${VAR}"
+            decho "${TAB}${VAR} value: '${!VAR}'"
+            decho "${TAB}continuing..."
+            [ ${DEBUG:-1} -gt 0 ] && dtab
+            continue
+	      fi
+
+        # check if VAR is TAB
+        if [[ "${VAR}" == "TAB" ]]; then
+            decho -e "${TAB}${YELLOW}argument is TAB${RESET}"
+            decho -e "${TAB}${YELLOW}using input value TAB${RESET}"
+            VAR="TAB_input"
+	      fi
+
         # check if VAR is unset
         if [ -z ${!VAR+dummy} ]; then
             echo -e "${TAB}${BOLD}$VAR is ${UNSET}"
+            [ ${DEBUG:-1} -gt 0 ] && dtab
             continue
         fi
         decho "${TAB}${VAR} is set"
 
-        # check if VAR is called VAR
-        if [[ "${VAR}" == "${!VAR}" ]]; then
-		        echo -e "${TAB}${BAD}value of variable name matches FOR loop variable name${RESET}"
-            echo "${TAB}breaking..."
-		        break
-	      fi
-
         # check if VAR is NULL
         if [ -z ${!VAR:+dummy} ]; then
             echo -e "${TAB}${BOLD}${VAR} is ${NULL}"
+            [ ${DEBUG:-1} -gt 0 ] && dtab
             continue
         fi
         decho "${TAB}${VAR} is not empty"
@@ -669,10 +715,12 @@ function print_() {
             # check if !VAR is zero
             if [ ${!VAR} -eq 0 ]; then
                 echo -e "${TAB}${GRAY}${VAR} is 0${RESET}"
+                [ ${DEBUG:-1} -gt 0 ] && dtab
                 continue
             fi
 
             echo "${TAB}${VAR} = ${!VAR}"
+            [ ${DEBUG:-1} -gt 0 ] && dtab
             continue
 
         fi
@@ -688,6 +736,7 @@ function print_() {
             else
                 echo "${TAB}${VAR} = ${!VAR}"
             fi
+            [ ${DEBUG:-1} -gt 0 ] && dtab
             continue
         fi
         decho "${TAB}${VAR} does not contians whitespace"
@@ -701,12 +750,14 @@ function print_() {
 					  else
 						    echo -e "${FALSE}"
 					  fi
+            [ ${DEBUG:-1} -gt 0 ] && dtab
             continue
         fi
         decho "${TAB}${VAR} is not boolean"
 
         echo "${TAB}${VAR} = ${!VAR}"
 
+        [ ${DEBUG:-1} -gt 0 ] && dtab
     done
 
 }
