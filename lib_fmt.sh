@@ -302,10 +302,13 @@ function extract_color() {
     ddecho "${TAB}shift: $num_shift"
 
     local -i output_arg=$(( input_num - num_start  + num_shift ))
+
+    [ $output_arg -lt 0 ] && output_arg=$(( output_arg * -1 ))
+    
     ddecho "${TAB}arg: $output_arg"
-    local -i output_mod=$(( ( ( input_num - num_start  + num_shift ) % ( num_mod + 1 ) ) ))
+    local -i output_mod=$(( ( output_arg) % ( num_mod + 1 ) ))
     ddecho "${TAB}mod: $output_mod"
-    local -i output_num=$(( ( ( input_num - num_start  + num_shift ) % ( num_mod +1 ) + num_start ) ))
+    local -i output_num=$(( output_mod + num_start ))
     
     export output_code=$(echo "${input_set}${output_num}")
     declare output_color=$(echo "\x1B[${output_code}m")

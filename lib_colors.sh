@@ -8,7 +8,7 @@
 # Purpose: define custom SGR (Select Graphic Rendition) parameters and functions for coloring
 #   text.
 #
-# Dependancies:
+# Dependencies:
 #   lib_traps
 #   lib_tabs
 #   lib_cond_echo
@@ -32,7 +32,7 @@ export      IT='\x1B[3m'    # italics
 export      UL='\x1B[4m'    # underline
 export   BLINK='\x1B[5m'    # blinking
 export  INVERT='\x1B[7m'    # invert
-export      ST='\x1B[9m'    # strikethrough
+export      ST='\x1B[9m'    # strike-through
 
 function test_normal() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
@@ -78,7 +78,7 @@ export    BLUE='\x1B[34m'
 export  YELLOW='\x1B[33m'
 export    CYAN='\x1B[36m'  # aqua
 export MAGENTA='\x1B[35m'  # fuchsia
-# define teriary colors (foreground)
+# define tertiary colors (foreground)
 #      var              ID    hex     RGB           Name
 #-----+-------+--------------+-------+-------------+----------------
 export  ORANGE='\x1B[38;5;208m' #ff8700 (255,135,  0) Dark Orange
@@ -138,7 +138,7 @@ export    PSSH='\x1B[1;31m' # bold red    :    : shell
 export     GRH='\x1B[1;31m' # bold red    : ms : selected match
 export     GRL='\x1B[0;32m' # green       : ln : line number
 export     GRF='\x1B[0;35m' # magenta     : fn : file name
-export     GRS='\x1B[0;36m' # cyan        : se : seperator
+export     GRS='\x1B[0;36m' # cyan        : se : separator
 
 # -----------------------------------------------------------------------------------------------
 # List Directory (ls) colors
@@ -319,19 +319,25 @@ export col09='\x1B[38;5;132m' # 11: 330 Hot Pink            ter - rose
 
 export col00='\x1B[38;5;102m' # 12:   0 Grey              mon - GRAY
 
+# an additional color is added for reference
+# only the terminal standard 8 colors have normal and bold variants
+# for stream coloring, a standard color may be preferred
+export col13='\x1B[36m'       # 13: 206 Cyan                sec - CYAN
+export col14='\x1B[37m'       # 14:   0 White             mon - WHITE
+
 # define debug highlight colors
 export  dBAD="${col08}"  # red
 export dGOOD="${col03}"  # RETVAL=0; target exists
 
 # create rainbow-ordered (hue order) array of 12 debug colors
-export dcolor=( "${col08}" "${col11}" "${col12}" "${col07}" "${col03}" "${col04}" "${col05}" "${col02}" "${col01}" "${col06}" "${col10}" "${col09}" "\x1B[36m" )
+export dcolor=( "${col08}" "${col11}" "${col12}" "${col07}" "${col03}" "${col04}" "${col05}" "${col02}" "${col01}" "${col06}" "${col10}" "${col09}" "${col14}" )
 
 # print dcolor array in rainbow-order
 # requires lib_traps
 function print_colors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     decho "${TAB}printing contents of ${!dcolor@} in ARRAY order..."
-    # add shell options if not alraedy set
+    # add shell options if not already set
     old_opts=$(echo "$-")
     set -u
 
@@ -360,7 +366,7 @@ function print_dcolors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     decho "${TAB}printing contents of ${!dcolor@} in DEBUG order..."
     local -i DEBUG=${DEBUG:-2}
-    # add shell options if not alraedy set
+    # add shell options if not already set
     old_opts=$(echo "$-")
     set -u
 
@@ -378,9 +384,9 @@ function print_dcolors() {
     #---------------------------------------------------------------
     echo -e "${TAB}staring with index ${dcolor[$start]}${start}\x1B[m\n"
     if [ $direction -gt 0 ]; then
-        echo "${TAB}incrementing array indicies"
+        echo "${TAB}incrementing array indices"
     elif [ $direction -lt 0 ]; then
-        echo "${TAB}decrementing array indicies"
+        echo "${TAB}decrementing array indices"
     else
         echo "${TAB}something else..."
     fi
@@ -410,7 +416,7 @@ function print_dcolors() {
 #   start
 # Arguments:
 #   None
-# Dependancies:
+# Dependencies:
 #   lib_cond_echo
 #--------------------------------------
 function set_dbg2idx() {
@@ -431,9 +437,9 @@ function set_dbg2idx() {
     #---------------------------------------------------------------
     fecho -e "staring with index ${dcolor[$start]}${start}\x1B[m"
     if [ $direction -gt 0 ]; then
-        fecho "incrementing array indicies"
+        fecho "incrementing array induces"
     elif [ $direction -lt 0 ]; then
-        fecho "decrementing array indicies"
+        fecho "decrementing array indices"
     else
         fecho "something else..."
     fi
@@ -447,7 +453,7 @@ function set_dbg2idx() {
 #   direction
 #   idx
 #   start
-# Dependancies:
+# Dependencies:
 #   lib_cond_echo
 #--------------------------------------
 function dbg2idx() {
@@ -455,7 +461,7 @@ function dbg2idx() {
         (
             echo -e "${DIM}$FUNCNAME${NORMAL}: 2 inputs required"
             echo -e "${DIM}$FUNCNAME${NORMAL}: $# inputs received"
-            echo -e "${DIM}$FUNCNAME${NORMAL}: Please provide an input value and and ouput variable as:"
+            echo -e "${DIM}$FUNCNAME${NORMAL}: Please provide an input value and and output variable as:"
             echo -e "${DIM}$FUNCNAME${NORMAL}: ${FUNCNAME} INDEX VARIABLE"
         ) >&2
         return 1
@@ -537,7 +543,7 @@ function print_fcolors() {
 # set DEBUG color
 function set_dcolor() {
     # get value of DEBUG
-    # if unset or NULL, substitue default
+    # if unset or NULL, substitute default
     local -i DEBUG=${DEBUG-0}
     define index
     local -i idx
