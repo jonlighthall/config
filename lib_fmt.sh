@@ -489,6 +489,7 @@ function do_cmd_script() {
         echo -ne "${dcolor[$idx]}"
 
         dtab ${FMT_TAB}
+        lecho "no wrapper"
         # print buffered command output
         $cmd
         local -i RETVAL=$?
@@ -523,7 +524,7 @@ function do_cmd_stdbuf() {
     ddecho "${TAB}STDBUF: redirecting command ouput to $temp_file..."
 
     # check if command is git to colorize output
-    if [[ "$cmd" =~ "git"* ]]; then
+    if [[ "$cmd" =~ "git [dl]"* ]]; then
         cmd+=" --color=always"
     fi
 
