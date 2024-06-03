@@ -26,11 +26,10 @@ function secho() {
 }
 
 function in_line() {
-    local -I fcol=${fcol-${RED}}
+    local fcol=${fcol-${RED}}
+    echo -en "${TAB}${fcol}"
     if [ ! -z "$@" ]; then
-        echo -en "${TAB}${fcol}${INVERT}$@${NORMAL} <- ${fcol}"
-    else
-        echo -en "${TAB}${fcol}"
+        echo -en "${INVERT}$@${NORMAL} <- ${fcol}"
     fi
 }
 
@@ -117,26 +116,46 @@ function find_func_line() {
 }
 
 function this_line() {
-    local DEBUG=0
+    local DEBUG=2
+
     # get calling function
-    local -i lev
-    if [ ${#FUNCNAME[@]} -gt 1 ]; then
+    local -i lev=0
+    if [ ${#FUNCNAME[@]} -gt 1 ]; then        
+        ddecho -en "${GRAY}FUNCNAME[$lev] = "
+        local get_func=${FUNCNAME[lev]}
+        ddecho -n "$get_func() "
+
+        # get line definition
+        local -i line_def=$(find_func_line "${get_func}" "${BASH_SOURCE[lev]}" 2>/dev/null);
+        ddecho -en "${GRAY}defined on line $line_def "
+
+        local get_bash=${BASH_SOURCE[lev]##*/}
+        ddecho -e "${GRAY}in file ${get_bash}"
+
         lev=1
-    else
-        lev=0
+
     fi
+    ddecho -n "FUNCNAME[$lev] = "
     local get_func=${FUNCNAME[lev]}
-    decho "func: $get_func"
+    decho -n "$get_func() "
 
     # get line definition
     local -i line_def=$(find_func_line "${get_func}" "${BASH_SOURCE[lev]}" 2>/dev/null);
+    ddecho -n "defined on line $line_def "
 
-    decho "line: $line_def"
+    local get_bash=${BASH_SOURCE[lev]##*/}
+    decho -n "in file ${get_bash}"
+    local -i get_func_line=${BASH_LINENO[0]}
+    ddecho -n ", function line $get_func_line, "
+    local -i get_file_line=$((${line_def}+${get_func_line}))
+    decho -n "on "
+    ddecho -n "file "
+    decho "line $get_file_line"
 
     in_line "$@"
-
-    echo "in ${FUNCNAME[1]}() on ${BASH_SOURCE[lev]##*/} line $((${line_def}+${BASH_LINENO[0]}-1))"
-    echo -ne ${RESET}
+    echo -n "on line $get_file_line in ${get_bash}"
+    echo -n " in function ${get_func}()"
+    echo -e ${RESET}
     return 0
 }
 
@@ -151,6 +170,7 @@ function lecho() {
     if [ $DEBUG -lt 1 ]; then
         idb >/dev/null
     fi
+    DEBUG=2
     local -i idx
     dbg2idx 9 idx
     fcol=${dcolor[idx]}
@@ -158,7 +178,7 @@ function lecho() {
     echo -ne "${fcol}"
     dddecho -e "${TAB}${INVERT}${FUNCNAME}${fcol}"
     set -u
-    
+
     if [ ${DEBUG:-0} -gt 0 ] || [ ! -z "$@" ] ; then
         local -i tab_wid=${#TAB}
         local -i term_wid=${COLUMNS:-72}
@@ -178,8 +198,8 @@ function lecho() {
     line_def=$(find_func_line "${FUNCNAME}" "${BASH_SOURCE}" 2>/dev/null);
 
     if [ $N_BASH -eq 1 ]; then
-        in_line "$@"
         this_line
+        in_line "$@"
         echo -e "${FUNCNAME}() $(lec_mes)${BASH_LINENO}${fcol} from ${BASH##*/}"
         ddecho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
         return 0
@@ -205,8 +225,8 @@ function lecho() {
 
     if [[ "${func}" == "main" ]] || [[ "${func}" == "source" ]]; then
         # the function is call from bash
-        in_line "$@"
         this_line
+        in_line "$@"
         echo -e "${FUNCNAME}() $(lec_mes)${BASH_LINENO[(($N_BASH-2))]}${fcol} in file ${YELLOW}${BASH_SOURCE[(($N_BASH-1))]##*/}${fcol}"
         ddecho "exiting ${FUNCNAME} on line ${LINENO}"
         return 0
@@ -220,18 +240,18 @@ function lecho() {
         ddecho "${TAB}BASH_LINENO refers to file"
         local -i call_line=$func_line
         # print file line
-        in_line "$@"
         this_line
+        in_line "$@"
         echo -en "${FUNCNAME}() $(lec_mes)${call_line}${fcol} "
         echo -e "in file ${fcol}${YELLOW}${sour_fil}${fcol}"
     else
         ddecho "${TAB}BASH_LINENO refers to function"
         # get the line in the file where the function is called
         # add the line where to the function is defined within the file and the line within the function
-        local -i call_line=$(($line_func_def -1 + $func_line))
+        local -i call_line=$(($line_func_def + $func_line))
         # print file line
-        in_line "$@"
         this_line
+        in_line "$@"
         echo -n "${FUNCNAME}() $(lec_mes)${call_line} "
         echo -e "in file ${YELLOW}${sour_fil}${fcol}"
         itab
@@ -285,8 +305,8 @@ function plecho() {
     line_def=$(find_func_line "${FUNCNAME}" "${BASH_SOURCE}" 2>/dev/null);
 
     if [ $N_BASH -eq 1 ]; then
-        in_line "$@"
         this_line
+        in_line "$@"
         echo -e "${FUNCNAME}() $(lec_mes)${BASH_LINENO}${RESET} from ${BASH##*/}"
         ddecho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
         return 0
@@ -341,8 +361,8 @@ function plecho() {
         ddecho -e "${TAB}called by ${SHELL##*/}"
         ddecho "${TAB}N_BASH = ${N_BASH}"
         ddecho "${TAB}function level = $func_lev"
-        in_line "$@"
         this_line
+        in_line "$@"
         echo -e "${FUNCNAME[(($func_lev-1))]}() $(lec_mes)${BASH_LINENO[(($func_lev-1))]}${RESET} in file ${YELLOW}${BASH_SOURCE[$func_lev]##*/}${RESET}"
         itab
         ((--func_lev))
@@ -363,8 +383,8 @@ function plecho() {
         ddecho "${TAB}BASH_LINENO refers to file"
         local -i call_line=$func_line
         # print file line
+        this_line "$@"
         in_line "$@"
-        this_line
         echo -en "${FUNCNAME}() $(lec_mes)${call_line}${RESET} "
         echo -e "in file ${RESET}${YELLOW}${sour_fil}${RESET}"
     else
@@ -631,7 +651,7 @@ function print_() {
     # this function modifies the value of TAB, so save the value if it is included in the
     # arguments
     if [[ "$@" =~ "$TAB" ]]; then
-        local -I TAB_input=$TAB
+        local TAB_input=$TAB
     fi
 
     # set tab
