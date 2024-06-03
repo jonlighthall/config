@@ -118,8 +118,9 @@ function find_func_line() {
 function this_line() {    
     # DEBUG = 0 print line in file only
     # DEBUG = 1 print calling function
+    # DEBUG = 2 print calling function line def
 
-    local DEBUG=0
+    local DEBUG=1
 
     # get this function
     local -i lev=0
@@ -161,12 +162,13 @@ function this_line() {
 
     # print the line number where THIS function was called in the PARENT function
     decho -n "${get_func}() "
-    echo -n "on line $get_file_line in ${get_bash}"
+    local fcol=${fcol-${RED}}
+    echo -en "${fcol}on line $get_file_line in ${get_bash}"
 
     # print grep-like match
     echo
     echo -en    "${TAB}${GRF}${get_bash}${GRS}:${GRL}${get_file_line}${GRS}: ${GRH}"
-    local fcol=${fcol-${RED}}
+
     if [ -z "$@" ]; then
         echo -en "${this_func}()"
     else
