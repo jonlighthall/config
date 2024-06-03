@@ -116,7 +116,13 @@ function find_func_line() {
 }
 
 function this_line() {
-    local DEBUG=2
+    # DEBUG = 0 print line in file only
+
+
+
+
+    
+    local DEBUG=0
 
     # get calling function
     local -i lev=0
@@ -152,9 +158,11 @@ function this_line() {
     ddecho -n "file "
     decho "line $get_file_line"
 
+    # print argument
     in_line "$@"
-    echo -n "on line $get_file_line in ${get_bash}"
-    echo -n " in function ${get_func}()"
+
+    # print the line number where THIS function was called in the PARENT function
+    echo -n "${get_func}() on line $get_file_line in ${get_bash}"
     echo -e ${RESET}
     return 0
 }
@@ -170,7 +178,7 @@ function lecho() {
     if [ $DEBUG -lt 1 ]; then
         idb >/dev/null
     fi
-    DEBUG=2
+    DEBUG=0
     local -i idx
     dbg2idx 9 idx
     fcol=${dcolor[idx]}
