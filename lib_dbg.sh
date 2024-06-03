@@ -119,8 +119,9 @@ function this_line() {
     # DEBUG = 0 print line in file only
     # DEBUG = 1 print calling function
     # DEBUG = 2 print calling function line def
+    # DEBUG = 3 print calling function line
 
-    local DEBUG=1
+    local DEBUG=3
 
     # get this function
     local -i lev=0
@@ -131,7 +132,7 @@ function this_line() {
 
     if [ ${#FUNCNAME[@]} -gt 1 ]; then
         ddecho -en "${TAB}${GRAY}FUNCNAME[$lev] = "
-        ddecho -n "$this_func() "
+        ddecho -en "${GRAY}$this_func() "
         ddecho -en "${GRAY}defined on line $this_def "
         ddecho -e "${GRAY}in file ${this_bash}"
 
@@ -151,7 +152,7 @@ function this_line() {
     local get_bash=${BASH_SOURCE[lev]##*/}
     decho -n "in file ${get_bash}"
     local -i get_func_line=${BASH_LINENO[0]}
-    ddecho -n ", function line $get_func_line,"
+    dddecho -n ", function line $get_func_line,"
     local -i get_file_line=$((${line_def}+${get_func_line}))
     decho -n " on "
     ddecho -n "file "
@@ -174,7 +175,9 @@ function this_line() {
     else
         echo -en "${INVERT}$@${NORMAL}"
     fi
-    decho -n " called by ${get_func}()"
+    decho -n " called by ${get_func}() "
+    ddecho -n "defined on line $line_def"
+    dddecho -n ", function line $get_func_line"
     
     echo -e ${RESET}
     return 0
