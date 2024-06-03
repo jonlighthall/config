@@ -133,7 +133,7 @@ function ind() {
 function start_new_line() {
     local -i DEBUG=${DEBUG:-0}
     # Turn in-function debugging on/off.
-    DEBUG=0
+    DEBUG=1
 
     dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     if [ $DEBUG -ge 3 ]; then
@@ -145,6 +145,7 @@ function start_new_line() {
     local -i x
     itab
     get_curpos x
+    [ ${x} -gt 1 ] && decho -en "${GRAY}$x${RESET}"
     dtab
     if [ ${x} -eq 0 ]; then
         return 0
@@ -377,6 +378,7 @@ function do_cmd() {
         local -i idx2
         dbg2idx $((idx+1)) idx2
 
+        lecho "unbuffer"
         # print unbuffered command output
         unbuffer $cmd \
             | sed -u "s/\r$//g;s/.*\r//g;s/^/${TAB}/" \
@@ -462,6 +464,7 @@ function do_cmd_script() {
         # set shell options
         set -o pipefail
         # print command output
+        lecho "script"
         if false; then
             # command output is unbuffered only if "sed -u" is used!
             # however, this interfers with formatting the output
@@ -528,6 +531,7 @@ function do_cmd_stdbuf() {
         cmd+=" --color=always"
     fi
 
+    lecho "stdbuf"
     # unbuffer command output and save to file    
     stdbuf -i0 -o0 -e0 $cmd &>$temp_file
     RETVAL=$?
