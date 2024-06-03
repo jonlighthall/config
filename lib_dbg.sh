@@ -115,32 +115,30 @@ function find_func_line() {
     echo $lin
 }
 
-function this_line() {
+function this_line() {    
     # DEBUG = 0 print line in file only
+    # DEBUG = 1 print calling function
 
-
-
-
-    
     local DEBUG=0
 
-    # get calling function
+    # get this function
     local -i lev=0
-    if [ ${#FUNCNAME[@]} -gt 1 ]; then        
-        ddecho -en "${GRAY}FUNCNAME[$lev] = "
-        local get_func=${FUNCNAME[lev]}
-        ddecho -n "$get_func() "
+    local this_func=${FUNCNAME[lev]}
+    # get line definition
+    local -i this_def=$(find_func_line "${this_func}" "${BASH_SOURCE[lev]}" 2>/dev/null);
+    local this_bash=${BASH_SOURCE[lev]##*/}
 
-        # get line definition
-        local -i line_def=$(find_func_line "${get_func}" "${BASH_SOURCE[lev]}" 2>/dev/null);
-        ddecho -en "${GRAY}defined on line $line_def "
+    if [ ${#FUNCNAME[@]} -gt 1 ]; then
+        ddecho -en "${TAB}${GRAY}FUNCNAME[$lev] = "
+        ddecho -n "$this_func() "
+        ddecho -en "${GRAY}defined on line $this_def "
+        ddecho -e "${GRAY}in file ${this_bash}"
 
-        local get_bash=${BASH_SOURCE[lev]##*/}
-        ddecho -e "${GRAY}in file ${get_bash}"
-
+        # get calling function
         lev=1
 
     fi
+    decho -n "${TAB}"
     ddecho -n "FUNCNAME[$lev] = "
     local get_func=${FUNCNAME[lev]}
     decho -n "$get_func() "
@@ -152,9 +150,9 @@ function this_line() {
     local get_bash=${BASH_SOURCE[lev]##*/}
     decho -n "in file ${get_bash}"
     local -i get_func_line=${BASH_LINENO[0]}
-    ddecho -n ", function line $get_func_line, "
+    ddecho -n ", function line $get_func_line,"
     local -i get_file_line=$((${line_def}+${get_func_line}))
-    decho -n "on "
+    decho -n " on "
     ddecho -n "file "
     decho "line $get_file_line"
 
@@ -162,7 +160,20 @@ function this_line() {
     in_line "$@"
 
     # print the line number where THIS function was called in the PARENT function
-    echo -n "${get_func}() on line $get_file_line in ${get_bash}"
+    decho -n "${get_func}() "
+    echo -n "on line $get_file_line in ${get_bash}"
+
+    # print grep-like match
+    echo
+    echo -en    "${TAB}${GRF}${get_bash}${GRS}:${GRL}${get_file_line}${GRS}: ${GRH}"
+    local fcol=${fcol-${RED}}
+    if [ -z "$@" ]; then
+        echo -en "${this_func}()"
+    else
+        echo -en "${INVERT}$@${NORMAL}"
+    fi
+    decho -n " called by ${get_func}()"
+    
     echo -e ${RESET}
     return 0
 }
