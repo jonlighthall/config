@@ -614,3 +614,25 @@ function do_cmd_safe() {
 
     return $RETVAL
 }
+
+# run command after un-setting color
+function do_cmd_in() {
+    local -i DEBUG=0
+    # save command as variable
+    cmd=$(echo $@)
+
+    # set formatting options
+    local -i oldFMT_COLOR=${FMT_COLOR}
+    export FMT_COLOR=0
+    local -i oldFMT_TAB=${FMT_TAB}
+    export FMT_TAB=1
+   
+    do_cmd $cmd
+    RETVAL=$?
+
+    # reset formatting options
+    export FMT_COLOR=$oldFMT_COLOR
+    export FMT_TAB=$oldFMT_TAB
+
+    return $RETVAL
+}
