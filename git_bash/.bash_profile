@@ -17,8 +17,25 @@ if [[ "$-" != *i* ]]; then
 else
     # get starting time in nanoseconds
     declare -i start_time=$(date +%s%N)
+    clear
+    # -------------------------
+    # set debug level if unset
+    export DEBUG=${DEBUG=0}
+    # -------------------------
+    # print source
+    if [ ${DEBUG:-0} -gt 0 ]; then
+        echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+        # print invoking process
+        called_by=$(ps -o comm= $PPID)
+        echo "${TAB}invoked by ${called_by}"
+    fi
     # set "Verbose Bash" for conditional prints
     export VB=true
+    # clear terminal
+    clear -x
+    if [ ${DEBUG} -gt 0 ]; then
+        export VB=true
+    fi
 fi
 
 config_dir=${HOME}/config
@@ -33,11 +50,13 @@ if [ -e $fpretty ]; then
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
         dtab
-        vecho -e "${TAB}$fpretty ${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+        vecho -e "${TAB}$fpretty ${GOOD}OK${RESET}"
     else
         echo -e "${TAB}$fpretty ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     fi
     set -e
+    set_traps
+    print_ribbon
 else
     echo "${TAB}$fname not found"
     set +eu
@@ -51,6 +70,9 @@ if [ "${VB}" = true ]; then
         RUN_TYPE="executing"
     fi    
     print_source
+    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then    
+        print_stack
+    fi
     decho -e "${TAB}verbose bash printing is... ${GOOD}$VB${RESET}"
 fi
 
@@ -66,7 +88,7 @@ if [ -f $hist_file ]; then
     echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from ${HOST_NAME}" >>$hist_file
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
-        vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+        vecho -e "${GOOD}OK${RESET}"
     else
         if [ "${VB}" = true ]; then
             echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
@@ -89,7 +111,7 @@ if [ -f $fname ]; then
     source $fname
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
-        vecho -e "${TAB}$fname ${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+        vecho -e "${TAB}$fname ${GOOD}OK${RESET}"
     else
         echo -e "${TAB}$fname ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     fi
