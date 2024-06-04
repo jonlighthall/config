@@ -26,7 +26,7 @@ function secho() {
 
 function set_fcol() {
     local -i N=9
-    
+
     # use argument to manually set color
     if [ $# -eq 1 ]; then
         N=$1
@@ -77,7 +77,7 @@ function find_func_line() {
     #   DECLARE - print function definition
     #   HEAD    - get declaration line
     #   SED     - remove whitespace
-    
+
     pat="$(declare -f ${func} | head -1 | sed 's/ /[ ]*/;s/[ ]*$//;s/)/&[ \\n\\r{]*$/')"
     decho "${TAB}base pattern: $pat" >&2
     itab
@@ -145,7 +145,7 @@ function find_func_line() {
     echo $lin
 }
 
-function this_line() {    
+function this_line() {
     # DEBUG = 0 print line in file only
     # DEBUG = 1 print calling function
     # DEBUG = 2 print calling function line def
@@ -153,6 +153,8 @@ function this_line() {
 
     # set local debug level
     local -i DEBUG=3
+
+    local do_grep=true;
 
     # set function color
     set_fcol
@@ -165,10 +167,14 @@ function this_line() {
     local this_bash=${BASH_SOURCE[lev]##*/}
 
     if [ ${#FUNCNAME[@]} -gt 1 ]; then
-        ddecho -en "${TAB}${GRAY}FUNCNAME[$lev] = "
-        ddecho -en "${GRAY}$this_func() "
-        ddecho -en "${GRAY}defined on line $this_def "
-        ddecho -e "${GRAY}in file ${this_bash}"
+        if [ $DEBUG -gt 1 ]; then
+            echo -en "${GRAY}"
+            echo -en "${TAB}FUNCNAME[$lev] = "
+            echo -en "$this_func() "
+            echo -en "defined on line $this_def "
+            echo -e "in file ${this_bash}"
+            echo -en "$RESET"
+        fi
 
         # get calling function
         lev=1
@@ -183,36 +189,42 @@ function this_line() {
     local -i line_def=$(find_func_line "${get_func}" "${BASH_SOURCE[lev]}" 2>/dev/null);
     ddecho -n "defined on line $line_def "
 
+    # get source file
     local get_bash=${BASH_SOURCE[lev]##*/}
     decho -n "in file ${get_bash}"
+
+    # get line in function
     local -i get_func_line=${BASH_LINENO[0]}
-    dddecho -n ", function line $get_func_line,"
-    local -i get_file_line=$((${line_def}+${get_func_line}))
-    decho -n " on "
-    ddecho -n "file "
-    decho "line $get_file_line"
-
-    # print argument
-    in_line "$@"
-
-    # print the line number where THIS function was called in the PARENT function
-    decho -n "${get_func}() "
-    local fcol=${fcol-${RED}}
-    echo -en "${fcol}on line $get_file_line in ${get_bash}"
-
-    # print grep-like match
-    echo
-    echo -en    "${TAB}${GRF}${get_bash}${GRS}:${GRL}${get_file_line}${GRS}: ${GRH}"
-
-    if [ -z "$@" ]; then
-        echo -en "${this_func}()"
-    else
-        echo -en "${INVERT}$@${NORMAL}"
-    fi
-    decho -n " called by ${get_func}() "
-    ddecho -n "defined on line $line_def"
     dddecho -n ", function line $get_func_line"
-    
+
+    decho
+    decho -n "${TAB}${this_func}() called by $get_func() "
+
+    # get line in file
+    local -i get_file_line=$((${line_def}+${get_func_line}))
+    decho -n "on line $get_file_line of ${get_bash}"
+    decho
+
+    if $do_grep; then
+        # print grep-like match
+        echo -en    "${TAB}${GRF}${get_bash}${GRS}:${GRL}${get_file_line}${GRS}: ${GRH}"
+        if [ -z "$@" ]; then
+            echo -en "${this_func}()"
+        else
+            echo -en "${INVERT}$@${NORMAL}"
+        fi
+        decho -n " called by ${get_func}() "
+        ddecho -n "defined on line $line_def"
+        dddecho -n ", function line $get_func_line"
+    else
+        # print argument
+        start_new_line
+        in_line "$@"
+        # print the line number where THIS function was called in the PARENT function
+        [ $DEBUG -gt 0 ] && echo -n "${get_func}() "
+        echo -en "${fcol}on line $get_file_line in ${get_bash}"
+    fi
+
     echo -e ${RESET}
     return 0
 }
