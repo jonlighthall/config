@@ -1,5 +1,4 @@
 #!/bin/bash -u
-
 # -----------------------------------------------------------------------------------------------
 # DEBUG LIBRARY
 # -----------------------------------------------------------------------------------------------
@@ -56,18 +55,30 @@ function lec_mes () {
     echo -en "called on line ${GRL}"
 }
 
+# This function print the result to STDOUT. All outher output is printed to STDERR. To use the
+# function, redirect function call output to /dev/null. To view degugging information, do no
+# redirect function all output.
 function find_func_line() {
+    # set local debug level
     local -i DEBUG=3
+
+    # print THIS function name
     dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}" >&2
 
+    # set function name
     local func=$1
     decho "${TAB}function: $func" >&2
 
+    # get source file
     local src=$2
     decho "${TAB}source: $src" >&2
 
+    # define search pattern
+    #   DECLARE - print function definition
+    #   HEAD    - get declaration line
+    #   SED     - remove whitespace
+    
     pat="$(declare -f ${func} | head -1 | sed 's/ /[ ]*/;s/[ ]*$//;s/)/&[ \\n\\r{]*$/')"
-
     decho "${TAB}base pattern: $pat" >&2
     itab
     grep -n "${pat}" "${src}" --color=always | sed "s/^/${TAB}/" >&2
@@ -79,32 +90,32 @@ function find_func_line() {
     fi
     unset_traps 0
 
+    # look for function definition without 'function' prefix
     decho "${TAB}matching pattern without function prefix..." >&2
     local epat="^[ ]*${pat}"
     itab
     decho "${TAB}extended pattern: $epat" >&2
-    # grep -n "${epat}" "${src}" --color=always | sed "s/^/${TAB}/" >&2
 
     if [ ! -z "$(grep "${epat}" "${src}")" ]; then
         decho "${TAB}found without function" >&2
-
     else
         decho "${TAB}not found" >&2
         dtab
+        # look for function definition with 'function' prefix
         decho "${TAB}matching pattern with function prefix..." >&2
         itab
         epat="^function[ ]\+${pat}"
         decho "${TAB}extended pattern: $epat" >&2
-        #grep -n "${epat}" "${src}" --color=always | sed "s/^/${TAB}/" >&2
         if [ ! -z "$(grep "${epat}" "${src}")" ]; then
             decho "${TAB}found with function" >&2
         else
             decho "${TAB}pattern not found" >&2
             return 1
-
         fi
     fi
     dtab
+
+    # display results
     decho "${TAB}matching line:" >&2
     itab
     grep -n "${epat}" "${src}" --color=always | sed "s/^/${TAB}/" >&2
@@ -117,17 +128,20 @@ function find_func_line() {
     reset_shell ${old_opts-''}
     reset_traps 0
     dtab
+
+    # get line number
     local -i lin=$(grep -n "${epat}" "${src}" | awk -F: '{print$1}')
     decho -e "${TAB}${BOLD}pattern found on line ${lin}${RESET}" >&2
-
     decho $lin >&2
 
+    # The function line number counts from the open bracket, not the function name declaration
+    # line. If the two are not on the same line, increment the line counter.
     lin_txt=$(sed -n "${lin}p" "${src}")
-
     if [[ ! "${lin_txt}" =~ .*"{" ]]; then
         ((++lin))
     fi
 
+    # return the result to STDOUT
     echo $lin
 }
 
