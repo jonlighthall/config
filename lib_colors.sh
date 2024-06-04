@@ -121,10 +121,10 @@ export    FILE="${YELLOW}" # file name in scripts
 export     ARG="${CYAN}"   # input argument
 
 # define 'ls' colors
-export  BROKEN='\x1B[1;31m' # bold red    : or orphan link
-export     TGT='\x1B[1;32m' # bold green  : ex executable
-export     DIR='\x1B[1;34m' # bold blue   : di directory
-export   VALID='\x1B[1;36m' # bold cyan   : ln valid link
+export  BROKEN='\x1B[1;31m' # bold red    : or : orphan link
+export     TGT='\x1B[1;32m' # bold green  : ex : executable
+export     DIR='\x1B[1;34m' # bold blue   : di : directory
+export   VALID='\x1B[1;36m' # bold cyan   : ln : valid link
 
 # define PS1 colors
 export  PSTIME='\x1B[0;37m' # light gray  : \A : time
@@ -139,6 +139,10 @@ export     GRH='\x1B[1;31m' # bold red    : ms : selected match
 export     GRL='\x1B[0;32m' # green       : ln : line number
 export     GRF='\x1B[0;35m' # magenta     : fn : file name
 export     GRS='\x1B[0;36m' # cyan        : se : separator
+
+# define emacs dark colors
+export EK='\x1B[38;5;214m'  # orange      : keyword
+export EF='\x1B[38;5;50m'   # cyan        : function name
 
 # -----------------------------------------------------------------------------------------------
 # List Directory (ls) colors
