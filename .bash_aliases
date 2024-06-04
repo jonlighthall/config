@@ -144,3 +144,17 @@ if [ "${VB}" = true ]; then
     # reset tab
     dtab
 fi
+
+function end() {
+    check_arg2 $@
+    echo "inputs are $1 and $2"
+    unset file1
+    unset file2
+    export file1=$(readlink -f $1)
+    export file2=$(readlink -f $2)
+    echo "inputs are $file1 and $file2"
+#return 0
+
+    eval "emacs -nw --eval '(ediff-files \"${file1}\" \"${file2}\")'"
+
+}
