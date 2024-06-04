@@ -482,13 +482,17 @@ function dbg2idx() {
     local -n var_out=$2
     fecho "var_out = ${!var_out}"
 
+    # define parameters
     local -i N_cols
     local -i N_max
     local -i start
     local -i direction
 
+    # load parameters
     set_dbg2idx
 
+    # using an index value of 0 indicates turning off coloring
+    # the color at the end of the array will be loaded
     if [ $dbg_in -eq 0 ]; then
         var_out=$N_max
         return 0
@@ -497,7 +501,8 @@ function dbg2idx() {
     # since DEBUG=0 does not print and DEBUG=1 corresponds to starting color, or array index 0,
     # the input value decremented by one
     local -i offset=1
-    # however, idx=0 corresponds to no color or gray printing, so the offset is zero and idx=DEBUG
+    # however, (now) idx=0 corresponds to no color or gray printing, so the offset is zero and
+    # (now) idx=DEBUG
     offset=0
     # if the index is negative (for some reason), continue from the previous color
     if [ $dbg_in -lt 0 ]; then
@@ -549,24 +554,16 @@ function set_dcolor() {
     # get value of DEBUG
     # if unset or NULL, substitute default
     local -i DEBUG=${DEBUG-0}
-    define index
-    local -i idx
-    # get color index
-    dbg2idx $DEBUG idx
-    # set color
-    echo -ne "${dcolor[$idx]}"
+
+    set_color $DEBUG
 }
 
 # set BASH color
 function set_bcolor() {
     # get length of call stack
     local -i N_BASH=${#BASH_SOURCE}
-    define index
-    local -i idx
-    # get color index
-    dbg2idx $N_BASH idx
-    # set color
-    echo -ne "${dcolor[$idx]}"
+
+    set_color $N_BASH
 }
 
 function set_color() {
@@ -578,13 +575,11 @@ function set_color() {
         N=$1
     fi
 
-    if [ $N -ne 0 ]; then
-        # get color index
-        local -i idx
-        dbg2idx $N idx
-        # set color
-        echo -ne "${dcolor[$idx]}"
-    fi
+    # get color index
+    local -i idx
+    dbg2idx $N idx
+    # set color
+    echo -ne "${dcolor[$idx]}"
 }
 
 function test_set_color() {
@@ -601,7 +596,6 @@ function test_set_color() {
         printf '%3d: %s\n' $i $FUNCNAME
         unset_color
     done
-
 }
 
 function unset_color() {
