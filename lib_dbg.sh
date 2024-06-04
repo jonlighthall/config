@@ -25,8 +25,24 @@ function secho() {
     print_stack 2
 }
 
+function set_fcol() {
+    local -i N=9
+    
+    # use argument to manually set color
+    if [ $# -eq 1 ]; then
+        N=$1
+    fi
+
+    local -i idx
+    dbg2idx $N idx
+    export fcol=${dcolor[idx]}
+
+    # set color
+    echo -ne "${fcol}"
+}
+
 function in_line() {
-    local fcol=${fcol-${RED}}
+    set_fcol
     echo -en "${TAB}${fcol}"
     if [ ! -z "$@" ]; then
         echo -en "${INVERT}$@${NORMAL} <- ${fcol}"
@@ -121,7 +137,11 @@ function this_line() {
     # DEBUG = 2 print calling function line def
     # DEBUG = 3 print calling function line
 
-    local DEBUG=3
+    # set local debug level
+    local -i DEBUG=3
+
+    # set function color
+    set_fcol
 
     # get this function
     local -i lev=0
@@ -195,9 +215,7 @@ function lecho() {
         idb >/dev/null
     fi
     DEBUG=0
-    local -i idx
-    dbg2idx 9 idx
-    fcol=${dcolor[idx]}
+    set_fcol
     start_new_line
     echo -ne "${fcol}"
     dddecho -e "${TAB}${INVERT}${FUNCNAME}${fcol}"
