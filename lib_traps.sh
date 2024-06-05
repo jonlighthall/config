@@ -351,6 +351,8 @@ function print_return() {
     else
         echo " ${BASH_SOURCE[0]##*/}"
     fi
+
+    print_done
 }
 
 function print_int() {
@@ -733,11 +735,22 @@ function set_exit() {
     decho -e "${TAB}${ORANGE}\E[7mset exit${RESET}"
     itab
 
+    dddecho "${TAB}$-"
+    # set shell options
+    dddecho -n "${TAB}setting shell options... "
+    # trace ERR (subshells inherit ERR trap from shell)
+    set -E
+    set -T
+    dddecho "done"
+    dddecho "${TAB}$-"
+
     dddecho -n "${TAB}setting traps... "
-    trap 'print_exit $?' EXIT
+    trap 'print_exit $?; trap - EXIT' EXIT
+    trap 'print_return $?; trap - RETURN' RETURN
     dddecho "done"
 
     check_traps_set
+    dtab
 }
 
 # unset ERR and EXIT traps, saving current values
@@ -789,7 +802,7 @@ function unset_traps() {
 
     do_clear
     check_traps_clear
-
+    dtab
 }
 
 # reset saved traps
@@ -874,6 +887,7 @@ function clear_traps() {
 
     do_clear
     check_traps_clear
+    dtab
 }
 
 #
