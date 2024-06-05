@@ -328,6 +328,24 @@ function extract_color() {
 
 }
 
+function define_cr() {
+    local -i x1c
+    get_curpos x1c
+    decho -n "$x1c"
+    # set the "carriage return" value for the first non-empty line of the command ouput
+    export cr=
+    if [ $x1c -gt 1 ]; then
+        # if the cursor is not at the start of a line, start a new line
+        cr='\n'
+        if [ $DEBUG -gt 0 ]; then
+            cr="$(printf '\u21b5')\n"
+        fi
+    else
+        # if the cursor is already  at the start of a new line, do nothing
+        :
+    fi
+}
+
 function do_cmd() {
     local -i DEBUG=0
     # save command as variable
@@ -355,28 +373,11 @@ function do_cmd() {
         fi
 
         # check cursor position
-        local -i x1c
-        get_curpos x1c
-        decho -n "$x1c"
-        # set the "carriage return" value for the first non-empty line of the command ouput
-        local cr=
-        if [ $x1c -gt 1 ]; then
-            # if the cursor is not at the start of a line, start a new line
-            cr='\n'
-            if [ $DEBUG -gt 0 ]; then
-                cr="$(printf '\u21b5')\n"
-            fi
-        else
-            # if the cursor is already  at the start of a new line, do nothing
-            :
-        fi
+        define_cr
 
         ddecho "${TAB}printing unbuffered command ouput..."
         # set shell options
         set -o pipefail
-        # define highlight color
-        local -i idx2
-        dbg2idx $((idx+1)) idx2
 
         lecho "unbuffer"
         # print unbuffered command output
@@ -445,20 +446,7 @@ function do_cmd_script() {
         fi
 
         # check cursor position
-        local -i x1c
-        get_curpos x1c
-        ddecho -n "$x1c"
-        # set the "carriage return" value for the first non-empty line of the command ouput
-        if [ $x1c -gt 1 ]; then
-            # if the cursor is not at the start of a line, start a new line
-            local cr='\n'
-            if [ $DEBUG -gt 0 ]; then
-                cr="new line$(printf '\u21b5')\n"
-            fi
-        else
-            # if the cursor is already  at the start of a new line, do nothing
-            local cr=''
-        fi
+        define_cr
 
         # define temp file
         local temp_file=typescript_$(date +'%Y-%m-%d-t%H%M%S')
@@ -544,20 +532,7 @@ function do_cmd_stdbuf() {
     # check if ouputfile is empty
     if [ -s ${temp_file} ]; then
         # check cursor position
-        local -i x1c
-        get_curpos x1c
-        echo -ne "${dcolor[$idx]}"
-        # set the "carriage return" value for the first non-empty line of the command ouput
-        if [ $x1c -gt 1 ]; then
-            # if the cursor is not at the start of a line, start a new line
-            local cr='\n'
-            if [ $DEBUG -gt 0 ]; then
-                cr="$(printf '\u21b5')\n"
-            fi
-        else
-            # if the cursor is already  at the start of a new line, do nothing
-            local cr=''
-        fi
+        define_cr
 
         ddecho -e "${TAB}${IT}buffer:${NORMAL}"
         # define highlight color
