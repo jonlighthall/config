@@ -82,7 +82,7 @@ link_dir=$HOME
 
 cbar "Start Linking Repo Files"
 # list of files to be linked
-for my_link in .bash_aliases .bash_logout .bash_profile .dircolors .emacs.d .gitconfig .hushlogin .inputrc .rootrc; do
+for my_link in .bash_aliases .bash_logout .bash_profile .dircolors .emacs.d .hushlogin .inputrc .rootrc; do
     # define target (source)
     target=${target_dir}/${my_link}
     # define link name (destination)
@@ -95,6 +95,30 @@ for my_link in .bash_aliases .bash_logout .bash_profile .dircolors .emacs.d .git
     # create link
     do_link "${target}" "${link}"
 done
+
+# check if host is Navy
+echo -n "${TAB}checking host... "
+if [[ "$(hostname -f)" == *".mil" ]]; then
+    echo -e "${GRAY}SKIP${RESET}"
+else
+    echo -e "${GOOD}OK${RESET}"
+
+    # list of files to be linked
+    for my_link in .gitconfig; do
+        # define target (source)
+        target=${target_dir}/${my_link}
+        # define link name (destination)
+        sub_dir=$(dirname "$my_link")
+        if [ ! $sub_dir = "." ]; then
+            # strip target subdirectory from link name
+            my_link=$(basename "$my_link")
+        fi
+        link=${link_dir}/${my_link}
+        # create link
+        do_link "${target}" "${link}"
+    done
+fi
+
 cbar "Done Linking Repo Files"
 
 # make links in /etc
