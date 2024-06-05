@@ -625,28 +625,28 @@ function check_traps_set() {
 function get_sigs() {
     if [ ! -z "$(trap -p)" ]; then
         if [ ${DEBUG} -gt 0 ]; then
-            decho "${TAB}traps:"
-            decho -e "${TAB}${INVERT}normal print:${NORMAL}"
+            ddecho "${TAB}traps:"
+            ddecho -e "${TAB}${INVERT}normal print:${NORMAL}"
             echo $(trap -p)
 
-            decho -e "${TAB}${INVERT}function print:${NORMAL}"
+            ddecho -e "${TAB}${INVERT}function print:${NORMAL}"
             print_traps
 
-            decho -e "${TAB}${INVERT}traps echo:${NORMAL}"
+            ddecho -e "${TAB}${INVERT}traps echo:${NORMAL}"
             echo $(trap -p) | sed "s/ \(trap -- \)/\n\1/g;s/^/${TAB}/"
 
-            decho -e "${TAB}${INVERT}traps echo sig:${NORMAL}"
+            ddecho -e "${TAB}${INVERT}traps echo sig:${NORMAL}"
             echo $(trap -p) | sed "s/ \(trap -- \)/\n\1/g" |  sed 's/.* //'
 
-            decho -e "${TAB}${INVERT}traps echo sig tr:${NORMAL}"
+            ddecho -e "${TAB}${INVERT}traps echo sig tr:${NORMAL}"
             echo $(trap -p) | sed "s/ \(trap -- \)/\n\1/g" |  sed 's/.* //' | tr  '\n' ' '
-            decho
+            ddecho
         fi
         export sig="$(echo $(trap -p) | sed "s/ \(trap -- \)/\n\1/g" |  sed 's/.* //' | tr  '\n' ' ')"
         if [ ${DEBUG} -gt 0 ]; then
-            decho "${TAB}sig = ${sig}"
-            decho "${TAB}sig@ = ${sig[@]}"
-            decho "${TAB}#sig = ${#sig[@]}"
+            ddecho "${TAB}sig = ${sig}"
+            ddecho "${TAB}sig@ = ${sig[@]}"
+            ddecho "${TAB}#sig = ${#sig[@]}"
         fi
     else
         export sig=''
@@ -683,7 +683,7 @@ do_clear() {
         decho "sig = ${sig}"
         # clear traps
         for itrap in ${sig[@]}; do
-            decho "${TAB}unsetting trap $itrap..."
+            ddecho "${TAB}unsetting trap $itrap..."
             trap - $itrap
         done
     fi
