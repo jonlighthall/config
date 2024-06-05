@@ -395,14 +395,14 @@ function do_cmd() {
     else
         # check if script is defined
         if command -v script >/dev/null; then
+            dtab ${FMT_TAB}
             ddecho "${TAB}printing command ouput typescript..."
             # print typescript command ouput
-            dtab ${FMT_TAB}
             do_cmd_script $cmd
         else
+            dtab ${FMT_TAB}
             ddecho "${TAB}printing buffered command ouput..."
             # print buffered command output
-            dtab ${FMT_TAB}
             do_cmd_stdbuf $cmd
         fi
         local -i RETVAL=$?
@@ -437,6 +437,7 @@ function do_cmd_script() {
     dbg2idx $FMT_COLOR idx
     # set color
     echo -ne "${dcolor[$idx]}"
+    extract_color
 
     # check if typescript is defined
     if command -v script >/dev/null; then
@@ -472,6 +473,8 @@ function do_cmd_script() {
 
         # reset shell options
         set +o pipefail
+        dtab ${FMT_TAB}
+
         # remove temporary file
         for log in typescript*; do
             if [ -f $log ]; then
@@ -479,12 +482,8 @@ function do_cmd_script() {
             fi
         done
     else
-        ddecho "${TAB}printing unformatted ouput..."
-        dbg2idx $FMT_COLOR idx
-        # set color
-        echo -ne "${dcolor[$idx]}"
-
         dtab ${FMT_TAB}
+        ddecho "${TAB}printing unformatted ouput..."
         lecho "no wrapper"
         # print buffered command output
         $cmd
@@ -493,7 +492,7 @@ function do_cmd_script() {
 
     # reset formatting
     unset_color
-    dtab ${FMT_TAB}
+   
     return $RETVAL
 }
 
@@ -501,6 +500,7 @@ function do_cmd_script() {
 # save ouput to file, print file, delete file
 # developed for use when unbuffer and script are unavailable
 function do_cmd_stdbuf() {
+    local -i DEBUG=0
     # save command as variable
     cmd=$(echo $@)
     # format output
@@ -514,6 +514,7 @@ function do_cmd_stdbuf() {
     dbg2idx $FMT_COLOR idx
     # set color
     echo -ne "${dcolor[$idx]}"
+    extract_color
 
     # define temp file
     temp_file=stdbuf_$(date +'%Y-%m-%d-t%H%M%S')
