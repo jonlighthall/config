@@ -305,17 +305,17 @@ function extract_color() {
     local -i output_arg=$(( input_num - num_start  + num_shift ))
 
     [ $output_arg -lt 0 ] && output_arg=$(( output_arg * -1 ))
-    
+
     ddecho "${TAB}arg: $output_arg"
     local -i output_mod=$(( ( output_arg) % ( num_mod + 1 ) ))
     ddecho "${TAB}mod: $output_mod"
     local -i output_num=$(( output_mod + num_start ))
-    
+
     export output_code=$(echo "${input_set}${output_num}")
     declare output_color=$(echo "\x1B[${output_code}m")
 
     dtab
-    
+
     decho -e "${UL}output color${NORMAL}"
     itab
     decho "${TAB}number: $output_num"
@@ -351,7 +351,7 @@ function do_cmd() {
     if command -v unbuffer >/dev/null; then
         # check if command is git to turn off pager
         if [[ "$cmd" =~ "git"* ]]; then
-             cmd=$(echo "$cmd" | sed 's/git /&--no-pager /')
+            cmd=$(echo "$cmd" | sed 's/git /&--no-pager /')
         fi
 
         # check cursor position
@@ -441,9 +441,9 @@ function do_cmd_script() {
     if command -v script >/dev/null; then
         # check if command is git to turn off pager
         if [[ "$cmd" =~ "git"* ]]; then
-             cmd=$(echo "$cmd" | sed 's/git /&--no-pager /')
+            cmd=$(echo "$cmd" | sed 's/git /&--no-pager /')
         fi
-        
+
         # check cursor position
         local -i x1c
         get_curpos x1c
@@ -460,7 +460,10 @@ function do_cmd_script() {
             local cr=''
         fi
 
-        ddecho "${TAB}printing command ouput typescript..."
+        # define temp file
+        local temp_file=typescript_$(date +'%Y-%m-%d-t%H%M%S')
+        ddecho "${TAB}SCRIPT: redirecting command ouput to typescript pseudoterminal..."
+        ddecho "${TAB}        log file is $temp_file"
         # set shell options
         set -o pipefail
         # print command output
@@ -471,20 +474,22 @@ function do_cmd_script() {
             script -eq -c "$cmd" \
                 | sed -u 's/$\r/\n\r/g'
         else
-            script -eq -c "$cmd" \
+            script -eq -c "$cmd" ${temp_file} \
                 | sed  "s/\r$//g;s/.*\r//g;s/^/${TAB}/" \
                 | sed  "s/\x1B\[${input_code}m/\x1B[${output_code}m/g" \
                 | sed  "1 s/^[\s]*[^\s]/${cr}&/" \
                 | sed  "s/\x1B\[m/\x1B[m${dcolor[$idx]}/g"
         fi
         local -i RETVAL=$?
+
         # reset shell options
         set +o pipefail
         # remove temporary file
-        local temp_file=typescript_$(date +'%Y-%m-%d-t%H%M%S')
-        if [ -f $temp_file ]; then
-            rm typescript
-        fi
+        for log in typescript*; do
+            if [ -f $log ]; then
+                rm $log
+            fi
+        done
     else
         ddecho "${TAB}printing unformatted ouput..."
         dbg2idx $FMT_COLOR idx
@@ -532,7 +537,7 @@ function do_cmd_stdbuf() {
     fi
 
     lecho "stdbuf"
-    # unbuffer command output and save to file    
+    # unbuffer command output and save to file
     stdbuf -i0 -o0 -e0 $cmd &>$temp_file
     RETVAL=$?
 
@@ -630,7 +635,7 @@ function do_cmd_in() {
     export FMT_COLOR=0
     local -i oldFMT_TAB=${FMT_TAB}
     export FMT_TAB=1
-   
+
     do_cmd $cmd
     RETVAL=$?
 
