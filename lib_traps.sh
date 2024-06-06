@@ -308,7 +308,14 @@ function print_error() {
     # expected arguments are $LINENO $? $BASH_COMMAND
     # e.g.
     # trap 'print_error $LINENO $? $BASH_COMMAND' ERR
-    DEBUG=3
+
+    # substitute default value if DEBUG is unset or null
+    local -i DEBUG=${DEBUG:-3}
+    # set manually
+    DEBUG=0
+
+    # set function debug
+    local -i funcDEBUG=$DEBUG
 
     decho -e "${TAB}\E[37;41m${FUNCNAME}${RESET}"
 
@@ -321,12 +328,6 @@ function print_error() {
     eTAB=$fTAB
 
     TAB+=$eTAB
-
-    # substitute default value if DEBUG is unset or null
-    local -i DEBUG=${DEBUG:-0}
-    # set manually
-    #DEBUG=2
-    local -i funcDEBUG=$DEBUG
 
     # parse arguments
     local -i ERR_LINENO=$1
