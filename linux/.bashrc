@@ -63,7 +63,7 @@ for FILE in $LIST; do
         source $FILE
         RETVAL=$?
         if [ $RETVAL -eq 0 ]; then
-            vecho -e "${TAB}$FILE ${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+            vecho -e "${TAB}$FILE ${GOOD}OK${RESET}"
         else
             echo -e "${TAB}$FILE ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
         fi
