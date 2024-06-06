@@ -90,6 +90,11 @@ function print_source() {
     unset prefix
 }
 
+# stack echo
+function secho() {
+    print_stack 2
+}
+
 function print_ribbon() {
     get_source
     # since this function is part of the stack, reduce N_BASH by one

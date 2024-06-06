@@ -91,43 +91,6 @@ function get_curpos() {
     dtab
 }
 
-# test cursor position
-function ind() {
-    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-    local -i DEBUG=1
-    local -i funcDEBUG=1
-
-    local -i x1=0
-    local -i y1=0
-    local -i x2=0
-    local -i y1=0
-
-    echo -n "indented: "
-    # pass variable names, not values
-    get_curpos x1 y1
-    echo "x = $x1"
-    echo "y = $y1"
-    echo "BASH_LINENO = ${BASH_LINENO[@]}"
-
-    echo "not indented: "
-    get_curpos x2 y2
-    echo "x = $x2"
-    echo "y = $y2"
-    echo "BASH_LINENO = ${BASH_LINENO[@]}"
-
-    if [ $x1 = $x2 ]; then
-        echo "x-position did not change"
-    fi
-
-    if [ $y1 = $y2 ]; then
-        echo "y-position did not change"
-    fi
-
-    if [ $x1 = $x2 ] && [ $y1 = $y2 ]; then
-        echo "cursor position did not change"
-    fi
-}
-
 # start a new line only if not already on a new line
 # i.e., carriage return with conditional line feed
 function start_new_line() {

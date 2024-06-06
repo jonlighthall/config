@@ -190,25 +190,6 @@ if [[ "$-" == *i* ]]; then
     print_source
 fi
 
-function print_pretty_status() {
-    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
-        print_pretty_cbar
-    fi
-
-    if [ -z ${FPRETTY_LOADED+dummy} ]; then
-        declare -grx FPRETTY_LOADED=true
-        vecho "${TAB}${BASH_SOURCE##*/} loaded"
-    else
-        local -i N_BASH=${#BASH_SOURCE[@]}
-        local cmd
-        if [ $N_BASH -eq 2 ]; then
-            cmd=echo
-        else
-            cmd=decho
-        fi
-        $cmd "${TAB}"$(print_pretty "${BASH_SOURCE##*/} reloaded")
-    fi
-}
 print_pretty_status
 
 # determine if script is being sourced or executed

@@ -19,11 +19,6 @@ export   SPACE='\x1B[30;106m'             # highlight white space
 export    TRUE='\x1B[1;32mtrue\x1B[0m'  #
 export   FALSE='\x1B[1;31mfalse\x1B[0m' #
 
-# stack echo
-function secho() {
-    print_stack 2
-}
-
 function set_fcol() {
     local -i N=9
 
@@ -488,40 +483,6 @@ function plecho() {
 
     # reset shell options
     reset_shell ${old_opts}
-}
-
-# test secho and lecho
-function necho() { #1
-    secho          #2
-    lecho          #3
-    lecho          #4
-    # comment      #5
-    lecho          #6
-    if true; then  #7
-        lecho      #8
-    fi             #9
-    lecho          #10
-    # comment      #11
-    lecho          #12
-    print_stack
-}
-
-# "plain" test lecho
-function pecho() { #1
-    lecho          #2
-    lecho          #3
-    # comment      #4
-    lecho          #5
-    if true; then  #6
-        lecho      #7
-    fi             #8
-    lecho          #9
-    # comment      #10
-    lecho          #11
-}
-
-function do_lecho() {
-    lecho
 }
 
 function print_debug() {

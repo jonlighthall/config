@@ -37,50 +37,6 @@ function bye() {
     return 1
 }
 
-# function to test calling an alias from a function
-function fello() {
-    local -i DEBUG=1
-    # print function name
-    decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-    # define function name
-    func='hello'
-    # test if alias
-    if [[ $(type -t $func) == "alias" ]]; then
-        decho "${TAB}$func type is alias"
-        echo -n "${TAB}"
-        # evaluate
-        eval $func
-    else
-        decho "${TAB}$func type is not alias"
-        # print debug value
-        print_debug
-        # print shell options
-        decho "${TAB}shell options = $-"
-        # add return code for parent script
-        if [ $DEBUG -gt 0 ]; then
-            trap 'print_return $?; trap - RETURN' RETURN
-        fi
-        return 1
-    fi
-}
-
-function driver() {
-    # print function name
-    decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-    local -i DEBUG=0
-    set_traps
-
-    # -T  If set, the DEBUG and RETURN traps are inherited by shell functions.
-    set -T
-    trap 'echo "${FUNCNAME} return"' RETURN
-    decho "shell options = $-"
-    fello
-}
-
-function driver2() {
-    driver
-}
-
 # -----------------------------------------------------------------------------------------------
 # Functions for set and reset shell options
 # -----------------------------------------------------------------------------------------------
@@ -181,34 +137,6 @@ function reset_shell() {
     set -T
     decho "done: $-"
     dtab
-    #huh
-}
-
-# print shell
-function huh() {
-    local -i DEBUG=1
-    # print function name
-    decho -e "${TAB}${INVERT}${FUNCNAME}?${RESET}"
-
-    itab
-    echo "${TAB}shell options: $-"
-    echo -n "${TAB}traps: "
-    if [ -z "$(trap -p)" ]; then
-        echo "${TAB}none"
-    else
-        echo
-        itab
-        trap -p
-        dtab
-    fi
-
-    print_debug
-    print_tab
-    dtab
-    if [ ${DEBUG-0} -gt 0 ]; then
-        trap 'print_return $?; trap - RETURN' RETURN
-    fi
-    return 0
 }
 
 # -----------------------------------------------------------------------------------------------
@@ -928,7 +856,6 @@ function exit_on_fail() {
                 # return 1 to trigger error
                 # then trap error with return
                 #itab
-                #  huh
                 return 1
             fi
         else
@@ -940,16 +867,4 @@ function exit_on_fail() {
         # decho "${TAB}continuing..."
         return 0
     fi
-}
-
-# test line echo
-function tlecho() {
-    echo -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-    DEBUG=3
-    itab
-    lecho "$@"
-    plecho "$@"
-    dtab
-    rdb
-    trap 'print_return $?; trap - RETURN' RETURN
 }

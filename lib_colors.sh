@@ -651,6 +651,26 @@ function print_pretty_cbar() {
     cbar $(print_pretty)
 }
 
+function print_pretty_status() {
+    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
+        print_pretty_cbar
+    fi
+
+    if [ -z ${FPRETTY_LOADED+dummy} ]; then
+        declare -grx FPRETTY_LOADED=true
+        vecho "${TAB}${BASH_SOURCE##*/} loaded"
+    else
+        local -i N_BASH=${#BASH_SOURCE[@]}
+        local cmd
+        if [ $N_BASH -eq 2 ]; then
+            cmd=echo
+        else
+            cmd=decho
+        fi
+        $cmd "${TAB}"$(print_pretty "${BASH_SOURCE##*/} reloaded")
+    fi
+}
+
 function test_lib_colors() {
     local -i DEBUG=2
     decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
@@ -677,15 +697,3 @@ function test_lib_colors() {
 if [ ${DEBUG:-0} -gt 2 ]; then
     test_lib_colors
 fi
-
-# test parent line echo
-function tplecho() {
-    set_tab_shell
-    print_tab
-    echo -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-    itab
-    tlecho "$@"
-    dtab
-    rdb
-    trap 'print_return $?; trap - RETURN' RETURN
-}
