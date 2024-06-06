@@ -194,50 +194,7 @@ function print_stack() {
     echo "${TAB}call stack:"
     local -i i
     itab
-
-    if false; then
-        (
-            for ((i = 0; i < $N_STACK ; i++)); do
-                echo "$i:${FUNCNAME[i]}:${BASH_FNAME[i]}:${BASH_LINENO[i]}"
-            done
-        ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
-        echo
-
-        # set color
-        ((idx++))
-        echo -ne "${dcolor[idx]}"
-        (
-            for ((i = 0; i < $N_STACK ; i++)); do
-                echo "$i:${FUNCNAME[i]}:${BASH_SOURCE[i]}:${BASH_LINENO[i]}"
-            done
-        ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
-        echo
-
-        # set color
-        ((idx++))
-        echo -ne "${dcolor[idx]}"
-        (
-            for ((i = 0; i < $N_STACK ; i++)); do
-                echo "$i:${FUNCNAME[i]}:${BASH_LINK[i]}:${BASH_LINENO[i]}"
-            done
-        ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
-        echo
-
-        # set color
-        ((idx++))
-        echo -ne "${dcolor[idx]}"
-        (
-            for ((i = 0; i < $N_STACK ; i++)); do
-                echo "$i:${FUNCNAME[i]}:${BASH_SOURCE[i]}:${BASH_LINENO[i]}"
-                if [[ "${BASH_SOURCE[$i]}" != "${BASH_LINK[$i]}" ]]; then
-                    decho -ne "$i:${FUNCNAME[i]}:${BASH_LINK[i]}:${BASH_LINENO[i]}"
-                    echo -e "${dcolor[idx]}"
-                fi
-            done
-        ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
-        echo
-    fi
-
+    
     (
         for ((i = 0; i < $N_STACK ; i++)); do
             if [ $i == 0 ]; then
