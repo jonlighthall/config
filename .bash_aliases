@@ -39,7 +39,7 @@ fi
 
 # Aliases
 alias close='source ${HOME}/.bash_logout;killall -9 -v -u $USER$USERNAME; exit'
-alias hello='echo "hello, world"'
+alias hello='echo "${TAB-''}hello, world"'
 alias ping='ping -c 4 -W 1'
 alias pkill='pkill -9 -u ${USER}'
 alias pwd='pwd -L;pwd -P'
