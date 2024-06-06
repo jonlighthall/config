@@ -166,16 +166,28 @@ function print_stack() {
         fi
     fi
 
-    local -ga BASH_LINKS
-    # resolve symbolic links
+    local -ga BASH_CANON
+    # resolve symbolic links (canonicalize)
     for ((i = 0; i < $N_BASH; i++)); do
-        BASH_LINK[$i]="$(readlink -f "${BASH_SOURCE[$i]}")"
+        BASH_CANON[$i]="$(readlink -f "${BASH_SOURCE[$i]}")"
     done
 
     local -ga BASH_FNAME
     # strip directories
     for ((i = 0; i < $N_BASH; i++)); do
         BASH_FNAME[$i]=${BASH_SOURCE[$i]##*/}
+    done
+
+    # get directories (logical, link names possible)
+    local -ga BASH_DIR
+    for ((i = 0; i < $N_BASH; i++)); do
+        BASH_DIR[$i]="$(dirname "${BASH_SOURCE[$i]}")"
+    done
+
+    # get directories (physical, canonical)
+    local -ga BASH_CANON_DIR
+    for ((i = 0; i < $N_BASH; i++)); do
+        BASH_CANON_DIR[$i]="$(dirname "${BASH_CANON[$i]}")"
     done
 
     # print call stack
@@ -226,18 +238,6 @@ function print_stack() {
         echo
     fi
 
-    # get directories
-    local -ga BASH_DIR
-    for ((i = 0; i < $N_BASH; i++)); do
-        BASH_DIR[$i]="$(dirname "${BASH_SOURCE[$i]}")"
-    done
-
-    # get directories
-    local -ga BASH_LINK_DIR
-    for ((i = 0; i < $N_BASH; i++)); do
-        BASH_LINK_DIR[$i]="$(dirname "${BASH_LINK[$i]}")"
-    done
-
     (
         for ((i = 0; i < $N_STACK ; i++)); do
             if [ $i == 0 ]; then
@@ -249,12 +249,12 @@ function print_stack() {
             # print stack element
             echo "$j:$i:${FUNCNAME[i]}:${BASH_DIR[i]}:${BASH_FNAME[i]}:${BASH_LINENO[i]}"
             # check if source is linked
-            if [[ "${BASH_SOURCE[$i]}" != "${BASH_LINK[$i]}" ]] && [ $DEBUG -gt 0 ]; then
+            if [[ "${BASH_SOURCE[$i]}" != "${BASH_CANON[$i]}" ]] && [ $DEBUG -gt 0 ]; then
                 # set color
                 ((idx++))
                 echo -ne "${dcolor[idx]}"
                 # print link
-                echo -ne "$j:$i:${FUNCNAME[i]}:${BASH_LINK_DIR[i]}:${BASH_LINK[i]##*/}:${BASH_LINENO[i]}"
+                echo -ne "$j:$i:${FUNCNAME[i]}:${BASH_CANON_DIR[i]}:${BASH_CANON[i]##*/}:${BASH_LINENO[i]}"
                 # reset color
                 ((idx--))
                 echo -e "${dcolor[idx]}"
@@ -287,19 +287,19 @@ function print_stack_devel() {
             called_by=$(ps -o comm= $PPID)
             echo "0:+${BASH_SOURCE[0]}+invoked by+${called_by}"
         fi
-    ) | column -t -s + -o " " | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
+    ) | column -t -s + -o " " | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_CANON[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
 
     echo "${TAB}list of invocations (canonicalized):"
     (
         if [ $N_BASH -gt 1 ]; then
             for ((i = 1; i < $N_BASH; i++)); do
-                vecho "$((i - 1)):+${BASH_LINK[$((i - 1))]}+invoked by+${BASH_LINK[$i]}"
+                vecho "$((i - 1)):+${BASH_CANON[$((i - 1))]}+invoked by+${BASH_CANON[$i]}"
             done
         else
             called_by=$(ps -o comm= $PPID)
-            echo "0:+${BASH_LINK[0]}+invoked by+${called_by}"
+            echo "0:+${BASH_CANON[0]}+invoked by+${called_by}"
         fi
-    ) | column -t -s + -o " " | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_LINK[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
+    ) | column -t -s + -o " " | sed "s,${BASH_SOURCE[0]},\x1b[1;36m&\x1b[0m,;s,${BASH_CANON[0]},\x1b[0;33m&\x1b[0m,;s/^/${TAB}${fTAB}/"
 
     if [ $N_BASH -gt 1 ]; then
         echo "${TAB}invoking source source:"
