@@ -231,6 +231,11 @@ function print_exit() {
     fi
 
     print_done
+
+    # reset shell options before returning to shell
+    if [[ "$-" == *u* ]]; then
+        set +u
+    fi
 }
 
 function print_return() {
@@ -281,6 +286,10 @@ function print_return() {
     fi
 
     print_done
+    # reset shell options before returning to shell
+    if [[ "$-" == *u* ]]; then
+        set +u
+    fi
 }
 
 function print_int() {
@@ -473,6 +482,11 @@ function print_error() {
     fi
     echo -e "${spx} ${GRAY}RETVAL=${ERR_RETVAL}${RESET}"
     hline
+    # reset shell options before returning to shell
+    if [[ "$-" == *u* ]]; then
+        set +u
+    fi
+
 }
 
 # -----------------------------------------------------------------------------------------------
@@ -502,6 +516,10 @@ function test_traps() {
     set_exit ${localDEBUG}
     echo "traps: "
     trap -p
+
+    if [[ "$-" == *u* ]]; then
+        set +u
+    fi
 }
 
 function print_traps() {
