@@ -117,7 +117,8 @@ function load_libs() {
                        fmt \
                        colors \
                        stack \
-                       dbg
+                       dbg \
+                       temp
     do
         # use the canonical (physical) source directory for reference; this is important if sourcing
         # this file directly from shell
