@@ -523,7 +523,7 @@ function print_traps() {
     if [ -z "$(trap -p)" ]; then
         ddecho -e "${TAB}none"
     else
-        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap\)/\n${TAB}\1/g"
+        ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap --\)/\n${TAB}\1/g"
         start_new_line
     fi
     ddecho -ne ${RESET}
@@ -591,7 +591,7 @@ check_traps_clear() {
         local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
     fi
     # print summary
-    if [ ${#FUNCNAME[@]} -gt 1 ]; then 
+    if [ ${#FUNCNAME[@]} -gt 1 ]; then
         ddecho -n "${TAB}on ${FUNCNAME[1]} return, "
     fi
     print_traps
