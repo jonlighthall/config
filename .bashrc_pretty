@@ -37,6 +37,14 @@ if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
     echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
 fi
 
+
+# This function defines and exports:
+#   N_BASH - the size of the execution stack; position source in stack
+#   src_name - canonical source file name
+#   src_base - short source file name
+#   src_dir_phys - canonical/physical source file path
+#   src_dir_logi - logical source file path (link name, if applicable)
+
 function get_source() {
     # get the length of the execution stack
     N_BASH=${#BASH_SOURCE[@]}
@@ -70,6 +78,7 @@ function get_source() {
     src_dir_logi=$(dirname "${BASH_SOURCE[${FUNC_LEV}]}")
 }
 
+# load or re-load libraries and reset TAB and DEBUG
 function load_libs() {
     # assign NULL to TAB if undefined
     TAB=${TAB=''}
