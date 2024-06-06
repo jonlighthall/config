@@ -37,7 +37,7 @@ if [ -f $hist_file ]; then
     echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from ${HOST_NAME}" >> $hist_file
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
-	vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+	vecho -e "${GOOD}OK${RESET}"
     else
 	if [ "${VB}" = true ]; then
 	    echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
@@ -60,7 +60,7 @@ if [ -f $fname ] ; then
     source $fname
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
-	vecho -e "${TAB}$fname ${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+	vecho -e "${TAB}$fname ${GOOD}OK${RESET}"
     else
 	echo -e "${TAB}$fname ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     fi
