@@ -133,8 +133,8 @@ function set_tab_shell() {
 
     if [ $N_BASH -ne $N_SHL ]; then
         fecho -e "${fTAB}${GRH}shell/stack mis-match${RESET}"
-        fecho "${fTAB}increasing level..."
-        ((++N_TAB))
+        #fecho "${fTAB}increasing level..."
+        #((++N_TAB))
         fecho "${fTAB}BASH indent $N_TAB tabs"
     fi
     
