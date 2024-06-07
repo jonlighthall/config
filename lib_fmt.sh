@@ -457,7 +457,7 @@ function do_cmd_script() {
 
     # reset formatting
     unset_color
-   
+
     return $RETVAL
 }
 
@@ -517,9 +517,11 @@ function do_cmd_stdbuf() {
     fi
 
     # remove temporary file
-    if [ -f ${temp_file} ]; then
-        rm ${temp_file}
-    fi
+    for log in stdbuf*; do
+        if [ -f $log ]; then
+            rm $log
+        fi
+    done
 
     # reset formatting
     unset_color
