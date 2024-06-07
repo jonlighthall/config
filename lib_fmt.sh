@@ -291,6 +291,10 @@ function extract_color() {
     decho -e "${RESET}"
     dtab
 
+    # reset shell options before returning to shell
+    if [[ "$-" == *u* ]]; then
+        set +u
+    fi
 }
 
 function define_cr() {

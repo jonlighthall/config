@@ -127,7 +127,7 @@ function set_tab_shell() {
     # since this is a function, reduce N_SHL by one
     ((N_TAB--))
     fecho "${fTAB}SHLVL indent $N_TAB tabs"
-    
+
     # get the lenght of the execution stack
     fecho "getting length of stack..."
     [ $funcDEBUG -gt 0 ] && print_stack
@@ -143,7 +143,7 @@ function set_tab_shell() {
         #((++N_TAB))
         fecho "${fTAB}BASH indent $N_TAB tabs"
     fi
-    
+
     # set tab
     itab $N_TAB
     strip_pretty tab "$TAB"
@@ -185,10 +185,10 @@ function dtab() {
         fecho "setting TAB..."
         export TAB=
     fi
-    
+
     # define increment
     set_ftab
-    
+
     # determine how many iteration to run
     local -i N
     if [ $# -eq 0 ]; then
@@ -227,4 +227,10 @@ function print_tab() {
 
     # print size of TAB
     echo -e "${TAB}TAB = ${SPACE}${TAB}${RESET} length $i"
+
+    # reset shell options before returning to shell
+    if [[ "$-" == *u* ]]; then
+        set +u
+    fi
+
 }

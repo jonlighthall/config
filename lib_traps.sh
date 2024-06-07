@@ -139,6 +139,21 @@ function reset_shell() {
     dtab
 }
 
+function safe_shell() {    
+    local -i DEBUG=1
+
+    decho "${TAB}shell options: $-"
+    decho -n "${TAB}resetting... "
+    for opt in e u; do
+        if [[ "$-" == *$opt* ]]; then
+            set +$opt
+        fi
+    done
+    decho "done"
+    echo "${TAB}shell options: $-"
+
+}
+
 # -----------------------------------------------------------------------------------------------
 # Functions for print EXIT, RETURN, and INT (non-ERR) status
 # -----------------------------------------------------------------------------------------------
@@ -233,9 +248,7 @@ function print_exit() {
     print_done
 
     # reset shell options before returning to shell
-    if [[ "$-" == *u* ]]; then
-        set +u
-    fi
+    [[ "$-" == *u* ]] && set +u
 }
 
 function print_return() {
@@ -650,6 +663,7 @@ function set_traps() {
     # set shell options
     dddecho -n "${TAB}setting shell options... "
     # trace ERR (subshells inherit ERR trap from shell)
+    # -E  If set, the ERR trap is inherited by shell functions.
     set -E
     dddecho "done"
     dddecho "${TAB}$-"

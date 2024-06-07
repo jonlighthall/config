@@ -141,6 +141,9 @@ function find_func_line() {
 }
 
 function this_line() {
+    set -u
+    export TAB=${TAB-}
+
     # DEBUG = 0 print line in file only
     # DEBUG = 1 print calling function
     # DEBUG = 2 print calling function line def
@@ -174,6 +177,7 @@ function this_line() {
         # get calling function
         lev=1
     fi
+
     ddecho -n "${TAB}"
     ddecho -n "FUNCNAME[$lev] = "
 
@@ -226,8 +230,9 @@ function this_line() {
         ddecho -n "defined on line $line_def"
         dddecho -n ", function line $get_func_line"
     fi
-
     echo -e ${RESET}
+
+    [[ "$-" == *u* ]] && set +u
     return 0
 }
 
@@ -518,6 +523,7 @@ function print_debug() {
         eval "${fun_name}() { xecho \"\$@\"; }"
     fi
     $fun_name "${TAB}DEBUG = $DEBUG"
+    [[ "$-" == *u* ]] && set +u
 }
 
 function cdb() {
@@ -586,6 +592,7 @@ function idb() {
         start_new_line
         print_debug
     fi
+    [[ "$-" == *u* ]] && set +u
 }
 
 function ddb() {
@@ -656,6 +663,7 @@ function ddb() {
         start_new_line
         print_debug
     fi
+    [[ "$-" == *u* ]] && set +u
 }
 
 function print_() {
@@ -811,7 +819,7 @@ function print_() {
         fi
         [ ${DEBUG:-0} -gt 0 ] && print_tab
     fi
-
+    [[ "$-" == *u* ]] && set +u
 }
 #echo -e "${TAB}${GRH}${INVERT}hello${RESET} ${GRF}${BASH_SOURCE##*/}${GRS}:${GRL}$LINENO${GRS}: ${GRH}echo()${RESET} ${dcolor[7]}${FUNCNAME}()${RESET}" >&2
 
