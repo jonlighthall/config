@@ -277,12 +277,7 @@ function print_return() {
 
     echo -en "${TAB}${YELLOW}\E[7m RETURN ${RESET}"
     if [ ! -z ${RETURN_RETVAL:-dummy} ]; then
-        echo -en " ${GRAY}RETVAL=${RETURN_RETVAL}${RESET}"
-    fi
-    if [ ${N_FUNCs} -gt 1 ]; then
-        echo " ${FUNCNAME[1]##*/}"
-    else
-        echo " ${BASH_SOURCE[0]##*/}"
+        echo -en " ${GRAY}RETVAL=${RETURN_RETVAL}${RESET} "
     fi
 
     print_done
@@ -677,27 +672,52 @@ function set_exit() {
     else
         local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
     fi
+    # manual
+    #DEBUG=1
 
     [ $DEBUG -gt 0 ] && start_new_line
     decho -e "${TAB}${ORANGE}\E[7mset exit${RESET}"
     itab
 
-    dddecho "${TAB}$-"
+    get_run_type
+
     # set shell options
-    dddecho -n "${TAB}setting shell options... "
-    # trace ERR (subshells inherit ERR trap from shell)
-    set -E
-    set -T
-    dddecho "done"
-    dddecho "${TAB}$-"
+    decho "${TAB}$-"
+    decho -n "${TAB}setting shell options... "
+    if [[ "$-" == *u* ]]; then
+        set +u
+    fi
 
-    dddecho -n "${TAB}setting traps... "
-    trap 'print_exit $?; trap - EXIT' EXIT
-    trap 'print_return $?; trap - RETURN' RETURN
-    dddecho "done"
+    if [[ "${RUN_TYPE}" =~ "sourcing" ]]; then
+        decho source
 
-    check_traps_set
-    dtab
+        # set shell options
+
+        set +T
+        decho "done"
+        decho "${TAB}$-"
+
+        dddecho -n "${TAB}setting traps... "
+        trap 'print_return $?; trap - RETURN' RETURN
+        dddecho "done"
+        dtab
+        return 0
+
+    else
+        decho "not sourced"
+
+        # trace ERR (subshells inherit ERR trap from shell)
+        set -E
+        decho "done"
+        decho "${TAB}$-"
+
+        decho -n "${TAB}setting traps... "
+        trap 'print_exit $?; trap - EXIT' EXIT
+        decho "done"
+        dtab
+        exit 0
+    fi
+
 }
 
 # unset ERR and EXIT traps, saving current values
