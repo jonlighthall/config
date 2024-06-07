@@ -662,12 +662,15 @@ function print_pretty_status() {
     else
         local -i N_BASH=${#BASH_SOURCE[@]}
         local cmd
+        local -i lev
         if [ $N_BASH -eq 2 ]; then
             cmd=echo
+            lev=1
         else
             cmd=decho
+            lev=0
         fi
-        $cmd "${TAB}"$(print_pretty "${BASH_SOURCE##*/} reloaded")
+        $cmd "${TAB}"$(print_pretty "${BASH_SOURCE[lev]##*/} reloaded")
     fi
 }
 
