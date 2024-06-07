@@ -44,7 +44,7 @@ else
 fi
 
 config_dir=${HOME}/config
-# load utility functions
+# load bash utilities
 fpretty=${config_dir}/.bashrc_pretty
 if [ -e $fpretty ]; then
     if [ "${VB}" = true ]; then
@@ -65,20 +65,14 @@ if [ -e $fpretty ]; then
 else
     echo "${TAB}$fname not found"
     set +eu
-fi    
+fi
 
 if [ "${VB}" = true ]; then
-    # determine if being sourced or executed
-    if (return 0 2>/dev/null); then
-        RUN_TYPE="sourcing"
-    else
-        RUN_TYPE="executing"
-    fi    
     print_source
-    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then    
+    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
         print_stack
     fi
-    decho -e "${TAB}verbose bash printing is... ${GOOD}$VB${RESET}"
+    decho -e "${TAB}verbose bash printing is... $TRUE"
 fi
 
 # system dependencies
@@ -155,4 +149,3 @@ cd ${config_dir}
 print_remotes
 # return to starting directory
 cd "$start_dir"
-
