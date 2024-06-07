@@ -7,13 +7,14 @@ function test_this_line() {
 
 function test_that_line() {
     # print file line
+    echo "THIS FUNCTION IS DEFINED ON LINE 8"
     this_line "here"
     hello
-    this_line "this is line 12"
+    this_line "this is FILE line 13, FUNCTION line 5"
     hello
     this_line
     hello
-    this_line "this is line 16"
+    this_line "this is line 17"
     this_line "there"
     if [[ "$-" == *u* ]]; then
         set +u
