@@ -30,8 +30,8 @@ function get_curpos() {
     # check if output is being redirected
     if [ ! -t 1 ] ; then
         # stdout isn't a terminal
-        echo "${FUNCNAME}: output is NOT terminal" >&2
-        echo "...then how are you seeing this?" >&2
+        fecho "${FUNCNAME}: output is NOT terminal" >&2
+        fecho "...then how are you seeing this?" >&2
 
         # output values to parent
         if [ $# -gt 0 ]; then
@@ -43,7 +43,7 @@ function get_curpos() {
             local -n y_out=$2
             y_out=0
         fi
-        echo "goodbye..." >&2
+        fecho "goodbye..." >&2
         dtab
         return 0
     fi
