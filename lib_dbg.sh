@@ -173,32 +173,35 @@ function this_line() {
 
         # get calling function
         lev=1
-
     fi
-    decho -n "${TAB}"
+    ddecho -n "${TAB}"
     ddecho -n "FUNCNAME[$lev] = "
-    local get_func=${FUNCNAME[lev]}
-    decho -n "$get_func() "
 
-    # get line definition
+    # get calling function name
+    local get_func=${FUNCNAME[lev]}
+    ddecho -n "$get_func() "
+
+    # get calling function definition line
     local -i line_def=$(find_func_line "${get_func}" "${BASH_SOURCE[lev]}" 2>/dev/null);
     ddecho -n "defined on line $line_def "
 
-    # get source file
+    # get calling function source file
     local get_bash=${BASH_SOURCE[lev]##*/}
-    decho -n "in file ${get_bash}"
+    ddecho -n "in file ${get_bash}"
 
-    # get line in function
+    # get line in calling function where this tunction was called
     local -i get_func_line=${BASH_LINENO[0]}
-    dddecho -n ", function line $get_func_line"
 
-    decho
-    decho -n "${TAB}${this_func}() called by $get_func() "
+    # print this function and calling function
+    ddecho
+    ddecho -n "${TAB}${this_func}() called by "
+    dddecho -n "line $get_func_line of "
+    ddecho -n "$get_func() "
 
-    # get line in file
+    # get line in calling function source file
     local -i get_file_line=$((${line_def}+${get_func_line}))
-    decho -n "on line $get_file_line of ${get_bash}"
-    decho
+    ddecho -n "on line $get_file_line of ${get_bash}"
+    ddecho
 
     if $do_grep; then
         # print grep-like match
@@ -208,16 +211,20 @@ function this_line() {
         else
             echo -en "${INVERT}$@${NORMAL}"
         fi
-        decho -n " called by ${get_func}() "
+        decho -n " called by "
+        dddecho -n "line $get_func_line of "
+        decho -n "${get_func}() "
         ddecho -n "defined on line $line_def"
-        dddecho -n ", function line $get_func_line"
+
     else
         # print argument
         start_new_line
         in_line "$@"
         # print the line number where THIS function was called in the PARENT function
         [ $DEBUG -gt 0 ] && echo -n "${get_func}() "
-        echo -en "${fcol}on line $get_file_line in ${get_bash}"
+        echo -en "${fcol}on line $get_file_line in ${get_bash} "
+        ddecho -n "defined on line $line_def"
+        dddecho -n ", function line $get_func_line"
     fi
 
     echo -e ${RESET}
