@@ -140,6 +140,32 @@ function find_func_line() {
     echo $lin
 }
 
+function get_caller() {
+    local -i lev
+    if [ $# -eq 0 ]; then
+        lev=2
+    else
+        lev=$1
+        ((--lev))
+    fi
+
+    this_func=${FUNCNAME[lev-1]}
+    # get line definition
+    this_def=$(find_func_line "${this_func}" "${BASH_SOURCE[lev-1]}" 2>/dev/null);
+    this_bash=${BASH_SOURCE[lev-1]##*/}
+
+    # get calling function name
+    get_func=${FUNCNAME[lev]}
+    # get calling function definition line
+    line_def=$(find_func_line "${get_func}" "${BASH_SOURCE[lev]}" 2>/dev/null);
+    # get calling function source file
+    get_bash=${BASH_SOURCE[lev]##*/}
+    # get line in calling function where this tunction was called
+    get_func_line=${BASH_LINENO[lev]}
+    # get line in calling function source file
+    get_file_line=$((${line_def}+${get_func_line}))
+}
+
 function this_line() {
     set -u
     export TAB=${TAB-}
@@ -150,70 +176,53 @@ function this_line() {
     # DEBUG = 3 print calling function line
 
     # set local debug level
-    local -i DEBUG=3
+    local -i DEBUG=${DEBUG:-0}
+    # manual
+    DEBUG=0
 
     local do_grep=true;
     local do_before=true;
-    local do_extra=false;
+    local do_extra=true;
+    local do_defs=false;
+    local do_invo=false;
 
     # set function color
     set_fcol
 
-    # get this function
-    local -i lev=0
-    local this_func=${FUNCNAME[lev]}
-    # get line definition
-    local -i this_def=$(find_func_line "${this_func}" "${BASH_SOURCE[lev]}" 2>/dev/null);
-    local this_bash=${BASH_SOURCE[lev]##*/}
+    local -i N_STACK=${#FUNCNAME[@]}
 
-    if [ ${#FUNCNAME[@]} -gt 1 ]; then
-        if [ $DEBUG -gt 1 ] && [ $do_extra = true ]; then
-            echo -en "${GRAY}"
-            echo -en "${TAB}FUNCNAME[$lev] = "
-            echo -en "$this_func() "
-            echo -en "defined on line $this_def "
-            echo -e "in file ${this_bash}"
-            echo -en "$RESET"
-        fi
-
-        # get calling function
-        lev=1
+    if $do_defs; then
+        print_stack
+        for ((lev = 0; lev < $N_STACK ; lev++)); do
+            get_caller $lev
+            # print this function definition line
+            ddecho -n "${TAB}"
+            ddecho -n "FUNCNAME[$lev] = "
+            ddecho -n "$get_func() "
+            ddecho -n "defined on line $line_def "
+            ddecho -n "in file ${get_bash}"
+            ddecho
+        done
+    fi
+    if $do_invo; then
+        for ((lev = 1; lev < $N_STACK ; lev++)); do
+            get_caller $lev
+            # print calling function line in source file
+            ddecho -n "${TAB}${this_func}() called by "
+            dddecho -n "line $get_func_line of "
+            ddecho -n "$get_func() "
+            ddecho -n "on line $get_file_line of ${get_bash}"
+            ddecho
+        done
     fi
 
-    # get calling function name
-    local get_func=${FUNCNAME[lev]}
-    # get calling function definition line
-    local -i line_def=$(find_func_line "${get_func}" "${BASH_SOURCE[lev]}" 2>/dev/null);
-    # get calling function source file
-    local get_bash=${BASH_SOURCE[lev]##*/}
-    # get line in calling function where this tunction was called
-    local -i get_func_line=${BASH_LINENO[0]}
-    # get line in calling function source file
-    local -i get_file_line=$((${line_def}+${get_func_line}))
-
-    if [ $do_extra = true ]; then
-        # print this function definition line
-        ddecho -n "${TAB}"
-        ddecho -n "FUNCNAME[$lev] = "
-        ddecho -n "$get_func() "
-        ddecho -n "defined on line $line_def "
-        ddecho -n "in file ${get_bash}"
-        ddecho
-
-        # print calling function line in source file
-        ddecho -n "${TAB}${this_func}() called by "
-        dddecho -n "line $get_func_line of "
-        ddecho -n "$get_func() "
-        ddecho -n "on line $get_file_line of ${get_bash}"
-        ddecho
-    fi
-
+    get_caller
     if $do_grep; then
         # print grep-like match
         echo -en "${TAB}"
-        [ $do_before = true ] && echo -en "${GRH}${INVERT}$@${NORMAL} "
+        [[ ! -z "$@" ]] && [ $do_before = true ] && echo -en "${GRH}${INVERT}$@${NORMAL} "
         echo -en "${GRF}${get_bash}${GRS}:${GRL}${get_file_line}${GRS}: ${GRH}"
-        if [ -z "$@" ] ||  [ $do_before = true ]; then
+        if [[ -z "$@" ]] ||  [ $do_before = true ]; then
             echo -en "${this_func}() "
         else
             echo -en "${INVERT}$@${NORMAL} "
@@ -276,6 +285,7 @@ function lecho() {
     line_def=$(find_func_line "${FUNCNAME}" "${BASH_SOURCE}" 2>/dev/null);
 
     if [ $N_BASH -eq 1 ]; then
+        this_line
         in_line "$@"
         echo -e "${FUNCNAME}() $(lec_mes)${BASH_LINENO}${fcol} from ${BASH##*/}"
         ddecho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
@@ -302,6 +312,7 @@ function lecho() {
 
     if [[ "${func}" == "main" ]] || [[ "${func}" == "source" ]]; then
         # the function is call from bash
+        this_line
         in_line "$@"
         echo -e "${FUNCNAME}() $(lec_mes)${BASH_LINENO[(($N_BASH-2))]}${fcol} in file ${YELLOW}${BASH_SOURCE[(($N_BASH-1))]##*/}${fcol}"
         ddecho "exiting ${FUNCNAME} on line ${LINENO}"
@@ -316,6 +327,7 @@ function lecho() {
         ddecho "${TAB}BASH_LINENO refers to file"
         local -i call_line=$func_line
         # print file line
+        this_line
         in_line "$@"
         echo -en "${FUNCNAME}() $(lec_mes)${call_line}${fcol} "
         echo -e "in file ${fcol}${YELLOW}${sour_fil}${fcol}"
@@ -325,6 +337,7 @@ function lecho() {
         # add the line where to the function is defined within the file and the line within the function
         local -i call_line=$(($line_func_def + $func_line))
         # print file line
+        this_line "360"
         in_line "$@"
         echo -n "${FUNCNAME}() $(lec_mes)${call_line} "
         echo -e "in file ${YELLOW}${sour_fil}${fcol}"
@@ -378,6 +391,7 @@ function plecho() {
     line_def=$(find_func_line "${FUNCNAME}" "${BASH_SOURCE}" 2>/dev/null);
 
     if [ $N_BASH -eq 1 ]; then
+        this_line
         in_line "$@"
         echo -e "${FUNCNAME}() $(lec_mes)${BASH_LINENO}${RESET} from ${BASH##*/}"
         ddecho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
@@ -433,11 +447,13 @@ function plecho() {
         ddecho -e "${TAB}called by ${SHELL##*/}"
         ddecho "${TAB}N_BASH = ${N_BASH}"
         ddecho "${TAB}function level = $func_lev"
+        this_line
         in_line "$@"
         echo -e "${FUNCNAME[(($func_lev-1))]}() $(lec_mes)${BASH_LINENO[(($func_lev-1))]}${RESET} in file ${YELLOW}${BASH_SOURCE[$func_lev]##*/}${RESET}"
         itab
         ((--func_lev))
         ddecho -e "${TAB}${BASH_SOURCE[$func_lev]##*/}${RESET} called by ${SHELL##*/}"
+        this_line
         ddecho -e "${TAB}${FUNCNAME[(($func_lev-1))]}() $(lec_mes)${BASH_LINENO[(($func_lev-1))]}${RESET} in file ${YELLOW}${BASH_SOURCE[$func_lev]##*/}${RESET}"
 
         decho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
@@ -453,6 +469,7 @@ function plecho() {
         ddecho "${TAB}BASH_LINENO refers to file"
         local -i call_line=$func_line
         # print file line
+        this_line "$@"
         in_line "$@"
         echo -en "${FUNCNAME}() $(lec_mes)${call_line}${RESET} "
         echo -e "in file ${RESET}${YELLOW}${sour_fil}${RESET}"
@@ -462,6 +479,7 @@ function plecho() {
         # add the line where to the function is defined within the file and the line within the function
         local -i call_line=$(($line_func_def -1 + $func_line))
         # print file line
+        this_line
         in_line "$@"
         echo -n "${FUNCNAME}() $(lec_mes)${call_line} "
         echo -e "in file ${YELLOW}${sour_fil}${RESET}"
@@ -824,6 +842,3 @@ function print_() {
     fi
     [[ "$-" == *u* ]] && set +u
 }
-#echo -e "${TAB}${GRH}${INVERT}hello${RESET} ${GRF}${BASH_SOURCE##*/}${GRS}:${GRL}$LINENO${GRS}: ${GRH}echo()${RESET} ${dcolor[7]}${FUNCNAME}()${RESET}" >&2
-
-#echo -e "${TAB}${GRH}${INVERT}hello${RESET} ${GRF}${BASH_SOURCE##*/}${GRS}:${GRL}$LINENO${GRS}: ${GRH}echo()${RESET}" >&2
