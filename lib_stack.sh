@@ -11,14 +11,56 @@
 #
 # -----------------------------------------------------------------------------------------------
 
+function get_run_type() {
+    local -i DEBUG=0
+
+    local -i N_BOTTOM=$((${#FUNCNAME[@]} - 1))
+
+    ddecho "N_BOTTOM = $N_BOTTOM"
+    decho "FUNCNAME[$N_BOTTOM] = ${FUNCNAME[$N_BOTTOM]}"
+
+    if [[ "${FUNCNAME[$N_BOTTOM]}" =~ "main" ]]; then
+        decho "bottom of stack is main"
+        decho "root invocation ${BASH_SOURCE[$N_BOTTOM]} is a script"
+        RUN_TYPE="${VALID}${INVERT}executing${RESET}"
+        export IS_SOURCED=false
+    else
+        if [[ "${FUNCNAME[$N_BOTTOM]}" =~ "source" ]]; then
+            decho "bottom of stack is source"
+            decho "root invocation ${BASH_SOURCE[$N_BOTTOM]} is... sourced?"
+        else
+            decho "bottom of stack is not main: ${FUNCNAME[$N_BOTTOM]}"
+            decho "root invocation ${BASH_SOURCE[$N_BOTTOM]} is a shell function"
+        fi
+        RUN_TYPE="${GRH}${INVERT}sourcing${RESET}"
+        export IS_SOURCED=true
+    fi
+
+    # set default value
+    RUN_TYPE=${RUN_TYPE:-"running"}
+
+}
+
 function print_source() {
+    local -i DEBUG
+    # set local debug value
+    if [ $# -eq 1 ]; then
+        # use argument to manually set DEBUG
+        DEBUG=$1
+    else
+        # substitute default value if DEBUG is unset or null
+        DEBUG=${DEBUG:-2}
+        # set manually
+        DEBUG=0
+    fi
+
     local -i funcDEBUG=$((${DEBUG:-1} - 1))
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     fecho "DEBUG = $DEBUG"
     get_source
 
     # define default run type
-    RUN_TYPE=${RUN_TYPE:-"running"}
+    get_run_type
 
     # set tab
     if [[ "${RUN_TYPE}" =~ "sourcing" ]]; then
@@ -229,6 +271,119 @@ function print_stack() {
     echo -ne "\e[0m"
 }
 
+function get_stack_base() {
+    # set local debug value
+    if [ $# -eq 1 ]; then
+        # use argument to manually set DEBUG
+        local -i DEBUG=$1
+    else
+        # substitute default value if DEBUG is unset or null
+        local -i DEBUG=${DEBUG:-1}
+    fi
+    start_new_line
+    [ $DEBUG -gt 0 ] && (decho -n "${TAB}${FUNCNAME}: "; print_debug | sed 's/^ *//' )
+    # initialize variables
+    unset N_FUNC
+    unset N_BASH
+    unset N_LINE
+
+    # get length of function stack
+    local -gi N_FUNC=${#FUNCNAME[@]}
+    local -gi N_BASH=${#BASH_SOURCE[@]}
+    local -gi N_LINE=${#BASH_LINENO[@]}
+
+
+    if [ ${DEBUG} -gt 0 ]; then
+       # get color index
+       local -i idx
+       dbg2idx $N_BASH idx
+       # set color
+       echo -ne "${dcolor[idx]}"
+
+       # print length of stack
+       echo "${TAB}There are N=$N_FUNC entries in the execution call stack"
+
+       N_STACK=$N_FUNC
+
+       # check that all stacks have the same length
+       if [ $N_FUNC -ne $N_BASH ]; then
+           echo "${TAB}There are N=$N_BASH entries in the source file name stack"
+           if [ $N_BASH -gt $N_STACK ]; then
+               N_STACK=$N_BASH
+           fi
+       fi
+       
+       if [ $N_FUNC -ne $N_LINE ]; then
+           echo "${TAB}There are N=$N_LINE entries in the line number stack"
+       fi
+       
+       if [ $N_FUNC -ne $N_BASH ] || [ $N_FUNC -ne $N_LINE ]; then
+           echo "${TAB}${N_FUNC} functions, ${N_BASH} files, ${N_LINE} lines"
+           if [ $N_LINE -gt $N_STACK ]; then
+               N_STACK=$N_LINE
+           fi
+       fi
+    fi
+
+    local -ga BASH_FNAME
+    # strip directories
+    for ((i = 0; i < $N_BASH; i++)); do
+        BASH_FNAME[$i]=${BASH_SOURCE[$i]##*/}
+    done
+
+    if [ ${DEBUG} -gt 0 ]; then 
+    # get directories (logical, link names possible)
+    local -ga BASH_DIR
+    for ((i = 0; i < $N_BASH; i++)); do
+        BASH_DIR[$i]="$(dirname "${BASH_SOURCE[$i]}")"
+    done
+
+    # print call stack
+    echo "${TAB}call stack:"
+    local -i i
+    itab
+
+    (
+        for ((i = 0; i < $N_STACK ; i++)); do
+            if [ $i == 0 ]; then
+                j="-"
+            else
+                j=$(($i-1))
+            fi
+
+            # print stack element
+            echo "$j:$i:${FUNCNAME[i]}:${BASH_DIR[i]}:${BASH_FNAME[i]}:${BASH_LINENO[i]}"
+            # check if source is linked
+        done
+    ) | column -t -s: -N "index,index,function,directory,source,line no" -R1 | sed "s/^/${TAB}/"
+    fi
+
+    declare -igx N_BOTTOM=$(($N_FUNC - 1))
+    decho "N_BOTTOM = $N_BOTTOM"
+
+    declare -gx F_BOTTOM=${FUNCNAME[$N_BOTTOM]}
+
+    
+    decho "FUNCNAME[$N_BOTTOM] = ${F_BOTTOM}"
+
+    if [[ "${F_BOTTOM}" =~ "main" ]]; then
+        decho "bottom of stack is main"
+        decho "root invocation ${BASH_FNAME[$N_BOTTOM]} is a script"
+    else
+        decho "bottom of stack is not main: ${F_BOTTOM}"
+        decho "root invocation ${BASH_FNAME[$N_BOTTOM]} is a shell function"
+    fi
+
+    if [[ "${F_BOTTOM}" =~ "source" ]]; then
+        decho "bottom of stack is source"
+        decho "root invocation ${BASH_FNAME[$N_BOTTOM]} is... sourced?"
+    fi
+
+    dtab
+    # unset color
+    echo -ne "\e[0m"
+}
+
 # print function stack
 function print_stack_devel() {
     local -ir DEBUG=2
@@ -388,13 +543,13 @@ function print_invo() {
 
     local -i N_BOTTOM=$(($N_FUNC - 1))
     echo "N_BOTTOM = $N_BOTTOM"
-    echo "FUNCNAME[$N_BOTTOM] = ${FUNCNAME[$N_BOTTOM]}"
+    echo "FUNCNAME[$N_BOTTOM] = ${F_BOTTOM}"
 
-    if [[ "${FUNCNAME[$N_BOTTOM]}" =~ "main" ]]; then
+    if [[ "${F_BOTTOM}" =~ "main" ]]; then
         echo "bottom of stack is main"
         echo "root invocation ${BASH_FNAME[$N_BOTTOM]} is a script"
     else
-        echo "bottom of stack is not main: ${FUNCNAME[$N_BOTTOM]}"
+        echo "bottom of stack is not main: ${F_BOTTOM}"
         echo "root invocation ${BASH_FNAME[$N_BOTTOM]} is a shell function"
     fi
 
