@@ -150,7 +150,7 @@ function this_line() {
     # DEBUG = 3 print calling function line
 
     # set local debug level
-    local -i DEBUG=2
+    local -i DEBUG=3
 
     local do_grep=true;
     local do_before=true;
@@ -180,34 +180,33 @@ function this_line() {
         lev=1
     fi
 
-    ddecho -n "${TAB}"
-    ddecho -n "FUNCNAME[$lev] = "
-
     # get calling function name
     local get_func=${FUNCNAME[lev]}
-    ddecho -n "$get_func() "
-
     # get calling function definition line
     local -i line_def=$(find_func_line "${get_func}" "${BASH_SOURCE[lev]}" 2>/dev/null);
-    ddecho -n "defined on line $line_def "
-
     # get calling function source file
     local get_bash=${BASH_SOURCE[lev]##*/}
-    ddecho -n "in file ${get_bash}"
-
     # get line in calling function where this tunction was called
     local -i get_func_line=${BASH_LINENO[0]}
-
-    # print this function and calling function
-    ddecho
-    ddecho -n "${TAB}${this_func}() called by "
-    dddecho -n "line $get_func_line of "
-    ddecho -n "$get_func() "
-
     # get line in calling function source file
     local -i get_file_line=$((${line_def}+${get_func_line}))
-    ddecho -n "on line $get_file_line of ${get_bash}"
-    ddecho
+
+    if [ $do_extra = true ]; then
+        # print this function definition line
+        ddecho -n "${TAB}"
+        ddecho -n "FUNCNAME[$lev] = "
+        ddecho -n "$get_func() "
+        ddecho -n "defined on line $line_def "
+        ddecho -n "in file ${get_bash}"
+        ddecho
+
+        # print calling function line in source file
+        ddecho -n "${TAB}${this_func}() called by "
+        dddecho -n "line $get_func_line of "
+        ddecho -n "$get_func() "
+        ddecho -n "on line $get_file_line of ${get_bash}"
+        ddecho
+    fi
 
     if $do_grep; then
         # print grep-like match
