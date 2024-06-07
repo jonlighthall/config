@@ -6,21 +6,20 @@ function test_this_line() {
 }
 
 function test_that_line() {
-    # print file line
-    echo "${TAB}THIS FUNCTION IS DEFINED ON LINE 8"
-    this_line "here"
-    echo -e "${TAB}${GRH}${INVERT}hello${RESET} ${GRF}${BASH_SOURCE##*/}${GRS}:${GRL}$LINENO${GRS}: ${GRH}echo()${RESET} ${dcolor[7]}${FUNCNAME}()${RESET}" >&2
-
-    echo -e "${TAB}${GRH}${INVERT}hello${RESET} ${GRF}${BASH_SOURCE##*/}${GRS}:${GRL}$LINENO${GRS}: ${GRH}echo()${RESET}" >&2
-    this_line "hello"
-    
-    hello
-    this_line "this is FILE line 13, FUNCTION line 5"
-    hello
-    this_line
-    hello
-    this_line "this is line 17"
-    this_line "there"
+    echo "${TAB}THIS FUNCTION IS DEFINED ON LINE 8"   #1
+    # print file line                                 #2
+    this_line "here"                                  #3
+    # print hard-coded examples                       #4
+    echo -e "${TAB}${GRH}${INVERT}hello${RESET} ${GRF}${BASH_SOURCE##*/}${GRS}:${GRL}$LINENO${GRS}: ${GRH}echo()${RESET} ${dcolor[7]}${FUNCNAME}()${RESET}" >&2 #5
+    echo -e "${TAB}${GRH}${INVERT}hello${RESET} ${GRF}${BASH_SOURCE##*/}${GRS}:${GRL}$LINENO${GRS}: ${GRH}echo()${RESET}" >&2 #6
+    this_line "hello"                                 #7
+    hello                                             #8
+    this_line "this is FILE line 17, FUNCTION line 9" #9
+    hello                                             #10
+    this_line                                         #11
+    hello                                             #12
+    this_line "this is line 21"                       #13
+    this_line "there"                                 #14
     if [[ "$-" == *u* ]]; then
         set +u
     fi
