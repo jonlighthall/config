@@ -98,7 +98,7 @@ function start_new_line() {
     # Turn in-function debugging on/off.
     #DEBUG=1
 
-    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    dddecho -e "${TAB-}${INVERT}${FUNCNAME}${RESET}"
     if [ $DEBUG -ge 3 ]; then
         local -i funcDEBUG=1
     else
