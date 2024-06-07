@@ -141,29 +141,48 @@ function find_func_line() {
 }
 
 function get_caller() {
+    unset this_func
+    unset this_def
+    unset this_bash
+    unset get_func
+    unset line_def
+    unset get_bash
+    unset get_func_line
+    unset get_file_line
+
     local -i lev
     if [ $# -eq 0 ]; then
-        lev=2
+        lev=1
     else
         lev=$1
-        ((--lev))
     fi
 
-    this_func=${FUNCNAME[lev-1]}
-    # get line definition
-    this_def=$(find_func_line "${this_func}" "${BASH_SOURCE[lev-1]}" 2>/dev/null);
-    this_bash=${BASH_SOURCE[lev-1]##*/}
+#print_stack
+    fecho " in lev = $lev"
+    ((++lev))
+    fecho "out lev = $lev"
 
-    # get calling function name
-    get_func=${FUNCNAME[lev]}
-    # get calling function definition line
-    line_def=$(find_func_line "${get_func}" "${BASH_SOURCE[lev]}" 2>/dev/null);
-    # get calling function source file
-    get_bash=${BASH_SOURCE[lev]##*/}
-    # get line in calling function where this tunction was called
-    get_func_line=${BASH_LINENO[lev]}
-    # get line in calling function source file
-    get_file_line=$((${line_def}+${get_func_line}))
+    local -i fN_FUNC=${#FUNCNAME[@]}
+
+    if [ ${fN_FUNC} -ge 1 ]; then
+        this_func=${FUNCNAME[lev-1]}
+        # get line definition
+        this_def=$(find_func_line "${this_func}" "${BASH_SOURCE[lev-1]}" 2>/dev/null);
+        this_bash=${BASH_SOURCE[lev-1]##*/}
+    fi
+
+    if [ ${lev} -lt ${fN_FUNC} ]; then
+        # get calling function name
+        get_func=${FUNCNAME[lev]}
+        # get calling function definition line
+        line_def=$(find_func_line "${get_func}" "${BASH_SOURCE[lev]}" 2>/dev/null);
+        # get calling function source file
+        get_bash=${BASH_SOURCE[lev]##*/}
+        # get line in calling function where this tunction was called
+        get_func_line=${BASH_LINENO[lev-1]}
+        # get line in calling function source file
+        get_file_line=$((${line_def}+${get_func_line}))
+    fi
 }
 
 function this_line() {
@@ -178,22 +197,24 @@ function this_line() {
     # set local debug level
     local -i DEBUG=${DEBUG:-0}
     # manual
-    DEBUG=0
+    DEBUG=3
 
     local do_grep=true;
     local do_before=true;
     local do_extra=true;
-    local do_defs=false;
-    local do_invo=false;
+    local do_defs=true;
+    local do_invo=true;
 
     # set function color
     set_fcol
 
-    local -i N_STACK=${#FUNCNAME[@]}
+    local -ir fN_STACK=${#FUNCNAME[@]}
+    fecho "${TAB}N_STACK = $N_STACK"
 
-    if $do_defs; then
-        print_stack
-        for ((lev = 0; lev < $N_STACK ; lev++)); do
+    if $do_defs && [ $DEBUG -gt 1 ]; then
+
+        for ((lev = 0; lev < $fN_STACK ; lev++)); do
+            fecho $lev
             get_caller $lev
             # print this function definition line
             ddecho -n "${TAB}"
@@ -203,9 +224,11 @@ function this_line() {
             ddecho -n "in file ${get_bash}"
             ddecho
         done
+        fecho "done"
     fi
-    if $do_invo; then
-        for ((lev = 1; lev < $N_STACK ; lev++)); do
+    if $do_invo && [ $DEBUG -gt 1 ] ; then
+        for ((lev = 1; lev < $fN_STACK; lev++)); do
+            fecho "$lev"
             get_caller $lev
             # print calling function line in source file
             ddecho -n "${TAB}${this_func}() called by "
