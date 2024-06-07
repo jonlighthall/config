@@ -43,7 +43,7 @@ vecho() {
 # Arguments:
 #   text to display and echo flags
 
-function fecho() {    
+function fecho() {
     # check if funcDEBUG is defined
     if [ ! -z ${funcDEBUG+dummy} ]; then
         # check if $funcDEBUG is non-zero
@@ -53,10 +53,10 @@ function fecho() {
 
             # fecho() should only be called from other functions, so the length of FUNCNAME
             # should always be 2 or greater. Start with color 0
-            local -ir idx=$(( N_FUNC - 2 ))    
-            
+            local -ir idx=$(( N_FUNC - 2 ))
+
             # set color
-            echo -ne "${TAB}${DIM}${dcolor[$idx]}"
+            echo -ne "${TAB=}${DIM}${dcolor[$idx]}"
 
             # select element of function stack
             local -i fidx
@@ -66,17 +66,16 @@ function fecho() {
             else
 
                 fidx=1
-                
+
                 # check length of function stack
                 if [ ${N_FUNC} -lt 5 ]; then
                     : #fidx=$(( $N_FUNC - 1 ))
-                else                
+                else
                     : #  fidx=$(( $N_FUNC - 5 ))
                     # where does this come from?
                 fi
             fi
 
-            
             echo -n "${FUNCNAME[fidx]}"
             #           echo -n " $fidx of $N_FUNC"
             echo -ne ": \e[0m${dcolor[$idx]}"
@@ -123,7 +122,7 @@ function xecho() {
         if [[ "$@" =~ -[nE]*e[nE]* ]]; then
             echo "$@\e[0m" | sed "s/\x1B\[0m/\x1B[0m${dcolor[idx]}/"
         else
-            echo -n "$@" | sed "s/\x1B\[0m/\x1B[0m${dcolor[idx]}/"            
+            echo -n "$@" | sed "s/\x1B\[0m/\x1B[0m${dcolor[idx]}/"
             echo -ne "\e[0m"
             # check if argument includes newline
             if [[ "$@" =~ -[E]*n[E]* ]]; then
@@ -141,9 +140,9 @@ function decho() {
 }
 
 function ddecho() {
-    xecho "$@"    
+    xecho "$@"
 }
 
 function dddecho() {
-    xecho "$@"    
+    xecho "$@"
 }
