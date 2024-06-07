@@ -37,7 +37,6 @@ if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
     echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
 fi
 
-
 # This function defines and exports:
 #   N_BASH - the size of the execution stack; position source in stack
 #   src_name - canonical source file name
@@ -80,27 +79,28 @@ function get_source() {
 
 # load or re-load libraries and reset TAB and DEBUG
 function load_libs() {
-    # assign NULL to TAB if undefined
-    TAB=${TAB=''}
     get_source
     # if running from bash, reset TAB and DEBUG
     if [ $N_BASH -eq 1 ]; then
+        local did_print=false
         # reset TAB
-        if [ ${#TAB} -gt 0 ]; then
+        if [ -z ${TAB+dummy} ] || [ ${#TAB} -gt 0 ]; then
             if command -v rtab &>/dev/null; then
-                echo "resetting..."
-                local did_print=true
+                [ ${did_print:-false} == false ] && echo "resetting..."
+                did_print=true
                 rtab
                 echo -ne "$fTAB"
                 print_tab
             else
-                TAB=''
+                export TAB=
+                echo -ne "${fTAB:=   }"
+                echo -e "${BOLD}TAB is ${NULL}z"
             fi
         fi
         # reset DEBUG
-        if [ ${DEBUG:=0} -gt 0 ]; then
+        if [ -z ${DEBUG+dummy} ] || [ ${DEBUG:=0} -gt 0 ]  ; then
             if command -v rdb &>/dev/null; then
-                [ ${did_print:-false} ] && echo "resetting..."
+                [ ${did_print:-false} == false ] && echo "resetting..."
                 echo -ne "$fTAB"
                 rdb
             else
