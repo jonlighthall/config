@@ -150,9 +150,11 @@ function this_line() {
     # DEBUG = 3 print calling function line
 
     # set local debug level
-    local -i DEBUG=3
+    local -i DEBUG=2
 
     local do_grep=true;
+    local do_before=true;
+    local do_extra=false;
 
     # set function color
     set_fcol
@@ -165,7 +167,7 @@ function this_line() {
     local this_bash=${BASH_SOURCE[lev]##*/}
 
     if [ ${#FUNCNAME[@]} -gt 1 ]; then
-        if [ $DEBUG -gt 1 ]; then
+        if [ $DEBUG -gt 1 ] && [ $do_extra = true ]; then
             echo -en "${GRAY}"
             echo -en "${TAB}FUNCNAME[$lev] = "
             echo -en "$this_func() "
@@ -209,13 +211,15 @@ function this_line() {
 
     if $do_grep; then
         # print grep-like match
-        echo -en    "${TAB}${GRF}${get_bash}${GRS}:${GRL}${get_file_line}${GRS}: ${GRH}"
-        if [ -z "$@" ]; then
-            echo -en "${this_func}()"
+        echo -en "${TAB}"
+        [ $do_before = true ] && echo -en "${GRH}${INVERT}$@${NORMAL} "
+        echo -en "${GRF}${get_bash}${GRS}:${GRL}${get_file_line}${GRS}: ${GRH}"
+        if [ -z "$@" ] ||  [ $do_before = true ]; then
+            echo -en "${this_func}() "
         else
-            echo -en "${INVERT}$@${NORMAL}"
+            echo -en "${INVERT}$@${NORMAL} "
         fi
-        decho -n " called by "
+        ddecho -n "called by "
         dddecho -n "line $get_func_line of "
         decho -n "${get_func}() "
         ddecho -n "defined on line $line_def"
