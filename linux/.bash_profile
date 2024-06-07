@@ -1,28 +1,54 @@
-# User-dependent .bash_profile for Linux
+# -----------------------------------------------------------------------------------------------
+# User-dependent LOGIN SHELL SETTINGS for Linux
+# -----------------------------------------------------------------------------------------------
+#
+# ~/.bash_profile -> ~/config/linux/.bash_profile
+#
+# Purpose: execute login functions and load system-dependent interactive shell settings.
+#
+# Usage: Executed by bash for interactive login shell sessions.
+#
+# Note: this file must use Unix line endings (LF)!
+#
+# Feb 2017 JCL
+#
+# -----------------------------------------------------------------------------------------------
 
 # If not running interactively, don't do anything
 [[ "$-" != *i* ]] && return
 
-start_time=$(date +%s%N)
+if true; then # added for diff'ing WSL version
 
-# load bash utilities
-fpretty=${HOME}/config/.bashrc_pretty
-if [ -e $fpretty ]; then
-	  source $fpretty    
+    # get starting time in nanoseconds
+    declare -i start_time=$(date +%s%N)
+    clear
+    # -------------------------
+    # set debug level if unset
+    export DEBUG=${DEBUG=0}
+    # -------------------------
+
+    # set "Verbose Bash" for conditional prints
+    export VB=true
+    # clear terminal
+    clear -x
+    if [ ${DEBUG} -gt 0 ]; then
+        export VB=true
+    fi
 fi
 
-# Verbose bash prints?
-export VB=true
+config_dir=${HOME}/config
+# load bash utilities
+fpretty=${config_dir}/.bashrc_pretty
+if [ -e $fpretty ]; then
+	  source $fpretty
+fi
+
 if [ "${VB}" = true ]; then
-    set_tab
-    # print source name at start
-    if (return 0 2>/dev/null); then
-        RUN_TYPE="sourcing"
-    else
-        RUN_TYPE="executing"
-    fi
     print_source
-    echo "${TAB}verbose bash printing is... $VB"
+    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
+        print_stack
+    fi
+    decho -e "${TAB}verbose bash printing is... $TRUE"
 fi
 
 # system dependencies
@@ -34,35 +60,35 @@ vecho -e "${TAB}applying ${SYS_NAME} settings on ${PSHOST}${HOST_NAME}${RESET}"
 hist_file=${HOME}/.bash_history
 vecho -n "${TAB}appending login timestamp to $hist_file... "
 if [ -f $hist_file ]; then
-    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from ${HOST_NAME}" >> $hist_file
+    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from ${HOST_NAME}" >>$hist_file
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
-	vecho -e "${GOOD}OK${RESET}"
+        vecho -e "${GOOD}OK${RESET}"
     else
-	if [ "${VB}" = true ]; then
-	    echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
-	else
-	    echo "echo to $hist_file failed"
-	fi
+        if [ "${VB}" = true ]; then
+            echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+        else
+            echo "echo to $hist_file failed"
+        fi
     fi
 else
     if [ "${VB}" = true ]; then
-	echo "${BAD}NOT FOUND{RESET}"
+        echo "${BAD}NOT FOUND{RESET}"
     else
-	echo "$hist_file not found"
+        echo "$hist_file not found"
     fi
 fi
 
-# source the user's .bashrc if it exists
-fname=${HOME}/config/${SYS_NAME}/.bashrc
-vecho "${TAB}loading $fname... "
-if [ -f $fname ] ; then
+# load system-dependent interactive shell settings
+fname=${config_dir}/${SYS_NAME}/.bashrc
+vecho -e "${TAB}loading $fname... ${RESET}"
+if [ -f $fname ]; then
     source $fname
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
-	vecho -e "${TAB}$fname ${GOOD}OK${RESET}"
+        vecho -e "${TAB}$fname ${GOOD}OK${RESET}"
     else
-	echo -e "${TAB}$fname ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+        echo -e "${TAB}$fname ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     fi
 else
     echo "${TAB}$fname not found"
@@ -70,19 +96,15 @@ fi
 vecho
 # print runtime duration
 if [ "${VB}" = true ]; then
-    TAB=${TAB%$fTAB}
-    echo -n "${TAB}$(basename $BASH_SOURCE) "
-    elap_time=$(($(date +%s%N)-${start_time}))
-    dT=$(bc <<< "scale=3;$elap_time/1000000000")
-    if command -v sec2elap &>/dev/null
-    then
-	bash sec2elap ${dT} | tr -d '\n'
-    else
-    echo -n "elapsed time is ${WHITE}${dT} sec${RESET}"
-    fi
-    echo " on $(date +"%a %b %-d at %-l:%M %p %Z")"
+    # reset tab
+    dtab
+    # print timestamp
+    print_done
+    # print hidden text to force a new line before clearing screen
+    vecho -e "\E[8mhello\E[28m"
 fi
 
+# clear terminal
 clear -x
 
 # show top processes
