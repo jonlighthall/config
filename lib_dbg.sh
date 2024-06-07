@@ -675,12 +675,20 @@ function ddb() {
 
 function print_() {
     set -u
-    funcDEBUG=1
+    local -i DEBUG=0
 
     # this function modifies the value of TAB, so save the value if it is included in the
     # arguments
-    if [[ "$@" =~ "$TAB" ]]; then
-        local TAB_input=$TAB
+    if [[ "$@" =~ "TAB" ]]; then
+        decho -e "${TAB-}${YELLOW}argument contain TAB${RESET}"
+        # check if TAB is set
+        if [ -z ${TAB+dummy} ]; then
+            decho -e "TAB is $UNSET"
+            unset TAB_input
+        else
+            decho "${TAB}TAB is set"
+            local TAB_input=$TAB
+        fi
     fi
 
     # set tab
@@ -721,7 +729,6 @@ function print_() {
     # test inputs
     for VAR in $input; do
         if [ ${DEBUG:-1} -gt 0 ]; then
-            set_tab_shell
             echo -e "${TAB}${BOLD}${VAR}${RESET}"
             itab
         fi
@@ -745,7 +752,7 @@ function print_() {
 
         # check if VAR is unset
         if [ -z ${!VAR+dummy} ]; then
-            echo -e "${TAB}${BOLD}$VAR is ${UNSET}"
+            echo -e "${TAB-}${BOLD}$VAR is ${UNSET}"
             [ ${DEBUG:-1} -gt 0 ] && dtab
             continue
         fi
@@ -809,6 +816,16 @@ function print_() {
 
         [ ${DEBUG:-1} -gt 0 ] && dtab
     done
+
+    if [[ "$@" =~ "TAB" ]]; then
+        decho "${TAB-}resetting tab..."
+        if [ -z ${TAB_input+dummy} ]; then
+            unset TAB
+        else
+            TAB=$TAB_input
+        fi
+        [ ${DEBUG:-0} -gt 0 ] && print_tab
+    fi
 
 }
 #echo -e "${TAB}${GRH}${INVERT}hello${RESET} ${GRF}${BASH_SOURCE##*/}${GRS}:${GRL}$LINENO${GRS}: ${GRH}echo()${RESET} ${dcolor[7]}${FUNCNAME}()${RESET}" >&2
