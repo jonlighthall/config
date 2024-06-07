@@ -43,7 +43,7 @@ function get_curpos() {
             local -n y_out=$2
             y_out=0
         fi
-        echo "goodby..." >&2
+        echo "goodbye..." >&2
         dtab
         return 0
     fi
