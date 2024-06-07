@@ -26,10 +26,9 @@ function test_that_line() {
 }
 
 function test_lecho() {
-    this_line "hello 0"
-    lecho "hello 1"
-    plecho "hello 2"
-
+    this_line "hello 1"
+    lecho "hello 2"
+    plecho "hello 3"
 }
 
 # test parent line echo
