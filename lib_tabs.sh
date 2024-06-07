@@ -100,6 +100,12 @@ function set_tab_shell() {
 
     # get length of TAB
     local -i i=0
+    if [ -z ${TAB+dummy} ]; then
+        fecho -e "TAB is $UNSET"
+        fecho "setting tab..."
+        export TAB=
+    fi
+
     local tab
     strip_pretty tab "$TAB"
     i=${#tab}
@@ -172,7 +178,17 @@ function itab() {
 
 # decrement tab
 function dtab() {
+    local -i funcDEBUG=0
+    # check if TAB is unset
+    if [ -z ${TAB:+dummy} ]; then
+        fecho -e "${BOLD}TAB is ${UNSET}"
+        fecho "setting TAB..."
+        export TAB=
+    fi
+    
+    # define increment
     set_ftab
+    
     # determine how many iteration to run
     local -i N
     if [ $# -eq 0 ]; then
