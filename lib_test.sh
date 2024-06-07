@@ -9,6 +9,12 @@ function test_that_line() {
     # print file line
     echo "THIS FUNCTION IS DEFINED ON LINE 8"
     this_line "here"
+    echo -e "${TAB}${GRH}${INVERT}hello${RESET} ${GRF}${BASH_SOURCE##*/}${GRS}:${GRL}$LINENO${GRS}: ${GRH}echo()${RESET} ${dcolor[7]}${FUNCNAME}()${RESET}" >&2
+
+    echo -e "${TAB}${GRH}${INVERT}hello${RESET} ${GRF}${BASH_SOURCE##*/}${GRS}:${GRL}$LINENO${GRS}: ${GRH}echo()${RESET}" >&2
+    this_line "hello"
+
+    
     hello
     this_line "this is FILE line 13, FUNCTION line 5"
     hello
