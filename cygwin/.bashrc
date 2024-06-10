@@ -14,12 +14,6 @@ else
 fi
 
 if [ "${VB}" = true ]; then
-    # determine if being sourced or executed
-    if (return 0 2>/dev/null); then
-        RUN_TYPE="sourcing"
-    else
-        RUN_TYPE="executing"
-    fi
     print_source
 fi
 

@@ -21,12 +21,6 @@ else
             source $fpretty
             print_ribbon
         fi
-        # determine if being sourced or executed
-        if (return 0 2>/dev/null); then
-            RUN_TYPE="sourcing"
-        else
-            RUN_TYPE="executing"
-        fi
         print_source
     fi
 fi

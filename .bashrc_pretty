@@ -175,18 +175,10 @@ fi
 
 # check if running interactively
 if [[ "$-" == *i* ]]; then
-    #set tab
     set_tab
     decho "${TAB}${BASH_SOURCE##*/}: DEBUG = $DEBUG"
     #print_ribbon
     #print_bar
-
-    # determine if script is being sourced or executed
-    if (return 0 2>/dev/null); then
-        RUN_TYPE="sourcing"
-    else
-        RUN_TYPE="executing"
-    fi
     print_source
 fi
 
