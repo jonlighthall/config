@@ -141,6 +141,9 @@ function find_func_line() {
 }
 
 function get_caller() {
+    local -i funcDEBUG=0
+
+    # clear variables
     unset this_func
     unset this_def
     unset this_bash
@@ -150,6 +153,7 @@ function get_caller() {
     unset get_func_line
     unset get_file_line
 
+    # define stack level number
     local -i lev
     if [ $# -eq 0 ]; then
         lev=1
@@ -159,30 +163,43 @@ function get_caller() {
 
     #print_stack
     fecho " in lev = $lev"
+    # increment level so that index matches that of calling function
     ((++lev))
     fecho "out lev = $lev"
 
     local -i fN_FUNC=${#FUNCNAME[@]}
-
+    fecho " N_FUNC = $fN_FUNC"
+    local -i this_lev=$((lev-1))
+    
+    # define stack level for "this" function; actually the calling function (default) or the
+    # function one level below the target stack level (argument)   
     if [ ${fN_FUNC} -ge 1 ]; then
-        this_func=${FUNCNAME[lev-1]}
+        # get function
+        this_func=${FUNCNAME[this_lev]}
+        # get function source
+        this_source=${BASH_SOURCE[this_lev]}
         # get line definition
-        this_def=$(find_func_line "${this_func}" "${BASH_SOURCE[lev-1]}" 2>/dev/null);
-        this_bash=${BASH_SOURCE[lev-1]##*/}
+        this_def=$(find_func_line "${this_func}" "${this_source}" 2>/dev/null);
+        # get function source file
+        this_bash=${this_source##*/}
     fi
 
     if [ ${lev} -lt ${fN_FUNC} ]; then
-        # get calling function name
-        get_func=${FUNCNAME[lev]}
-        # get calling function definition line
-        line_def=$(find_func_line "${get_func}" "${BASH_SOURCE[lev]}" 2>/dev/null);
+        # get calling function source
+        get_source=${BASH_SOURCE[lev]}
         # get calling function source file
         get_bash=${BASH_SOURCE[lev]##*/}
+
+        # get calling function name
+        get_func=${FUNCNAME[lev]}
         # get line in calling function where this tunction was called
-        get_func_line=${BASH_LINENO[lev-1]}
+        get_func_line=${BASH_LINENO[this_lev]}
+        # get calling function definition line
+        line_def=$(find_func_line "${get_func}" "${get_source}" 2>/dev/null);
         # get line in calling function source file
         get_file_line=$((${line_def}+${get_func_line}))
     fi
+    fecho "done with get caller"
 }
 
 function this_line() {
@@ -212,9 +229,8 @@ function this_line() {
     fecho "${TAB}fN_STACK = $fN_STACK"
 
     if $do_defs && [ $DEBUG -gt 1 ]; then
-
         for ((lev = 0; lev < $fN_STACK ; lev++)); do
-            fecho $lev
+            fecho "lev = $lev (definition)"
             get_caller $lev
             # print this function definition line
             ddecho -n "${TAB}"
@@ -224,11 +240,11 @@ function this_line() {
             ddecho -n "in file ${get_bash}"
             ddecho
         done
-        fecho "done"
+        fecho "done printing definitions"
     fi
     if $do_invo && [ $DEBUG -gt 1 ] ; then
         for ((lev = 1; lev < $fN_STACK; lev++)); do
-            fecho "$lev"
+            fecho "lev = $lev (invocation)"
             get_caller $lev
             # print calling function line in source file
             ddecho -n "${TAB}${this_func}() called by "
@@ -237,6 +253,7 @@ function this_line() {
             ddecho -n "on line $get_file_line of ${get_bash}"
             ddecho
         done
+        fecho "done printing invocations"
     fi
 
     get_caller
