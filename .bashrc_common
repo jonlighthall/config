@@ -2,11 +2,12 @@
 # -----------------------------------------------------------------------------------------------
 # SYSTEM-INDEPENDENT INTERACTIVE SHELL SETTINGS
 # -----------------------------------------------------------------------------------------------
+#
 # ~/config/.bashrc_common
 #
-# Purpose: Interactive shell settings for UNIX-like systems. Intended to be universally
-#   compatible with WSL, Debian derivatives (Ubuntu), Red Hat-based distros (Centos, Rock Linux),
-#   MinGW (MSYS, GitBash), Cygwin, PGI Bash, etc.
+# Purpose: Load system-independent interactive shell settings for UNIX-like systems. Intended to
+#   be universally compatible with WSL, Debian derivatives (Ubuntu), Red Hat-based distros
+#   (Centos, Rock Linux), MinGW (MSYS, GitBash), Cygwin, PGI Bash, etc.
 #
 # Note: this file must use UNIX line endings (LF)!
 #
@@ -14,22 +15,34 @@
 #
 # -----------------------------------------------------------------------------------------------
 
+# check if running interactively
+if [[ "$-" == *i* ]];then
+    TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
+    echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
+else
+    echo "${TAB-}${BASH_SOURCE##*/}: non-interactive shell" >&2
+    echo -e "${TAB-}\x1B[1;31mWARNING: ${BASH_SOURCE##*/} is intended for interactive shells only\x1B[m" >&2
+    echo -e "${TAB-}returning..." >&2
+    # If not running interactively, don't do anything
+    return
+fi
+
 # check if VB is unset or null
 if [ -z ${VB:+dummy} ]; then
     export VB=false
-else
-    # check if VB is true
-    if [ "${VB}" = true ]; then
-        # load bash utilities
-        fpretty=${HOME}/config/.bashrc_pretty
-        if [ -e $fpretty ]; then
-            source $fpretty            
-            print_ribbon
-            if [[ "$-" == *i* ]]; then
-                print_source
-            fi
-        fi
-    fi
+fi
+
+# load bash utilities
+config_dir=${HOME}/config
+fpretty=${config_dir}/.bashrc_pretty
+if [ -e $fpretty ]; then
+    source $fpretty
+fi
+
+# check if VB is true
+if [ "${VB}" = true ]; then
+    print_ribbon
+    print_source
 fi
 
 # Command History
@@ -69,7 +82,7 @@ rep_dir="${HOME}/downloads/git"
 fface="${rep_dir}/face-explorer/face-explorer.el"
 fe2ansi="${rep_dir}/e2ansi/bin/e2ansi-cat"
 fsilent="${rep_dir}/e2ansi/e2ansi-silent.el"
-femacs="${HOME}/config/emacs_all.el"
+femacs="${config_dir}/emacs_all.el"
 # define options
 emacs_args="-Q --batch -l $fsilent -l $femacs -l $fface -l $fe2ansi"
 e2ansi_args="--theme misterioso"
@@ -86,7 +99,7 @@ alias lessn='less -N' # add line numbers to less
 
 # Aliases and Functions
 # ----------------------
-falias="${HOME}/config/.bash_aliases"
+falias="${config_dir}/.bash_aliases"
 if [ -f $falias ]; then
     vecho "${TAB}loading ${falias}..."
     source $falias

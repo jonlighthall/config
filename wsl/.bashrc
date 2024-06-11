@@ -5,16 +5,23 @@
 #
 # ~/config/wsl/.bashrc
 #
-# Purpose: Load user-dependent interactive shell settings when launching subshells.
+# Purpose: Load system-dependent interactive shell settings for WSL. Should be called for both
+#   login and non-login interactive shell sessions.
+
+# should be for non-login interactive shells (like when calling bash after logging in)? AND
+#   should contain configurations used by every interactive shell, like aliases, shell functions,
+#   and shell options (e.g. prompt) should be used for both login and non-login shells, including
+#   when launching subshells.
 #
-# Usage: In general, ~/.bashrc is executed by bash for non-interactive subshells. That is not
-#   what this file does or what this file is for. This file used to be linked to ~/.bash_aliases
-#   to be called by interactive subshells. It is now redundant(?). The file which loads
-#   interactive shell settings, ~/.bash_aliases -> ~/config/wsl/.bash_aliases, should be directly
-#   loaded by ~/.bash_profile; and IS loaded directly by bash in subshells sessions. Used instead
-#   of creating a custom ~/.bashrc file to preserve to contents of the system-default ~/.bashrc.
+# Usage: In general, ~/.bashrc is executed by bash for non-interactive subshells?? is this
+#   true?. That is not what this file does or what this file is for. This file used to be linked
+#   to ~/.bash_aliases to be called by interactive subshells. It is now redundant(?). The file
+#   which loads interactive shell settings, ~/.bash_aliases -> ~/config/wsl/.bash_aliases, should
+#   be directly loaded by ~/.bash_profile; and IS loaded directly by bash in subshells
+#   sessions. Used instead of creating a custom ~/.bashrc file to preserve to contents of the
+#   system-default ~/.bashrc.
 #
-#   This file is also called by ~/config/wsl/.bashrc to keep shell and subshell settings
+#   This file is also called by (is?) ~/config/wsl/.bashrc to keep shell and subshell settings
 #   consistient. It should be called directly by ~/.bash_profile -> ~/config/wsl/.bash_profile,
 #   and ~/config/wsl/.bashrc should be deleted.
 #
@@ -24,9 +31,25 @@
 #
 # -----------------------------------------------------------------------------------------------
 
-# If running interactively, print source
-if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
-    echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+# check if running interactively
+if [[ "$-" == *i* ]];then
+    TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
+    echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
+    # print source
+    if [ ${DEBUG:-0} -gt 0 ]; then
+        echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+    fi
+else
+    echo "${TAB-}${BASH_SOURCE##*/}: non-interactive shell" >&2
+    echo -e "${TAB-}\x1B[1;31mWARNING: ${BASH_SOURCE##*/} is intended for interactive shells only\x1B[m" >&2
+    echo -e "${TAB-}returning..." >&2
+    # If not running interactively, don't do anything
+    return
+fi
+
+# check if VB is unset or null
+if [ -z ${VB:+dummy} ]; then
+    export VB=false
 fi
 
 # load bash utilities
@@ -40,13 +63,13 @@ else
     set +eu
 fi
 
+# check if VB is true
 if [ "${VB}" = true ]; then
-    # determine if being sourced or executed
     print_ribbon
     print_source
 fi
 
-if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
+if [ ${DEBUG:-0} -gt 0 ]; then
     print_stack
 fi
 

@@ -5,12 +5,32 @@
 #
 # ~/config/linux/.bashrc
 #
-# Purpose: Load interactive shell settings for Linux.
+# Purpose: Load system-dependent interactive shell settings for Linux. Should be called for both
+#   login and non-login interactive shell sessions.
+#
+# Note: System-independent interactive shell settings are located in ~/config/.bashrc_common
 #
 # Feb 2017 JCL
 #
 # -----------------------------------------------------------------------------------------------
 
+# check if running interactively
+if [[ "$-" == *i* ]];then
+    TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
+    echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
+    # print source
+    if [ ${DEBUG:-0} -gt 0 ]; then
+        echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+    fi
+else
+    echo "${TAB-}${BASH_SOURCE##*/}: non-interactive shell" >&2
+    echo -e "${TAB-}\x1B[1;31mWARNING: ${BASH_SOURCE##*/} is intended for interactive shells only\x1B[m" >&2
+    echo -e "${TAB-}returning..." >&2
+    # If not running interactively, don't do anything
+    return
+fi
+
+# check if VB is unset or null
 if [ -z ${VB:+dummy} ]; then
     export VB=false
 fi
@@ -22,13 +42,14 @@ if [ -e $fpretty ]; then
     source $fpretty
 fi
 
+# check if VB is true
 if [ "${VB}" = true ]; then
     print_source
 fi
 
 # enable color support of ls
 # define LS_COLORS using dircolors and .dircolors
-vecho "${TAB}loading colors..."
+vecho "${TAB}loading ls colors..."
 load_colors
 append_ls_colors
 match_ls_colors
