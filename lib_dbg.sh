@@ -157,7 +157,7 @@ function get_caller() {
         lev=$1
     fi
 
-#print_stack
+    #print_stack
     fecho " in lev = $lev"
     ((++lev))
     fecho "out lev = $lev"
@@ -202,8 +202,8 @@ function this_line() {
     local do_grep=true;
     local do_before=true;
     local do_extra=true;
-    local do_defs=true;
-    local do_invo=true;
+    local do_defs=false;
+    local do_invo=false;
 
     # set function color
     set_fcol
@@ -267,7 +267,9 @@ function this_line() {
     fi
     echo -e ${RESET}
 
-    [[ "$-" == *u* ]] && set +u
+    if [[ "$-" == *u* ]]; then
+        set +u
+    fi
     return 0
 }
 
@@ -567,7 +569,9 @@ function print_debug() {
         eval "${fun_name}() { xecho \"\$@\"; }"
     fi
     $fun_name "${TAB}DEBUG = $DEBUG"
-    [[ "$-" == *u* ]] && set +u
+    if [[ "$-" == *u* ]]; then
+        set +u
+    fi
 }
 
 function cdb() {
@@ -636,7 +640,9 @@ function idb() {
         start_new_line
         print_debug
     fi
-    [[ "$-" == *u* ]] && set +u
+    if [[ "$-" == *u* ]]; then
+        set +u
+    fi
 }
 
 function ddb() {
@@ -707,7 +713,9 @@ function ddb() {
         start_new_line
         print_debug
     fi
-    [[ "$-" == *u* ]] && set +u
+    if [[ "$-" == *u* ]]; then
+        set +u
+    fi
 }
 
 function print_() {
@@ -863,5 +871,7 @@ function print_() {
         fi
         [ ${DEBUG:-0} -gt 0 ] && print_tab
     fi
-    [[ "$-" == *u* ]] && set +u
+    if [[ "$-" == *u* ]]; then
+        set +u
+    fi
 }

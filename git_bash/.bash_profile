@@ -11,7 +11,7 @@
 # -----------------------------------------------------------------------------------------------
 
 # If not running interactively, don't do anything
-if [[ "$-" != *i* ]]; then
+if [[ ! "$-" == *i* ]]; then
     # turn off "Verbose Bash" conditional prints
     export VB=false
 else

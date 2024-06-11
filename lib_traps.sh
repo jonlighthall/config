@@ -139,7 +139,7 @@ function reset_shell() {
     dtab
 }
 
-function safe_shell() {    
+function safe_shell() {
     local -i DEBUG=1
 
     decho "${TAB}shell options: $-"
@@ -248,7 +248,16 @@ function print_exit() {
     print_done
 
     # reset shell options before returning to shell
-    [[ "$-" == *u* ]] && set +u
+    if [[ "$-" == *u* ]]; then
+        decho "u is set: "
+        decho $-
+        decho "unsetting u..."
+        set +u
+        decho $-
+    else
+        decho "u is not set"
+        decho $-
+    fi
 }
 
 function print_return() {

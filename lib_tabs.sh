@@ -229,7 +229,7 @@ function print_tab() {
     echo -e "${TAB}TAB = ${SPACE}${TAB}${RESET} length $i"
 
     # reset shell options before returning to shell
-    if [[ "$-" == *u* ]]; then
+    if [[ "$-" == "*u*" ]]; then
         set +u
     fi
 
