@@ -18,7 +18,7 @@
 # -----------------------------------------------------------------------------------------------
 
 # If running interactively, print source
-if [[ "$-" == *i* ]]; then
+if [[ "$-" == "*i*" ]]; then
     # get starting time in nanoseconds
     declare -i start_time=$(date +%s%N)
     # set "Verbose Bash" for conditional prints
@@ -67,7 +67,7 @@ fi
 if [ "${VB}" = true ]; then
     print_source
     echo -e "${TAB}SHLVL = $BROKEN$SHLVL$RESET"
-    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then    
+    if [[ "$-" == "*i*" ]] && [ ${DEBUG:-0} -gt 0 ]; then    
         print_stack
     fi
     decho -e "${TAB}verbose bash printing is... ${GOOD}$VB${RESET}"

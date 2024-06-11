@@ -85,7 +85,7 @@ fi
 
 if [ "${VB}" = true ]; then
     print_source
-    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
+    if [[ "$-" == "*i*" ]] && [ ${DEBUG:-0} -gt 0 ]; then
         print_stack
     fi
     decho -e "${TAB}verbose bash printing is... $TRUE"
