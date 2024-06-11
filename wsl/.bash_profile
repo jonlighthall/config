@@ -17,6 +17,13 @@
 
 # check if running interactively
 if [[ "$-" == *i* ]];then
+    # clear terminal
+    clear
+
+    # get starting time in nanoseconds
+    declare -i start_time=$(date +%s%N)
+
+    # set tab
     TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
     echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
 else
@@ -35,13 +42,11 @@ else
     echo -e "${TAB-}\x1B[;31mWARNING: ${BASH_SOURCE##*/} is intended for login-shells only\x1B[m" >&2
 fi
 
-# get starting time in nanoseconds
-declare -i start_time=$(date +%s%N)
-clear
 # -------------------------
 # set debug level if unset
 export DEBUG=${DEBUG=0}
 # -------------------------
+
 # print source
 if [ ${DEBUG:-0} -gt 0 ]; then
     echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
