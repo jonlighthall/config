@@ -139,8 +139,7 @@ function find_func_line() {
     fi
     dtab
 
-    # reset shell options
-    if [[ "$-" == *e* ]]; then
+    if [[ "$-" == "*e*" ]]; then
         old_opts=$(echo "$-")
         set +e
     fi
