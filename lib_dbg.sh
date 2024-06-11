@@ -259,34 +259,35 @@ function this_line() {
     fi
 
     get_caller
-    if $do_grep; then
-        # print grep-like match
-        echo -en "${TAB}"
-        [[ ! -z "$@" ]] && [ $do_before = true ] && echo -en "${GRH}${INVERT}$@${NORMAL} "
-        echo -en "${GRF}${get_bash}${GRS}:${GRL}${get_file_line}${GRS}: ${GRH}"
-        if [[ -z "$@" ]] ||  [ $do_before = true ]; then
-            echo -en "${this_func}() "
-        else
-            echo -en "${INVERT}$@${NORMAL} "
-        fi
-        ddecho -n "called by "
-        dddecho -n "line $get_func_line of "
-        decho -n "${get_func}() "
-        ddecho -n "defined on line $line_def"
-
+    #   if $do_grep; then
+    # print grep-like match
+    echo -en "${TAB}"
+    [[ ! -z "$@" ]] && [ $do_before = true ] && echo -en "${GRH}${INVERT}$@${NORMAL} "
+    echo -en "${GRF}${get_bash}${GRS}:${GRL}${get_file_line}${GRS}: ${GRH}"
+    if [[ -z "$@" ]] ||  [ $do_before = true ]; then
+        echo -en "${this_func}() "
     else
-        # print argument
-        start_new_line
-        in_line "$@"
-        # print the line number where THIS function was called in the PARENT function
-        #[ $DEBUG -gt 0 ] &&
-        echo -n "${this_func}() "
-        decho -n "called by "
-        echo -n "${get_func}() "
-        echo -en "${fcol}on line $get_file_line in ${get_bash} "
-        ddecho -n "defined on line $line_def"
-        dddecho -n ", function line $get_func_line"
+        echo -en "${INVERT}$@${NORMAL} "
     fi
+    ddecho -n "called by "
+    dddecho -n "line $get_func_line of "
+    decho -n "${get_func}() "
+    ddecho -n "defined on line $line_def"
+
+    #  else
+    # print argument
+    #start_new_line
+    echo -ne "${fcol}; "
+    in_line "$@"
+    # print the line number where THIS function was called in the PARENT function
+    #[ $DEBUG -gt 0 ] &&
+    echo -n "${this_func}() "
+    decho -n "called by "
+    decho -n "${get_func}() "
+    echo -en "${fcol}on line $get_file_line in ${get_bash} "
+    ddecho -n "defined on line $line_def"
+    dddecho -n ", function line $get_func_line"
+    #  fi
     echo -e "${fcol}]${RESET}"
 
     if [[ "$-" == *u* ]]; then
@@ -299,6 +300,10 @@ function this_line() {
 function lecho() {
     # save shell options
     old_opts=$(echo "$-")
+    # set shell options
+    set -u
+    set +e
+    
 
     # set local debug level
     local -i DEBUG=${DEBUG:-0}
@@ -306,12 +311,17 @@ function lecho() {
     if [ $DEBUG -lt 1 ]; then
         idb >/dev/null
     fi
+
+    # DEBUG = 0 print line in file only
+    # DEBUG = 1 print calling function
+    # DEBUG = 2 print calling function line def
+    # DEBUG = 3 print calling function line
+
     DEBUG=0
     set_fcol
     start_new_line
     echo -ne "${fcol}"
     dddecho -e "${TAB}${INVERT}${FUNCNAME}${fcol}"
-    set -u
 
     if [ ${DEBUG:-0} -gt 0 ] || [ ! -z "$@" ] ; then
         local -i tab_wid=${#TAB}
@@ -320,9 +330,7 @@ function lecho() {
         hline $hr_wid
         trap 'echo -ne "${fcol}";hline $hr_wid;DEBUG=$oldDEBUG;echo -en "$RESET";trap -- RETURN' RETURN
     fi
-    if [ ${DEBUG:-0} -gt 1 ]; then
-        print_stack
-    fi
+    #[ ${DEBUG:-0} -gt 1 ] && print_stack
 
     # get the lenght of the execution stack
     local -i N_BASH=${#BASH_SOURCE[@]}
@@ -332,7 +340,7 @@ function lecho() {
     line_def=$(find_func_line "${FUNCNAME}" "${BASH_SOURCE}" 2>/dev/null);
 
     if [ $N_BASH -eq 1 ]; then
-        this_line
+        this_line "BASH"
         in_line "$@"
         echo -e "${FUNCNAME}() $(lec_mes)${BASH_LINENO}${fcol} from ${BASH##*/}"
         ddecho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
