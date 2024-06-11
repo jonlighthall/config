@@ -249,13 +249,13 @@ function print_exit() {
 
     # reset shell options before returning to shell
     if [[ "$-" == *u* ]]; then
-        decho "u is set: "
+        echo -n "u is set: "
         decho $-
         decho "unsetting u..."
         set +u
         decho $-
     else
-        decho "u is not set"
+        echo -n "u is not set: "
         decho $-
     fi
 }
