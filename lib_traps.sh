@@ -140,15 +140,19 @@ function reset_shell() {
 }
 
 function safe_shell() {
-    local -i DEBUG=1
+    local -i DEBUG=2
 
     decho "${TAB}shell options: $-"
     decho -n "${TAB}resetting... "
+    ddecho
+    itab
     for opt in e u; do
         if [[ "$-" == *$opt* ]]; then
+            ddecho "${TAB}setting $opt..."
             set +$opt
         fi
     done
+    dtab
     decho "done"
     echo "${TAB}shell options: $-"
 
@@ -338,8 +342,8 @@ function print_error() {
 
     TAB=${TAB=''}
     local ERR_PRINT=$(echo -e "${TAB}\E[37;41m ERROR ${RESET} ")
-    [ $DEBUG -gt 0 ] && start_new_line
-    hline
+    start_new_line
+    hline 38 ${RED}E
 
     eTAB=$(echo -e "${RED}|${RESET}")
     eTAB=$fTAB
@@ -499,7 +503,7 @@ function print_error() {
         fi
     fi
     echo -e "${spx} ${GRAY}RETVAL=${ERR_RETVAL}${RESET}"
-    hline
+    hline 38 ${RED}E
     # reset shell options before returning to shell
     if [[ "$-" == *u* ]]; then
         set +u
@@ -693,7 +697,8 @@ function set_exit() {
         # use argument to manually set DEBUG
         local -i DEBUG=$1
     else
-        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+        # substitute default value if DEBUG is unset or null
+        local -i DEBUG=${DEBUG:-2} 
     fi
     # manual
     #DEBUG=1
@@ -712,7 +717,7 @@ function set_exit() {
     fi
 
     if [[ "${RUN_TYPE}" =~ "sourcing" ]]; then
-        decho source
+        decho "sourced"
 
         # set shell options
 
@@ -740,6 +745,7 @@ function set_exit() {
         dtab
         exit 0
     fi
+    print_traps
 
 }
 
