@@ -96,7 +96,7 @@ function get_curpos() {
 function start_new_line() {
     local -i DEBUG=${DEBUG:-0}
     # Turn in-function debugging on/off.
-    #DEBUG=1
+    DEBUG=0
 
     dddecho -en "${TAB-}${INVERT}${FUNCNAME}${RESET}"
     if [ $DEBUG -ge 3 ]; then
@@ -292,7 +292,7 @@ function extract_color() {
     dtab
 
     # reset shell options before returning to shell
-    if [[ "$-" == *u* ]]; then
+    if [[ "$-" == "*u*" ]]; then
         set +u
     fi
 }
@@ -547,7 +547,7 @@ function do_cmd_safe() {
 
     # set shell options
     unset_traps
-    if [[ "$-" == *e* ]]; then
+    if [[ "$-" == "*e*" ]]; then
         echo -n "${TAB}setting shell options..."
         old_opts=$(echo "$-")
         # exit on errors must be turned off; otherwise shell will exit...
