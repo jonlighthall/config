@@ -86,7 +86,7 @@ function print_source() {
         # stack
         ((N_BASH--))
         local prefix="\x1b[7;38;5;132m${N_BASH}"
-        if [[ "$-" == *i* ]]; then
+        if [[ "$-" == "*i*" ]]; then
             prefix+="i"
         fi
         prefix+="\x1b[0m"
@@ -152,7 +152,7 @@ function print_ribbon() {
     ((N_BASH--))
 
     local decor="${N_BASH}"
-    if [[ "$-" == *i* ]]; then
+    if [[ "$-" == "*i*" ]]; then
         : #decor+="i"
     fi
 

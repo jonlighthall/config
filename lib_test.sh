@@ -5,24 +5,24 @@ function test_this_line() { #1
     this_line "manual: 3/5, LINENO: $LINENO, BASH_LINENO: ${BASH_LINENO[@]}" #3
 }
 
-function test_that_line() {                            #1
-    echo "${TAB}THIS FUNCTION IS DEFINED ON LINE 8"    #2
-    # print file line                                  #3
-    this_line "here 11/4 $LINENO $BASH_LINENO"         #4
-    # print hard-coded examples                        #5 here, LINENO gives line in function
-    echo -e "${TAB}${GRH}${INVERT}hello${RESET} ${GRF}${BASH_SOURCE##*/}${GRS}:${GRL}$LINENO${GRS}: ${GRH}echo()${RESET} ${dcolor[7]}${FUNCNAME}()${RESET}" >&2 #6
-    echo -e "${TAB}${GRH}${INVERT}hello${RESET} ${GRF}${BASH_SOURCE##*/}${GRS}:${GRL}$LINENO${GRS}: ${GRH}echo()${RESET}" >&2 #7
-    this_line "hello"                                  #8
-    hello                                              #9
-    this_line "this is FILE line 17, FUNCTION line 10" #10
-    hello                                              #11
-    this_line                                          #12
-    hello                                              #13
-    this_line "this is line 21"                        #14
-    this_line "there"                                  #15
-    if [[ "$-" == *u* ]]; then                         #16
-        set +u                                         #17
-    fi                                                 #18
+function test_that_line() {
+    echo "${TAB}THIS FUNCTION IS DEFINED ON LINE 8"   #1
+    # print file line                                 #2
+    this_line "here"                                  #3
+    # print hard-coded examples                       #4
+    echo -e "${TAB}${GRH}${INVERT}hello${RESET} ${GRF}${BASH_SOURCE##*/}${GRS}:${GRL}$LINENO${GRS}: ${GRH}echo()${RESET} ${dcolor[7]}${FUNCNAME}()${RESET}" >&2 #5
+    echo -e "${TAB}${GRH}${INVERT}hello${RESET} ${GRF}${BASH_SOURCE##*/}${GRS}:${GRL}$LINENO${GRS}: ${GRH}echo()${RESET}" >&2 #6
+    this_line "hello"                                 #7
+    hello                                             #8
+    this_line "this is FILE line 17, FUNCTION line 9" #9
+    hello                                             #10
+    this_line                                         #11
+    hello                                             #12
+    this_line "this is line 21"                       #13
+    this_line "there"                                 #14
+    if [[ "$-" == "*u*" ]]; then
+        set +u
+    fi
 }
 
 function test_lecho() {

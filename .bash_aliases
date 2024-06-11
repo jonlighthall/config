@@ -25,7 +25,7 @@ else
         if [ -e $fpretty ]; then
             source $fpretty
             print_ribbon
-            if [[ "$-" == *i* ]]; then
+            if [[ "$-" == "*i*" ]]; then
                 print_source
             fi
         fi
