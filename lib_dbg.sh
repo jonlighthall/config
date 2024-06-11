@@ -209,7 +209,7 @@ function this_line() {
     set_fcol
 
     local -ir fN_STACK=${#FUNCNAME[@]}
-    fecho "${TAB}N_STACK = $N_STACK"
+    fecho "${TAB}fN_STACK = $fN_STACK"
 
     if $do_defs && [ $DEBUG -gt 1 ]; then
 
