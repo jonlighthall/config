@@ -39,6 +39,10 @@ fi
 config_dir=${HOME}/config
 fpretty=${config_dir}/.bashrc_pretty
 if [ -e $fpretty ]; then
+    if [ "${VB}" = true ]; then
+        # remember, if .bashrc_pretty hasn't been loaded yet, vecho is not defined
+        echo "${TAB-}loading $fpretty..."
+    fi
     source $fpretty
 fi
 

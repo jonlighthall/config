@@ -112,7 +112,6 @@ function load_libs() {
     if command -v decho &>/dev/null; then
         # print function name
         decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-        itab
     fi
 
     # load bash utils
@@ -150,7 +149,6 @@ function load_libs() {
     fi
 
     if [ ! -z ${FPRETTY_LOADED+dummy} ]; then
-        dtab # lib tabs
         if [[ "$-" == *i* ]]; then
             cbar "${BOLD}libraries loaded${NORMAL}" # lib_fmt
         fi
@@ -163,7 +161,6 @@ function load_libs() {
 }
 
 load_libs
-print_ribbon
 
 # determine if script is being sourced or executed and add conditional behavior
 if (return 0 2>/dev/null); then
@@ -176,8 +173,8 @@ fi
 # check if running interactively
 if [[ "$-" == *i* ]]; then
     set_tab
+    print_ribbon
     decho "${TAB}${BASH_SOURCE##*/}: DEBUG = $DEBUG"
-    #print_ribbon
     #print_bar
     print_source
 fi

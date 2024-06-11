@@ -255,9 +255,9 @@ function print_stack() {
             if [[ "${BASH_SOURCE[$i]}" != "${BASH_CANON[$i]}" ]] && [ $DEBUG -gt 0 ]; then
                 # set color
                 ((idx++))
-                echo -ne "${dcolor[idx]}"
+                #echo -ne "${dcolor[idx]}"
                 # print link
-                echo -ne "$j:$i:${FUNCNAME[i]}:${BASH_CANON_DIR[i]}:${BASH_CANON[i]##*/}:${BASH_LINENO[i]}"
+                echo -n "$j:$i:${FUNCNAME[i]}:${BASH_CANON_DIR[i]}:${BASH_CANON[i]##*/}:${BASH_LINENO[i]}"
                 # reset color
                 ((idx--))
                 echo -e "${dcolor[idx]}"

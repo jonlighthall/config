@@ -24,7 +24,7 @@ do_make_dir "$link_dir"
 
 cbar "Start Linking Repo Files"
 # list of files to be linked
-for my_link in .bash_logout .bash_profile .emacs .gitconfig .inputrc .screenrc .tmux.conf
+for my_link in .bash_aliases .bash_logout .bash_profile .emacs .gitconfig .inputrc .screenrc .tmux.conf
 do
     # define target (source)
     target=${target_dir}/${my_link}
