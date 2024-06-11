@@ -79,7 +79,7 @@ function find_func_line() {
     grep -n "${pat}" "${src}" --color=always | sed "s/^/${TAB}/" >&2
     dtab
 
-    if [[ "$-" == *e* ]]; then
+    if [[ "$-" == "*e*" ]]; then
         old_opts=$(echo "$-")
         set +e
     fi
