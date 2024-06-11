@@ -232,9 +232,9 @@ function get_caller() {
     local -i fN_FUNC=${#FUNCNAME[@]}
     fecho " N_FUNC = $fN_FUNC"
     local -i this_lev=$((lev-1))
-    
+
     # define stack level for "this" function; actually the calling function (default) or the
-    # function one level below the target stack level (argument)   
+    # function one level below the target stack level (argument)
     if [ ${fN_FUNC} -ge 1 ]; then
         # get function
         this_func=${FUNCNAME[this_lev]}
@@ -281,6 +281,8 @@ function this_line() {
 
     local -i funcDEBUG=0
     #funcDEBUG=${libDEBUG:-0}
+
+    local -i funcDEBUG=0
 
     local do_grep=true;
     local do_before=true;
@@ -350,14 +352,16 @@ function this_line() {
         # print argument
         start_new_line
         in_line "$@"
-        # print the line number where THIS function was called in the PARENT
-        # function
-        [ $DEBUG -gt 0 ] && echo -n "${caller_func}() "
-        echo -en "${fcol}on line $get_file_line in ${caller_file} "
+        # print the line number where THIS function was called in the PARENT function
+        #[ $DEBUG -gt 0 ] &&
+        echo -n "${this_func}() "
+        decho -n "called by "
+        echo -n "${get_func}() "
+        echo -en "${fcol}on line $get_file_line in ${get_bash} "
         ddecho -n "defined on line $line_def"
         dddecho -n ", function line $caller_func_line"
     fi
-    echo -e ${RESET}
+    echo -e "${fcol}]${RESET}"
 
     if [[ "$-" == *u* ]]; then
         set +u
@@ -371,7 +375,7 @@ function lecho() {
     old_opts=$(echo "$-")
 
     # set local debug level
-    local -i DEBUG=${DEBUG:-1}
+    local -i DEBUG=${DEBUG:-0}
     local -i oldDEBUG=$DEBUG
     if [ $DEBUG -lt 1 ]; then
         idb >/dev/null
