@@ -14,33 +14,67 @@
 #
 # -----------------------------------------------------------------------------------------------
 
-# If not running interactively, don't do anything
-[[ "$-" != *i* ]] && return
+# check if running interactively
+if [[ "$-" == *i* ]];then
+    TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
+    echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
+else
+    echo "${TAB-}${BASH_SOURCE##*/}: non-interactive shell" >&2
+    echo -e "${TAB-}\x1B[1;31mWARNING: ${BASH_SOURCE##*/} is intended for interactive shells only\x1B[m" >&2
+    echo -e "${TAB-}returning..." >&2
+    # If not running interactively, don't do anything
+    return
+fi
 
-if true; then # added for diff'ing WSL version
+# check if login shell
+if shopt -q login_shell; then
+    echo -e "${TAB-}${BASH_SOURCE##*/}: \x1B[32mlogin shell\x1B[m" >&2
+else
+    echo "${TAB-}${BASH_SOURCE##*/}: non-login shell" >&2
+    echo -e "${TAB-}\x1B[;31mWARNING: ${BASH_SOURCE##*/} is intended for login-shells only\x1B[m" >&2
+fi
 
-    # get starting time in nanoseconds
-    declare -i start_time=$(date +%s%N)
-    clear
-    # -------------------------
-    # set debug level if unset
-    export DEBUG=${DEBUG=0}
-    # -------------------------
-
-    # set "Verbose Bash" for conditional prints
+# get starting time in nanoseconds
+declare -i start_time=$(date +%s%N)
+clear
+# -------------------------
+# set debug level if unset
+export DEBUG=${DEBUG=0}
+# -------------------------
+# print source
+if [ ${DEBUG:-0} -gt 0 ]; then
+    echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+    # print invoking process
+    called_by=$(ps -o comm= $PPID)
+    echo "${TAB}invoked by ${called_by}"
+fi
+# set "Verbose Bash" for conditional prints
+export VB=true
+# clear terminal
+clear -x
+if [ ${DEBUG} -gt 0 ]; then
     export VB=true
-    # clear terminal
-    clear -x
-    if [ ${DEBUG} -gt 0 ]; then
-        export VB=true
-    fi
 fi
 
 config_dir=${HOME}/config
 # load bash utilities
 fpretty=${config_dir}/.bashrc_pretty
 if [ -e $fpretty ]; then
-	  source $fpretty
+    if [ "${VB}" = true ]; then
+        # remember, if .bashrc_pretty hasn't been loaded yet, vecho is not defined
+        echo "loading $fpretty..."
+    fi
+    source $fpretty
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]; then
+        dtab
+        vecho -e "${TAB}$fpretty ${GOOD}OK${RESET}"
+    else
+        echo -e "${TAB}$fpretty ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+    fi
+    print_ribbon
+else
+    echo "${TAB}$fname not found"
 fi
 
 if [ "${VB}" = true ]; then
@@ -93,7 +127,7 @@ if [ -f $fname ]; then
 else
     echo "${TAB}$fname not found"
 fi
-vecho
+
 # print runtime duration
 if [ "${VB}" = true ]; then
     # reset tab

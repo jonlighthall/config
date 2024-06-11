@@ -15,32 +15,46 @@
 #
 # -----------------------------------------------------------------------------------------------
 
-# If not running interactively, don't do anything
-if [[ "$-" != *i* ]]; then
-    # turn off "Verbose Bash" conditional prints
-    export VB=false
+# check if running interactively
+if [[ "$-" == *i* ]];then
+    TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
+    echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
 else
-    # get starting time in nanoseconds
-    declare -i start_time=$(date +%s%N)
-    clear
-    # -------------------------
-    # set debug level if unset
-    export DEBUG=${DEBUG=0}
-    # -------------------------
-    # print source
-    if [ ${DEBUG:-0} -gt 0 ]; then
-        echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
-        # print invoking process
-        called_by=$(ps -o comm= $PPID)
-        echo "${TAB}invoked by ${called_by}"
-    fi
-    # set "Verbose Bash" for conditional prints
+    echo "${TAB-}${BASH_SOURCE##*/}: non-interactive shell" >&2
+    echo -e "${TAB-}\x1B[1;31mWARNING: ${BASH_SOURCE##*/} is intended for interactive shells only\x1B[m" >&2
+    echo -e "${TAB-}returning..." >&2
+    # If not running interactively, don't do anything
+    return
+fi
+
+# check if login shell
+if shopt -q login_shell; then
+    echo -e "${TAB-}${BASH_SOURCE##*/}: \x1B[32mlogin shell\x1B[m" >&2
+else
+    echo "${TAB-}${BASH_SOURCE##*/}: non-login shell" >&2
+    echo -e "${TAB-}\x1B[;31mWARNING: ${BASH_SOURCE##*/} is intended for login-shells only\x1B[m" >&2
+fi
+
+# get starting time in nanoseconds
+declare -i start_time=$(date +%s%N)
+clear
+# -------------------------
+# set debug level if unset
+export DEBUG=${DEBUG=0}
+# -------------------------
+# print source
+if [ ${DEBUG:-0} -gt 0 ]; then
+    echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+    # print invoking process
+    called_by=$(ps -o comm= $PPID)
+    echo "${TAB}invoked by ${called_by}"
+fi
+# set "Verbose Bash" for conditional prints
+export VB=true
+# clear terminal
+clear -x
+if [ ${DEBUG} -gt 0 ]; then
     export VB=true
-    # clear terminal
-    clear -x
-    if [ ${DEBUG} -gt 0 ]; then
-        export VB=true
-    fi
 fi
 
 config_dir=${HOME}/config
