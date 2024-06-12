@@ -156,6 +156,7 @@ function safe_shell() {
     decho "done"
     echo "${TAB}shell options: $-"
 
+    clear_traps
 }
 
 # -----------------------------------------------------------------------------------------------
@@ -343,7 +344,7 @@ function print_error() {
     TAB=${TAB=''}
     local ERR_PRINT=$(echo -e "${TAB}\E[37;41m ERROR ${RESET} ")
     start_new_line
-    hline 38 ${RED}E
+    hline 38 ${RED}E${RESET}
 
     eTAB=$(echo -e "${RED}|${RESET}")
     eTAB=$fTAB
