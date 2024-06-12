@@ -22,7 +22,7 @@ function get_run_type() {
     if [[ "${FUNCNAME[$N_BOTTOM]}" =~ "main" ]]; then
         decho "bottom of stack is main"
         decho "root invocation ${BASH_SOURCE[$N_BOTTOM]} is a script"
-        RUN_TYPE="${VALID}${INVERT}executing${RESET}"
+        RUN_TYPE="executing"
         export IS_SOURCED=false
     else
         if [[ "${FUNCNAME[$N_BOTTOM]}" =~ "source" ]]; then
@@ -32,7 +32,7 @@ function get_run_type() {
             decho "bottom of stack is not main: ${FUNCNAME[$N_BOTTOM]}"
             decho "root invocation ${BASH_SOURCE[$N_BOTTOM]} is a shell function"
         fi
-        RUN_TYPE="${GRH}${INVERT}sourcing${RESET}"
+        RUN_TYPE="sourcing"
         export IS_SOURCED=true
     fi
 
