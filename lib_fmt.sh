@@ -348,7 +348,6 @@ function do_cmd() {
         # set shell options
         set -o pipefail
 
-        lecho "unbuffer"
         # print unbuffered command output
         unbuffer $cmd \
             | sed -u "s/\r$//g;s/.*\r//g;s/^/${TAB}/" \
@@ -425,7 +424,6 @@ function do_cmd_script() {
         # set shell options
         set -o pipefail
         # print command output
-        lecho "script"
         if false; then
             # command output is unbuffered only if "sed -u" is used!
             # however, this interfers with formatting the output
@@ -453,7 +451,6 @@ function do_cmd_script() {
     else
         dtab ${FMT_TAB}
         ddecho "${TAB}printing unformatted ouput..."
-        lecho "no wrapper"
         # print buffered command output
         $cmd
         local -i RETVAL=$?
@@ -494,7 +491,6 @@ function do_cmd_stdbuf() {
         cmd+=" --color=always"
     fi
 
-    lecho "stdbuf"
     # unbuffer command output and save to file
     stdbuf -i0 -o0 -e0 $cmd &>$temp_file
     RETVAL=$?
