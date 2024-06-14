@@ -22,7 +22,7 @@ else
         # load bash utilities
         fpretty=${HOME}/config/.bashrc_pretty
         if [ -e $fpretty ]; then
-            source $fpretty            
+            source $fpretty
             print_ribbon
             if [[ "$-" == *i* ]]; then
                 print_source
@@ -147,8 +147,69 @@ function end() {
     export file1=$(readlink -f $1)
     export file2=$(readlink -f $2)
     echo "inputs are $file1 and $file2"
-#return 0
+    #return 0
 
     eval "emacs -nw --eval '(ediff-files \"${file1}\" \"${file2}\")'"
 
+}
+
+# show top processes
+function utop() {
+    local -i NP
+    # number of processes to show
+    if [ $# -eq 1 ]; then
+        # use argument
+        NP=$1
+    else
+        # set manually
+        NP=3
+    fi
+
+    set -u
+
+    # set line width to one less than the terminal width
+    local -i line_width=$(( $(tput cols) - 1 ))
+    # user ID
+    local -r U_ID_old=1111499164
+    local -r U_ID=$UID
+    # user name
+    unset U_NAME
+    unset U_NAME_trunc
+    local -r U_NAME=${USER}
+    decho "${U_NAME}"
+    local U_NAME_trunc
+    U_NAME_trunc=${U_NAME:0:7}
+    decho "${U_NAME_trunc}"
+    U_NAME_trunc+="+"
+    decho "${U_NAME_trunc}"
+    #echo "${U_NAME_trunc}" | sed "s/${U_NAME_trunc}/${U_NAME}/"
+
+    echo -e "\033[4mTop $NP processes on ${HOST_NAME}:\x1b[0m"
+    (
+        ps aux --sort=-pcpu \
+            | head -n $((NP+1)) \
+            | sed "s/${U_ID}/\x1b\[32m${U_NAME}\x1b\[0m/" \
+            | sed "s/${U_ID_old}/\x1b\[33m${U_NAME}\x1b\[0m/" \
+            | awk '{printf "%-10s %5s %5s %5s %4s %5s %6s %s\n",$1,$2,$3,$4,$8,$9,$10,$11}' \
+            | cut -c -$line_width \
+            | sed "s/${U_NAME_trunc}/${U_NAME}/"
+    ) | column -t | sed "s/${U_NAME}/${GREEN}${U_NAME}${RESET}/"
+
+    echo
+    echo -e "\033[4mTop $NP processes by ${USER}:\x1b[0m"
+    (    ps ux --sort=-pcpu \
+             | head -n $((NP+1)) \
+             | sed "s/${U_ID_old}/${U_NAME}/" \
+             | sed "s/${U_ID}/${U_NAME}/" \
+             | awk '{printf "%-10s %5s %5s %5s %4s %5s %6s %s\n",$1,$2,$3,$4,$8,$9,$10,$11}' \
+             | cut -c -$line_width \
+             | sed "s/${U_NAME_trunc}/${U_NAME}/"
+    ) | column -t
+
+    echo
+    echo -e "\033[4mLast $NP log-ins by ${USER} on ${HOST_NAME}:\x1b[0m"
+    # print full user and domain neames, full login and logout times and dates, and hostname
+    last -wFa | \grep ${U_NAME:0:8} | head -n $NP
+    echo
+    set +u
 }
