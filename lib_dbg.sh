@@ -343,7 +343,7 @@ function this_line() {
     #  else
     # print argument
     #start_new_line
-    echo -ne "${fcol}; "
+    echo -e "${fcol}"
     in_line "$@"
     # print the line number where THIS function was called in the PARENT function
     #[ $DEBUG -gt 0 ] &&
@@ -354,7 +354,7 @@ function this_line() {
     ddecho -n "defined on line $line_def"
     dddecho -n ", function line $get_func_line"
     #  fi
-    echo -e "${fcol}]${RESET}"
+    echo -e "${fcol}${RESET}"
 
     if [[ "$-" == *u* ]]; then
         set +u
@@ -432,7 +432,7 @@ function lecho() {
         ddecho -e "${TAB}called by ${SHELL##*/}"
         ddecho "${TAB}N_BASH = ${N_BASH}"
         ddecho "${TAB}function level = $bot_lev"
-        this_line "371"
+        this_line "369 $LINENO ${BASH_LINENO[@]}"
         in_line "$@"
         get_caller
         echo -e "${this_func}() $(lec_mes)${BASH_LINENO[(($N_BASH-2))]}${fcol} in file ${YELLOW}${BASH_SOURCE[(($N_BASH-1))]##*/}${fcol}"
@@ -446,6 +446,7 @@ function lecho() {
         ddecho "${TAB}BASH_LINENO refers to file"
         local -i call_line=$get_func_line
         # print file line
+        this_line "main/source"
         in_line "$@"
         get_caller
         echo -en "${this_func}() $(lec_mes)${call_line}${fcol} "
@@ -456,7 +457,7 @@ function lecho() {
         # add the line where to the function is defined within the file and the line within the function
         local -i call_line=$(($line_def + $get_func_line))
         # print file line
-        this_line "495"
+        this_line "394"
         in_line "$@"
         get_caller
         echo -n "${this_func}() $(lec_mes)${call_line} "
@@ -591,12 +592,14 @@ function plecho() {
         ddecho -e "${TAB}called by ${SHELL##*/}"
         ddecho "${TAB}N_BASH = ${N_BASH}"
         ddecho "${TAB}function level = $func_lev"
+        this_line "main/source: shell"
         in_line "$@"
         echo -e "${FUNCNAME[(($func_lev-1))]}() $(lec_mes)${BASH_LINENO[(($func_lev-1))]}${fcol} in file ${YELLOW}${BASH_SOURCE[$func_lev]##*/}${RESET}"
         itab
         ((--func_lev))
         ddecho -e "${TAB}${BASH_SOURCE[$func_lev]##*/}${RESET} called by ${SHELL##*/}"
-        ddecho -e "${TAB}${FUNCNAME[(($func_lev-1))]}() $(lec_mes)${BASH_LINENO[(($func_lev-1))]}${fcol} in file ${YELLOW}${BASH_SOURCE[$func_lev]##*/}${RESET}"
+        this_line "shell"
+        ddecho -e "${TAB}${FUNCNAME[(($func_lev-1))]}() $(lec_mes)${BASH_LINENO[(($func_lev-1))]}${RESET} in file ${YELLOW}${BASH_SOURCE[$func_lev]##*/}${RESET}"
 
         decho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
         dtab
@@ -611,7 +614,7 @@ function plecho() {
         ddecho "${TAB}BASH_LINENO refers to file"
         local -i call_line=$get_func_line
         # print file line
-        this_line
+        this_line "main/source: file"
         in_line "$@"
         get_caller
         echo -en "${this_func}() $(lec_mes)${call_line}${fcol} "
@@ -622,7 +625,7 @@ function plecho() {
         # add the line where to the function is defined within the file and the line within the function
         local -i call_line=$(($line_def -1 + $func_line))
         # print file line
-        this_line "555"
+        this_line "556"
         in_line "$@"
         get_caller
         echo -n "${this_func}() $(lec_mes)${call_line} "
