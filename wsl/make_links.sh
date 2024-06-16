@@ -46,6 +46,9 @@ fi
 # save and print starting directory
 start_dir=$PWD
 echo "${TAB}starting directory = ${start_dir}"
+
+# In case the make_links files in ~/config/<sys_name> are linked to ~/config/ and called by
+# update_repos, make sure to switch to the target directory
 cd $src_dir_phys
 
 # make links to external files and directories
@@ -76,10 +79,11 @@ set -e
 sys_name=$(basename "$src_dir_phys")
 target_dir="${config_dir}/${sys_name}"
 link_dir=$HOME
+check_link_dir "$link_dir"
 
 cbar "Start Linking Repo Files"
 
-# list of files to be linked
+# list of files to be linked, unconditionally
 for my_link in .bash_aliases .bash_logout .bash_profile .dircolors .emacs.d .hushlogin .inputrc .rootrc; do
     # define target (source)
     target=${target_dir}/${my_link}
@@ -101,7 +105,7 @@ if [[ "$(hostname -f)" == *".mil" ]]; then
 else
     echo -e "${GOOD}OK${RESET}"
 
-    # list of files to be linked
+    # list of files to be linked, conditionally
     for my_link in .gitconfig; do
         # define target (source)
         target=${target_dir}/${my_link}
