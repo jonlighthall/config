@@ -54,6 +54,7 @@ function lec_mes () {
 # function, redirect function call output to /dev/null. To view degugging information, do no
 # redirect function all output.
 function find_func_line() {
+
     # set local debug level
     local -i DEBUG=3
 
@@ -62,7 +63,29 @@ function find_func_line() {
 
     # set function name
     local func=$1
-    decho "${TAB}function: $func" >&2
+    decho -n "${TAB}function: $func... " >&2
+
+    declare -f ${func} >/dev/null
+    local -i RETVAL=$?
+
+    if [ $RETVAL -eq 0 ]; then
+
+        if [ -z "$(declare -f ${func})" ]; then
+            decho -e "${BAD}FAIL${RESET} empty"  >&2
+            return 1
+        else
+            decho -e "${GOOD}OK${RESET}"  >&2
+        fi
+
+    else
+        decho -e "${BAD}FAIL${RESET} not defined"  >&2
+        return 1
+
+    fi
+
+    local pat="$(declare -f ${func} | head -1 | sed 's/ /[ ]*/;s/[ ]*$//;s/)/&[ \\n\\r{]*$/')"
+    decho "${TAB}base pattern: $pat" >&2
+    itab
 
     # get source file
     local src=$2
@@ -73,13 +96,10 @@ function find_func_line() {
     #   HEAD    - get declaration line
     #   SED     - remove whitespace
 
-    pat="$(declare -f ${func} | head -1 | sed 's/ /[ ]*/;s/[ ]*$//;s/)/&[ \\n\\r{]*$/')"
-    decho "${TAB}base pattern: $pat" >&2
-    itab
-    if [ $DEBUG -gt 0 ]; then 
+    if [ $DEBUG -gt 0 ]; then
         grep -n "${pat}" "${src}" --color=always | sed "s/^/${TAB}/" >&2
     fi
-#    dtab
+    #    dtab
 
     if [[ "$-" == *e* ]]; then
         old_opts=$(echo "$-")
@@ -115,13 +135,13 @@ function find_func_line() {
     # display results
     decho "${TAB}matching line:" >&2
     itab
-    if [ $DEBUG -gt 0 ]; then 
+    if [ $DEBUG -gt 0 ]; then
         grep -n "${epat}" "${src}" --color=always | sed "s/^/${TAB}/" >&2
     fi
     if [ $(grep -n "${epat}" "${src}" | wc -l) -eq 1 ]; then
-        decho "${TAB}OK" >&2
+        decho -e "${TAB}${GOOD}OK${RESET} pattern unique" >&2
     else
-        decho "${TAB}pattern not unique" >&2
+        decho -e "${TAB}${BAD}FAIL${RESET} pattern not unique" >&2
         return 1
     fi
     reset_shell ${old_opts-''}
@@ -182,7 +202,7 @@ function get_caller() {
         # get function source
         this_source=${BASH_SOURCE[this_lev]}
         # get line definition
-        this_def=$(find_func_line "${this_func}" "${this_source}" 2>/dev/null);
+        this_def=$(find_func_line "${this_func}" "${this_source}");
         # get function source file
         this_bash=${this_source##*/}
     fi
@@ -261,6 +281,9 @@ function this_line() {
         fecho "done printing invocations"
     fi
 
+    set +e
+    set_traps
+    
     get_caller
     if $do_grep; then
         # print grep-like match
@@ -329,7 +352,7 @@ function lecho() {
     ddecho "${TAB}there are ${N_BASH} entries in the ${FUNCNAME}() call stack"
 
     # get the line where THIS function is defined
-    line_def=$(find_func_line "${FUNCNAME}" "${BASH_SOURCE}" 2>/dev/null);
+    line_def=$(find_func_line "${FUNCNAME}" "${BASH_SOURCE}");
 
     if [ $N_BASH -eq 1 ]; then
         this_line "BASH"
@@ -367,7 +390,7 @@ function lecho() {
     else
         ddecho "${TAB}not called by ${SHELL##*/}"
         # get the line where the function is defined
-        local line_func_def=$(find_func_line "${func}" "${sour}" 2>/dev/null);
+        local line_func_def=$(find_func_line "${func}" "${sour}");
     fi
 
     if [[ "${bottom}" == "main" ]] || [[ "${bottom}" == "source" ]]; then
@@ -436,7 +459,7 @@ function plecho() {
     ddecho "${TAB}there are ${N_BASH} entries in the ${FUNCNAME}() call stack"
 
     # get the line where THIS function is defined
-    line_def=$(find_func_line "${FUNCNAME}" "${BASH_SOURCE}" 2>/dev/null);
+    line_def=$(find_func_line "${FUNCNAME}" "${BASH_SOURCE}");
 
     if [ $N_BASH -eq 1 ]; then
         this_line
@@ -510,7 +533,7 @@ function plecho() {
     else
         ddecho "${TAB}not called by ${SHELL##*/}"
         # get the line where the function is defined
-        local line_func_def=$(find_func_line "${func}" "${sour}" 2>/dev/null);
+        local line_func_def=$(find_func_line "${func}" "${sour}");
     fi
 
     if [[ "${bottom}" == "main" ]] || [[ "${bottom}" == "source" ]]; then
