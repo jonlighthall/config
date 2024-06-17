@@ -4,7 +4,8 @@
 start_time=$(date +%s%N)
 
 # load bash utilities
-fpretty="${HOME}/config/.bashrc_pretty"
+config_dir="${HOME}/config"
+fpretty="${config_dir}/.bashrc_pretty"
 if [ -e "$fpretty" ]; then
     source "$fpretty" -f
     set_traps
