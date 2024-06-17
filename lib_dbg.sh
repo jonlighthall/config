@@ -20,8 +20,13 @@ export   SPACE='\x1B[30;106m'             # highlight white space
 export    TRUE='\x1B[1;32mtrue\x1B[0m'  #
 export   FALSE='\x1B[1;31mfalse\x1B[0m' #
 
+# DEBUG = 0 print line in file and called function
+# DEBUG = 1 print calling function
+# DEBUG = 2 print calling function line def
+# DEBUG = 3 print calling function line
+
 libDEBUG=1
-unset libDEBUG
+#unset libDEBUG
 
 function set_fcol() {
     local -i N=9
@@ -51,7 +56,7 @@ function lec_mes () {
     if [ $N_BASH -gt 1 ]; then
         echo -en "line ${BASH_LINENO[1]} "
     fi
-    echo -en "called on line ${GRL}"
+    echo -en "called by line ${GRL}"
 }
 
 # This function print the result to STDOUT. All outher output is printed to
@@ -59,7 +64,9 @@ function lec_mes () {
 # view degugging information, do no redirect function all output.
 function find_func_line() {
     # set local debug level
-    local -i DEBUG=${libDEBUG:-0}
+    local -i DEBUG=${DEBUG:-0}
+    DEBUG=${libDEBUG:-0}
+    DEBUG=0
 
     # set local debug level
     local -i DEBUG=${libDEBUG:-0}
@@ -186,6 +193,9 @@ function find_func_line() {
 function get_caller() {
     local -i funcDEBUG=0
 
+    # print THIS function name
+    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}" >&2
+
     # clear variables
     unset this_func
     unset this_source
@@ -227,23 +237,51 @@ function get_caller() {
     fi
 
     if [ ${lev} -lt ${fN_FUNC} ]; then
+
+        # BASH_SOURCE counts from zero; get the bottom of the stack
+        local -i fbot_lev=$(($fN_FUNC - 1))
+        local bottom=${FUNCNAME[${fbot_lev}]##*/}
+        ddecho "${TAB}bottom of stack is $bottom"
+        if [[ "${bottom}" == "main" ]] || [[ "${bottom}" == "source" ]]; then
+            # the function is call from bash
+            ddecho -e "${TAB}called by ${SHELL##*/}"
+            ddecho "${TAB}N_BASH = ${fN_FUNC}"
+            ddecho "${TAB}function level = $fbot_lev"
+        fi
+
         # get calling function source
         get_source=${BASH_SOURCE[lev]}
         # get calling function source file
         get_bash=${BASH_SOURCE[lev]##*/}
-
         # get calling function name
         get_func=${FUNCNAME[lev]}
-        # get line in calling function where this tunction was called
-        get_func_line=${BASH_LINENO[this_lev]}
-        # get calling function definition line
+
+        # get line numbers
         if [[ "${get_func}" == "main" ]] || [[ "${get_func}" == "source" ]]; then
+            # get line in calling function where this tunction was called
+            get_func_line=-1
+            # get calling function definition line
             line_def=-1
-            get_file_line=-1
-        else
-            line_def=$(find_func_line "${get_func}" "${get_source}");
             # get line in calling function source file
-            get_file_line=$((${line_def}+${get_func_line}))
+            get_file_line=${BASH_LINENO[this_lev]}
+        else if [[ "${bottom}" == "main" ]] || [[ "${bottom}" == "source" ]]; then
+                 # get line in calling function where this tunction was called
+                 get_func_line=-2
+                 # get calling function definition line
+                 line_def=$(find_func_line "${get_func}" "${get_source}");
+                 # get line in calling function source file
+                 get_file_line=${BASH_LINENO[this_lev]}
+                 #            get_file_line=-2
+
+             else
+                 # get line in calling function where this tunction was called
+                 get_func_line=${BASH_LINENO[this_lev]}
+                 # get calling function definition line
+                 line_def=$(find_func_line "${get_func}" "${get_source}");
+                 # get line in calling function source file
+                 get_file_line=$((${line_def}+${get_func_line}))
+                 #            get_file_line=-2
+             fi
         fi
     fi
     fecho "done with get caller"
@@ -266,6 +304,12 @@ function this_line() {
 
     local -i funcDEBUG=0
     funcDEBUG=${libDEBUG:-0}
+    funcDEBUG=0
+
+    # print THIS function name
+    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}" >&2
+
+    fecho "defined on 274: $LINENO"
 
     local do_grep=true;
     local do_before=true;
@@ -309,7 +353,7 @@ function this_line() {
 
     get_caller
 
-    #   if $do_grep; then
+    if $do_grep; then
     # print grep-like match
     echo -en "${TAB}"
     [[ ! -z "$@" ]] && [ $do_before = true ] && echo -en "${GRH}${INVERT}$@${NORMAL} "
@@ -327,9 +371,9 @@ function this_line() {
     # BUG: empty when sourced
     ddecho -n "defined on line $line_def"
 
-    #  else
+    else
     # print argument
-    #start_new_line
+    start_new_line
     echo -e "${fcol}"
     in_line "$@"
     # print the line number where THIS function was called in the PARENT function
@@ -340,7 +384,7 @@ function this_line() {
     echo -en "${fcol}on line $get_file_line in ${get_bash} "
     ddecho -n "defined on line $line_def"
     dddecho -n ", function line $get_func_line"
-    #  fi
+    fi
     echo -e "${fcol}${RESET}"
 
     if [[ "$-" == *u* ]]; then
@@ -370,10 +414,15 @@ function lecho() {
     # DEBUG = 2 print calling function line def
     # DEBUG = 3 print calling function line
 
+    local -i funcDEBUG=0
+    funcDEBUG=${libDEBUG:-0}
+
+    dddecho -e "${TAB}${INVERT}${FUNCNAME}${fcol}"
+    fecho "$LINENO: defined on 381"
+
     set_fcol
     start_new_line
     echo -ne "${fcol}"
-    dddecho -e "${TAB}${INVERT}${FUNCNAME}${fcol}"
 
     if [ ${DEBUG:-0} -gt 0 ]  ; then
         local -i tab_wid=${#TAB}
@@ -392,7 +441,7 @@ function lecho() {
     decho  "call stack"
 
     if [ $N_BASH -eq 1 ]; then
-        this_line "BASH"
+        this_line "389 $LINENO ${BASH_LINENO} BASH"
         in_line "$@"
         get_caller
         echo -en "${this_func}() $(lec_mes)${BASH_LINENO}${fcol} from ${BASH##*/} "
@@ -408,7 +457,7 @@ function lecho() {
     # get the file of the calling function
     local sour_dir=$(dirname "${get_source}")
     ddecho "${TAB}source is ${get_source}"
-    ddecho "${TAB}source file is ${YELLOW}${get_bash}${RESET} in ${DIR}${sour_dir}${RESET}"
+    ddecho -e "${TAB}source file is ${YELLOW}${get_bash}${RESET} in ${DIR}${sour_dir}${RESET}"
 
     # BASH_SOURCE counts from zero; get the bottom of the stack
     local -i bot_lev=$(($N_BASH - 1))
@@ -420,10 +469,10 @@ function lecho() {
         ddecho -e "${TAB}called by ${SHELL##*/}"
         ddecho "${TAB}N_BASH = ${N_BASH}"
         ddecho "${TAB}function level = $bot_lev"
-        this_line "369 $LINENO ${BASH_LINENO[@]}"
+        this_line "456 $LINENO ${BASH_LINENO}"
         in_line "$@"
         get_caller
-        echo -e "${this_func}() $(lec_mes)${BASH_LINENO[(($N_BASH-2))]}${fcol} in file ${YELLOW}${BASH_SOURCE[(($N_BASH-1))]##*/}${fcol}"
+        echo -e "${this_func}() $(lec_mes)${get_file_line}${fcol} in file ${YELLOW}${BASH_SOURCE[(($N_BASH-1))]##*/}${fcol}"
         ddecho "exiting ${this_func} on line ${LINENO}"
         return 0
     else
@@ -434,7 +483,7 @@ function lecho() {
         ddecho "${TAB}BASH_LINENO refers to file"
         local -i call_line=$get_func_line
         # print file line
-        this_line "main/source"
+        this_line "431 $LINENO ${BASH_LINENO} main/source"
         in_line "$@"
         get_caller
         echo -en "${this_func}() $(lec_mes)${call_line}${fcol} "
@@ -445,7 +494,7 @@ function lecho() {
         # add the line where to the function is defined within the file and the line within the function
         local -i call_line=$(($line_def + $get_func_line))
         # print file line
-        this_line "394"
+        this_line "487 $LINENO ${BASH_LINENO[@]} "
         in_line "$@"
         get_caller
         echo -n "${this_func}() $(lec_mes)${call_line} "
@@ -518,7 +567,7 @@ function plecho() {
     echo  "call stack"
 
     if [ $N_BASH -eq 1 ]; then
-        this_line "BASH"
+        this_line "514 $LINENO ${BASH_LINENO} BASH"
         in_line "$@"
         get_caller
         echo -en "${this_func}() $(lec_mes)${BASH_LINENO}${fcol} from ${BASH##*/} "
@@ -581,13 +630,13 @@ function plecho() {
         ddecho -e "${TAB}called by ${SHELL##*/}"
         ddecho "${TAB}N_BASH = ${N_BASH}"
         ddecho "${TAB}function level = $func_lev"
-        this_line "main/source: shell"
+        this_line "572 $LINENO ${BASH_LINENO} main/source: shell"
         in_line "$@"
         echo -e "${FUNCNAME[(($func_lev-1))]}() $(lec_mes)${BASH_LINENO[(($func_lev-1))]}${fcol} in file ${YELLOW}${BASH_SOURCE[$func_lev]##*/}${RESET}"
         itab
         ((--func_lev))
         ddecho -e "${TAB}${BASH_SOURCE[$func_lev]##*/}${RESET} called by ${SHELL##*/}"
-        this_line "shell"
+        this_line "578 $LINENO ${BASH_LINENO} shell"
         ddecho -e "${TAB}${FUNCNAME[(($func_lev-1))]}() $(lec_mes)${BASH_LINENO[(($func_lev-1))]}${RESET} in file ${YELLOW}${BASH_SOURCE[$func_lev]##*/}${RESET}"
 
         decho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
@@ -603,7 +652,7 @@ function plecho() {
         ddecho "${TAB}BASH_LINENO refers to file"
         local -i call_line=$get_func_line
         # print file line
-        this_line "main/source: file"
+        this_line "594 $LINENO ${BASH_LINENO} main/source: file"
         in_line "$@"
         get_caller
         echo -en "${this_func}() $(lec_mes)${call_line}${fcol} "
@@ -612,9 +661,9 @@ function plecho() {
         ddecho "${TAB}BASH_LINENO refers to function"
         # get the line in the file where the function is called
         # add the line where to the function is defined within the file and the line within the function
-        local -i call_line=$(($line_def -1 + $func_line))
+        local -i call_line=$(($line_def + $func_line))
         # print file line
-        this_line "556"
+        this_line "650 $LINENO ${BASH_LINENO}"
         in_line "$@"
         get_caller
         echo -n "${this_func}() $(lec_mes)${call_line} "
