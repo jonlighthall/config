@@ -379,7 +379,6 @@ function do_cmd() {
     # reset formatting
     unset_color
     if [ $DEBUG -gt 0 ]; then
-        lecho "why?"
         dtab
     fi
     return $RETVAL
@@ -527,7 +526,6 @@ function do_cmd_stdbuf() {
     unset_color
     dtab ${FMT_TAB}
     if [ $DEBUG -gt 0 ]; then
-        lecho "why?"
         dtab
     fi
     return $RETVAL

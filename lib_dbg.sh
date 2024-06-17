@@ -55,7 +55,7 @@ function lec_mes () {
 # redirect function all output.
 function find_func_line() {
     # set local debug level
-    local -i DEBUG=3
+    local -i DEBUG=0
 
     # print THIS function name
     dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}" >&2
@@ -76,8 +76,10 @@ function find_func_line() {
     pat="$(declare -f ${func} | head -1 | sed 's/ /[ ]*/;s/[ ]*$//;s/)/&[ \\n\\r{]*$/')"
     decho "${TAB}base pattern: $pat" >&2
     itab
-    grep -n "${pat}" "${src}" --color=always | sed "s/^/${TAB}/" >&2
-    dtab
+    if [ $DEBUG -gt 0 ]; then 
+        grep -n "${pat}" "${src}" --color=always | sed "s/^/${TAB}/" >&2
+    fi
+#    dtab
 
     if [[ "$-" == "*e*" ]]; then
         old_opts=$(echo "$-")
@@ -90,7 +92,6 @@ function find_func_line() {
     local epat="^[ ]*${pat}"
     itab
     decho "${TAB}extended pattern: $epat" >&2
-
     if [ ! -z "$(grep "${epat}" "${src}")" ]; then
         decho "${TAB}found without function" >&2
     else
@@ -113,7 +114,9 @@ function find_func_line() {
     # display results
     decho "${TAB}matching line:" >&2
     itab
-    grep -n "${epat}" "${src}" --color=always | sed "s/^/${TAB}/" >&2
+    if [ $DEBUG -gt 0 ]; then 
+        grep -n "${epat}" "${src}" --color=always | sed "s/^/${TAB}/" >&2
+    fi
     if [ $(grep -n "${epat}" "${src}" | wc -l) -eq 1 ]; then
         decho "${TAB}OK" >&2
     else
@@ -127,7 +130,9 @@ function find_func_line() {
     # get line number
     local -i lin=$(grep -n "${epat}" "${src}" | awk -F: '{print$1}')
     decho -e "${TAB}${BOLD}pattern found on line ${lin}${RESET}" >&2
-    decho $lin >&2
+    itab
+    decho "${TAB}output: $lin" >&2
+    dtab
 
     # The function line number counts from the open bracket, not the function name declaration
     # line. If the two are not on the same line, increment the line counter.
@@ -179,12 +184,14 @@ function get_caller() {
         # get function source
         this_source=${BASH_SOURCE[this_lev]}
         # get line definition
+
         this_def=$(find_func_line "${this_func}" "${this_source}" 2>/dev/null);
         # get function source file
         this_bash=${this_source##*/}
     fi
 
     if [ ${lev} -lt ${fN_FUNC} ]; then
+
         # get calling function source
         get_source=${BASH_SOURCE[lev]}
         # get calling function source file
@@ -195,14 +202,17 @@ function get_caller() {
         # get line in calling function where this tunction was called
         get_func_line=${BASH_LINENO[this_lev]}
         # get calling function definition line
-        line_def=$(find_func_line "${get_func}" "${get_source}" 2>/dev/null);
+
+        line_def=$(find_func_line "${get_func}" "${get_source}");
         # get line in calling function source file
         get_file_line=$((${line_def}+${get_func_line}))
     fi
+
     fecho "done with get caller"
 }
 
 function this_line() {
+
     set -u
     export TAB=${TAB-}
 
@@ -259,10 +269,12 @@ function this_line() {
     fi
 
     get_caller
+
     #   if $do_grep; then
     # print grep-like match
     echo -en "${TAB}"
     [[ ! -z "$@" ]] && [ $do_before = true ] && echo -en "${GRH}${INVERT}$@${NORMAL} "
+    # BUG: use get_func_line when sourced
     echo -en "${GRF}${get_bash}${GRS}:${GRL}${get_file_line}${GRS}: ${GRH}"
     if [[ -z "$@" ]] ||  [ $do_before = true ]; then
         echo -en "${this_func}() "
@@ -270,8 +282,10 @@ function this_line() {
         echo -en "${INVERT}$@${NORMAL} "
     fi
     ddecho -n "called by "
+    # BUG: this gives file line when sourced
     dddecho -n "line $get_func_line of "
     decho -n "${get_func}() "
+    # BUG: empty when sourced
     ddecho -n "defined on line $line_def"
 
     #  else
