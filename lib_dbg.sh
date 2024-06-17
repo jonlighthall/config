@@ -235,14 +235,12 @@ function get_caller() {
         # get function source
         this_source=${BASH_SOURCE[this_lev]}
         # get line definition
-
         this_def=$(find_func_line "${this_func}" "${this_source}" 2>/dev/null);
         # get function source file
         this_bash=${this_source##*/}
     fi
 
     if [ ${lev} -lt ${fN_FUNC} ]; then
-
         # get calling function source
         get_source=${BASH_SOURCE[lev]}
         # get calling function source file
@@ -258,12 +256,10 @@ function get_caller() {
         # get line in calling function source file
         get_file_line=$((${line_def}+${get_func_line}))
     fi
-
     fecho "done with get caller"
 }
 
 function this_line() {
-
     set -u
     export TAB=${TAB-}
 
@@ -401,10 +397,10 @@ function lecho() {
 
     # get the lenght of the execution stack
     local -i N_BASH=${#BASH_SOURCE[@]}
-    echo -n "${TAB}there are ${N_BASH} entries in the "
+    decho -n "${TAB}there are ${N_BASH} entries in the "
     get_caller
-    echo -n "${this_func}() "
-    echo  "call stack"
+    decho -n "${this_func}() "
+    decho  "call stack"
 
     if [ $N_BASH -eq 1 ]; then
         this_line "BASH"
