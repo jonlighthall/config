@@ -23,9 +23,9 @@ if [[ "$-" == *i* ]];then
         echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
     fi
 else
-    echo "${TAB-}${BASH_SOURCE##*/}: non-interactive shell" >&2
-    echo -e "${TAB-}\x1B[1;31mWARNING: ${BASH_SOURCE##*/} is intended for interactive shells only\x1B[m" >&2
-    echo -e "${TAB-}returning..." >&2
+    echo -n "${BASH_SOURCE}: non-interactive shell" >&2
+    echo -en "\x1B[1;31m intended for interactive shells only\x1B[m " >&2
+    echo -e "returning..." >&2
     # If not running interactively, don't do anything
     return
 fi
