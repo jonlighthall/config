@@ -62,7 +62,29 @@ function find_func_line() {
 
     # set function name
     local func=$1
-    decho "${TAB}function: $func" >&2
+    decho -n "${TAB}function: $func... " >&2
+
+    declare -f ${func} >/dev/null
+    local -i RETVAL=$?
+
+    if [ $RETVAL -eq 0 ]; then
+
+        if [ -z "$(declare -f ${func})" ]; then
+            decho -e "${BAD}FAIL${RESET} empty"  >&2
+            return 1
+        else
+            decho -e "${GOOD}OK${RESET}"  >&2
+        fi
+
+    else
+        decho -e "${BAD}FAIL${RESET} not defined"  >&2
+        return 1
+
+    fi
+
+    local pat="$(declare -f ${func} | head -1 | sed 's/ /[ ]*/;s/[ ]*$//;s/)/&[ \\n\\r{]*$/')"
+    decho "${TAB}base pattern: $pat" >&2
+    itab
 
     # get source file
     local src=$2
@@ -73,13 +95,10 @@ function find_func_line() {
     #   HEAD    - get declaration line
     #   SED     - remove whitespace
 
-    pat="$(declare -f ${func} | head -1 | sed 's/ /[ ]*/;s/[ ]*$//;s/)/&[ \\n\\r{]*$/')"
-    decho "${TAB}base pattern: $pat" >&2
-    itab
-    if [ $DEBUG -gt 0 ]; then 
+    if [ $DEBUG -gt 0 ]; then
         grep -n "${pat}" "${src}" --color=always | sed "s/^/${TAB}/" >&2
     fi
-#    dtab
+    #    dtab
 
     if [[ "$-" == *e* ]]; then
         old_opts=$(echo "$-")
@@ -115,13 +134,13 @@ function find_func_line() {
     # display results
     decho "${TAB}matching line:" >&2
     itab
-    if [ $DEBUG -gt 0 ]; then 
+    if [ $DEBUG -gt 0 ]; then
         grep -n "${epat}" "${src}" --color=always | sed "s/^/${TAB}/" >&2
     fi
     if [ $(grep -n "${epat}" "${src}" | wc -l) -eq 1 ]; then
-        decho "${TAB}OK" >&2
+        decho -e "${TAB}${GOOD}OK${RESET} pattern unique" >&2
     else
-        decho "${TAB}pattern not unique" >&2
+        decho -e "${TAB}${BAD}FAIL${RESET} pattern not unique" >&2
         return 1
     fi
     reset_shell ${old_opts-''}
