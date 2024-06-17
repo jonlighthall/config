@@ -899,8 +899,6 @@ function enable_exit_on_fail() {
 function exit_on_fail() {
     enable_exit_on_fail
     echo -e "${TAB}${YELLOW}\x1b[7m${BASH_SOURCE[1]##*/} failed\x1b[0m"
-    lecho
-    plecho
 
     return 1
     # -----------------
