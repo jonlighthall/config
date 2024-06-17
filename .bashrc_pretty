@@ -44,7 +44,7 @@ fi
 declare -i DEBUG=${DEBUG:=0} # assign default value if DEBUG is unset or null
 
 # If running interactively, print source
-if [[ "$-" == "*i*" ]] && [ ${DEBUG:-0} -gt 0 ]; then
+if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
     echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
 fi
 
@@ -143,7 +143,7 @@ function load_libs() {
         # important if sourcing this file directly from shell
         fname="${src_dir_phys}/lib_${library}.sh"
         if [ -e "${fname}" ]; then
-            if [[ "$-" == "*i*" ]] && [ ${DEBUG:-0} -gt 0 ]; then
+            if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
                 echo "${TAB}loading $(basename ${fname})"
             fi
             source ${fname}
@@ -154,7 +154,7 @@ function load_libs() {
     
     fname="${HOME}/utils/bash/git/lib_git.sh"
     if [ -e "${fname}" ]; then
-        if [[ "$-" == "*i*" ]] && [ ${DEBUG:-0} -gt 0 ]; then
+        if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
             echo "${TAB}loading $(basename ${fname})"
         fi
         source ${fname}
@@ -184,7 +184,7 @@ else
 fi
 
 # check if running interactively
-if [[ "$-" == "*i*" ]]; then
+if [[ "$-" == *i* ]]; then
     set_tab
     print_ribbon
     decho "${TAB}${BASH_SOURCE##*/}: DEBUG = $DEBUG"
