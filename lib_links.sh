@@ -596,7 +596,7 @@ function do_make_dir() {
 
     # Since the specified directory may not exist, a return code of 1 from check_target is
     # valid. Disable exit-on-error and turn off traps.
-    if [[ "$-" == "*e*" ]]; then
+    if [[ "$-" == *e* ]]; then
         old_opts=$(echo "$-")
         set +e
     fi

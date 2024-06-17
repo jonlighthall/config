@@ -50,7 +50,7 @@ function set_tab() {
     fecho "getting length of stack..."
     local -i N_BASH=${#BASH_SOURCE[@]}
     fecho "${fTAB}stack size is $N_BASH"
-    if [[ "$-" == "*i*" ]]; then
+    if [[ "$-" == *i* ]]; then
         fecho "${fTAB}shell is interactive"
     fi
 
@@ -136,7 +136,7 @@ function set_tab_shell() {
     [ $funcDEBUG -gt 0 ] && print_stack
     local -i N_BASH=${#BASH_SOURCE[@]}
     fecho "${fTAB}N_BASH = $N_BASH"
-    if [[ "$-" == "*i*" ]]; then
+    if [[ "$-" == *i* ]]; then
         fecho "interactive"
     fi
 

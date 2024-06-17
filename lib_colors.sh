@@ -803,7 +803,7 @@ function print_pretty_cbar() {
 }
 
 function print_pretty_status() {
-    if [[ "$-" == "*i*" ]] && [ ${DEBUG:-0} -gt 0 ]; then
+    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
         print_pretty_cbar
     fi
 
