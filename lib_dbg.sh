@@ -81,7 +81,7 @@ function find_func_line() {
     fi
 #    dtab
 
-    if [[ "$-" == "*e*" ]]; then
+    if [[ "$-" == *e* ]]; then
         old_opts=$(echo "$-")
         set +e
     fi
@@ -92,6 +92,7 @@ function find_func_line() {
     local epat="^[ ]*${pat}"
     itab
     decho "${TAB}extended pattern: $epat" >&2
+
     if [ ! -z "$(grep "${epat}" "${src}")" ]; then
         decho "${TAB}found without function" >&2
     else

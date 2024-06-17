@@ -1,7 +1,7 @@
 # User-dependent .bash_profile for Cygwin
 
 # If not running interactively, don't do anything
-[[ "$-" != "*i*" ]] && return
+[[ "$-" != *i* ]] && return
 
 start_time=$SECONDS
 # Verbose bash prints?

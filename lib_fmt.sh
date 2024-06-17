@@ -292,7 +292,7 @@ function extract_color() {
     dtab
 
     # reset shell options before returning to shell
-    if [[ "$-" == "*u*" ]]; then
+    if [[ "$-" == *u* ]]; then
         set +u
     fi
 }
@@ -545,7 +545,7 @@ function do_cmd_safe() {
 
     # set shell options
     unset_traps
-    if [[ "$-" == "*e*" ]]; then
+    if [[ "$-" == *e* ]]; then
         echo -n "${TAB}setting shell options..."
         old_opts=$(echo "$-")
         # exit on errors must be turned off; otherwise shell will exit...

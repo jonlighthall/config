@@ -20,7 +20,7 @@ function test_that_line() {
     hello                                             #12
     this_line "this is line 21"                       #13
     this_line "there"                                 #14
-    if [[ "$-" == "*u*" ]]; then
+    if [[ "$-" == *u* ]]; then
         set +u
     fi
 }

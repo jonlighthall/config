@@ -309,7 +309,7 @@ function print_return() {
 
     print_done
     # reset shell options before returning to shell
-    if [[ "$-" == "*u*" ]]; then
+    if [[ "$-" == *u* ]]; then
         set +u
     fi
 }
@@ -506,7 +506,7 @@ function print_error() {
     echo -e "${spx} ${GRAY}RETVAL=${ERR_RETVAL}${RESET}"
     hline 38 ${RED}E
     # reset shell options before returning to shell
-    if [[ "$-" == "*u*" ]]; then
+    if [[ "$-" == *u* ]]; then
         set +u
     fi
 
@@ -540,7 +540,7 @@ function test_traps() {
     echo "traps: "
     trap -p
 
-    if [[ "$-" == "*u*" ]]; then
+    if [[ "$-" == *u* ]]; then
         set +u
     fi
 }
@@ -715,7 +715,7 @@ function set_exit() {
     # set shell options
     decho "${TAB}$-"
     decho -n "${TAB}setting shell options... "
-    if [[ "$-" == "*u*" ]]; then
+    if [[ "$-" == *u* ]]; then
         set +u
     fi
 
@@ -912,10 +912,10 @@ function exit_on_fail() {
         #dtab
 
         #decho "${TAB}shell options: $-"
-        if [[ "$-" == "*i*" ]]; then
+        if [[ "$-" == *i* ]]; then
             #  itab
             #  decho "${TAB}shell is interactive"
-            if [[ "$-" == "*e*" ]]; then
+            if [[ "$-" == *e* ]]; then
                 #decho -e "${TAB}turning off exit-on-errors..."
                 # turn off exit-on-errors, otherwise shell will exit
                 set +e
