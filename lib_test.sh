@@ -2,14 +2,14 @@
 
 function test_this_line() {
     # print file line
-    this_line
+    this_line $LINENO ${BASH_LINENO[@]}
 }
 
 function test_that_line() {
     echo "${TAB}THIS FUNCTION IS DEFINED ON LINE 8"   #1
     # print file line                                 #2
     this_line "here"                                  #3
-    # print hard-coded examples                       #4
+    # print hard-coded examples                       #4 here, LINENO gives line in function
     echo -e "${TAB}${GRH}${INVERT}hello${RESET} ${GRF}${BASH_SOURCE##*/}${GRS}:${GRL}$LINENO${GRS}: ${GRH}echo()${RESET} ${dcolor[7]}${FUNCNAME}()${RESET}" >&2 #5
     echo -e "${TAB}${GRH}${INVERT}hello${RESET} ${GRF}${BASH_SOURCE##*/}${GRS}:${GRL}$LINENO${GRS}: ${GRH}echo()${RESET}" >&2 #6
     this_line "hello"                                 #7
