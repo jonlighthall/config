@@ -38,7 +38,7 @@ function set_fcol() {
 function in_line() {
     set_fcol
     echo -en "${TAB}${fcol}"
-    if [ ! -z "$@" ]; then
+    if [[ ! -z "$@" ]]; then
         echo -en "${INVERT}$@${NORMAL} <- ${fcol}"
     fi
 }
@@ -76,8 +76,10 @@ function find_func_line() {
     pat="$(declare -f ${func} | head -1 | sed 's/ /[ ]*/;s/[ ]*$//;s/)/&[ \\n\\r{]*$/')"
     decho "${TAB}base pattern: $pat" >&2
     itab
-    grep -n "${pat}" "${src}" --color=always | sed "s/^/${TAB}/" >&2
-    dtab
+    if [ $DEBUG -gt 0 ]; then 
+        grep -n "${pat}" "${src}" --color=always | sed "s/^/${TAB}/" >&2
+    fi
+#    dtab
 
     if [[ "$-" == *e* ]]; then
         old_opts=$(echo "$-")
@@ -113,7 +115,9 @@ function find_func_line() {
     # display results
     decho "${TAB}matching line:" >&2
     itab
-    grep -n "${epat}" "${src}" --color=always | sed "s/^/${TAB}/" >&2
+    if [ $DEBUG -gt 0 ]; then 
+        grep -n "${epat}" "${src}" --color=always | sed "s/^/${TAB}/" >&2
+    fi
     if [ $(grep -n "${epat}" "${src}" | wc -l) -eq 1 ]; then
         decho "${TAB}OK" >&2
     else
@@ -127,7 +131,9 @@ function find_func_line() {
     # get line number
     local -i lin=$(grep -n "${epat}" "${src}" | awk -F: '{print$1}')
     decho -e "${TAB}${BOLD}pattern found on line ${lin}${RESET}" >&2
-    decho $lin >&2
+    itab
+    decho "${TAB}output: $lin" >&2
+    dtab
 
     # The function line number counts from the open bracket, not the function name declaration
     # line. If the two are not on the same line, increment the line counter.
@@ -141,6 +147,7 @@ function find_func_line() {
 }
 
 function get_caller() {
+    # clear variables
     unset this_func
     unset this_def
     unset this_bash
@@ -150,6 +157,7 @@ function get_caller() {
     unset get_func_line
     unset get_file_line
 
+    # define stack level number
     local -i lev
     if [ $# -eq 0 ]; then
         lev=1
@@ -159,27 +167,39 @@ function get_caller() {
 
     #print_stack
     fecho " in lev = $lev"
+    # increment level so that index matches that of calling function
     ((++lev))
     fecho "out lev = $lev"
 
     local -i fN_FUNC=${#FUNCNAME[@]}
+    local -i this_lev=$((lev-1))
 
+    # define stack level for "this" function; actually the calling function (default) or the
+    # function one level below the target stack level (argument)
     if [ ${fN_FUNC} -ge 1 ]; then
-        this_func=${FUNCNAME[lev-1]}
+        # get function
+        this_func=${FUNCNAME[this_lev]}
+        # get function source
+        this_source=${BASH_SOURCE[this_lev]}
         # get line definition
-        this_def=$(find_func_line "${this_func}" "${BASH_SOURCE[lev-1]}" 2>/dev/null);
-        this_bash=${BASH_SOURCE[lev-1]##*/}
+        this_def=$(find_func_line "${this_func}" "${this_source}" 2>/dev/null);
+        # get function source file
+        this_bash=${this_source##*/}
     fi
 
     if [ ${lev} -lt ${fN_FUNC} ]; then
-        # get calling function name
-        get_func=${FUNCNAME[lev]}
-        # get calling function definition line
-        line_def=$(find_func_line "${get_func}" "${BASH_SOURCE[lev]}" 2>/dev/null);
+        # get calling function source
+        get_source=${BASH_SOURCE[lev]}
         # get calling function source file
         get_bash=${BASH_SOURCE[lev]##*/}
+
+        # get calling function name
+        get_func=${FUNCNAME[lev]}
         # get line in calling function where this tunction was called
-        get_func_line=${BASH_LINENO[lev-1]}
+        get_func_line=${BASH_LINENO[this_lev]}
+        # get calling function definition line
+
+        line_def=$(find_func_line "${get_func}" "${get_source}");
         # get line in calling function source file
         get_file_line=$((${line_def}+${get_func_line}))
     fi
@@ -199,6 +219,8 @@ function this_line() {
     # manual
     DEBUG=3
 
+    local -i funcDEBUG=0
+
     local do_grep=true;
     local do_before=true;
     local do_extra=true;
@@ -212,9 +234,8 @@ function this_line() {
     fecho "${TAB}fN_STACK = $fN_STACK"
 
     if $do_defs && [ $DEBUG -gt 1 ]; then
-
         for ((lev = 0; lev < $fN_STACK ; lev++)); do
-            fecho $lev
+            fecho "lev = $lev (definition)"
             get_caller $lev
             # print this function definition line
             ddecho -n "${TAB}"
@@ -224,11 +245,11 @@ function this_line() {
             ddecho -n "in file ${get_bash}"
             ddecho
         done
-        fecho "done"
+        fecho "done printing definitions"
     fi
     if $do_invo && [ $DEBUG -gt 1 ] ; then
         for ((lev = 1; lev < $fN_STACK; lev++)); do
-            fecho "$lev"
+            fecho "lev = $lev (invocation)"
             get_caller $lev
             # print calling function line in source file
             ddecho -n "${TAB}${this_func}() called by "
@@ -237,6 +258,7 @@ function this_line() {
             ddecho -n "on line $get_file_line of ${get_bash}"
             ddecho
         done
+        fecho "done printing invocations"
     fi
 
     get_caller
@@ -310,7 +332,7 @@ function lecho() {
     line_def=$(find_func_line "${FUNCNAME}" "${BASH_SOURCE}" 2>/dev/null);
 
     if [ $N_BASH -eq 1 ]; then
-        this_line
+        this_line "BASH"
         in_line "$@"
         echo -e "${FUNCNAME}() $(lec_mes)${BASH_LINENO}${fcol} from ${BASH##*/}"
         ddecho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
@@ -395,6 +417,7 @@ function plecho() {
     # save shell options
     old_opts=$(echo "$-")
 
+    # set local debug level
     local -i DEBUG=${DEBUG:-1}
     # DEBUG=2
     dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
