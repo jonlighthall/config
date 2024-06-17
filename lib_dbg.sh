@@ -21,43 +21,7 @@ export    TRUE='\x1B[1;32mtrue\x1B[0m'  #
 export   FALSE='\x1B[1;31mfalse\x1B[0m' #
 
 libDEBUG=1
-#unset libDEBUG
-
-function tl() {
-    # re-worked "this line"
-
-    # turn printing on or off
-    local -i do_print=1
-
-    if [ $do_print = 1 ]; then
-        # print grep-like file and line number
-        print_stack
-        echo -en "${TAB}${GRF}"
-        if [[ ${#FUNCNAME[@]} -gt 1 ]]; then
-            echo -en "${BASH_SOURCE[1]##*/}"
-        else
-            echo -en "${SHELL##*/}"
-        fi
-        echo -en "${GRS}:${GRL}${BASH_LINENO[0]}${RESET}"
-        # check if caller is function
-        if [[ ${#FUNCNAME[@]} -gt 1 ]]; then
-            this_func=${FUNCNAME[1]}
-            # check if caller is CLI, print function name if applicable
-            if [[ "${this_func}" == "main" ]] || [[ "${this_func}" == "source" ]]; then
-                : #echo
-            else
-                echo -en "${GRS}: ${GRH}${this_func}()${RESET}"
-            fi
-        fi
-        # print argument, if present
-        if [[ ! -z "$@" ]]; then
-            echo -e " ${INVERT}$@${RESET}"
-        else
-            echo
-        fi
-    fi
-    return 0
-}
+unset libDEBUG
 
 function set_fcol() {
     local -i N=9
@@ -95,7 +59,7 @@ function lec_mes () {
 # view degugging information, do no redirect function all output.
 function find_func_line() {
     # set local debug level
-    local -i DEBUG=0
+    local -i DEBUG=${libDEBUG:-0}
 
     # set local debug level
     local -i DEBUG=${libDEBUG:-0}
@@ -106,28 +70,6 @@ function find_func_line() {
     # set function name
     local func=$1
     decho -n "${TAB}function: $func... " >&2
-
-    declare -f ${func} >/dev/null
-    local -i RETVAL=$?
-
-    if [ $RETVAL -eq 0 ]; then
-
-        if [ -z "$(declare -f ${func})" ]; then
-            decho -e "${BAD}FAIL${RESET} empty"  >&2
-            return 1
-        else
-            decho -e "${GOOD}OK${RESET}"  >&2
-        fi
-
-    else
-        decho -e "${BAD}FAIL${RESET} not defined"  >&2
-        return 1
-
-    fi
-
-    local pat="$(declare -f ${func} | head -1 | sed 's/ /[ ]*/;s/[ ]*$//;s/)/&[ \\n\\r{]*$/')"
-    decho "${TAB}base pattern: $pat" >&2
-    itab
 
     # get function definition
     declare -f ${func} >/dev/null
@@ -148,12 +90,32 @@ function find_func_line() {
     #   DECLARE - print function definition
     #   HEAD    - get declaration line
     #   SED     - remove whitespace
+    local pat="$(declare -f ${func} | head -1 | sed 's/ /[ ]*/;s/[ ]*$//;s/)/&[ \\n\\r{]*$/')"
+    decho "${TAB}base pattern: $pat" >&2
+    itab
 
+    # get function definition
+    declare -f ${func} >/dev/null
+    local -i RETVAL=$?
+    if [ $RETVAL -eq 0 ]; then
+        if [ -z "$(declare -f ${func})" ]; then
+            decho -e "${BAD}FAIL${RESET} empty"  >&2
+            return 1
+        else
+            decho -e "${GOOD}OK${RESET}"  >&2
+        fi
+    else
+        decho -e "${BAD}FAIL${RESET} not defined"  >&2
+        return 1
+    fi
+
+    # print matching line
     if [ $DEBUG -gt 0 ]; then
         grep -n "${pat}" "${src}" --color=always | sed "s/^/${TAB}/" >&2
     fi
     #    dtab
 
+    # reset shell options
     if [[ "$-" == *e* ]]; then
         old_opts=$(echo "$-")
         set +e
@@ -255,7 +217,11 @@ function get_caller() {
         # get function source
         this_source=${BASH_SOURCE[this_lev]}
         # get line definition
-        this_def=$(find_func_line "${this_func}" "${this_source}" 2>/dev/null);
+        if [[ "${this_func}" == "main" ]] || [[ "${this_func}" == "source" ]]; then
+            this_def=-1
+        else
+            this_def=$(find_func_line "${this_func}" "${this_source}");
+        fi
         # get function source file
         this_bash=${this_source##*/}
     fi
@@ -271,10 +237,14 @@ function get_caller() {
         # get line in calling function where this tunction was called
         get_func_line=${BASH_LINENO[this_lev]}
         # get calling function definition line
-
-        line_def=$(find_func_line "${get_func}" "${get_source}");
-        # get line in calling function source file
-        get_file_line=$((${line_def}+${get_func_line}))
+        if [[ "${get_func}" == "main" ]] || [[ "${get_func}" == "source" ]]; then
+            line_def=-1
+            get_file_line=-1
+        else
+            line_def=$(find_func_line "${get_func}" "${get_source}");
+            # get line in calling function source file
+            get_file_line=$((${line_def}+${get_func_line}))
+        fi
     fi
     fecho "done with get caller"
 }
@@ -292,12 +262,10 @@ function this_line() {
     local -i DEBUG=${DEBUG:-0}
     # manual
     DEBUG=3
-    #DEBUG=${libDEBUG:-0}
+    DEBUG=${libDEBUG:-0}
 
     local -i funcDEBUG=0
-    #funcDEBUG=${libDEBUG:-0}
-
-    local -i funcDEBUG=0
+    funcDEBUG=${libDEBUG:-0}
 
     local do_grep=true;
     local do_before=true;
@@ -395,6 +363,7 @@ function lecho() {
     local -i oldDEBUG=$DEBUG
     # set manually
     DEBUG=0
+    DEBUG=${libDEBUG:-0}
 
     # DEBUG = 0 print line in file only
     # DEBUG = 1 print calling function
@@ -519,6 +488,7 @@ function plecho() {
     local -i oldDEBUG=$DEBUG
     # set manually
     # DEBUG=2
+    DEBUG=${libDEBUG:-0}
 
     # DEBUG = 0 print line in file only
     # DEBUG = 1 print calling function
