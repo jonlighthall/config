@@ -719,11 +719,14 @@ function set_exit() {
         set +u
     fi
 
+    # clear traps
+    do_clear
+
     if [[ "${RUN_TYPE}" =~ "sourcing" ]]; then
         decho "sourced"
 
-        # set shell options
-
+        # DO NOT trace RETURN and DEBUG traps
+        # (subshells WILL NOT inherit RETURN and DEBUG traps from shell)
         set +T
         decho "done"
         decho "${TAB}$-"
@@ -733,7 +736,6 @@ function set_exit() {
         dddecho "done"
         dtab
         return 0
-
     else
         decho "not sourced"
 
@@ -749,7 +751,6 @@ function set_exit() {
         exit 0
     fi
     print_traps
-
 }
 
 # unset ERR and EXIT traps, saving current values
