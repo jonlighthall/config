@@ -338,7 +338,7 @@ function do_link() {
     itab
     echo -en "${GRH}"
     hline 72
-    echo "${TAB}making link... "
+    echo "${TAB}${GRH}making link... "
     # check if target file is authorized_keys
     if [[ "${target}" == *"_keys"* ]]; then
         # make a physical link
@@ -352,7 +352,6 @@ function do_link() {
         RETVAL=$?
     fi
     hline 72
-    echo -en "${RESET}"
     dtab 2
     return $RETVAL
 }
@@ -539,13 +538,12 @@ function do_make_dir() {
         itab
         echo -en "${TAB}${GRH}"
         hline 72
-        echo "${TAB}making directory... "     
+        echo "${TAB}${GRH}making directory... "     
         echo -n "${TAB}"
         mkdir -pv "${target}"
         RETVAL=$?
         echo -ne "${TAB}"
         hline 72
-        echo -en "${RESET}"
         dtab
     fi
 
