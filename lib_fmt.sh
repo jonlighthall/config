@@ -153,7 +153,7 @@ function hline() {
     local -i i
     echo -ne "${TAB}"
     for ((i = 1; i <= $N; i++)); do echo -en "$m"; done
-    echo -ne ${RESET}
+    echo ${RESET}
 }
 
 # print text between two bars
