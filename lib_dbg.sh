@@ -60,7 +60,7 @@ function find_func_line() {
 
     # set local debug level
     local -i DEBUG=${libDEBUG:-0}
-
+    DEBUG=0
     # print THIS function name
     dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}" >&2
 
