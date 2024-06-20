@@ -20,7 +20,7 @@ export    TRUE='\x1B[1;32mtrue\x1B[0m'  #
 export   FALSE='\x1B[1;31mfalse\x1B[0m' #
 
 libDEBUG=1
-unset libDEBUG
+#unset libDEBUG
 
 function set_fcol() {
     local -i N=9
@@ -178,6 +178,10 @@ function get_caller() {
     unset get_func_line
     unset get_file_line
 
+    declare -i line_def
+    declare -i get_func_line
+    declare -i get_file_line
+
     # define stack level number
     local -i lev
     if [ $# -eq 0 ]; then
@@ -248,17 +252,17 @@ function this_line() {
     # set local debug level
     local -i DEBUG=${DEBUG:-0}
     # manual
-    DEBUG=3
-    DEBUG=${libDEBUG:-0}
+    DEBUG=1
+    #DEBUG=${libDEBUG:-0}
 
     local -i funcDEBUG=0
-    funcDEBUG=${libDEBUG:-0}
+    #funcDEBUG=${libDEBUG:-0}
 
     local do_grep=true;
     local do_before=true;
     local do_extra=true;
     local do_defs=false;
-    local do_invo=false;
+    local do_invo=true;
 
     # set function color
     set_fcol
@@ -310,8 +314,13 @@ function this_line() {
         fi
         ddecho -n "called by "
         dddecho -n "line $get_func_line of "
-        decho -n "${get_func}() "
-        ddecho -n "defined on line $line_def"
+        decho -n "${get_func}"
+        if [[ "${get_func}" == "main" ]] || [[ "${get_func}" == "source" ]]; then
+            :
+        else
+            ddecho -n "() "
+            ddecho -n "defined on line $line_def"
+        fi
 
     else
         # print argument
@@ -423,15 +432,16 @@ function lecho() {
         # add the line where to the function is defined within the file and the line within the function
         local -i call_line=$(($line_func_def + $func_line))
         # print file line
-        this_line "360"
+        this_line "427"
         in_line "$@"
-        echo -n "${FUNCNAME}() $(lec_mes)${call_line} "
+        echo -en "${FUNCNAME}() $(lec_mes)${call_line}${fcol} "
         echo -e "in file ${YELLOW}${sour_fil}${fcol}"
         itab
         # print function line
         ddecho -n "${TAB}$(lec_mes)${func_line} "
         ddecho "in function ${func}()"
         dtab
+        echo -e "${RESET}"
     fi
 
     itab

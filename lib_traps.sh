@@ -594,19 +594,12 @@ function check_traps_set() {
 function get_sigs() {
     if [ ! -z "$(trap -p)" ]; then
         if [ ${DEBUG} -gt 1 ]; then
-
-            ddecho "${TAB}traps:"
-            ddecho -e "${TAB}${INVERT}normal print:${NORMAL}"
-            decho $(trap -p)
-
-            ddecho -e "${TAB}${INVERT}function print:${NORMAL}"
             print_traps
 
-            ddecho -e "${TAB}${INVERT}traps echo:${NORMAL}"
-            decho $(trap -p) | sed "s/ \(trap -- \)/\n\1/g;s/^/${TAB}/"
-
             ddecho -e "${TAB}${INVERT}traps echo sig:${NORMAL}"
-            decho $(trap -p) | sed "s/ \(trap -- \)/\n\1/g" |  sed 's/.* //'
+            itab
+            decho $(trap -p) | sed "s/ \(trap -- \)/\n\1/g" |  sed "s/.* //;s/^/${TAB}/"
+            dtab
 
             ddecho -e "${TAB}${INVERT}traps echo sig tr:${NORMAL}"
             decho $(trap -p) | sed "s/ \(trap -- \)/\n\1/g" |  sed 's/.* //' | tr  '\n' ' '
@@ -622,7 +615,6 @@ function get_sigs() {
     else
         export sig=''
     fi
-
 }
 
 check_traps_clear() {
@@ -672,7 +664,8 @@ function set_traps() {
 
     [ $DEBUG -gt 0 ] && start_new_line
     TAB=${TAB=''}
-    decho -e "${TAB}${MAGENTA}\E[7mset traps${RESET}"
+    get_caller
+    decho -e "${TAB}${MAGENTA}\E[7mset traps\E[27m $- ($get_func)${RESET}"
     itab
 
     dddecho "${TAB}$-"
