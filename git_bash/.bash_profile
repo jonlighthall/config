@@ -2,6 +2,7 @@
 # -----------------------------------------------------------------------------------------------
 # User-dependent LOGIN SHELL SETTINGS for Git Bash
 # -----------------------------------------------------------------------------------------------
+#
 # ~/bash_profile -> ~/config/git_bash/.bash_profile
 #
 # Note: this file must use Unix line endings (LF)!
@@ -10,36 +11,57 @@
 #
 # -----------------------------------------------------------------------------------------------
 
-# If not running interactively, don't do anything
-if [[ ! "$-" == *i* ]]; then
-    # turn off "Verbose Bash" conditional prints
-    export VB=false
-else
+# check if running interactively
+if [[ "$-" == *i* ]];then
+    # clear terminal
+    clear
+
     # get starting time in nanoseconds
     declare -i start_time=$(date +%s%N)
-    clear
-    # -------------------------
-    # set debug level if unset
-    export DEBUG=${DEBUG=0}
-    # -------------------------
-    # print source
-    if [ ${DEBUG:-0} -gt 0 ]; then
-        echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
-        # print invoking process
-        called_by=$(ps -o comm= $PPID)
-        echo "${TAB}invoked by ${called_by}"
-    fi
-    # set "Verbose Bash" for conditional prints
+
+    # set tab
+    TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
+    echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
+else
+    # turn off "Verbose Bash" conditional prints
+    export VB=false
+    echo "${TAB-}${BASH_SOURCE##*/}: non-interactive shell" >&2
+    echo -e "${TAB-}\x1B[1;31mWARNING: ${BASH_SOURCE##*/} is intended for interactive shells only\x1B[m" >&2
+    echo -e "${TAB-}returning..." >&2
+    # If not running interactively, don't do anything
+    return
+fi
+
+# check if login shell
+if shopt -q login_shell; then
+    echo -e "${TAB-}${BASH_SOURCE##*/}: \x1B[32mlogin shell\x1B[m" >&2
+else
+    echo "${TAB-}${BASH_SOURCE##*/}: non-login shell" >&2
+    echo -e "${TAB-}\x1B[;31mWARNING: ${BASH_SOURCE##*/} is intended for login-shells only\x1B[m" >&2
+fi
+
+# -------------------------
+# set debug level if unset
+export DEBUG=${DEBUG=0}
+# -------------------------
+
+# print source
+if [ ${DEBUG:-0} -gt 0 ]; then
+    echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+    # print invoking process
+    called_by=$(ps -o comm= $PPID)
+    echo "${TAB}invoked by ${called_by}"
+fi
+# set "Verbose Bash" for conditional prints
+export VB=true
+# clear terminal
+clear -x
+if [ ${DEBUG} -gt 0 ]; then
     export VB=true
-    # clear terminal
-    clear -x
-    if [ ${DEBUG} -gt 0 ]; then
-        export VB=true
-    fi
 fi
 
 config_dir=${HOME}/config
-# load utility functions
+# load bash utilities
 fpretty=${config_dir}/.bashrc_pretty
 if [ -e $fpretty ]; then
     if [ "${VB}" = true ]; then
@@ -60,14 +82,14 @@ if [ -e $fpretty ]; then
 else
     echo "${TAB}$fname not found"
     set +eu
-fi    
+fi
 
 if [ "${VB}" = true ]; then
     print_source
-    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then    
+    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
         print_stack
     fi
-    decho -e "${TAB}verbose bash printing is... ${GOOD}$VB${RESET}"
+    decho -e "${TAB}verbose bash printing is... $TRUE"
 fi
 
 # system dependencies
