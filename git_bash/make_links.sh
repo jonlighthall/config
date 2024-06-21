@@ -3,28 +3,43 @@
 # get starting time in nanoseconds
 start_time=$(date +%s%N)
 
+# define home directory
+home_dir=${HOME}
+if [ -z ${MSYSTEM:+dummy} ]; then
+    echo "MSYSTEM is unset or null"
+    home_dir=/mnt/c/Users/${USER}
+else
+    #echo "not empty"
+    home_dir=/c/Users/${USERNAME}
+fi
+if [[ $home_dir == $HOME ]]; then
+   :  #echo "no change"
+else
+    echo "HOME is redefined"
+    echo "HOME is $home_dir or $HOME"
+    if [ -d "${home_dir}" ]; then
+        echo "OK"
+    else
+        echo "FAIL"
+    fi
+fi
+
 # load bash utilities
-fpretty="${HOME}/config/.bashrc_pretty"
+config_dir="${home_dir}/config"
+fpretty="${config_dir}/.bashrc_pretty"
 if [ -e "$fpretty" ]; then
     source "$fpretty"
     set_traps
+    print_source
 fi
-
-# determine if script is being sourced or executed
-if ! (return 0 2>/dev/null); then
-    # exit on errors
-    set -e
-fi
-print_source
 
 # make links to files and directories within repo
 set -e
 
 # set target and link directories
 sys_name=$(basename "$src_dir_phys")
-config_dir="${HOME}/config"
 target_dir="${config_dir}/${sys_name}"
-link_dir=$HOME
+link_dir=${home_dir}
 
 cbar "Start Linking Repo Files"
 # list of files to be linked
