@@ -338,7 +338,7 @@ function do_link() {
     itab
     echo -en "${GRH}"
     hline 72
-    echo "${TAB}${GRH}making link... "
+    echo -e "${TAB}${GRH}making link... "
     # check if target file is authorized_keys
     if [[ "${target}" == *"_keys"* ]]; then
         # make a physical link
