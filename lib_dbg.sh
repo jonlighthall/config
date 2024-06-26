@@ -178,9 +178,9 @@ function get_caller() {
     unset get_func_line
     unset get_file_line
 
-    declare -i line_def
-    declare -i get_func_line
-    declare -i get_file_line
+    declare -ig line_def
+    declare -ig get_func_line
+    declare -ig get_file_line
 
     # define stack level number
     local -i lev
@@ -218,6 +218,7 @@ function get_caller() {
     fi
 
     if [ ${lev} -lt ${fN_FUNC} ]; then
+        fecho "$lev -lt $fN_FUNC"
         # get calling function source
         get_source=${BASH_SOURCE[lev]}
         # get calling function source file
@@ -227,6 +228,7 @@ function get_caller() {
         get_func=${FUNCNAME[lev]}
         # get line in calling function where this tunction was called
         get_func_line=${BASH_LINENO[this_lev]}
+        fecho "get func line = $get_func_line"
         # get calling function definition line
         if [[ "${get_func}" == "main" ]] || [[ "${get_func}" == "source" ]]; then
             line_def=-1
@@ -236,6 +238,8 @@ function get_caller() {
             # get line in calling function source file
             get_file_line=$((${line_def}+${get_func_line}))
         fi
+    else
+        get_func_line=0
     fi
     fecho "done with get caller"
 }
@@ -299,7 +303,7 @@ function this_line() {
     fi
 
     set +e
-    set_traps
+    set_traps 0
 
     get_caller
     if $do_grep; then
