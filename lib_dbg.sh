@@ -173,6 +173,56 @@ function get_caller() {
     unset this_def
     unset this_bash
     unset get_func
+    unset get_bash
+
+    # define stack level number
+    local -i lev
+    if [ $# -eq 0 ]; then
+        lev=1
+    else
+        lev=$1
+    fi
+
+    #print_stack
+    fecho " in lev = $lev"
+    # increment level so that index matches that of calling function
+    ((++lev))
+    fecho "out lev = $lev"
+
+    local -i fN_FUNC=${#FUNCNAME[@]}
+    fecho " N_FUNC = $fN_FUNC"
+    local -i this_lev=$((lev-1))
+
+    # define stack level for "this" function; actually the calling function (default) or the
+    # function one level below the target stack level (argument)
+    if [ ${fN_FUNC} -ge 1 ]; then
+        # get function
+        this_func=${FUNCNAME[this_lev]}
+        # get function source
+        this_source=${BASH_SOURCE[this_lev]}
+        # get function source file
+        this_bash=${this_source##*/}
+    fi
+
+    if [ ${lev} -lt ${fN_FUNC} ]; then
+        fecho "$lev -lt $fN_FUNC"
+        # get calling function source
+        get_source=${BASH_SOURCE[lev]}
+        # get calling function source file
+        get_bash=${BASH_SOURCE[lev]##*/}
+
+        # get calling function name
+        get_func=${FUNCNAME[lev]}
+    fi
+    fecho "done with get caller"
+}
+
+function get_caller_def() {
+    # clear variables
+    unset this_func
+    unset this_def
+    unset this_bash
+    unset get_func
     unset line_def
     unset get_bash
     unset get_func_line
@@ -277,7 +327,7 @@ function this_line() {
     if $do_defs && [ $DEBUG -gt 1 ]; then
         for ((lev = 0; lev < $fN_STACK ; lev++)); do
             fecho "lev = $lev (definition)"
-            get_caller $lev
+            get_caller_def $lev
             # print this function definition line
             ddecho -n "${TAB}"
             ddecho -n "FUNCNAME[$lev] = "
@@ -291,7 +341,7 @@ function this_line() {
     if $do_invo && [ $DEBUG -gt 1 ] ; then
         for ((lev = 1; lev < $fN_STACK; lev++)); do
             fecho "lev = $lev (invocation)"
-            get_caller $lev
+            get_caller_def $lev
             # print calling function line in source file
             ddecho -n "${TAB}${this_func}() called by "
             dddecho -n "line $get_func_line of "
@@ -305,7 +355,7 @@ function this_line() {
     set +e
     set_traps 0
 
-    get_caller
+    get_caller_def
     if $do_grep; then
         # print grep-like match
         echo -en "${TAB}"
