@@ -170,10 +170,12 @@ function find_func_line() {
 function get_caller() {
     # clear variables
     unset this_func
-    unset this_def
-    unset this_bash
-    unset get_func
-    unset get_bash
+    unset this_source
+    unset this_file
+
+    unset caller_func
+    unset caller_source
+    unset caller_file
 
     # define stack level number
     local -i lev
@@ -201,18 +203,18 @@ function get_caller() {
         # get function source
         this_source=${BASH_SOURCE[this_lev]}
         # get function source file
-        this_bash=${this_source##*/}
+        this_file=${this_source##*/}
     fi
 
     if [ ${lev} -lt ${fN_FUNC} ]; then
         fecho "$lev -lt $fN_FUNC"
         # get calling function source
-        get_source=${BASH_SOURCE[lev]}
+        caller_source=${BASH_SOURCE[lev]}
         # get calling function source file
-        get_bash=${BASH_SOURCE[lev]##*/}
+        caller_file=${BASH_SOURCE[lev]##*/}
 
         # get calling function name
-        get_func=${FUNCNAME[lev]}
+        caller_func=${FUNCNAME[lev]}
     fi
     fecho "done with get caller"
 }
@@ -220,16 +222,20 @@ function get_caller() {
 function get_caller_def() {
     # clear variables
     unset this_func
+    unset this_source
+    unset this_file
+
+    unset caller_func
+    unset caller_source
+    unset caller_file
+
     unset this_def
-    unset this_bash
-    unset get_func
     unset line_def
-    unset get_bash
-    unset get_func_line
+    unset caller_func_line
     unset get_file_line
 
     declare -ig line_def
-    declare -ig get_func_line
+    declare -ig caller_func_line
     declare -ig get_file_line
 
     # define stack level number
@@ -264,32 +270,32 @@ function get_caller_def() {
             this_def=$(find_func_line "${this_func}" "${this_source}");
         fi
         # get function source file
-        this_bash=${this_source##*/}
+        this_file=${this_source##*/}
     fi
 
     if [ ${lev} -lt ${fN_FUNC} ]; then
         fecho "$lev -lt $fN_FUNC"
         # get calling function source
-        get_source=${BASH_SOURCE[lev]}
+        caller_source=${BASH_SOURCE[lev]}
         # get calling function source file
-        get_bash=${BASH_SOURCE[lev]##*/}
+        caller_file=${BASH_SOURCE[lev]##*/}
 
         # get calling function name
-        get_func=${FUNCNAME[lev]}
+        caller_func=${FUNCNAME[lev]}
         # get line in calling function where this tunction was called
-        get_func_line=${BASH_LINENO[this_lev]}
-        fecho "get func line = $get_func_line"
+        caller_func_line=${BASH_LINENO[this_lev]}
+        fecho "get func line = $caller_func_line"
         # get calling function definition line
-        if [[ "${get_func}" == "main" ]] || [[ "${get_func}" == "source" ]]; then
+        if [[ "${caller_func}" == "main" ]] || [[ "${caller_func}" == "source" ]]; then
             line_def=-1
             get_file_line=-1
         else
-            line_def=$(find_func_line "${get_func}" "${get_source}");
+            line_def=$(find_func_line "${caller_func}" "${caller_source}");
             # get line in calling function source file
-            get_file_line=$((${line_def}+${get_func_line}))
+            get_file_line=$((${line_def}+${caller_func_line}))
         fi
     else
-        get_func_line=0
+        caller_func_line=0
     fi
     fecho "done with get caller"
 }
@@ -331,9 +337,9 @@ function this_line() {
             # print this function definition line
             ddecho -n "${TAB}"
             ddecho -n "FUNCNAME[$lev] = "
-            ddecho -n "$get_func() "
+            ddecho -n "$caller_func() "
             ddecho -n "defined on line $line_def "
-            ddecho -n "in file ${get_bash}"
+            ddecho -n "in file ${caller_file}"
             ddecho
         done
         fecho "done printing definitions"
@@ -344,9 +350,9 @@ function this_line() {
             get_caller_def $lev
             # print calling function line in source file
             ddecho -n "${TAB}${this_func}() called by "
-            dddecho -n "line $get_func_line of "
-            ddecho -n "$get_func() "
-            ddecho -n "on line $get_file_line of ${get_bash}"
+            dddecho -n "line $caller_func_line of "
+            ddecho -n "$caller_func() "
+            ddecho -n "on line $get_file_line of ${caller_file}"
             ddecho
         done
         fecho "done printing invocations"
@@ -360,16 +366,16 @@ function this_line() {
         # print grep-like match
         echo -en "${TAB}"
         [[ ! -z "$@" ]] && [ $do_before = true ] && echo -en "${GRH}${INVERT}$@${NORMAL} "
-        echo -en "${GRF}${get_bash}${GRS}:${GRL}${get_file_line}${GRS}: ${GRH}"
+        echo -en "${GRF}${caller_file}${GRS}:${GRL}${get_file_line}${GRS}: ${GRH}"
         if [[ -z "$@" ]] ||  [ $do_before = true ]; then
             echo -en "${this_func}() "
         else
             echo -en "${INVERT}$@${NORMAL} "
         fi
         ddecho -n "called by "
-        dddecho -n "line $get_func_line of "
-        decho -n "${get_func}"
-        if [[ "${get_func}" == "main" ]] || [[ "${get_func}" == "source" ]]; then
+        dddecho -n "line $caller_func_line of "
+        decho -n "${caller_func}"
+        if [[ "${caller_func}" == "main" ]] || [[ "${caller_func}" == "source" ]]; then
             :
         else
             ddecho -n "() "
@@ -381,10 +387,10 @@ function this_line() {
         start_new_line
         in_line "$@"
         # print the line number where THIS function was called in the PARENT function
-        [ $DEBUG -gt 0 ] && echo -n "${get_func}() "
-        echo -en "${fcol}on line $get_file_line in ${get_bash} "
+        [ $DEBUG -gt 0 ] && echo -n "${caller_func}() "
+        echo -en "${fcol}on line $get_file_line in ${caller_file} "
         ddecho -n "defined on line $line_def"
-        dddecho -n ", function line $get_func_line"
+        dddecho -n ", function line $caller_func_line"
     fi
     echo -e ${RESET}
 

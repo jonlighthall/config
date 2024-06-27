@@ -665,7 +665,7 @@ function set_traps() {
     [ $DEBUG -gt 0 ] && start_new_line
     TAB=${TAB=''}
     get_caller
-    decho -e "${TAB}${MAGENTA}\E[7mset traps\E[27m $- ($get_func)${RESET}"
+    decho -e "${TAB}${MAGENTA}\E[7mset traps\E[27m $- ($caller_func)${RESET}"
     itab
 
     dddecho "${TAB}$-"
