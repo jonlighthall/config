@@ -32,6 +32,7 @@ function ctab() {
 
 # reset tab
 function rtab() {
+    unset fTAB
     set_ftab
     ctab
 }
