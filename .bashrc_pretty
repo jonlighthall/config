@@ -19,7 +19,7 @@ if [[ "$@" == "-f" ]];then
     if ! command -v $cmd &>/dev/null; then
         cmd=echo
     fi
-    $cmd "reloading ${BASH_SOURCE##*/}"
+    $cmd "${TAB}reloading ${BASH_SOURCE##*/}"
 else
     if [ ! -z ${FPRETTY_LOADED+dummy} ]; then
         if [ ! -z "$(declare -f print_pretty_cbar)" ]; then

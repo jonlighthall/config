@@ -55,8 +55,8 @@ if [ $# -eq 1 ]; then
             dtab
 			      # define profile name
 			      profile_name=.bash_profile
-			      echo -n "${TAB}$profile_name... "
             itab
+			      echo -n "${TAB}$profile_name... "
 			      # check if file exists
 			      if [ -f $profile_name ]; then
 				        echo -en "found: ${FILE}"
