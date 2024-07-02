@@ -76,18 +76,18 @@ for FILE in $LIST_OPT; do
 done
 
 # source list of files
-for FILE in $LIST; do
-    vecho "${TAB}loading $FILE..."
-    if [ -f $FILE ]; then
-        source $FILE
+for fname in $LIST; do
+    vecho "${TAB}loading $fname..."
+    if [ -f $fname ]; then
+        source $fname
         RETVAL=$?
         if [ $RETVAL -eq 0 ]; then
-            vecho -e "${TAB}$FILE ${GOOD}OK${RESET}"
+            vecho -e "${TAB}$fname ${GOOD}OK${RESET}"
         else
-            echo -e "${TAB}$FILE ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+            echo -e "${TAB}$fname ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
         fi
     else
-        echo -e "${TAB}$FILE ${UL}not found${RESET}"
+        echo -e "${TAB}$fname ${UL}not found${RESET}"
     fi
 done
 
