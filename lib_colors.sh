@@ -630,10 +630,13 @@ function dbg2idx() {
     fecho "dbg_in = $dbg_in"
 
     # get output variable
+
     fecho " arg 2 : $2"
     local var_out=$2
     fecho "${!var_out+DUMMY} = ${var_out-UNSET}${var_out:-NULL}"
-    
+    fecho "var_out = ${!var_out}"
+
+    # define parameters
     local -i N_cols
     local -i N_max
     local -i start
@@ -668,7 +671,7 @@ function dbg2idx() {
     local -i dbg_idx=$(( ( $dbg_in + ${offset} ) % ${N_mod} ))
     fecho "dbg_idx = $dbg_idx"
     
-    #define array index
+    #define array index, based on values defined in set_dbg2idx
     local -i idx_out
     idx_out=$(( ( ${N_max} + $direction * ($dbg_idx) + $start + 1 ) % ${N_cols} ))
     fecho "$var_out = $idx_out"
