@@ -93,7 +93,7 @@ function print_source() {
         RUN_TYPE="${prefix} ${RUN_TYPE}"
     fi
     # strip escapes from run type
-    local msgne
+    local msgne # message, no escapes
     strip_pretty msgne $RUN_TYPE
     # get message length
     local -i lnr=${#msgne}
@@ -188,9 +188,9 @@ function print_stack() {
     unset N_LINE
 
     # get length of function stack
-    local -gi N_FUNC=${#FUNCNAME[@]}
-    local -gi N_BASH=${#BASH_SOURCE[@]}
-    local -gi N_LINE=${#BASH_LINENO[@]}
+    local -i N_FUNC=${#FUNCNAME[@]}
+    local -i N_BASH=${#BASH_SOURCE[@]}
+    local -i N_LINE=${#BASH_LINENO[@]}
 
     # get color index
     local -i idx
@@ -222,26 +222,26 @@ function print_stack() {
         fi
     fi
 
-    local -ga BASH_CANON
+    local -a BASH_CANON
     # resolve symbolic links (canonicalize)
     for ((i = 0; i < $N_BASH; i++)); do
         BASH_CANON[$i]="$(readlink -f "${BASH_SOURCE[$i]}")"
     done
 
-    local -ga BASH_FNAME
+    local -a BASH_FNAME
     # strip directories
     for ((i = 0; i < $N_BASH; i++)); do
         BASH_FNAME[$i]=${BASH_SOURCE[$i]##*/}
     done
 
     # get directories (logical, link names possible)
-    local -ga BASH_DIR
+    local -a BASH_DIR
     for ((i = 0; i < $N_BASH; i++)); do
         BASH_DIR[$i]="$(dirname "${BASH_SOURCE[$i]}")"
     done
 
     # get directories (physical, canonical)
-    local -ga BASH_CANON_DIR
+    local -a BASH_CANON_DIR
     for ((i = 0; i < $N_BASH; i++)); do
         BASH_CANON_DIR[$i]="$(dirname "${BASH_CANON[$i]}")"
     done
