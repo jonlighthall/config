@@ -809,34 +809,23 @@ function print_pretty_cbar() {
 }
 
 function print_pretty_status() {
-    # check size of stack
-    local -i N_BASH=${#BASH_SOURCE[@]}
-    if [[ "$-" == *i* ]] ; then
-        if [ $N_BASH -eq 1 ] || [ ${DEBUG:-0} -gt 0 ];then
-            print_pretty_cbar
-        fi
+    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
+        print_pretty_cbar
     fi
-    local -i lev
+
     if [ -z ${FPRETTY_LOADED+dummy} ]; then
-        # add read-only variable to check if this file has already been loaded
-        declare -grx FPRETTY_LOADED=true
-        lev=1
-        vecho "${TAB}${BASH_SOURCE[lev]##*/} loaded"
+        declare -rx FPRETTY_LOADED=true
+        vecho "${TAB}${BASH_SOURCE##*/} loaded"
     else
-        # variable is defined
-
-        # define print-to-screen command
+        local -i N_BASH=${#BASH_SOURCE[@]}
         local cmd
-        cmd=decho
-        # see if decho is defined
-        if ! command -v $cmd &>/dev/null; then
+        local -i lev
+        if [ $N_BASH -eq 2 ]; then
             cmd=echo
-        fi
-
-        # print status
-        if [ $N_BASH -gt 1 ]; then
             lev=1
-            $cmd "${TAB}"$(print_pretty "${BASH_SOURCE[lev]##*/} reloaded")
+        else
+            cmd=decho
+            lev=0
         fi
     fi
 }
