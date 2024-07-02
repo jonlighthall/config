@@ -388,15 +388,15 @@ function print_ls_colors() {
     # print value of LS_COLORS
     declare -p LS_COLORS |
         # isolate definitions
-        sed 's/^[^"]*"//;s/"$//' |
+    sed 's/^[^"]*"//;s/"$//' |
         # print each definition on its own line
-        sed '$ s/:/\n/g;/^$/d' |
+    sed '$ s/:/\n/g;/^$/d' |
         # remove file extension definitions
-        sed '/^\*/d' |
+    sed '/^\*/d' |
         # add echo wrapper with escapes
-        sed 's/\(^[^=]*\)=\(.*$\)/"\1 \\x1B[\2m\2\\x1B[m"/' |
+    sed 's/\(^[^=]*\)=\(.*$\)/"\1 \\x1B[\2m\2\\x1B[m"/' |
         # echo outputs
-        xargs -L 1 echo -e | sed "s/^/${TAB}/"
+    xargs -L 1 echo -e | sed "s/^/${TAB}/"
 }
 
 function print_ls_colors_ext() {
@@ -408,15 +408,15 @@ function print_ls_colors_ext() {
     # print value of LS_COLORS
     declare -p LS_COLORS |
         # isolate definitions
-        sed 's/^[^"]*"//;s/"$//' |
+    sed 's/^[^"]*"//;s/"$//' |
         # print each definition on its own line
-        sed '$ s/:/\n/g;/^$/d' |
+    sed '$ s/:/\n/g;/^$/d' |
         # remove file extension definitions
-        sed '/^\*/!d' |
+    sed '/^\*/!d' |
         # add echo wrapper with escapes
-        sed 's/\(^[^=]*\)=\(.*$\)/"\1 \\x1B[\2m\2\\x1B[m"/' | sort -n |
+    sed 's/\(^[^=]*\)=\(.*$\)/"\1 \\x1B[\2m\2\\x1B[m"/' | sort -n |
         # echo outputs
-        xargs -L 1 echo -e | column -t -o ' ' | sed "s/^/${TAB}/"
+    xargs -L 1 echo -e | column -t -o ' ' | sed "s/^/${TAB}/"
 }
 
 function append_ls_colors() {
@@ -634,8 +634,18 @@ function dbg2idx() {
 
     fecho " arg 2 : $2"
     local var_out=$2
-    fecho "${!var_out+DUMMY} = ${var_out-UNSET}${var_out:-NULL}"
-    fecho "var_out = ${!var_out}"
+
+    # check if VAR is unset
+    if [ -z "${!var_out+dummy}" ]; then
+        fecho  -e "${TAB}${FUNCNAME[1]} arg 1 in : ${var_out} ${!var_out-$UNSET}"
+    else
+        # check if VAR is NULL
+        if [ -z "${!var_out:+dummy}" ]; then
+            fecho  -e "${TAB}${FUNCNAME[1]} arg 1 in : ${var_out} ${!var_out:-$NULL}"
+        else
+            fecho "$var_out = ${!var_out}"
+        fi
+    fi
 
     # define parameters
     local -i N_cols
@@ -671,7 +681,7 @@ function dbg2idx() {
     # calculate the corresponding "debug" index, modulo number of colors
     local -i dbg_idx=$(( ( $dbg_in + ${offset} ) % ${N_mod} ))
     fecho "dbg_idx = $dbg_idx"
-    
+
     #define array index, based on values defined in set_dbg2idx
     local -i idx_out
     idx_out=$(( ( ${N_max} + $direction * ($dbg_idx) + $start + 1 ) % ${N_cols} ))
@@ -695,16 +705,17 @@ function print_fcolors() {
     local -ir N_cols=${#dcolor[@]}
     local -i idx
     (
+        echo "order@index@color"
         # loop over valid non-zero values of debug
         for ((i=0;i<=$N_cols-1;i++));do
             #define array index
             dbg2idx $i idx
             # print indices
-            printf '%2d:%2d:' $i $idx
+            printf '%2d@%2d@' $i $idx
             # print color
             printf "${dcolor[$idx]}%2d\x1B[m\n" $idx
         done
-    ) | column -t -s: -N order,index,color | sed "s/^/${TAB}/"
+    ) | column -t -s@ | sed "s/^/${TAB}/"
 }
 
 # set DEBUG color
@@ -835,24 +846,23 @@ function test_lib_colors() {
     local -i DEBUG=2
     decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
 
-    for func in define_ls_colors \
-                    print_colors \
-                    print_dcolors \
-                    print_dircolors \
-                    print_dircolors_default \
-                    print_dircolors_ext \
-                    print_fcolors \
-                    print_ls_colors \
-                    print_ls_colors_ext \
-                    print_pretty \
-                    print_pretty_cbar \
-                    print_rcolors \
-                    test_normal \
-                    test_set_color
+    for func in test_normal \
+        define_ls_colors \
+        print_dircolors \
+        print_ls_colors \
+        print_ls_colors_ext \
+        print_rcolors \
+        print_colors \
+        print_dcolors \
+        print_fcolors \
+        print_pretty \
+        print_pretty_cbar \
+
     do
         echo
         $func
     done
+
 }
 
 if [ ${DEBUG:-0} -gt 2 ]; then
