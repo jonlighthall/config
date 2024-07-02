@@ -13,8 +13,13 @@
 TAB=${TAB=''}
 
 # add read-only variable to check if this file has already been loaded
-if [ -z ${FPRETTY_LOADED+dummy} ]; then      
-    declare -rx FPRETTY_LOADED=true
+# if the argument '-f' is used, force loading the file
+if [[ "$@" == "-f" ]];then
+    cmd=decho
+    if ! command -v $cmd &>/dev/null; then
+        cmd=echo
+    fi
+    $cmd "${TAB}reloading ${BASH_SOURCE##*/}"
 else
     if [ ! -z "$(declare -f print_pretty_cbar)" ]; then 
         return
