@@ -547,6 +547,7 @@ function print_dcolors() {
     # declare array index variable
     local -i idx
     (
+        echo "order:index:color"
         for ((i=0;i<$N_cols;i++));do
             #define array index
             idx=$(( (${N_max} + $direction * ($i) + $start + 1 ) % ${N_cols} ))
@@ -554,7 +555,7 @@ function print_dcolors() {
 
             printf "${dcolor[$idx]}%2d\x1B[m\n" $idx
         done
-    ) | column -t -s: -N order,index,color | sed "s/^/${TAB}/"
+    ) | column -t -s: | sed "s/^/${TAB}/"
 
     # reset shell options
     reset_shell ${old_opts} u
