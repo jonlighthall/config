@@ -35,12 +35,12 @@ function get_curpos() {
 
         # output values to parent
         if [ $# -gt 0 ]; then
-            local -n x_out=$1
+            local x_out=$1
             x_out=0
         fi
 
         if [ $# -gt 1 ]; then
-            local -n y_out=$2
+            local y_out=$2
             y_out=0
         fi
         fecho "goodbye..." >&2
@@ -72,7 +72,7 @@ function get_curpos() {
     # output values to parent
     if [ $# -gt 0 ]; then
         fecho "outputting..."
-        local -n x_out=$1
+        local  x_out=$1
         if [ -n "${x_out+dummy}" ]; then
             fecho "   arg 1 in : $x_out=${!x_out-UNSET}"
         fi
@@ -198,7 +198,7 @@ function cbar() {
 }
 
 function strip_pretty() {
-    local -n output=$1
+    local output=$1
     shift
 
     # strip escapes
