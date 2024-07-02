@@ -663,7 +663,7 @@ function print_pretty_status() {
     fi
 
     if [ -z ${FPRETTY_LOADED+dummy} ]; then
-        declare -grx FPRETTY_LOADED=true
+        declare -rx FPRETTY_LOADED=true
         vecho "${TAB}${BASH_SOURCE##*/} loaded"
     else
         local -i N_BASH=${#BASH_SOURCE[@]}
