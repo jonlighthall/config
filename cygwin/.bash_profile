@@ -6,27 +6,17 @@
 start_time=$SECONDS
 # Verbose bash prints?
 export VB=true
-if $VB; then
+if [ "${VB}" = true ]; then
     # set tab
     TAB+=${TAB+${fTAB:='   '}}
-    # load formatting
+    # load bash utilities
     fpretty=${HOME}/config/.bashrc_pretty
     if [ -e $fpretty ]; then
 	if [ -z ${FPRETTY_LOADED+dummy} ]; then
 	   source $fpretty
 	fi
     fi
-    # print source name at start
-    if (return 0 2>/dev/null); then
-        RUN_TYPE="sourcing"
-    else
-        RUN_TYPE="executing"
-    fi
-    echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
-    src_name=$(readlink -f $BASH_SOURCE)
-    if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-	echo -e "${TAB}${VALID}link${RESET} -> $src_name"
-    fi
+    print_source
     echo "${TAB}verbose bash printing is... $VB"
 fi
 
@@ -44,14 +34,14 @@ if [ -f $hist_file ]; then
     if [ $RETVAL -eq 0 ]; then
 	vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     else
-	if $VB; then
+	if [ "${VB}" = true ]; then
 	    echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
 	else
 	    echo "echo to $hist_file failed"
 	fi
     fi
 else
-    if $VB; then
+    if [ "${VB}" = true ]; then
 	echo "${BAD}NOT FOUND{RESET}"
     else
 	echo "$hist_file not found"
@@ -74,7 +64,7 @@ else
 fi
 vecho
 # print runtime duration
-if $VB; then
+if [ "${VB}" = true ]; then
     TAB=${TAB%$fTAB}
     echo -n "${TAB}$(basename $BASH_SOURCE) "
     dT=$(($SECONDS-start_time))

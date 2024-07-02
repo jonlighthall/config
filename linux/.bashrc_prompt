@@ -14,18 +14,12 @@
 if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
-    if $VB; then
-        # load formatting
+    if [ "${VB}" = true ]; then
+        # load bash utilities
         fpretty=${HOME}/config/.bashrc_pretty
         if [ -e $fpretty ]; then
-            source $fpretty            
+            source $fpretty
             print_ribbon
-        fi
-        # determine if being sourced or executed
-        if (return 0 2>/dev/null); then
-            RUN_TYPE="sourcing"
-        else
-            RUN_TYPE="executing"
         fi
         print_source
     fi
@@ -69,7 +63,7 @@ sh_lvl() {
     fi
 }
 
-if $VB; then
+if [ "${VB}" = true ]; then
     echo "${TAB}Setting prompt..."
     itab
 fi
@@ -152,7 +146,12 @@ if $do_test_git; then
 	          vecho " git branch ${BAD}timed out${RESET}"
 	          git_bad=true
 	      else
-	          vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+	          vecho -en "${GOOD}OK${RESET}"
+            if [[ $RETVAL -eq 0 ]]; then
+       	        vecho
+            else
+                vecho -e " ${GRAY}RETVAL=$RETVAL${RESET}"
+            fi
 	          git_bad=false
 	      fi
     else
@@ -166,7 +165,7 @@ if $do_test_git; then
 	      echo -e "${TAB}${fTAB}git branch removed from prompt"
     fi
 fi
-if $VB; then
+if [ "${VB}" = true ]; then
     dtab
 fi
 
@@ -180,13 +179,18 @@ if $do_test_color; then
 	      unalias ls
 	      echo -e "${TAB}--color=auto removed from ls alias"
     else
-	      vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+	      vecho -en "${GOOD}OK${RESET}"
+        if [[ $RETVAL -eq 0 ]]; then
+       	    vecho
+        else
+            vecho -e " ${GRAY}RETVAL=$RETVAL${RESET}"
+        fi
     fi
 fi
 
 # Path additions
 # ---------------
-if $VB; then
+if [ "${VB}" = true ]; then
     echo "${TAB}Path additions..."
     itab
 fi
@@ -246,7 +250,15 @@ else
     vecho "${TAB}${ADDPATH} already in PATH"
 fi
 
-if $VB; then
+# deallocate variables
+unset ADDPATH
+unset do_load_nvidia
+unset do_load_pgi
+unset do_test_git
+unset do_test_color
+unset git_bad
+
+if [ "${VB}" = true ]; then
     # reset tab
     dtab 2 # once for path, once for file
 fi

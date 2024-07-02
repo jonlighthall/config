@@ -32,6 +32,7 @@
  '(ediff-split-window-function (quote split-window-horizontally))
  '(fortran-continuation-string ">")
  '(fortran-line-length fcols)
+ '(global-display-line-numbers-mode t)
  '(inhibit-startup-screen t)
  '(visible-bell t)
  )
@@ -41,8 +42,9 @@
 
 ;; ------Libraries-----------------------------------------
 ;; Turn on line numbering
-(require 'linum)
-(global-linum-mode 1)
+
+;;(global-linum-mode 1)
+(setq global-display-line-number t)
 ;; whitespace-mode settings
 (require 'whitespace)
 (setq whitespace-style '(face lines-tail))
@@ -75,7 +77,7 @@
   (replace-regexp "^\s*#}#" "}##") ; un-comment dummy brackets
   (pop-mark) ; pop mark position saved by regexp
   (indent-region (point-min) (point-max)) ; select all
-  ;;  (delete-trailing-whitespace)
+  (delete-trailing-whitespace)
   (goto-char 1)
   (replace-regexp "^\s*\n\\{2,\\}" "\n") ; delete repeated blank lines
   (pop-mark) ; pop mark position saved by regexp
@@ -260,6 +262,11 @@
 (add-to-list 'auto-mode-alist '("\\.cmn\\'" . fortran-mode))
 (add-to-list 'auto-mode-alist '("\\.inc\\'" . fortran-mode))
 (add-to-list 'auto-mode-alist '("\\.unm\\'" . fortran-mode))
+
+;; open change logs and readme in text-mode
+(add-to-list 'auto-mode-alist '("read.me\\'" . text-mode))
+(add-to-list 'auto-mode-alist '("README\\'" . text-mode))
+(add-to-list 'auto-mode-alist '("CHANGELOG\\'" . text-mode))
 
 ;; turn off starup message
 (defun display-startup-echo-area-message ()

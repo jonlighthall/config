@@ -1,57 +1,49 @@
-#!/bin/bash -u
+#!/bin/bash -eu
 
 # get starting time in nanoseconds
 start_time=$(date +%s%N)
 
-# load bash utilities
-fpretty="${HOME}/config/.bashrc_pretty"
-if [ -e "$fpretty" ]; then
-    source "$fpretty"
-    set_traps
-    # set tab
-    N=${#BASH_SOURCE[@]}
-    if [ $N -gt 1 ]; then
-        itab
+# define home directory
+home_dir=${HOME}
+if [ -z ${MSYSTEM:+dummy} ]; then
+    echo "MSYSTEM is unset or null"
+    home_dir=/mnt/c/Users/${USER}
+else
+    #echo "not empty"
+    home_dir=/c/Users/${USERNAME}
+fi
+if [[ $home_dir == $HOME ]]; then
+   :  #echo "no change"
+else
+    echo "HOME is redefined"
+    echo "HOME is $home_dir or $HOME"
+    if [ -d "${home_dir}" ]; then
+        echo "OK"
     else
-        rtab
+        echo "FAIL"
     fi
 fi
 
-# determine if script is being sourced or executed
-if (return 0 2>/dev/null); then
-    RUN_TYPE="sourcing"
-else
-    RUN_TYPE="executing"
-    # exit on errors
-    set -e
+# load bash utilities
+config_dir="${home_dir}/config"
+fpretty="${config_dir}/.bashrc_pretty"
+if [ -e "$fpretty" ]; then
+    source "$fpretty"
+    set_traps
+    print_source
 fi
-# print source name at start
-echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
-src_name=$(readlink -f "$BASH_SOURCE")
-if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-    echo -e "${TAB}${VALID}link${RESET} -> $src_name"
-fi
+
+# make links to files and directories within repo
+set -e
 
 # set target and link directories
-target_dir=$(dirname "$src_name")
-link_dir=$HOME
+sys_name=$(basename "$src_dir_phys")
+target_dir="${config_dir}/${sys_name}"
+link_dir=${home_dir}
 
-# check directories
-echo -n "${TAB}target directory ${target_dir}... "
-if [ -d "$target_dir" ]; then
-    echo "exists"
-else
-    echo -e "${BAD}does not exist${RESET}"
-    exit 1
-fi
-
-do_make_dir "$link_dir"
-
-bar 38 "------ Start Linking Repo Files ------" | sed "s/^/${TAB}/"
-
+cbar "Start Linking Repo Files"
 # list of files to be linked
-for my_link in .bash_profile # .emacs.d .gitconfig .rootrc .inputrc .bash_logout
-do
+for my_link in .bash_profile; do # .emacs.d .gitconfig .rootrc .inputrc .bash_logout
     # define target (source)
     target=${target_dir}/${my_link}
     # define link name (destination)
@@ -64,4 +56,4 @@ do
     # create link
     do_link "${target}" "${link}"
 done
-bar 38 "------- Done Linking Repo Files ------" | sed "s/^/${TAB}/"
+cbar "Done Linking Repo Files"

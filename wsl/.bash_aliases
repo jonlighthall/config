@@ -44,7 +44,7 @@ config_dir=${HOME}/config
 # load utility functions
 fpretty=${config_dir}/.bashrc_pretty
 if [ -e $fpretty ]; then
-    if $VB; then
+    if [ "${VB}" = true ]; then
         # remember, if .bashrc_pretty hasn't been loaded yet, vecho is not defined
         echo "loading $fpretty..."
     fi
@@ -64,13 +64,7 @@ else
     set +eu
 fi    
 
-if $VB; then
-    # determine if being sourced or executed
-    if (return 0 2>/dev/null); then
-        RUN_TYPE="sourcing"
-    else
-        RUN_TYPE="executing"
-    fi    
+if [ "${VB}" = true ]; then
     print_source
     echo -e "${TAB}SHLVL = $BROKEN$SHLVL$RESET"
     if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then    
@@ -100,7 +94,7 @@ else
 fi
 
 # print runtime duration
-if $VB; then
+if [ "${VB}" = true ]; then
     # reset tab
     dtab
     # print timestamp
@@ -114,4 +108,4 @@ clear -x
 
 # print welcome message
 echo "${TAB}Welcome to ${HOST_NAME}"
-return
+return 0

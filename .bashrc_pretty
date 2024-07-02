@@ -3,35 +3,49 @@
 #
 # ~/config/.bashrc_pretty
 #
-# Purpose: define and load adanced functions for interactive shell sessions, including
+# Purpose: define and load advanced functions for interactive shell sessions, including
 #   "pretty-print" formatting
 #
 # Apr 2023 JCL
 #
 # -----------------------------------------------------------------------------------------------
 
+TAB=${TAB=''}
+
 # add read-only variable to check if this file has already been loaded
-if [ -z ${FPRETTY_LOADED+dummy} ]; then      
-    declare -rx FPRETTY_LOADED=true
-else
-    if [ ! -z "$(declare -f print_pretty_cbar)" ]; then 
-        return
+# if the argument '-f' is used, force loading the file
+if [[ "$@" == "-f" ]];then
+    cmd=decho
+    if ! command -v $cmd &>/dev/null; then
+        cmd=echo
     fi
-fi    
+    $cmd "reloading ${BASH_SOURCE##*/}"
+else
+    if [ ! -z ${FPRETTY_LOADED+dummy} ]; then
+        if [ ! -z "$(declare -f print_pretty_cbar)" ]; then
+            decho "${TAB}"$(print_pretty "${BASH_SOURCE##*/} already loaded")
+            return 0
+        fi
+    fi
+fi
 
 # set debug level
-declare -i DEBUG=${DEBUG:=0} # default value if DEBUG is unset or null
+declare -i DEBUG=${DEBUG:=0} # assign default value if DEBUG is unset or null
 
 # If running interactively, print source
 if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
     echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
 fi
 
-function get_source() {
-    # set local debug value
-    local -i DEBUG=${DEBUG:-0} # substitute default value if DEBUG is unset or null
+# This function defines and exports:
+#   N_BASH - the size of the execution stack; position source in stack
+#   src_name - canonical source file name
+#   src_base - short source file name
+#   src_dir_phys - canonical/physical source file path
+#   src_dir_logi - logical source file path (link name, if applicable)
 
-    # get the lenght of the execution stack
+function get_source() {
+    # get the length of the execution stack
     N_BASH=${#BASH_SOURCE[@]}
     # since this function is part of the stack, reduce N_BASH by one
     ((N_BASH--))
@@ -50,99 +64,103 @@ function get_source() {
         FUNC_LEV=2
     else
         FUNC_LEV=1
-    fi   
-    
+    fi
+
     # get canonical source name
     src_name=$(readlink -f ${BASH_SOURCE[${FUNC_LEV}]})
     # get short source name
     src_base=$(basename "${src_name}")
-    bin_name=$(basename "${BASH_SOURCE[${FUNC_LEV}]}")
     # get source path
-    ##physical (canonical)
+    ## physical (canonical)
     src_dir_phys=$(dirname "$src_name")
     ## logical (links)
     src_dir_logi=$(dirname "${BASH_SOURCE[${FUNC_LEV}]}")
 }
 
-function print_source() {
-    RUN_TYPE=${RUN_TYPE:-"running"}
+# load or re-load libraries and reset TAB and DEBUG
+function load_libs() {
     get_source
-    set_tab
-    # since print_source is itself part of the stack, remove the top of the stack
-    ((N_BASH--))
-    dtab
-
-    if [ $DEBUG -gt 0 ]; then 
-        RUN_TYPE="\x1b[7;38;5;132m${N_BASH}\x1b[0m${RUN_TYPE}"
-    fi
-    # strip escapes
-    local msgne=$(echo -e "$RUN_TYPE" | sed "s/$(echo -e "\E")[^m]*m//g")
-    # get message mength
-    local -i ln=${#msgne}
-    # subtract link/path prefix length
-    local -i sp=$(($ln - 7))
-    # define indent
-    local spx=$(echo -ne "\E[${sp}C")
-    
-    # print run type and source name
-    vecho -e "${TAB}${RUN_TYPE} ${PSDIR}${BASH_SOURCE[1]}${RESET}..."
-    if [ ! "${BASH_SOURCE[1]}" = "$src_name" ]; then
-        vecho -e "${TAB}${spx}${VALID}link${RESET} -> $src_name"
-    fi
-
-    if [ $DEBUG -gt 0 ]; then 
-        # print source path
-        if [[ "${src_dir_logi}" != "${src_dir_phys}" ]]; then 
-            ## logical
-            vecho -e "${TAB}${spx}${GRAY}logi -> $src_dir_logi${RESET}"
-            ## physical
-            vecho -e "${TAB}${spx}${GRAY}phys -> $src_dir_phys${RESET}"
+    # if running from bash, reset TAB and DEBUG
+    if [ $N_BASH -eq 1 ]; then
+        local did_print=false
+        # reset TAB
+        if [ -z ${TAB+dummy} ] || [ ${#TAB} -gt 0 ]; then
+            if command -v rtab &>/dev/null; then
+                [ ${did_print:-false} == false ] && echo "resetting..."
+                did_print=true
+                rtab
+                echo -ne "$fTAB"
+                print_tab
+            else
+                export TAB=
+                echo -ne "${fTAB:=   }"
+                echo -e "${BOLD}TAB is ${NULL}z"
+            fi
+        fi
+        # reset DEBUG
+        if [ -z ${DEBUG+dummy} ] || [ ${DEBUG:=0} -gt 0 ]  ; then
+            if command -v rdb &>/dev/null; then
+                [ ${did_print:-false} == false ] && echo "resetting..."
+                echo -ne "$fTAB"
+                rdb
+            else
+                DEBUG=0
+            fi
         fi
     fi
-}
 
-function print_ribbon() {
-    get_source
-    # since this function is part of the stack, reduce N_BASH by one
-    ((N_BASH--))
-    # print source
-    decho -e "${TAB}\x1b[7;38;5;132m${N_BASH}: ${src_base} :${N_BASH}\x1b[0m"
-}
+    if command -v decho &>/dev/null; then
+        # print function name
+        decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    fi
 
-function print_bar() {
-    get_source
-    
-    # define message
-    msg=$(echo "this file is ${src_base}!")
-    # define line
-    ln=$(for ((i = 1; i <= ${#msg}; i++)); do echo -n "-"; done)
-    # print source
-    decho -e "$ln\n$msg\n$ln" | sed "$ ! s/^/${TAB}/"
-}
+    # load bash utils
+    local fname
+    local library
 
-# run get_source to define source directory
-get_source
-
-# load bash utils
-for util in lib_links.sh \
-                lib_colors.sh \
-                lib_cond_echo.sh \
-                lib_tabs.sh \
-                lib_fmt.sh \
-                lib_traps.sh
-do
-    # use the canonical (physical) source directory for reference; this is important if sourcing
-    # this file directly from shell
-    fname="${src_dir_phys}/${util}"
+    for library in links \
+                       traps\
+                       tabs \
+                       cond_echo \
+                       fmt \
+                       colors \
+                       stack \
+                       dbg \
+                       test
+    do
+        # use the canonical (physical) source directory for reference; this is important if sourcing
+        # this file directly from shell
+        fname="${src_dir_phys}/lib_${library}.sh"
+        if [ -e "${fname}" ]; then
+            if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
+                echo "${TAB}loading $(basename ${fname})"
+            fi
+            source ${fname}
+        else
+            echo "${fname} not found"
+        fi
+    done
+    fname="${HOME}/utils/bash/git/lib_git.sh"
     if [ -e "${fname}" ]; then
         if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
             echo "${TAB}loading $(basename ${fname})"
         fi
         source ${fname}
-    else
-        echo "${fname} not found"
     fi
-done
+
+    if [ ! -z ${FPRETTY_LOADED+dummy} ]; then
+        if [[ "$-" == *i* ]]; then
+            cbar "${BOLD}libraries loaded${NORMAL}" # lib_fmt
+        fi
+        if [ ${DEBUG:-0} -gt 1 ]; then
+            lecho # lib_dbg
+            print_ribbon #lib_stack
+            print_return # lib_traps
+        fi
+    fi
+}
+
+load_libs
 
 # determine if script is being sourced or executed and add conditional behavior
 if (return 0 2>/dev/null); then
@@ -154,21 +172,18 @@ fi
 
 # check if running interactively
 if [[ "$-" == *i* ]]; then
-    #set tab
     set_tab
+    print_ribbon
     decho "${TAB}${BASH_SOURCE##*/}: DEBUG = $DEBUG"
-    #print_ribbon
     #print_bar
-
-    # determine if script is being sourced or executed
-    if (return 0 2>/dev/null); then
-        RUN_TYPE="sourcing"
-    else
-        RUN_TYPE="executing"
-    fi
     print_source
 fi
 
-if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
-    print_pretty_cbar
+print_pretty_status
+
+# determine if script is being sourced or executed
+if (return 0 2>/dev/null); then
+    return 0
+else
+    exit 0
 fi

@@ -15,40 +15,58 @@
 #
 # -----------------------------------------------------------------------------------------------
 
-# If not running interactively, don't do anything
-if [[ "$-" != *i* ]]; then
-    # turn off "Verbose Bash" conditional prints
-    export VB=false
-else
+# check if running interactively
+if [[ "$-" == *i* ]];then
+    # clear terminal
+    clear
+
     # get starting time in nanoseconds
     declare -i start_time=$(date +%s%N)
-    # set "Verbose Bash" for conditional prints
-    export VB=false
-    # set debug level if unset
-    export DEBUG=${DEBUG=0}  
-    # print source
-    if [ ${DEBUG:-0} -gt 0 ]; then
-        echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
-        # print invoking process
-        called_by=$(ps -o comm= $PPID)
-        echo "${TAB}invoked by ${called_by}"
-    fi
-    # set "Verbose Bash" for conditional prints
+
+    # set tab
+    TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
+    echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
+else
+    echo "${TAB-}${BASH_SOURCE##*/}: non-interactive shell" >&2
+    echo -e "${TAB-}\x1B[1;31mWARNING: ${BASH_SOURCE##*/} is intended for interactive shells only\x1B[m" >&2
+    echo -e "${TAB-}returning..." >&2
+    # If not running interactively, don't do anything
+    return
+fi
+
+# check if login shell
+if shopt -q login_shell; then
+    echo -e "${TAB-}${BASH_SOURCE##*/}: \x1B[32mlogin shell\x1B[m" >&2
+else
+    echo "${TAB-}${BASH_SOURCE##*/}: non-login shell" >&2
+    echo -e "${TAB-}\x1B[;31mWARNING: ${BASH_SOURCE##*/} is intended for login-shells only\x1B[m" >&2
+fi
+
+# -------------------------
+# set debug level if unset
+export DEBUG=${DEBUG=0}
+# -------------------------
+
+# print source
+if [ ${DEBUG:-0} -gt 0 ]; then
+    echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+    # print invoking process
+    called_by=$(ps -o comm= $PPID)
+    echo "${TAB}invoked by ${called_by}"
+fi
+# set "Verbose Bash" for conditional prints
+export VB=true
+# clear terminal
+clear -x
+if [ ${DEBUG} -gt 0 ]; then
     export VB=true
-    # set debug level if unset
-    export DEBUG=${DEBUG=0}      
-    # clear terminal
-    clear -x
-    if [ ${DEBUG} -gt 0 ]; then
-        export VB=true
-    fi
 fi
 
 config_dir=${HOME}/config
-# load utility functions
+# load bash utilities
 fpretty=${config_dir}/.bashrc_pretty
 if [ -e $fpretty ]; then
-    if $VB; then
+    if [ "${VB}" = true ]; then
         # remember, if .bashrc_pretty hasn't been loaded yet, vecho is not defined
         echo "loading $fpretty..."
     fi
@@ -56,7 +74,7 @@ if [ -e $fpretty ]; then
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
         dtab
-        vecho -e "${TAB}$fpretty ${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+        vecho -e "${TAB}$fpretty ${GOOD}OK${RESET}"
     else
         echo -e "${TAB}$fpretty ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     fi
@@ -66,20 +84,14 @@ if [ -e $fpretty ]; then
 else
     echo "${TAB}$fname not found"
     set +eu
-fi    
+fi
 
-if $VB; then
-    # determine if being sourced or executed
-    if (return 0 2>/dev/null); then
-        RUN_TYPE="sourcing"
-    else
-        RUN_TYPE="executing"
-    fi    
+if [ "${VB}" = true ]; then
     print_source
-    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then    
+    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
         print_stack
     fi
-    decho -e "${TAB}verbose bash printing is... ${GOOD}$VB${RESET}"
+    decho -e "${TAB}verbose bash printing is... $TRUE"
 fi
 
 # system dependencies
@@ -94,16 +106,16 @@ if [ -f $hist_file ]; then
     echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from ${HOST_NAME}" >>$hist_file
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
-        vecho -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+        vecho -e "${GOOD}OK${RESET}"
     else
-        if $VB; then
+        if [ "${VB}" = true ]; then
             echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
         else
             echo "echo to $hist_file failed"
         fi
     fi
 else
-    if $VB; then
+    if [ "${VB}" = true ]; then
         echo "${BAD}NOT FOUND{RESET}"
     else
         echo "$hist_file not found"
@@ -117,7 +129,7 @@ if [ -f $fname ]; then
     source $fname
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
-        vecho -e "${TAB}$fname ${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+        vecho -e "${TAB}$fname ${GOOD}OK${RESET}"
     else
         echo -e "${TAB}$fname ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     fi
@@ -126,7 +138,7 @@ else
 fi
 
 # print runtime duration
-if $VB; then
+if [ "${VB}" = true ]; then
     # reset tab
     dtab
     # print timestamp
@@ -140,7 +152,13 @@ clear -x
 
 # print welcome message
 echo "${TAB}Welcome to ${HOST_NAME}"
-return
+
+# deallocate variables
+unset fname
+unset fpretty
+unset hist_file
+
+return 0
 
 # test formatting
 source ~/utils/bash/git/lib_git.sh
@@ -150,4 +168,3 @@ cd ${config_dir}
 print_remotes
 # return to starting directory
 cd "$start_dir"
-

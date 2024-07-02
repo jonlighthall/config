@@ -1,92 +1,90 @@
-#!/bin/bash -u
+#!/bin/bash -eu
+# -----------------------------------------------------------------------------------------------
+#
+# ~/config/wsl/make_links.sh
+#
+# Purpose: create links for WSL installation. In addition to calling make_links_external and
+#    make_links_etc, this script creates links to files that are contained within this repo. The
+#    script make_links_external creates links to files and directories outside of the
+#    repository. The script make_links_etc creates links in the /etc directory, which requires
+#    elevation.
+#
+# Dependances:
+#    make_links_external.sh
+#    make_links_etc.sh
+#
+# Called by:
+#    get_repos.sh
+#
+#  JCL Jul 2018
+#
+# -----------------------------------------------------------------------------------------------
 
 # get starting time in nanoseconds
 start_time=$(date +%s%N)
 
+DEBUG=${DEBUG:-0}
+
 # load bash utilities
-fpretty="${HOME}/config/.bashrc_pretty"
+config_dir="${HOME}/config"
+fpretty="${config_dir}/.bashrc_pretty"
 if [ -e "$fpretty" ]; then
-    source "$fpretty"
+    source "$fpretty" -f
     set_traps
-    # set tab
-    N=${#BASH_SOURCE[@]}
-    if [ $N -gt 1 ]; then
-        itab
-    else
-        rtab
-    fi
+    print_source
 fi
 
 # determine if script is being sourced or executed
-if (return 0 2>/dev/null); then
-    RUN_TYPE="sourcing"
-else
-    RUN_TYPE="executing"
+if ! (return 0 2>/dev/null); then
     # exit on errors
     set -e
-fi
-# print source name at start
-echo -e "${TAB}${RUN_TYPE} ${PSDIR}$BASH_SOURCE${RESET}..."
-src_name=$(readlink -f "$BASH_SOURCE")
-if [ ! "$BASH_SOURCE" = "$src_name" ]; then
-    echo -e "${TAB}${VALID}link${RESET} -> $src_name"
 fi
 
 # it is assumed that the fisrt command to be run after cloning the parent
 # repository is make_links.sh (this file)
 
+# save and print starting directory
 start_dir=$PWD
 echo "${TAB}starting directory = ${start_dir}"
-src_dir_logi=$(dirname "$src_name")
-cd $src_dir_logi
 
-# run the following configureation files
-prog=install_packages.sh
-echo -n "${TAB}$prog..."
-if [ -f $prog ]; then
-    echo "found"
-    itab
-    echo "${TAB}${prog} requires"
-    itab
-    echo "${TAB}* elevation"
-    echo "${TAB}* access to archive.ubuntu.com, security.ubuntu.com, etc"
-    dtab
-    unset_traps
-    read -p "${TAB}Proceed with ${prog}? (y/n) " -n 1 -r -t 3
-    set_traps
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        bash $prog
-    fi
-    dtab
-else
-    echo "not found"
-fi
+# In case the make_links files in ~/config/<sys_name> are linked to ~/config/ and called by
+# update_repos, make sure to switch to the target directory
+cd $src_dir_phys
 
-for prog in make_links_personal.sh; do
+# make links to external files and directories
+for prog in make_links_external.sh; do
     echo -n "${TAB}${prog}... "
     if [ -f $prog ]; then
         echo "found"
+        itab
         bash $prog
+        RETVAL=$?
+        dtab
+        echo -en "${TAB}$prog "
+        if [ $RETVAL -eq 0 ]; then
+            echo -en "${GOOD}OK"
+        else
+            echo -en "${BAD}FAIL"
+        fi
+        echo -e "${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     else
         echo "not found"
     fi
 done
 
+# make links to files and directories within repo
+set -e
+
 # set target and link directories
-sys_name=$(basename "$src_dir_logi")
-config_dir="${HOME}/config"
+sys_name=$(basename "$src_dir_phys")
 target_dir="${config_dir}/${sys_name}"
 link_dir=$HOME
+check_link_dir "$link_dir"
 
-# check directories
-check_target "${target_dir}"
-do_make_dir "$link_dir"
+cbar "Start Linking Repo Files"
 
-bar 38 "------ Start Linking Repo Files ------" | sed "s/^/${TAB}/"
-
-# list of files to be linked
-for my_link in .bash_aliases .bash_logout .bash_profile .emacs.d .gitconfig .hushlogin .inputrc .rootrc; do
+# list of files to be linked, unconditionally
+for my_link in .bash_aliases .bash_logout .bash_profile .dircolors .emacs.d .hushlogin .inputrc .rootrc; do
     # define target (source)
     target=${target_dir}/${my_link}
     # define link name (destination)
@@ -99,19 +97,52 @@ for my_link in .bash_aliases .bash_logout .bash_profile .emacs.d .gitconfig .hus
     # create link
     do_link "${target}" "${link}"
 done
-bar 38 "------- Done Linking Repo Files ------" | sed "s/^/${TAB}/"
 
-# run make_links in /etc
+# check if host is Navy
+echo -n "${TAB}checking host... "
+if [[ "$(hostname -f)" == *".mil" ]]; then
+    echo -e "${GRAY}SKIP${RESET}"
+else
+    echo -e "${GOOD}OK${RESET}"
+
+    # list of files to be linked, conditionally
+    for my_link in .gitconfig; do
+        # define target (source)
+        target=${target_dir}/${my_link}
+        # define link name (destination)
+        sub_dir=$(dirname "$my_link")
+        if [ ! $sub_dir = "." ]; then
+            # strip target subdirectory from link name
+            my_link=$(basename "$my_link")
+        fi
+        link=${link_dir}/${my_link}
+        # create link
+        do_link "${target}" "${link}"
+    done
+fi
+
+cbar "Done Linking Repo Files"
+
+# make links in /etc
 for prog in make_links_etc.sh; do
     echo -n "${TAB}${prog}... "
     if [ -f $prog ]; then
         echo "found"
+        itab
         bash $prog
+        RETVAL=$?
+        dtab
+        echo -en "${TAB}$prog "
+        if [ $RETVAL -eq 0 ]; then
+            echo -en "${GOOD}OK"
+        else
+            echo -en "${BAD}FAIL"
+        fi
+        echo -e "${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
     else
         echo "not found"
     fi
 done
 
 # return to starting directory
-cd $start_dir
-dtab
+cd "$start_dir"
