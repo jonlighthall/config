@@ -65,7 +65,7 @@ function get_curpos() {
 
 	  # parse the cursor position
 	  local -r pair=${CURPOS#*[}
-          #}# dummy bracket for emacs indenting
+        #}# dummy bracket for emacs indenting
 	  local -ir cursor_x_position=${pair#*;}
 	  local -ir cursor_y_position=${pair%;*}
 
@@ -87,20 +87,20 @@ function get_curpos() {
         fecho "outputting..."
         local  x_out=$1
         if [ -n "${x_out+dummy}" ]; then
-            fecho "   arg 1 in : $x_out=${!x_out-UNSET}"
+            fecho "   arg 1 in : $x_out=${x_out-UNSET}"
         fi
         fecho "   arg 1 out: ${x_out}=${cursor_x_position}"
-        eval $x_out=$cursor_x_position        
+        eval $x_out=$cursor_x_position
     fi
 
     if [ $# -gt 1 ]; then
         fecho "   arg 2 : $2=${!2}"
         local y_out=$2
         if [ -n "${y_out+dummy}" ]; then
-            fecho "   arg 2 in : $y_out=${!y_out}"
+            fecho "   arg 2 in : $y_out=${y_out}"
         fi
         fecho "   arg 2 out: ${y_out}=${cursor_y_position}"
-        eval $y_out=$cursor_y_position        
+        eval $y_out=$cursor_y_position
     fi
     dtab
 }
@@ -211,11 +211,44 @@ function cbar() {
 }
 
 function strip_pretty() {
-    local output=$1
+    fecho "Narg = $#"
+    local i=0
+    if [ $# -gt 0 ]; then
+        for arg in "$@"; do
+            ((++i))
+            fecho -n "arg $i: $arg "
+            if [[ $arg == *'\x1B'* ]]; then
+                fecho -e "${BAD}escape${RESET}"
+            else
+                fecho -e "${GOOD}OK${RESET}"
+            fi
+        done
+
+        fecho "outputting..."
+        local var_out=$1
+
+        # check if VAR is unset
+        if [ -z "${!var_out+dummy}" ]; then
+            fecho  -e "   ${FUNCNAME[1]} arg 1 in : ${!var_out-$UNSET}"
+        fi
+        # check if VAR is NULL
+        if [ -z "${!var_out:+dummy}" ]; then
+            fecho  -e "   ${FUNCNAME[1]} arg 1 in : ${!var_out:-$NULL}"
+        fi
+
+    fi
     shift
+    if [ $# -gt 0 ]; then
+        fecho "$FUNCNAME: Narg = $#"
 
     # strip escapes
-    output=$(echo -e "$@" | sed "s/$(echo -e "\E")[^m]*m//g")
+        local stripped=$(echo -e "$@" | sed "s/$(echo -e "\E")[^m]*m//g")
+
+        fecho "   arg 1 out: ${var_out}=${stripped}"
+
+        eval $var_out='${stripped}'
+        fecho "   arg 1 set: ${var_out}=${!var_out-UNSET}"
+    fi
 }
 
 # -----------------------------------------------------------------------------------------------
