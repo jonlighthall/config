@@ -47,7 +47,7 @@ sudo apt -y install git
 If the preceeding command fails, the following should allow the command to run
 ```bash
 sudo apt update && sudo apt -y upgrade
-``
+```
 
 Github will require SSH keys.
 The SSH keys are stored in the following private repository.
