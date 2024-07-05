@@ -243,7 +243,6 @@ function do_link() {
                 fi
             else
                 echo -e "${GOOD}OK${RESET}"
-                dtab
             fi
             dtab
         fi
