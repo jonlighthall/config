@@ -7,7 +7,7 @@
 #
 # PURPOSE: functions for making links in bash shell.
 #
-# CONTIANS:
+# CONTAINS:
 #   check_arg1()
 #   check_arg2()
 #   check_target()
@@ -15,7 +15,7 @@
 #   do_link_exe()
 #   do_make_dir()
 #   do_make_link()
-# 
+#
 # Mar 2024 JCL
 #
 # -----------------------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ function check_target() {
     echo -en "\E[6n"
     read -sdR CURPOS
     local CURPOS=${CURPOS#*[}
-          #}# dummy bracket for emacs indenting
+          #}# dummy bracket for Emacs indenting
     # get the x-position of the cursor
     local -i x_pos=${CURPOS#*;}
     if [ ${x_pos} -eq 1 ]; then
@@ -73,7 +73,7 @@ function check_target() {
     [ -L "${target}" ] && type="link ${VALID}"
     [ -f "${target}" ] && type="file ${FILE}"
     [ -d "${target}" ] && type="directory ${DIR}"
-    
+
     # check if target exists
     echo -en "target ${type}${target}${RESET}... "
     if [ -e "${target_canon}" ]; then
@@ -98,7 +98,7 @@ function check_link_dir() {
     echo -en "\E[6n"
     read -sdR CURPOS
     local CURPOS=${CURPOS#*[}
-          #}# dummy bracket for emacs indenting
+          #}# dummy bracket for Emacs indenting
     # get the x-position of the cursor
     local -i x_pos=${CURPOS#*;}
     #echo "${TAB}x_pos=${x_pos}"
@@ -106,11 +106,11 @@ function check_link_dir() {
         echo -n "${TAB}"
     fi
 
-    # determine 
+    # determine
     [ -L "${link}" ] && type="link ${VALID}"
     [ -f "${link}" ] && type="file ${FILE}"
     [ -d "${link}" ] && type="directory ${DIR}"
-    
+
     # check if link exists
     echo -en "  link ${type}${link}${RESET}... "
     if [ -e "${link_canon}" ]; then
@@ -127,24 +127,24 @@ function do_link() {
     #
     # SYNTAX
     #   do_link target link_name
-    #   the syntaxt is the same as the 'ln' intrinsic
+    #   the syntax is the same as the 'ln' intrinsic
     #   two arguments are required
     #
     # DEPENDENCIES
     #   check_target
     #
-    # METHOD - 
+    # METHOD -
     #   FIND check if the target (source) exists
     #   SSH handling - applies when files are in .ssh/
-    #     check premission of the parent directory
-    #     check the public/private premission of individual files
+    #     check permission of the parent directory
+    #     check the public/private permission of individual files
     #     exclude linking of certain files
     #   LINK
     #     check if link_name exists
     #       + check if link_name points to target
     #           + already done, LS link_name and RETURN
     #           - check if link_name is writable
-    #               + check if link_name and target have the same conents
+    #               + check if link_name and target have the same contents
     #                   + DELETE
     #                   - check if exists
     #                       + get date from date
@@ -174,7 +174,7 @@ function do_link() {
         if [[ ! ${FUNCNAME[1]} =~ "do_link" ]]; then
             check_target "$target" || return 1
         else
-            decho "${TAB}${target##*/} alread checked"
+            decho "${TAB}${target##*/} already checked"
         fi
     fi
 
@@ -219,7 +219,7 @@ function do_link() {
                 echo -n "PRIV "
             fi
             echo "${permOK}"
-            
+
             # check existing permissions
             itab
             echo -n "${TAB}checking permissions... "
@@ -276,9 +276,9 @@ function do_link() {
             dtab 2 # reset status and link tab
             return 0
         fi
-        
+
         # check if link already points to the target
-        # in the case of an authorized_keys file, the target must be hardlinked
+        # in the case of an authorized_keys file, the target must be hard-linked
         local inode_target=$(stat -c "%i" "${target}")
         local inode_link=$(stat -c "%i" "${link_name}")
         if [[ "${target}" -ef "${link_name}" && "${target}" != *"_keys"* ]] || [ ${inode_target} -eq ${inode_link} ] ; then
@@ -361,20 +361,20 @@ function do_link_exe() {
     #
     # SYNTAX
     #   do_link_exe target link_name
-    #   the syntaxt is the same as the 'ln' intrinsic
+    #   the syntax is the same as the 'ln' intrinsic
     #   two arguments are required
     #
     # DEPENDENCIES
     #   check_target
     #   do_link
     #
-    # METHOD - 
+    # METHOD -
     #   FIND check if the target (source) exists
     #   PERM check the target is executable
     #   LINK pass arguments to do_link
-    
+
     check_arg2 $@
-    
+
     # define target (source)
     local target="$1"
 
@@ -417,20 +417,20 @@ function check_link() {
     #
     # SYNTAX
     #   check_link target link_name
-    #   the syntaxt is the same as the 'ln' intrinsic
+    #   the syntax is the same as the 'ln' intrinsic
     #   two arguments are required
     #
     # DEPENDENCIES
     #   check_target
     #
-    # METHOD - 
+    # METHOD -
     #   FIND check if the target (source) exists
     #   LINK
     #     check if link_name exists
     #       + check if link_name points to target
     #           + already done, LS link_name and RETURN
     #           - check if link_name is writable
-    #               + check if link_name and target have the same conents
+    #               + check if link_name and target have the same contents
     #                   + DELETE
     #                   - check if exists
     #                       + get date from date
@@ -449,7 +449,7 @@ function check_link() {
     local link_name="$2"
 
     check_target "$target" || return 1
-    check_target "$link_name" || return 1    
+    check_target "$link_name" || return 1
 
     echo -n "${TAB}${target} and ${link_name}... "
 
@@ -457,9 +457,9 @@ function check_link() {
     if [[ "${target}" == "${link_name}" ]]; then
         echo -e "$have the same logical name"
     fi
-    
+
     # check if link already points to the target
-    # in the case of an authorized_keys file, the target must be hardlinked
+    # in the case of an authorized_keys file, the target must be hard-linked
     local -i inode_target=$(stat -c "%i" "${target}")
     local -i inode_link=$(stat -c "%i" "${link_name}")
     decho
@@ -468,10 +468,10 @@ function check_link() {
     if [ ${inode_target} -eq ${inode_link} ] ; then
         decho "same inode"
     else
-        decho "differnt inode"
+        decho "different inode"
     fi
     if [ ${inode_target} == ${inode_link} ] ; then
-        echo "are hardlinked"
+        echo "are hard-linked"
         return 0
     else
         echo "are not the same"
@@ -480,9 +480,9 @@ function check_link() {
             echo "${link_name}: $inode_link"
         ) | column -t -s: -N file,inode | sed "s/^/${TAB}/"
     fi
-    
-    if [[ "${target}" -ef "${link_name}" ]]; then 
-        echo "are symlinked"        
+
+    if [[ "${target}" -ef "${link_name}" ]]; then
+        echo "are symlinked"
         echo -n "${TAB}"
         ls -lhG --color=always "${link_name}" | tr -s ' ' | cut -d' ' -f 8-
         return 0
@@ -503,7 +503,7 @@ function check_link() {
             fi
         fi
     fi
-    dtab    
+    dtab
 }
 
 function do_make_dir() {
@@ -516,8 +516,8 @@ function do_make_dir() {
     #   check_target
 
     local DEBUG=0
-    check_arg1 $@ 
-    
+    check_arg1 $@
+
     # define target (source)
     local target="$@"
 
@@ -532,13 +532,13 @@ function do_make_dir() {
     # check if target exists
     check_target "$target"
     local -i RETVAL=$?
-    
+
     # if target does not exist, make the directory
     if [ $RETVAL = 1 ]; then
         itab
         echo -en "${TAB}${GRH}"
         hline 72
-        echo "${TAB}${GRH}making directory... "     
+        echo "${TAB}${GRH}making directory... "
         echo -n "${TAB}"
         mkdir -pv "${target}"
         RETVAL=$?
@@ -562,10 +562,10 @@ function do_make_link() {
     # DEPENDENCIES
     #   check_target
     #   do_link
-    #   do_make_dir    
+    #   do_make_dir
 
     check_arg2 $@
-    
+
     # define target (source)
     local target="$1"
 
@@ -580,6 +580,5 @@ function do_make_link() {
 
 function find_broken() {
     # find links
-    find -L ./ \( -type l -o -xtype l \) | xargs ~/utils/bash/rm_broken_dupes.sh
+    find -L ./ -type l | xargs ~/utils/bash/rm_broken_dupes.sh
 }
-
