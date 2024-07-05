@@ -5,6 +5,9 @@ Settings specific to Windows Subsystem for Linux are found in [wsl](wsl).
 Settings specific to Cygwin, MinGW, and Git Bash are found in [cygwin](cygwin).
 
 ## Cloning *this* repository
+Install git with one of the following commands.
+`sudo apt install git -y` (Ubuntu)
+`sudo dnf install git -y` (Oracle)
 
 Clone the reposity with one of the following commands.
 
