@@ -112,7 +112,7 @@ function check_link_dir() {
     [ -d "${link}" ] && type="directory ${DIR}"
 
     # check if link exists
-    echo -en "  link ${type}${link}${RESET}... "
+    echo -en "link ${type}${link}${RESET}... "
     if [ -e "${link_canon}" ]; then
         echo -e "${GOOD}exists${RESET}"
         return 0

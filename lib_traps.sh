@@ -565,7 +565,7 @@ function print_traps() {
         ddecho -e "${TAB}none"
     else
         ddecho $(trap -p) | sed "s/^/${TAB}/;s/ \(trap --\)/\n${TAB}\1/g"
-         [ $DEBUG -gt 0 ] && start_new_line
+        [ $DEBUG -gt 0 ] && start_new_line
     fi
     ddecho -ne ${RESET}
     dtab
@@ -694,7 +694,7 @@ function set_exit() {
         local -i DEBUG=$1
     else
         # substitute default value if DEBUG is unset or null
-        local -i DEBUG=${DEBUG:-2} 
+        local -i DEBUG=${DEBUG:-2}
     fi
     # manual
     #DEBUG=1
@@ -795,7 +795,6 @@ function unset_traps() {
 
     do_clear
     check_traps_clear
-    dtab
 }
 
 # reset saved traps

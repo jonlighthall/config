@@ -16,6 +16,7 @@ if ! (return 0 2>/dev/null); then
     set -e
 fi
 DEBUG=${DEBUG:-1}
+dtab
 print_source
 
 cbar "Define Directories"
@@ -274,13 +275,14 @@ cbar  "Start Linking External Files"
 for my_link in .bash_history; do
     # define target (source)
     target=${onedrive_home}/${my_link}
-    # define link (destination)
+    # define link name (destination)
     sub_dir=$(dirname "$my_link")
     if [ ! $sub_dir = "." ]; then
         # strip target subdirectory from link name
         my_link=$(basename "$my_link")
     fi
     link=~/${my_link}
+    # make link
     do_link "$target" "$link"
 done
 

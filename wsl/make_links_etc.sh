@@ -15,6 +15,7 @@ if ! (return 0 2>/dev/null); then
     # exit on errors
     set -e
 fi
+dtab
 print_source
 
 # set target and link directories
