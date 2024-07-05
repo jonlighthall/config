@@ -254,6 +254,7 @@ function do_link() {
                 fi
             else
                 echo -e "${GOOD}OK${RESET}"
+                dtab
             fi
             dtab
         fi
@@ -285,8 +286,8 @@ function do_link() {
             echo -e "${IT}is${NORMAL} ${target}"
             echo -n "${TAB}skipping..."
             ((++elin))
-            print_OK
             dtab 2 # reset status and link tab
+            print_OK
             return 0
         fi
 
@@ -307,8 +308,8 @@ function do_link() {
             ((++elin))
             echo -n "${TAB}skipping..."
             ((++elin))
-            print_OK
             dtab 2 # reset status and link tab
+            print_OK
             return 0
         else
             # next, check write permissions
