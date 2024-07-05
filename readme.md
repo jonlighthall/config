@@ -6,14 +6,27 @@ Settings specific to Cygwin, MinGW, and Git Bash are found in [cygwin](cygwin).
 
 ## Cloning *this* repository
 Install git with one of the following commands.
-`sudo apt install git -y` (Ubuntu)
-`sudo dnf install git -y` (Oracle)
+> Ubuntu:
+
+        sudo apt install git -y
+
+
+> Oracle: 
+```
+    sudo dnf install git -y
+```
 
 Clone the reposity with one of the following commands.
 
-`git clone https://github.com/jonlighthall/config` (Git HTTPS)
+> HTTPS:
+```
+    git clone https://github.com/jonlighthall/config
+```
 
-`git clone git@github.com:jonlighthall/config.git` (Git SSH)
+> SSH:
+```
+    git clone git@github.com:jonlighthall/config.git
+```
 
 ## Cloning other repositories
 
