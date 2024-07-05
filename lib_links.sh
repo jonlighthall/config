@@ -76,6 +76,7 @@ function check_target() {
 
     # check if target exists
     echo -en "target ${type}${target}${RESET}... "
+    export elin=0
     if [ -e "${target_canon}" ]; then
         echo -e "${GOOD}exists${RESET}"
         return 0
@@ -120,6 +121,12 @@ function check_link_dir() {
         echo -e "${BAD}does not exist"
         return 1
     fi
+}
+
+function print_OK() {
+    #    return
+    echo -en "\E[${elin}F\E[0J"
+    echo -e "${TAB}target ${type}${target}${RESET}... ${GOOD}OK${RESET}"
 }
 
 function do_link() {
@@ -186,10 +193,12 @@ function do_link() {
 
         # before linking, check parent directory permissions
         echo -n "${TAB}${target_dir} requires specific permissions: "
+        ((++elin))
         local -i permOK=700
         echo "${permOK}"
         itab
         echo -n "${TAB}checking permissions... "
+        ((++elin))
         local -i perm=$(stat -c "%a" "${target_dir}")
         echo -n "${perm} "
         if [[ ${perm} -gt ${permOK} ]]; then
@@ -211,6 +220,7 @@ function do_link() {
         if [[ ${target##*/} = id* || ${target##*/} = config || ${target##*/} = authorized_keys* ]]; then
             # determine permission requirements
             echo -n "${TAB}${target##*/} requires specific permissions: "
+            ((++elin))
             if [[ "${target}" == *"pub"* ]]; then
                 local -i permOK=644
                 echo -n "PUB "
@@ -223,12 +233,13 @@ function do_link() {
             # check existing permissions
             itab
             echo -n "${TAB}checking permissions... "
+            ((++elin))
             # if the target file is itself a link, the permissions are irrelevant; check the
             # permissions of the canonicalized target
             local target_canon=$(readlink -f "${target}")
             local -i perm=$(stat -c "%a" "${target_canon}")
             echo -n "${perm} "
-
+            ((++elin))
             # if necessary, the canonicalized target file will have its existing permissions
             # replaced with the required permissions
             if [[ ${perm} -gt ${permOK} ]]; then
@@ -263,6 +274,7 @@ function do_link() {
     # begin linking...
     itab
     echo -n "${TAB}link name ${link_name}... "
+    ((++elin))
 
     # first, check for existing copy
     if [ -L "${link_name}" ] || [ -f "${link_name}" ] || [ -d "${link_name}" ]; then
@@ -271,7 +283,9 @@ function do_link() {
         # check if link and target are the same
         if [[ "${target}" == "${link_name}" ]]; then
             echo -e "${IT}is${NORMAL} ${target}"
-            echo "${TAB}skipping..."
+            echo -n "${TAB}skipping..."
+            ((++elin))
+            print_OK
             dtab 2 # reset status and link tab
             return 0
         fi
@@ -290,7 +304,10 @@ function do_link() {
             fi
             #TODO print only link and target
             ls -lhG --color=always "${link_name}" | tr -s ' ' | cut -d' ' -f 8-
-            echo "${TAB}skipping..."
+            ((++elin))
+            echo -n "${TAB}skipping..."
+            ((++elin))
+            print_OK
             dtab 2 # reset status and link tab
             return 0
         else
@@ -385,10 +402,12 @@ function do_link_exe() {
     # next, check file permissions
     itab
     echo -n "${TAB}${target##*/} requires specific permissions: "
+    ((++elin))
     local permOK=500
     echo "${permOK}"
     itab
     echo -n "${TAB}checking permissions... "
+    ((++elin))
     local perm=$(stat -c "%a" "${target}")
     echo ${perm}
     # the target files will have the required permissions added to the existing permissions
@@ -404,6 +423,7 @@ function do_link_exe() {
     else
         echo -e "${TAB}permissions ${GOOD}OK${RESET}"
     fi
+    ((++elin))
     dtab 2
 
     # then link
