@@ -42,7 +42,7 @@ alias x='exit'
 
 # diff
 alias d='diffy -s'
-alias diffy='diff --color=auto --suppress-common-lines -yiEZbwB'
+alias diffy='diff --color=auto --suppress-common-lines -yiEZbwB --exclude=.git'
 
 # find
 alias fb='ff | perl -lne "print if not -T"' # find binary
