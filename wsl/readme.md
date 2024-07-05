@@ -4,11 +4,11 @@ However, changes in the files will not be tracked by Git.
 Linux-like symbolic links can be made using the `ln -s` command.
 
 ## Contents
-[`install_packages`] (install_packages.sh)
-[`make_links`] (make_links.sh)
-[`make_links_etc`] (make_links_etc.sh)
-[`make_links_external`] (make_links_external.sh)
-[`configure`] (configure.sh)
+[`install_packages`](install_packages.sh)
+[`make_links`](make_links.sh)
+[`make_links_etc`](make_links_etc.sh)
+[`make_links_external`](make_links_external.sh)
+[`configure`](configure.sh)
 
 ## Installation
 ````
