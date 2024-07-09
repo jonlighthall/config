@@ -20,7 +20,7 @@
 (set 'ncols 97)
 
 ;; Tab settings
-;; MATLAB tab size 
+;; MATLAB tab size
 (set 'mtab 4)
 ;; general/global tab size
 (set 'gtab 2)
@@ -194,7 +194,7 @@
       t)
      ;; indent continuation lines to 4
      ((and (not (bobp))
-	   (= (char-before (1- (point))) ?\\))
+           (= (char-before (1- (point))) ?\\))
       (delete-horizontal-space)
       (indent-to 4))
      ;; delete all other leading whitespace
@@ -202,8 +202,8 @@
       (replace-match "")))))
 
 (add-hook 'makefile-mode-hook
-	  (lambda ()
-	    (setq-local indent-line-function 'my-makefile-indent-line)))
+	        (lambda ()
+	          (setq-local indent-line-function 'my-makefile-indent-line)))
 
 ;; MATLAB
 ;; ------
@@ -212,25 +212,25 @@
 
 ;; tabbing
 (add-hook 'octave-mode-hook
-	  (lambda ()
-	    ;; don't indent every line for no reason
-	    (setq indent-line-function 'insert-tab)
-	    )
-	  )
+	        (lambda ()
+	          ;; don't indent every line for no reason
+	          (setq indent-line-function 'insert-tab)
+	          )
+	        )
 
 (setq octave-mode-hook
       (lambda ()
-	(progn
-	  (setq indent-tabs-mode t)                   
+        (progn
+          (setq indent-tabs-mode t)
           (setq tab-width mtab)
           (setq tab-stop-list (number-sequence mtab 200 mtab))
-	  ;; set code block indent
-	  (setq octave-block-offset mtab)
+          ;; set code block indent
+          (setq octave-block-offset mtab)
 
-	  ;; keep comments from being inappropriately indented
-	  (setq octave-comment-char ?%)
+          ;; keep comments from being inappropriately indented
+          (setq octave-comment-char ?%)
           (setq comment-start "%")
-	  (setq comment-add 0)	   
+          (setq comment-add 0)
           (defun octave-indent-comment ()
             "A function for `smie-indent-functions' (which see)."
             (save-excursion
@@ -238,11 +238,11 @@
               (cond
                ((octave-in-string-or-comment-p) nil)
                ((looking-at-p "\\(\\s<\\)\\1\\{2,\\}") 0)
-	       )
-	      )
-	    )
-	  )
-	)
+               )
+              )
+            )
+          )
+        )
       )
 
 ;; open arduino files as c++
@@ -292,6 +292,6 @@
 ;; FORTRAN column highlighting
 (add-hook 'fortran-mode-hook
           (lambda ()
-	    'turn-on-auto-fill
+            'turn-on-auto-fill
             (setq-local whitespace-line-column fcols)
-	    (setq-local global-whitespace-mode 1)))
+            (setq-local global-whitespace-mode 1)))
