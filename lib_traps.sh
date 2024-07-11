@@ -344,7 +344,14 @@ function print_error() {
     TAB=${TAB=''}
     local ERR_PRINT=$(echo -e "${TAB}\E[37;41m ERROR ${RESET} ")
     start_new_line
-    hline 38 ${RED}E${RESET}
+    # set line width to one less than the terminal width
+    local -i line_width=$(( $(tput cols) - 1 ))
+    local -i line_max=72
+    if [ $line_width -gt $line_max ]; then
+        line_width=$line_max
+    fi
+
+    hline ${line_width} ${RED}E${RESET}
 
     eTAB=$(echo -e "${RED}|${RESET}")
     eTAB=$fTAB
@@ -504,7 +511,7 @@ function print_error() {
         fi
     fi
     echo -e "${spx} ${GRAY}RETVAL=${ERR_RETVAL}${RESET}"
-    hline 38 ${RED}E
+    hline ${line_width} ${RED}E
     # reset shell options before returning to shell
     if [[ "$-" == *u* ]]; then
         set +u
