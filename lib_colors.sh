@@ -188,7 +188,7 @@ function load_colors() {
 function print_dircolors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     if [ -z ${LS_COLORS:+dummy} ]; then
-        echo "${TAB}LS_COLORS not defined"
+        echo "${TAB}${FUNCNAME}: LS_COLORS not defined"
         return
     fi
     # print value of dircolors
@@ -198,7 +198,7 @@ function print_dircolors() {
 function define_ls_colors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     if [ -z ${LS_COLORS:+dummy} ]; then
-        echo "${TAB}LS_COLORS not defined"
+        echo "${TAB}${FUNCNAME}: LS_COLORS not defined"
         return
     fi
     local -r LN=$(declare -p LS_COLORS | sed 's/^.*ln=\([0-9;]*\):.*$/\1/')
@@ -247,7 +247,7 @@ function match_ls_colors2() {
 function print_ls_colors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     if [ -z ${LS_COLORS:+dummy} ]; then
-        echo "${TAB}LS_COLORS not defined"
+        echo "${TAB}${FUNCNAME}: LS_COLORS not defined"
         return
     fi
     # print value of LS_COLORS
@@ -267,7 +267,7 @@ function print_ls_colors() {
 function print_ls_colors_ext() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     if [ -z ${LS_COLORS:+dummy} ]; then
-        echo "${TAB}LS_COLORS not defined"
+        echo "${TAB}${FUNCNAME}: LS_COLORS not defined"
         return
     fi
     # print value of LS_COLORS
