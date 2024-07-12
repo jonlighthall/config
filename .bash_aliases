@@ -38,6 +38,7 @@ alias ping='ping -c 4 -W 1'
 alias pkill='pkill -9 -u ${USER}'
 alias pwd='pwd -L;pwd -P'
 alias up='source update_repos'
+alias vpn='source ${HOME}/config/.bash_aliases_vpn'
 alias x='exit'
 
 # diff
