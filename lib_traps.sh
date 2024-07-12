@@ -339,6 +339,16 @@ function print_error() {
     # set function debug
     local -i funcDEBUG=$DEBUG
 
+    # check if in Git Bash terminal (and not in repsoitory)
+    if [ -n "$(command -v __git_ps1)" ]; then
+        if [ ! $ERR_RETVAL -eq 0 ]; then
+            echo -e " ${PSBR}null${RESET}"
+            set +e
+            return
+        fi
+    fi
+
+    # print function name
     decho -e "${TAB}\E[37;41m${FUNCNAME}${RESET}"
 
     TAB=${TAB=''}
@@ -595,7 +605,6 @@ function check_traps_set() {
         return 1
     fi
     dtab
-
 }
 
 function get_sigs() {
@@ -690,7 +699,6 @@ function set_traps() {
     dddecho "done"
 
     check_traps_set
-
 }
 
 # set EXIT trap
