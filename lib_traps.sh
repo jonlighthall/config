@@ -339,13 +339,20 @@ function print_error() {
     # set function debug
     local -i funcDEBUG=$DEBUG
 
+    # parse arguments
+    local -i ERR_LINENO=$1
+    shift
+    local -i ERR_RETVAL=$1
+    shift
+    local ERR_CMD="$@"
+
     # check if in Git Bash terminal (and not in repsoitory)
     if [ -n "$(command -v __git_ps1)" ]; then
-        if [ ! $ERR_RETVAL -eq 0 ]; then
+        if [ $ERR_RETVAL -eq 128 ]; then
             echo -e " ${PSBR}null${RESET}"
-            set +e
             return
         fi
+        set +e
     fi
 
     # print function name
@@ -367,13 +374,6 @@ function print_error() {
     eTAB=$fTAB
 
     TAB+=$eTAB
-
-    # parse arguments
-    local -i ERR_LINENO=$1
-    shift
-    local -i ERR_RETVAL=$1
-    shift
-    local ERR_CMD="$@"
 
     # print arguments
     fecho "LINENO = $ERR_LINENO"
