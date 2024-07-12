@@ -54,9 +54,6 @@ function test_normal() {
     echo -ne "${RESET}"
 }
 
-# define LaTeX-like text formatting
-export      BF='\x1B[1m'    # bold face
-
 # define LaTeX-like text formatting names
 export    BF='\x1B[1m'  # bold face
 export    IT='\x1B[3m'  # italics
