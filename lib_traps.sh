@@ -351,6 +351,15 @@ function print_error() {
         if [ $ERR_RETVAL -eq 128 ]; then
             echo -e " ${PSBR}null${RESET}"
             return
+        else
+            if [[ $ERR_CMD =~ '$exit' ]]; then
+                echo -en " ${RED}E${RESET}"
+                return
+            else
+                echo "LINENO = $ERR_LINENO"
+                echo "RETVAL = $ERR_RETVAL"
+                echo "   CMD = $ERR_CMD"
+            fi
         fi
         set +e
     fi
