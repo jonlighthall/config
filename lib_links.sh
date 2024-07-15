@@ -70,6 +70,7 @@ function check_target() {
     fi
 
     # determine type
+    export type="undefined ${BROKEN}"
     [ -L "${target}" ] && type="link ${VALID}"
     [ -f "${target}" ] && type="file ${FILE}"
     [ -d "${target}" ] && type="directory ${DIR}"
@@ -558,7 +559,7 @@ function do_make_dir() {
         itab
         echo -en "${TAB}${GRH}"
         hline 72
-        echo "${TAB}${GRH}making directory... "
+        echo -e "${TAB}${GRH}making directory... "
         echo -n "${TAB}"
         mkdir -pv "${target}"
         RETVAL=$?
