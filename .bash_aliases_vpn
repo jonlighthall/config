@@ -35,6 +35,7 @@ fi
 itab
 echo -en "${TAB}${MAGENTA}redefining aliases... ${RESET}"
 alias git='powershell.exe git'
+alias scp='powershell.exe scp'
 alias ssh='powershell.exe ssh'
 echo -e "done"
 dtab
