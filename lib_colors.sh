@@ -146,6 +146,21 @@ export EF='\x1B[38;5;50m'   # cyan        : function name
 # -----------------------------------------------------------------------------------------------
 
 function load_colors() {
+    vecho -n "${TAB}loading colors... "
+    [ $DEBUG -gt 0 ] && vecho
+    itab
+    load_dircolors
+    append_ls_colors
+    match_ls_colors
+    dtab
+    if [ $DEBUG -gt 0 ]; then
+        vecho "${TAB}colors loaded"
+    else
+        vecho "done"
+    fi
+}
+
+function load_dircolors() {
     # enable color support of ls
     # define LS_COLORS using dircolors and .dircolors
     decho "${TAB}"$(vecho "loading dircolors...")
