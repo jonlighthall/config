@@ -130,6 +130,12 @@ function print_OK() {
     echo -e "${TAB}target ${type}${target}${RESET}... ${GOOD}OK${RESET}"
 }
 
+function print_exclude() {
+    #    return
+    echo -en "\E[${elin}F\E[0J"
+    echo -e "${TAB}target ${type}${target}${RESET}... ${GRH}exclude${RESET}"
+}
+
 function do_link() {
     # PURPOSE - create a link to a target
     #
@@ -191,7 +197,7 @@ function do_link() {
     if [[ "${target_dir}" == *".ssh" ]]; then
         itab
         echo "${TAB}Applying options for SSH configuration files..."
-
+        ((++elin))
         # before linking, check parent directory permissions
         echo -n "${TAB}${target_dir} requires specific permissions: "
         ((++elin))
@@ -266,7 +272,9 @@ function do_link() {
             if [[ ${target##*/} == *"$fname"* ]] || [[ ${target##*/} =~ .*$fname.* ]]  ; then
                 itab
                 echo -e "${TAB}${GRH}exclude${RESET} $fname: ${target##*/}"
+                ((++elin))
                 dtab 2
+                print_exclude
                 return 0
             fi
         done
