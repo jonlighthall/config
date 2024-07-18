@@ -146,7 +146,7 @@ export EF='\x1B[38;5;50m'   # cyan        : function name
 # -----------------------------------------------------------------------------------------------
 
 function load_colors() {
-    vecho -n "${TAB}loading colors... "
+    [ "${VB}" = true ] && decho -n "${TAB}loading colors... "
     [ $DEBUG -gt 0 ] && vecho
     itab
     load_dircolors
@@ -154,16 +154,16 @@ function load_colors() {
     match_ls_colors
     dtab
     if [ $DEBUG -gt 0 ]; then
-        vecho "${TAB}colors loaded"
+        [ "${VB}" = true ] && decho "${TAB}colors loaded"
     else
-        vecho "done"
+        [ "${VB}" = true ] && decho "done $FUNCNAME"
     fi
 }
 
 function load_dircolors() {
     # enable color support of ls
     # define LS_COLORS using dircolors and .dircolors
-    decho "${TAB}"$(vecho "loading dircolors...")
+    [ "${VB}" = true ] && decho "${TAB}loading dircolors..."
 
     # turn in-function debugging on/off
     local -i funcDEBUG=0
@@ -185,7 +185,7 @@ function load_dircolors() {
             check_target "${fpath}"
         fi
 
-        decho "${TAB}"$(vecho "defining LS_COLORS...")
+        [ "${VB}" = true ] && decho "${TAB}defining LS_COLORS..."
         if [ -r "${fpath}" ]; then
             fecho -e "and is readable ${GOOD}OK${NORMAL}"
             eval "$(dircolors -b "${fpath}")"
@@ -199,7 +199,7 @@ function load_dircolors() {
         fecho -e "does not exist or is not executable ${BAD}FAIL${NORMAL}"
     fi
     if [ "${VB}" = true ]; then
-        decho "${TAB}"$(decho "directory colors loaded")
+        [ "${VB}" = true ] && decho "${TAB}directory colors loaded"
         dtab
     fi
 }
@@ -307,7 +307,8 @@ function match_ls_colors() {
     [ $DEBUG -gt 0 ] && start_new_line
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     # print vecho/decho statement
-    decho "${TAB}"$(vecho "matching ls-derived variables to LS_COLORS...")
+    [ "${VB}" = true ] && decho -n "${TAB}matching ls-derived variables to LS_COLORS... "
+    [ $DEBUG -gt 1 ] && start_new_line
     if [ -z ${LS_COLORS:+dummy} ]; then
         echo "${TAB}${FUNCNAME}: LS_COLORS not defined"
         return
@@ -320,7 +321,7 @@ function match_ls_colors() {
     local ln_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^ln/!d' | sed 's/^.*=//' | tail -1)
 
     # print summary
-    if [ $DEBUG -gt 0 ]; then
+    if [ $DEBUG -gt 1 ]; then
         itab
         echo "${TAB}prior:"
         itab
@@ -357,6 +358,9 @@ function match_ls_colors() {
             echo -e "${TAB}${TGT}TGT+executable files${RESET}"
         ) | column -t -s+
         dtab 2
+        [ "${VB}" = true ] && decho "${TAB}done"
+    else
+        [ "${VB}" = true ] && decho "done"
     fi
 }
 
@@ -415,7 +419,7 @@ function print_ls_colors_ext() {
 
 function append_ls_colors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-    decho -n "${TAB}"$(vecho "appending to ls colors... ")
+    [ "${VB}" = true ] && decho -n "${TAB}appending to ls colors... "
     if [ -z ${LS_COLORS:+dummy} ]; then
         echo "${TAB}${FUNCNAME}: LS_COLORS not defined"
         return
@@ -429,7 +433,7 @@ function append_ls_colors() {
     LS_COLORS+="mh=${mh_col}:"
     # missing
     LS_COLORS+="mi=05;48;5;232;38;5;15:"
-    decho $(vecho "done")
+    [ "${VB}" = true ] && decho "done"
 }
 
 # -----------------------------------------------------------------------------------------------
@@ -784,8 +788,12 @@ function print_pretty_cbar() {
 }
 
 function print_pretty_status() {
-    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
-        print_pretty_cbar
+    # check size of stack
+    local -i N_BASH=${#BASH_SOURCE[@]}
+    if [[ "$-" == *i* ]] ; then
+        if [ $N_BASH -eq 1 ] || [ ${DEBUG:-0} -gt 0 ];then
+            print_pretty_cbar
+        fi
     fi
     local -i lev
     if [ -z ${FPRETTY_LOADED+dummy} ]; then
@@ -793,17 +801,16 @@ function print_pretty_status() {
         lev=1
         vecho "${TAB}${BASH_SOURCE[lev]##*/} loaded"
     else
-        # check size of stack
-        local -i N_BASH=${#BASH_SOURCE[@]}
         local cmd
-        if [ $N_BASH -eq 2 ]; then
+        cmd=decho
+        if ! command -v $cmd &>/dev/null; then
             cmd=echo
-            lev=1
-        else
-            cmd=decho
-            lev=0
         fi
-        $cmd "${TAB}"$(print_pretty "${BASH_SOURCE[lev]##*/} reloaded")
+
+        if [ $N_BASH -gt 1 ]; then
+            lev=1
+            $cmd "${TAB}"$(print_pretty "${BASH_SOURCE[lev]##*/} reloaded")
+        fi
     fi
 }
 
