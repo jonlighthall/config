@@ -23,9 +23,9 @@ if [[ "$-" == *i* ]];then
         echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
     fi
 else
-    echo -n "${BASH_SOURCE}: non-interactive shell" >&2
-    echo -en "\x1B[1;31m intended for interactive shells only\x1B[m " >&2
-    echo -e "returning..." >&2
+    echo "${TAB-}${BASH_SOURCE##*/}: non-interactive shell" >&2
+    echo -en "${TAB-}\x1B[1;31m intended for interactive shells only\x1B[m " >&2
+    echo -e "${TAB-}returning..." >&2
     # If not running interactively, don't do anything
     return
 fi
@@ -48,15 +48,9 @@ fi
 
 # check if VB is true
 if [ "${VB}" = true ]; then
+    print_ribbon
     print_source
 fi
-
-# enable color support of ls
-# define LS_COLORS using dircolors and .dircolors
-vecho "${TAB}loading ls colors..."
-load_colors
-append_ls_colors
-match_ls_colors
 
 vecho "${TAB}running list..."
 # required list

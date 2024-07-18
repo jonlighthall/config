@@ -56,6 +56,10 @@ fi
 config_dir=${HOME}/config
 fpretty=${config_dir}/.bashrc_pretty
 if [ -e $fpretty ]; then
+    if [ "${VB}" = true ]; then
+        # remember, if .bashrc_pretty hasn't been loaded yet, vecho is not defined
+        echo "${TAB-}loading $fpretty..."
+    fi
     source $fpretty
     set -e
     set_traps
@@ -72,13 +76,6 @@ fi
 if [ ${DEBUG:-0} -gt 0 ]; then
     print_stack
 fi
-
-# enable color support of ls
-# define LS_COLORS using dircolors and .dircolors
-vecho "${TAB}loading ls colors..."
-load_colors
-append_ls_colors
-match_ls_colors
 
 vecho "${TAB}running list..."
 # required list
@@ -115,18 +112,18 @@ set +e
 unset_traps
 
 # source list of files
-for FILE in $LIST; do
-    vecho "${TAB}loading $FILE..."
-    if [ -f $FILE ]; then
-        source $FILE
+for fname in $LIST; do
+    vecho "${TAB}loading $fname..."
+    if [ -f $fname ]; then
+        source $fname
         RETVAL=$?
         if [ $RETVAL -eq 0 ]; then
-            vecho -e "${TAB}$FILE ${GOOD}OK${RESET}"
+            vecho -e "${TAB}$fname ${GOOD}OK${RESET}"
         else
-            echo -e "${TAB}$FILE ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+            echo -e "${TAB}$fname ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
         fi
     else
-        echo -e "${TAB}$FILE ${UL}not found${RESET}"
+        echo -e "${TAB}$fname ${UL}not found${RESET}"
     fi
 done
 

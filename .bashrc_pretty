@@ -158,6 +158,7 @@ function load_libs() {
             print_return # lib_traps
         fi
     fi
+    load_colors
 }
 
 load_libs
