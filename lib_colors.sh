@@ -271,6 +271,10 @@ function match_ls_colors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     # print vecho/decho statement
     decho "${TAB}"$(vecho "matching ls-derived variables to LS_COLORS...")
+    if [ -z ${LS_COLORS:+dummy} ]; then
+        echo "${TAB}${FUNCNAME}: LS_COLORS not defined"
+        return
+    fi
 
     # get link color codes
     local or_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^or/!d' | sed 's/^.*=//' | tail -1)
@@ -375,6 +379,10 @@ function print_ls_colors_ext() {
 function append_ls_colors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     decho -n "${TAB}"$(vecho "appending to ls colors... ")
+    if [ -z ${LS_COLORS:+dummy} ]; then
+        echo "${TAB}${FUNCNAME}: LS_COLORS not defined"
+        return
+    fi
     # physical link (hardlink)
     # get link color code
     ln_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^ln/!d' | sed 's/^.*=//')
@@ -766,23 +774,26 @@ function test_lib_colors() {
     local -i DEBUG=2
     decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
 
-    for func in test_normal \
-                    define_ls_colors \
-                    print_dircolors \
-                    print_ls_colors \
-                    print_ls_colors_ext \
-                    print_rcolors \
-                    print_colors \
-                    print_dcolors \
-                    print_fcolors \
-                    print_pretty \
-                    print_pretty_cbar \
-
-                    do
-                echo
-                $func
-             done
-
+    for func in \
+            define_ls_colors \
+            print_colors \
+            print_dcolors \
+            print_dircolors \
+            print_dircolors_default \
+            print_dircolors_ext \
+            print_fcolors \
+            print_ls_colors \
+            print_ls_colors_ext \
+            print_pretty \
+            print_pretty_cbar \
+            print_rcolors \
+            test_normal \
+            test_set_color \
+            do
+            echo
+            $func
+    done
+            
 }
 
 if [ ${DEBUG:-0} -gt 2 ]; then
