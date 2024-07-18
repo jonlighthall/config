@@ -189,14 +189,49 @@ function load_colors() {
     fi
 }
 
+function print_dircolors_default() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    # print default value of dircolors
+    dircolors -p | sed 's/\(^.*\([0-9]\{2\};[0-9]\{2\}[0-9;]*\)\)/\x1B[\2m\1\x1B[0m/' \
+        | sed "s/^/${TAB}/"
+}
+
 function print_dircolors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-    if [ -z ${LS_COLORS:+dummy} ]; then
-        echo "${TAB}${FUNCNAME}: LS_COLORS not defined"
-        return
+    # define path
+    local srcdir=$(dirname $(readlink -f "${BASH_SOURCE}"))
+    local fname=.dircolors
+    local fpath="${srcdir}/${fname}"
+    if [ -r "${fpath}" ]; then
+        fecho -e "and is readable ${GOOD}OK${NORMAL}"
+
+        # print value of dircolors, no extentsions
+        dircolors -b "${fpath}" | sed '/1/!d' \
+            | sed "s/.*'\(.*\):';/\1/" \
+            | sed 's/:/\n/g' \
+            | sed '/^*/d' \
+            | sed 's/\(^.*=\([0-9;]*\)\)/\x1B[\2m\1\x1B[0m/' \
+            | sed "s/^/${TAB}/"
     fi
-    # print value of dircolors
-    dircolors -p | sed 's/\(^.*\([0-9]\{2\};[0-9]\{2\}[0-9;]*\)\)/\x1B[\2m\1\x1B[0m/' | sed "s/^/${TAB}/"
+}
+
+function print_dircolors_ext() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    # define path
+    local srcdir=$(dirname $(readlink -f "${BASH_SOURCE}"))
+    local fname=.dircolors
+    local fpath="${srcdir}/${fname}"
+    if [ -r "${fpath}" ]; then
+        fecho -e "and is readable ${GOOD}OK${NORMAL}"
+
+        # print value of dircolors, extensions only
+        dircolors -b "${fpath}" | sed '/1/!d' \
+            | sed "s/.*'\(.*\):';/\1/" \
+            | sed 's/:/\n/g' \
+            | sed '/^*/!d' \
+            | sed 's/\(^.*=\([0-9;]*\)\)/\x1B[\2m\1\x1B[0m/' \
+            | sed "s/^/${TAB}/"
+    fi
 }
 
 function define_ls_colors() {
