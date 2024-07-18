@@ -228,21 +228,60 @@ function define_ls_colors() {
 }
 
 function match_ls_colors() {
-    local -i DEBUG=2
+    # set local DEBUG
+    local -i DEBUG=${DEBUG:-2}
+    
+    # print functino name
     [ $DEBUG -gt 0 ] && start_new_line
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    # print vecho/decho statement
     decho "${TAB}"$(vecho "matching ls-derived variables to LS_COLORS...")
+
     # get link color codes
     local or_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^or/!d' | sed 's/^.*=//')
     local ex_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^ex/!d' | sed 's/^.*=//')
     local di_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^di/!d' | sed 's/^.*=//')
     local ln_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^ln/!d' | sed 's/^.*=//')
 
-    # update color values
-    export BROKEN="\x1B[${or_col}m"
-    export    TGT="\x1B[${ex_col}m"
-    export    DIR="\x1B[${di_col}m"
-    export  VALID="\x1B[${ln_col}m"
+    # print summary
+    if [ $DEBUG -gt 0 ]; then
+        itab
+        echo "${TAB}prior:"
+        itab
+        (
+            echo -e "${TAB}${VALID}VALID+links${RESET}"
+            echo -e "${TAB}${BROKEN}BROKEN+orphaned links${RESET}"
+            echo -e "${TAB}${DIR}DIR+directories${RESET}"
+            echo -e "${TAB}${TGT}TGT+executable files${RESET}"
+        ) | column -t -s+
+        dtab
+
+        echo "${TAB}input:"
+        itab
+        (
+            echo -e "${TAB}\x1B[${ln_col}mln+${ln_col}+links${RESET}"
+            echo -e "${TAB}\x1B[${or_col}mor+${or_col}+orphaned links${RESET}"
+            echo -e "${TAB}\x1B[${di_col}mdi+${di_col}+directories${RESET}"
+            echo -e "${TAB}\x1B[${ex_col}mex+${ex_col}+executable files${RESET}"
+        ) | column -t -s+
+
+        # update color values
+        export BROKEN="\x1B[${or_col}m"
+        export    TGT="\x1B[${ex_col}m"
+        export    DIR="\x1B[${di_col}m"
+        export  VALID="\x1B[${ln_col}m"
+
+        dtab
+        echo "${TAB}output:"
+        itab
+        (
+            echo -e "${TAB}${VALID}VALID+links${RESET}"
+            echo -e "${TAB}${BROKEN}BROKEN+orphaned links${RESET}"
+            echo -e "${TAB}${DIR}DIR+directories${RESET}"
+            echo -e "${TAB}${TGT}TGT+executable files${RESET}"
+        ) | column -t -s+
+        dtab 2
+    fi
 }
 
 function match_ls_colors2() {
