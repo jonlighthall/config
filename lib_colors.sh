@@ -249,6 +249,28 @@ function print_dircolors_ext() {
     fi
 }
 
+function diff_dircolors () {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    # define path
+    local srcdir=$(dirname $(readlink -f "${BASH_SOURCE}"))
+    local fname=.dircolors
+    local fpath="${srcdir}/${fname}"
+    local -i RETVAL
+    if [ -r "${fpath}" ]; then
+        fecho -e "and is readable ${GOOD}OK${NORMAL}"
+
+        # define temp file
+        local temp_file="${srcdir}/.dircolors_$(date +'%Y-%m-%d-t%H%M%S')"
+        dircolors -p > "${temp_file}"
+        diff -s --color=auto --suppress-common-lines -yiEZbwB "${temp_file}" "${fpath}"
+        RETVAL=$?
+        if [ $RETVAL -eq 0 ]; then
+            echo "none"
+            rm -v "${temp_file}"
+        fi
+    fi
+}
+
 function define_ls_colors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     vecho "extracting escape codes from LS_COLORS..."
@@ -280,7 +302,7 @@ function define_ls_colors() {
 function match_ls_colors() {
     # set local DEBUG
     local -i DEBUG=${DEBUG:-2}
-    
+
     # print functino name
     [ $DEBUG -gt 0 ] && start_new_line
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
@@ -789,26 +811,24 @@ function test_lib_colors() {
     local -i DEBUG=2
     decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
 
-    for func in \
-            define_ls_colors \
-            print_colors \
-            print_dcolors \
-            print_dircolors \
-            print_dircolors_default \
-            print_dircolors_ext \
-            print_fcolors \
-            print_ls_colors \
-            print_ls_colors_ext \
-            print_pretty \
-            print_pretty_cbar \
-            print_rcolors \
-            test_normal \
-            test_set_color \
-            do
-            echo
-            $func
+    for func in define_ls_colors \
+                    print_colors \
+                    print_dcolors \
+                    print_dircolors \
+                    print_dircolors_default \
+                    print_dircolors_ext \
+                    print_fcolors \
+                    print_ls_colors \
+                    print_ls_colors_ext \
+                    print_pretty \
+                    print_pretty_cbar \
+                    print_rcolors \
+                    test_normal \
+                    test_set_color
+    do
+        echo
+        $func
     done
-            
 }
 
 if [ ${DEBUG:-0} -gt 2 ]; then
