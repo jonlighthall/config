@@ -146,6 +146,10 @@ export EF='\x1B[38;5;50m'   # cyan        : function name
 # -----------------------------------------------------------------------------------------------
 
 function load_colors() {
+    # enable color support of ls
+    # define LS_COLORS using dircolors and .dircolors
+    decho "${TAB}"$(vecho "loading dircolors...")
+
     # turn in-function debugging on/off
     local -i funcDEBUG=0
 
@@ -161,11 +165,12 @@ function load_colors() {
 
         local fname=.dircolors
         local fpath="${srcdir}/${fname}"
-        if [ "${VB}" = true ]; then
+        if [ "${VB}" = true ] && [ ${DEBUG} -gt 0 ]; then
             itab
             check_target "${fpath}"
         fi
 
+        decho "${TAB}"$(vecho "defining LS_COLORS...")
         if [ -r "${fpath}" ]; then
             fecho -e "and is readable ${GOOD}OK${NORMAL}"
             eval "$(dircolors -b "${fpath}")"
@@ -179,10 +184,9 @@ function load_colors() {
         fecho -e "does not exist or is not executable ${BAD}FAIL${NORMAL}"
     fi
     if [ "${VB}" = true ]; then
-        vecho "${TAB}directory colors loaded"
+        decho "${TAB}"$(decho "directory colors loaded")
         dtab
     fi
-
 }
 
 function print_dircolors() {
@@ -197,6 +201,7 @@ function print_dircolors() {
 
 function define_ls_colors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    vecho "extracting escape codes from LS_COLORS..."
     if [ -z ${LS_COLORS:+dummy} ]; then
         echo "${TAB}${FUNCNAME}: LS_COLORS not defined"
         return
@@ -211,14 +216,22 @@ function define_ls_colors() {
     export cDI="\x1B[${DI}m"
     export cEX="\x1B[${EX}m"
 
-    echo -e "${TAB}${cLN}links${RESET}"
-    echo -e "${TAB}${cOR}orphaned links${RESET}"
-    echo -e "${TAB}${cDI}directories${RESET}"
-    echo -e "${TAB}${cEX}executable files${RESET}"
+    decho "${TAB}read:"
+    itab
+    (
+        echo -e "${TAB}${cLN}$LN+links${RESET}"
+        echo -e "${TAB}${cOR}$OR+orphaned links${RESET}"
+        echo -e "${TAB}${cDI}$DI+directories${RESET}"
+        echo -e "${TAB}${cEX}$EX+executable files${RESET}"
+    ) | column -t -s+
+    dtab
 }
 
 function match_ls_colors() {
+    local -i DEBUG=2
+    [ $DEBUG -gt 0 ] && start_new_line
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    decho "${TAB}"$(vecho "matching ls-derived variables to LS_COLORS...")
     # get link color codes
     local or_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^or/!d' | sed 's/^.*=//')
     local ex_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^ex/!d' | sed 's/^.*=//')
@@ -234,6 +247,7 @@ function match_ls_colors() {
 
 function match_ls_colors2() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    vecho -n "matching ls-derived variables to LS_COLORS..."
     # get link color codes
     define_ls_colors
 
@@ -286,6 +300,7 @@ function print_ls_colors_ext() {
 
 function append_ls_colors() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    decho -n "${TAB}"$(vecho "appending to ls colors... ")
     # physical link (hardlink)
     # get link color code
     ln_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^ln/!d' | sed 's/^.*=//')
@@ -295,6 +310,7 @@ function append_ls_colors() {
     LS_COLORS+="mh=${mh_col}:"
     # missing
     LS_COLORS+="mi=05;48;5;232;38;5;15:"
+    decho $(vecho "done")
 }
 
 # -----------------------------------------------------------------------------------------------
