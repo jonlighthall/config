@@ -742,14 +742,15 @@ function print_pretty_status() {
     if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
         print_pretty_cbar
     fi
-
+    local -i lev
     if [ -z ${FPRETTY_LOADED+dummy} ]; then
         declare -grx FPRETTY_LOADED=true
-        vecho "${TAB}${BASH_SOURCE##*/} loaded"
+        lev=1
+        vecho "${TAB}${BASH_SOURCE[lev]##*/} loaded"
     else
+        # check size of stack
         local -i N_BASH=${#BASH_SOURCE[@]}
         local cmd
-        local -i lev
         if [ $N_BASH -eq 2 ]; then
             cmd=echo
             lev=1
