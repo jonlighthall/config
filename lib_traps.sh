@@ -140,7 +140,16 @@ function reset_shell() {
 }
 
 function safe_shell() {
-    local -i DEBUG=2
+    # set local debug value
+    if [ $# -eq 1 ]; then
+        # use argument to manually set DEBUG
+        local -i DEBUG=$1
+    else
+        # substitute default value if DEBUG is unset or null
+        local -i DEBUG=${DEBUG:-2}
+        # if being run directly from shell, set DEBUG
+        [ ${#BASH_SOURCE[@]} -eq 1 ] && DEBUG=2
+    fi
 
     decho "${TAB}shell options: $-"
     decho -n "${TAB}resetting... "
@@ -579,6 +588,7 @@ function print_traps() {
     else
         # substitute default value if DEBUG is unset or null
         local -i DEBUG=${DEBUG:-2}
+        # if being run directly from shell, set DEBUG
         [ ${#BASH_SOURCE[@]} -eq 1 ] && DEBUG=2
     fi
     # print summary
@@ -627,7 +637,7 @@ function get_sigs() {
             dtab
 
             ddecho -e "${TAB}${INVERT}traps echo sig tr:${NORMAL}"
-            decho $(trap -p) | sed "s/ \(trap -- \)/\n\1/g" |  sed 's/.* //' | tr  '\n' ' '
+            decho $(trap -p) | sed "s/ \(trap -- \)/\n\1/g" |  sed 's/.* //' | tr  '\n' ' ' | sed "s/^/${TAB}/"
             ddecho
 
         fi
@@ -668,7 +678,7 @@ do_clear() {
     local -a sig
     get_sigs
     if [ ! -z "${sig}" ]; then
-        ddecho "sig = ${sig}"
+        ddecho "${TAB}sig = ${sig}"
         # clear traps
         for itrap in ${sig[@]}; do
             ddecho "${TAB}unsetting trap $itrap..."
@@ -908,7 +918,7 @@ function clear_traps() {
 
 #
 function enable_exit_on_fail() {
-    trap 'echo "${TAB}${BASH_SOURCE[0]##*/}: line $LINENO: trapping ERR $BASH_COMMAND"; return 0 2>/dev/null' ERR
+    trap 'echo "${TAB}${BASH_SOURCE[0]##*/}: line $LINENO: trapping ERR $BASH_COMMAND"; safe_shell; return 0 2>/dev/null' ERR
 }
 
 # Rrovide a way to cleanly exit on errors, whether the file is sourced or executed, that does not
