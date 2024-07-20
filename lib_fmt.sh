@@ -333,6 +333,12 @@ function do_cmd() {
     echo -ne "${dcolor[$idx]}"
     extract_color
 
+    if [[ "${cmd}" =~ ^powershell.* ]]; then
+        echo "PowerShell:"
+        $cmd
+        local -i RETVAL=$?
+    else
+
     # the ideal solution is to use unbuffer
     # check if unbuffer is defined
     if command -v unbuffer >/dev/null; then
@@ -375,7 +381,7 @@ function do_cmd() {
         fi
         local -i RETVAL=$?
     fi
-
+    fi
     # reset formatting
     unset_color
     if [ $DEBUG -gt 0 ]; then
