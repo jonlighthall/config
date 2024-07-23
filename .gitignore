@@ -15,6 +15,7 @@
 !linux/
 !mingw/
 !windows/
+!oracle/
 !wsl/
 
 # links

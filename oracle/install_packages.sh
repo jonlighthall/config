@@ -2,7 +2,7 @@
 #
 # install_packages.sh
 #
-# JCL Jul 2018
+# JCL Jul 2024
 
 # load bash utilities
 fpretty=${HOME}/config/.bashrc_pretty
@@ -11,20 +11,20 @@ if [ -e $fpretty ]; then
 fi
 
 # settings
-PACK_MAN=apt
-OPT="-y --fix-missing"
+PACK_MAN=dnf
+OPT="-y"
 
 # update
 bar "update..."
-sudo ${PACK_MAN} update
+#sudo ${PACK_MAN} update
 
 # upgrade
 bar "upgrade and fix missing..."
-sudo ${PACK_MAN} upgrade ${OPT}
+#sudo ${PACK_MAN} upgrade ${OPT}
 
 # install packages
 bar "install packages..."
-for PACK in aspell dbus-x11 emacs git nautilus x11-apps xterm; do
+for PACK in git; do
     echo "installing ${PACK}..."
     sudo ${PACK_MAN} install ${OPT} ${PACK}
 done
@@ -33,12 +33,12 @@ done
 
 # re-check
 bar "upgrade and fix missing..."
-sudo ${PACK_MAN} upgrade ${OPT}
+#sudo ${PACK_MAN} upgrade ${OPT}
 
 # cleanup
 bar "autoremove and purge..."
-sudo ${PACK_MAN} autoremove --purge -y
+#sudo ${PACK_MAN} autoremove --purge -y
 bar "autoclean..."
-sudo ${PACK_MAN} autoclean
+#sudo ${PACK_MAN} autoclean
 bar "clean..."
-sudo ${PACK_MAN} clean
+#sudo ${PACK_MAN} clean
