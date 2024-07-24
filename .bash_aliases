@@ -72,6 +72,7 @@ alias g='gr'
 
 # history
 alias hg='history | grep'
+alias hgt='history | grep "^[0-9 ]\{0,6\}  [0-9\-]\{10\} " | grep'
 alias hl="\cat ~/.bash_history | sed '/^#[0-9]\{10\}/d' | awk '{print length, \$0}' | sort -n | uniq -c | sort -n -r | sed 's/^\([ \t]*[0-9]*\) [0-9]* \(.*$\)/\1 \2/' | head -n 20"
 
 # list
