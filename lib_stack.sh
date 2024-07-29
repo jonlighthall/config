@@ -468,13 +468,23 @@ function print_shlvl() {
 
 # source list of files
 function source_list() {
+    local oldDEBUG=${DEBUG-0}
+    local DEBUG=0
     if [ -z ${LIST:+dummy} ]; then
         vecho "${TAB}LIST not defined"
         return
     fi
-    local fname
+    decho "${TAB}LIST defined"
+    itab
+    local iname
+    for iname in ${LIST[@]}; do
+        decho "${TAB}${iname}"
+    done
+    dtab
 
-    for fname in $LIST[@]; do
+    local fname
+    DEBUG=$oldDEBUG
+    for fname in ${LIST[@]}; do
         vecho "${TAB}loading $fname..."
         if [ -f $fname ]; then
             source $fname
