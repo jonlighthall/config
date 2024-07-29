@@ -364,18 +364,53 @@ function do_link() {
     itab
     echo -en "${GRH}"
     hline 72
-    echo -e "${TAB}${GRH}making link... "
-    # check if target file is authorized_keys
-    if [[ "${target}" == *"_keys"* ]]; then
-        # make a physical link
-        echo -n "${TAB}PHYS: "
-        ln -Pv "${target}" ${link_name}
-        RETVAL=$?
+
+    if [ -z "$MSYSTEM" ]; then
+	      # Non-MSYS prompt
+        echo -e "${TAB}${GRH}making link... "
+        # check if target file is authorized_keys
+        if [[ "${target}" == *"_keys"* ]]; then
+            # make a physical link
+            echo -n "${TAB}PHYS: "
+            ln -Pv "${target}" ${link_name}
+            RETVAL=$?
+        else
+            # make a symbolic link
+            echo -n "${TAB}SYM: "
+            ln -sv "${target}" ${link_name}
+            RETVAL=$?
+        fi
     else
-        # make a symbolic link
-        echo -n "${TAB}SYM: "
-        ln -sv "${target}" ${link_name}
+        echo -e "${TAB}${GRH}MSYS terminal: ${MAGENTA}$MSYSTEM${GRH}"
+
+        # define directories
+        wsl_dir=$HOME
+        echo "${TAB}WSL home: $wsl_dir"
+        cmd_dir=$(cmd.exe /c "echo %systemdrive%%homepath%")
+        echo "${TAB}CMD home: $cmd_dir"
+
+        # print link path
+        echo "${TAB}LINK NAME: ${link_name}"
+
+        # replace WSL path with CMD path
+        ln_path=$(echo ${link_name}  | sed "s,^${wsl_dir},," | sed '%/%\\\\%')
+        echo $ln_path
+        cmd_link="${cmd_dir}${$ln_path}"
+        echo $cmd_link
+
+        echo ${target}
+        echo ${target} | sed "s,${wsl_dir},${cmd_dir},"
+
+        # define arguments
+        echo "${link_name} ${target}" | sed "s,${wsl_dir},${cmd_dir},"
+        args=$(echo ${link_name} ${target} | sed "s,${wsl_dir},${cmd_dir},")
+        echo $args
+
+        # make link in CMD
+        echo -n "${TAB}JUNCTION: "
+        cmd.exe /c "mklink /J ${args}"
         RETVAL=$?
+        ls -a "${target}"
     fi
     hline 72
     dtab 2
