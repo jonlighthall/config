@@ -199,8 +199,8 @@ function load_dircolors() {
         fecho -e "does not exist or is not executable ${BAD}FAIL${NORMAL}"
     fi
     if [ "${VB}" = true ]; then
-        [ "${VB}" = true ] && decho "${TAB}directory colors loaded"
         dtab
+        [ "${VB}" = true ] && decho "${TAB}directory colors loaded"
     fi
 }
 
