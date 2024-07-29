@@ -465,3 +465,28 @@ function print_invo() {
 function print_shlvl() {
     echo -e "${TAB}shell level = ${PSSH}$SHLVL${RESET}"
 }
+
+# source list of files
+function source_list() {
+    if [ -z ${LIST:+dummy} ]; then
+        vecho "${TAB}LIST not defined"
+        return
+    fi
+    local fname
+
+    for fname in $LIST[@]; do
+        vecho "${TAB}loading $fname..."
+        if [ -f $fname ]; then
+            source $fname
+            RETVAL=$?
+            if [ $RETVAL -eq 0 ]; then
+                vecho -e "${TAB}$fname ${GOOD}OK${RESET}"
+            else
+                echo -e "${TAB}$fname ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+            fi
+        else
+            echo -e "${TAB}$fname ${UL}not found${RESET}"
+        fi
+    done
+    unset LIST
+}

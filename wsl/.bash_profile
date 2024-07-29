@@ -62,13 +62,13 @@ if [ ${DEBUG} -gt 0 ]; then
     export VB=true
 fi
 
-config_dir=${HOME}/config
 # load bash utilities
+config_dir=${HOME}/config
 fpretty=${config_dir}/.bashrc_pretty
 if [ -e $fpretty ]; then
     if [ "${VB}" = true ]; then
         # remember, if .bashrc_pretty hasn't been loaded yet, vecho is not defined
-        echo "loading $fpretty..."
+        echo "${TAB-}loading $fpretty..."
     fi
     source $fpretty
     RETVAL=$?
@@ -86,6 +86,7 @@ else
     set +eu
 fi
 
+# check if VB is true
 if [ "${VB}" = true ]; then
     print_source
     if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
@@ -124,19 +125,9 @@ else
 fi
 
 # load system-dependent interactive shell settings
-fname=${config_dir}/${SYS_NAME}/.bashrc
-vecho -e "${TAB}loading $fname... ${RESET}"
-if [ -f $fname ]; then
-    source $fname
-    RETVAL=$?
-    if [ $RETVAL -eq 0 ]; then
-        vecho -e "${TAB}$fname ${GOOD}OK${RESET}"
-    else
-        echo -e "${TAB}$fname ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
-    fi
-else
-    echo "${TAB}$fname not found"
-fi
+declare -ax LIST
+LIST=( "${config_dir}/${SYS_NAME}/.bashrc" )
+source_list
 
 # print runtime duration
 if [ "${VB}" = true ]; then

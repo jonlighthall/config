@@ -80,7 +80,8 @@ fi
 vecho "${TAB}running list..."
 # required list
 unset LIST
-LIST="${config_dir}/.bashrc_common ${config_dir}/linux/.bashrc_prompt"
+declare -ax LIST
+LIST=( "${config_dir}/.bashrc_common" "${config_dir}/linux/.bashrc_prompt" )
 
 # get WSL version
 wsl_ver=$(uname -r)
@@ -91,17 +92,18 @@ if [[ "${wsl_ver}" == *"WSL2" ]]; then
     vecho "${TAB}skipping X11..."
 else
     vecho "${TAB}loading X11..."
-    LIST+=" ${config_dir}/wsl/.bashrc_X11"
+    LIST+="${config_dir}/wsl/.bashrc_X11"
 fi
 dtab
 
 # optional list
-LIST_OPT="$HOME/.bash_local root_v5.34.36/bin/thisroot.sh"
+declare -ax LIST_OPT
+LIST_OPT=( "$HOME/.bash_local" "root_v5.34.36/bin/thisroot.sh" )
 
 # add optional list to required list if targets exist
 for FILE in $LIST_OPT; do
     if [ -f $FILE ]; then
-        LIST+=" $FILE"
+        LIST+="$FILE"
     else
         vecho -e "${TAB}$FILE ${UL}not found${RESET}"
     fi
@@ -110,29 +112,12 @@ done
 # (un)set traps and shell options before loading command files
 set +e
 unset_traps
-
-# source list of files
-for fname in $LIST; do
-    vecho "${TAB}loading $fname..."
-    if [ -f $fname ]; then
-        source $fname
-        RETVAL=$?
-        if [ $RETVAL -eq 0 ]; then
-            vecho -e "${TAB}$fname ${GOOD}OK${RESET}"
-        else
-            echo -e "${TAB}$fname ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
-        fi
-    else
-        echo -e "${TAB}$fname ${UL}not found${RESET}"
-    fi
-done
+source_list
 
 # ROOT
 if [[ "$LIST" == *"thisroot.sh"* ]]; then
     which root
 fi
-
-unset LIST
 
 if [ "${VB}" = true ]; then
     # reset tab
