@@ -34,9 +34,9 @@
 # check if running interactively
 if [[ "$-" == *i* ]];then
     TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
-    echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
     # print source
     if [ ${DEBUG:-0} -gt 0 ]; then
+        echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
         echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
     fi
 else
@@ -79,9 +79,9 @@ fi
 
 vecho "${TAB}running list..."
 # required list
-unset LIST
-declare -ax LIST
-LIST=( "${config_dir}/.bashrc_common" "${config_dir}/linux/.bashrc_prompt" )
+unset LIST_RC
+declare -ax LIST_RC
+LIST_RC=("${config_dir}/.bashrc_common" "${config_dir}/linux/.bashrc_prompt")
 
 # get WSL version
 wsl_ver=$(uname -r)
@@ -92,7 +92,7 @@ if [[ "${wsl_ver}" == *"WSL2" ]]; then
     vecho "${TAB}skipping X11..."
 else
     vecho "${TAB}loading X11..."
-    LIST+="${config_dir}/wsl/.bashrc_X11"
+    LIST_RC+=("${config_dir}/wsl/.bashrc_X11")
 fi
 dtab
 
@@ -101,23 +101,44 @@ declare -ax LIST_OPT
 LIST_OPT=( "$HOME/.bash_local" "root_v5.34.36/bin/thisroot.sh" )
 
 # add optional list to required list if targets exist
-for FILE in $LIST_OPT; do
-    if [ -f $FILE ]; then
-        LIST+="$FILE"
+for FILE_OPT in $LIST_OPT; do
+    if [ -f $FILE_OPT ]; then
+        LIST_RC+=("$FILE_OPT")
     else
-        vecho -e "${TAB}$FILE ${UL}not found${RESET}"
+        vecho -e "${TAB}$FILE_OPT ${UL}not found${RESET}"
     fi
 done
 
 # (un)set traps and shell options before loading command files
 set +e
 unset_traps
-source_list
+
+# source list of files
+for FILE_RC in ${LIST_RC[@]}; do
+    vecho "${TAB}loading $FILE_RC..."
+    if [ -f $FILE_RC ]; then
+        source $FILE_RC
+        RETVAL=$?
+        if [ $RETVAL -eq 0 ]; then
+            vecho -e "${TAB}$FILE_RC ${GOOD}OK${RESET}"
+        else
+            echo -e "${TAB}$FILE_RC ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+        fi
+    else
+        echo -e "${TAB}$FILE_RC ${UL}not found${RESET}"
+    fi
+done
 
 # ROOT
-if [[ "$LIST" == *"thisroot.sh"* ]]; then
+if [[ "$LIST_RC" == *"thisroot.sh"* ]]; then
     which root
 fi
+
+unset FILE_OPT
+unset FILE_RC
+unset LIST_OPT
+unset LIST_RC
+unset wsl_ver
 
 if [ "${VB}" = true ]; then
     # reset tab

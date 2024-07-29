@@ -25,7 +25,15 @@ if [[ "$-" == *i* ]];then
 
     # set tab
     TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
-    echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
+
+    # -------------------------
+    # set debug level if unset
+    export DEBUG=${DEBUG=1}
+    # -------------------------
+
+    if [ ${DEBUG:-0} -gt 0 ]; then
+        echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
+    fi
 else
     echo "${TAB-}${BASH_SOURCE##*/}: non-interactive shell" >&2
     echo -e "${TAB-}\x1B[1;31mWARNING: ${BASH_SOURCE##*/} is intended for interactive shells only\x1B[m" >&2
@@ -41,11 +49,6 @@ else
     echo "${TAB-}${BASH_SOURCE##*/}: non-login shell" >&2
     echo -e "${TAB-}\x1B[;31mWARNING: ${BASH_SOURCE##*/} is intended for login-shells only\x1B[m" >&2
 fi
-
-# -------------------------
-# set debug level if unset
-export DEBUG=${DEBUG=0}
-# -------------------------
 
 # print source
 if [ ${DEBUG:-0} -gt 0 ]; then
@@ -125,9 +128,22 @@ else
 fi
 
 # load system-dependent interactive shell settings
-declare -ax LIST
-LIST=( "${config_dir}/${SYS_NAME}/.bashrc" )
-source_list
+declare -ax LIST_PROF
+LIST_PROF=("${config_dir}/${SYS_NAME}/.bashrc")
+for FILE_PROF in $LIST_PROF; do
+    vecho -e "${TAB}loading $FILE_PROF... ${RESET}"
+    if [ -f $FILE_PROF ]; then
+        source $FILE_PROF
+        RETVAL=$?
+        if [ $RETVAL -eq 0 ]; then
+            vecho -e "${TAB}$FILE_PROF ${GOOD}OK${RESET}"
+        else
+            echo -e "${TAB}$FILE_PROF ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+        fi
+    else
+        echo "${TAB}$FILE_PROF not found"
+    fi
+done
 
 # print runtime duration
 if [ "${VB}" = true ]; then
@@ -146,7 +162,8 @@ clear -x
 echo "${TAB}Welcome to ${HOST_NAME}"
 
 # deallocate variables
-unset fname
+unset FILE_PROF
+unset LIST_PROF
 unset fpretty
 unset hist_file
 

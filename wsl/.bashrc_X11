@@ -211,6 +211,7 @@ fi
 
 # deallocate variables
 unset PROG
+unset WSL_ver
 unset dispOK
 unset xOK
 unset xPID
