@@ -23,8 +23,6 @@ if [[ "$-" == *i* ]];then
     TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
     echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
 else
-    # turn off "Verbose Bash" conditional prints
-    export VB=false
     echo "${TAB-}${BASH_SOURCE##*/}: non-interactive shell" >&2
     echo -e "${TAB-}\x1B[1;31mWARNING: ${BASH_SOURCE##*/} is intended for interactive shells only\x1B[m" >&2
     echo -e "${TAB-}returning..." >&2
@@ -99,7 +97,8 @@ vecho -e "${TAB}applying ${SYS_NAME} settings on ${PSHOST}${HOST_NAME}${RESET}"
 
 # save login timestamp to history
 hist_file=${HOME}/.bash_history
-vecho -n "${TAB}appending login timestamp to $hist_file... "
+hist_file_can=$(readlink -f "${hist_file}")
+vecho -en "${TAB}appending login timestamp to ${YELLOW}${hist_file_can}${RESET}... "
 if [ -f $hist_file ]; then
     echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from ${HOST_NAME}" >>$hist_file
     RETVAL=$?
