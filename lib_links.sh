@@ -125,7 +125,7 @@ function check_link_dir() {
 }
 
 function print_OK() {
-    #    return
+    #echo; return
     echo -en "\E[${elin}F\E[0J"
     echo -e "${TAB}target ${type}${target}${RESET}... ${GOOD}OK${RESET}"
 }
@@ -385,32 +385,38 @@ function do_link() {
 
         # define directories
         wsl_dir=$HOME
-        echo "${TAB}WSL home: $wsl_dir"
+        decho "${TAB}WSL HOME: $wsl_dir"
         cmd_dir=$(cmd.exe /c "echo %systemdrive%%homepath%")
-        echo "${TAB}CMD home: $cmd_dir"
+        decho "${TAB}CMD HOME: $cmd_dir"
 
         # print link path
-        echo "${TAB}LINK NAME: ${link_name}"
+        decho "${TAB}LINK NAME: ${link_name}"
 
         # replace WSL path with CMD path
-        ln_path=$(echo ${link_name}  | sed "s,^${wsl_dir},," | sed '%/%\\\\%')
-        echo $ln_path
-        cmd_link="${cmd_dir}${$ln_path}"
-        echo $cmd_link
+        ln_path=$(echo ${link_name} | sed "s,^${wsl_dir},," | sed 's,/,\\,g' )
+        
+        decho "${TAB}PATH: $ln_path"
 
-        echo ${target}
-        echo ${target} | sed "s,${wsl_dir},${cmd_dir},"
+        # define CMD link name
+        # for some reason the user directory $cmd_dir changes value when envoked from sed; must
+        # concatonate variables without using sed
+        cmd_link_name=$(echo ${cmd_dir}${ln_path})
+        echo "${TAB}link name: $cmd_link_name"
 
+        # define CMD target path
+        decho "${TAB}TARGET : ${target}"
+        target_path=$(echo ${target} | sed "s,${wsl_dir},," | sed 's,/,\\,g')
+        cmd_target=$(echo ${cmd_dir}${target_path})
+        echo "${TAB}target: ${cmd_target}"    
+        
         # define arguments
-        echo "${link_name} ${target}" | sed "s,${wsl_dir},${cmd_dir},"
-        args=$(echo ${link_name} ${target} | sed "s,${wsl_dir},${cmd_dir},")
-        echo $args
+        args=$(echo ${cmd_link_name} ${cmd_target})
+        echo "${TAB}ARGS: $args"
 
         # make link in CMD
-        echo -n "${TAB}JUNCTION: "
+        echo -n "${TAB}"
         cmd.exe /c "mklink /J ${args}"
         RETVAL=$?
-        ls -a "${target}"
     fi
     hline 72
     dtab 2
