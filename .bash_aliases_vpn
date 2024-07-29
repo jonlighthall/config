@@ -39,3 +39,24 @@ alias scp='powershell.exe scp'
 alias ssh='powershell.exe ssh'
 echo -e "done"
 dtab
+
+function unvpn() {
+    echo -en "${TAB}${MAGENTA}removing aliases... ${RESET}"
+    [ $DEBUG -gt 0 ] && echo
+    local -i RETVAL
+    itab
+    for ali in git scp ssh; do
+        decho -n "${TAB}$ali... "
+        alias $ali &>/dev/null
+        RETVAL=$?
+        if [ $RETVAL -eq 0 ]; then
+            decho "unaliasing"
+            unalias $ali
+        else
+            decho "skip"
+        fi
+
+    done
+    dtab
+    echo -e "done"
+}
