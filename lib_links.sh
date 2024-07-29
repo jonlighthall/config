@@ -312,7 +312,7 @@ function do_link() {
             else
                 echo -n "symlink: "
             fi
-            #TODO print only link and target
+            #list link name (should point to target)
             ls -lhG --color=always "${link_name}" | tr -s ' ' | cut -d' ' -f 8-
             ((++elin))
             echo -n "${TAB}skipping..."
@@ -365,8 +365,9 @@ function do_link() {
     echo -en "${GRH}"
     hline 72
 
+    # check if we're in an MSYS terminal
     if [ -z "$MSYSTEM" ]; then
-	      # Non-MSYS prompt
+	      # Non-MSYS prompt: use ln
         echo -e "${TAB}${GRH}making link... "
         # check if target file is authorized_keys
         if [[ "${target}" == *"_keys"* ]]; then
@@ -381,6 +382,7 @@ function do_link() {
             RETVAL=$?
         fi
     else
+        # MSYS promt: use CMD to create "junction"; otherwise ln just copies the target
         echo -e "${TAB}${GRH}MSYS terminal: ${MAGENTA}$MSYSTEM${GRH}"
 
         # define directories
@@ -411,7 +413,7 @@ function do_link() {
         
         # define arguments
         args=$(echo ${cmd_link_name} ${cmd_target})
-        echo "${TAB}ARGS: $args"
+        decho "${TAB}ARGS: $args"
 
         # make link in CMD
         echo -n "${TAB}"
