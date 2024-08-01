@@ -660,11 +660,14 @@ check_traps_clear() {
     else
         local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
     fi
+    
     # print summary
     if [ ${#FUNCNAME[@]} -gt 1 ]; then
         ddecho -n "${TAB}on ${FUNCNAME[1]} return, "
     fi
     print_traps
+
+    # check status
     if [ ! -z "$(trap -p)" ]; then
         echo -e "${TAB}${BAD}traps not cleared${RESET}"
         dtab
@@ -672,6 +675,7 @@ check_traps_clear() {
         return 1
     fi
     dtab
+    return 0
 }
 
 do_clear() {
@@ -829,6 +833,7 @@ function unset_traps() {
 
     do_clear
     check_traps_clear
+    return $?
 }
 
 # reset saved traps
