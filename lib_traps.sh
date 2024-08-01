@@ -796,7 +796,9 @@ function unset_traps() {
     fi
 
     [ $DEBUG -gt 0 ] && start_new_line
-    decho -e "${TAB}${CYAN}\E[7mun-set traps${RESET}"
+    TAB=${TAB=''}
+    get_caller
+    decho -e "${TAB}${CYAN}\E[7mun-set traps\E[27m $- ($caller_func)${RESET}"
     itab
 
     dddecho "${TAB}$-"
@@ -848,7 +850,9 @@ function reset_traps() {
     fi
 
     [ $DEBUG -gt 0 ] && start_new_line
-    decho -e "${TAB}${GREEN}\E[7mreset traps${RESET}"
+    TAB=${TAB=''}
+    get_caller    
+    decho -e "${TAB}${GREEN}\E[7mreset traps\E[27m  $- ($caller_func)${RESET}"
     itab
 
     dddecho "${TAB}$-"
