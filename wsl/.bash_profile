@@ -28,7 +28,7 @@ if [[ "$-" == *i* ]];then
 
     # -------------------------
     # set debug level if unset
-    export DEBUG=${DEBUG=1}
+    export DEBUG=${DEBUG=0}
     # -------------------------
 
     if [ ${DEBUG:-0} -gt 0 ]; then
