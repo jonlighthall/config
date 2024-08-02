@@ -58,13 +58,8 @@ function check_target() {
         fecho " path: ${target_canon}"
     fi
 
-    # get the cursor position
-    echo -en "\E[6n"
-    read -sdR CURPOS
-    local CURPOS=${CURPOS#*[}
-          #}# dummy bracket for Emacs indenting
-    # get the x-position of the cursor
-    local -i x_pos=${CURPOS#*;}
+    local -i x_pos
+    get_curpos x_pos
     if [ ${x_pos} -eq 1 ]; then
         echo -n "${TAB}"
     fi
@@ -91,24 +86,24 @@ function check_target() {
 # /etc. If the directory does not exist, return with error.
 function check_link_dir() {
     check_arg1 $@
-
+    local funcDEBUG=${DEBUG:-0}
     # define link (destination)
     local link="$@"
     local link_canon=$(readlink -f "${link}")
+    if [ $funcDEBUG -gt 0 ]; then
+        start_new_line
+        fecho "input: ${target}"
+        fecho " path: ${target_canon}"
+    fi
 
-    # get the cursor position
-    echo -en "\E[6n"
-    read -sdR CURPOS
-    local CURPOS=${CURPOS#*[}
-          #}# dummy bracket for Emacs indenting
-    # get the x-position of the cursor
-    local -i x_pos=${CURPOS#*;}
-    #echo "${TAB}x_pos=${x_pos}"
+    local -i x_pos
+    get_curpos x_pos
     if [ ${x_pos} -eq 1 ]; then
         echo -n "${TAB}"
     fi
 
-    # determine
+    # determine type
+    export type="undefined ${BROKEN}"
     [ -L "${link}" ] && type="link ${VALID}"
     [ -f "${link}" ] && type="file ${FILE}"
     [ -d "${link}" ] && type="directory ${DIR}"
