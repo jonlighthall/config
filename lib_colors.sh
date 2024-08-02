@@ -171,7 +171,7 @@ function load_dircolors() {
     fecho "dircolors..."
     if [ -x /usr/bin/dircolors ]; then
 
-        fecho -e "exists and is executable ${GOOD}OK${NORMAL}"
+        fecho -e "exists and is executable ${GOOD}OK${RESET}"
 
         local srcdir=$(dirname $(readlink -f "${BASH_SOURCE}"))
         fecho "this function is ${FUNCNAME}"
@@ -187,16 +187,16 @@ function load_dircolors() {
 
         [ "${VB}" = true ] && decho "${TAB}defining LS_COLORS..."
         if [ -r "${fpath}" ]; then
-            fecho -e "and is readable ${GOOD}OK${NORMAL}"
+            fecho -e "and is readable ${GOOD}OK${RESET}"
             eval "$(dircolors -b "${fpath}")"
         else
-            fecho -e "does not exist or is not readable ${BAD}FAIL${NORMAL}"
+            fecho -e "does not exist or is not readable ${BAD}FAIL${RESET}"
             return
             fecho "current settings:"
             eval "$(dircolors -b)"
         fi
     else
-        fecho -e "does not exist or is not executable ${BAD}FAIL${NORMAL}"
+        fecho -e "does not exist or is not executable ${BAD}FAIL${RESET}"
     fi
     if [ "${VB}" = true ]; then
         dtab
@@ -218,7 +218,7 @@ function print_dircolors() {
     local fname=.dircolors
     local fpath="${srcdir}/${fname}"
     if [ -r "${fpath}" ]; then
-        fecho -e "and is readable ${GOOD}OK${NORMAL}"
+        fecho -e "and is readable ${GOOD}OK${RESET}"
 
         # print value of dircolors, no extentsions
         dircolors -b "${fpath}" | sed '/1/!d' \
@@ -237,7 +237,7 @@ function print_dircolors_ext() {
     local fname=.dircolors
     local fpath="${srcdir}/${fname}"
     if [ -r "${fpath}" ]; then
-        fecho -e "and is readable ${GOOD}OK${NORMAL}"
+        fecho -e "and is readable ${GOOD}OK${RESET}"
 
         # print value of dircolors, extensions only
         dircolors -b "${fpath}" | sed '/1/!d' \
@@ -257,7 +257,7 @@ function diff_dircolors () {
     local fpath="${srcdir}/${fname}"
     local -i RETVAL
     if [ -r "${fpath}" ]; then
-        fecho -e "and is readable ${GOOD}OK${NORMAL}"
+        fecho -e "and is readable ${GOOD}OK${RESET}"
 
         # define temp file
         local temp_file="${srcdir}/.dircolors_$(date +'%Y-%m-%d-t%H%M%S')"
