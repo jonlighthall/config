@@ -98,7 +98,7 @@ function start_new_line() {
     # Turn in-function debugging on/off.
     #DEBUG=1
 
-    dddecho -en "${TAB-}${INVERT}${FUNCNAME}${RESET}"
+    dddecho -en "${TAB-}${INVERT}${FUNCNAME}${RESET}" >&2
     if [ $DEBUG -ge 3 ]; then
         local -i funcDEBUG=1
     else
@@ -109,7 +109,7 @@ function start_new_line() {
     itab
     get_curpos x
 
-    [ ${x} -gt 1 ] && ddecho -en "${GRAY}$x${RESET}"
+    [ ${x} -gt 1 ] && ddecho -en "${GRAY}$x${RESET}" >&2
     dtab
     if [ ${x} -eq 0 ]; then
         return 0
@@ -118,7 +118,7 @@ function start_new_line() {
     if [ ${x} -gt 1 ]; then
         fecho -en "\x1b[7mNEW LINE\x1b[m"
         if [ $DEBUG -gt 0 ]; then
-            printf '\e[0;90;40m\u21b5\e[m'
+            printf '\e[0;90;40m\u21b5\e[m' >&2
         fi
         echo
     else
