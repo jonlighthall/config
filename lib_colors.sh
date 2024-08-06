@@ -146,6 +146,8 @@ export EF='\x1B[38;5;50m'   # cyan        : function name
 # -----------------------------------------------------------------------------------------------
 
 function load_colors() {
+    export VB=${VB=false}
+    
     [ "${VB}" = true ] && decho -n "${TAB}loading colors... "
     [ $DEBUG -gt 0 ] && vecho
     itab
