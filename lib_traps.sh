@@ -676,7 +676,6 @@ check_traps_clear() {
         get_sigs
         return 1
     fi
-    dtab
     return 0
 }
 
