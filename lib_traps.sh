@@ -193,15 +193,15 @@ function print_done() {
     local -i N_BASH=${#BASH_SOURCE[@]}
     # BASH_SOURCE counts from zero; get the bottom of the stack
     # print file name of the calling function
-    echo -en "${BASH_SOURCE[(($N_BASH - 1))]##*/}${RESET} "
+    echo -en "${BASH_SOURCE[(($N_BASH - 1))]##*/}${RESET} " >&2
     print_elap
-    echo -n " on "
+    echo -n " on " >&2
     timestamp
 }
 
 # format timestamp
 function timestamp() {
-    echo "$(date +"%a %b %-d at %-l:%M %p %Z")"
+    echo "$(date +"%a %b %-d at %-l:%M %p %Z")" >&2
 }
 
 # print elapsed time
@@ -231,14 +231,14 @@ function print_elap() {
 
         # print output
         if command -v sec2elap &>/dev/null; then
-            bash sec2elap $dT_sec | tr -d "\n"
+            bash sec2elap $dT_sec | tr -d "\n" >&2
         else
-            echo -ne "elapsed time is ${WHITE}${dT_sec} sec${RESET}"
+            echo -ne "elapsed time is ${WHITE}${dT_sec} sec${RESET}" >&2
         fi
     else
-        decho -ne "${YELLOW}start_time not defined${RESET} "
+        decho -ne "${YELLOW}start_time not defined${RESET} " >&2
         # reset cursor position for print_done, etc.
-        echo -en "\x1b[1D"
+        echo -en "\x1b[1D" >&2
     fi
 }
 
@@ -253,24 +253,24 @@ function print_exit() {
     fi
 
     start_new_line
-    echo -ne "${TAB}${YELLOW}\E[7m EXIT ${RESET} "
+    echo -ne "${TAB}${YELLOW}\E[7m EXIT ${RESET} " >&2
     # print exit code
     if [ ! -z ${EXIT_RETVAL+alt} ]; then
-        echo -ne "${GRAY}RETVAL=${EXIT_RETVAL}${RESET} "
+        echo -ne "${GRAY}RETVAL=${EXIT_RETVAL}${RESET} " >&2
     fi
 
     print_done
 
     # reset shell options before returning to shell
     if [[ "$-" == *u* ]]; then
-        decho -n "u is set: "
-        decho $-
-        decho -n "unsetting u... "
+        decho -n "u is set: " >&2
+        decho $- >&2
+        decho -n "unsetting u... " >&2
         set +u
-        decho $-
+        decho $- >&2
     else
-        decho -n "u is not set: "
-        decho $-
+        decho -n "u is not set: " >&2
+        decho $- >&2
     fi
 }
 
@@ -637,6 +637,7 @@ function get_sigs() {
             dtab
 
             ddecho -e "${TAB}${INVERT}traps echo sig tr:${NORMAL}"
+            itab
             decho $(trap -p) | sed "s/ \(trap -- \)/\n\1/g" |  sed 's/.* //' | tr  '\n' ' ' | sed "s/^/${TAB}/"
             ddecho
 
@@ -647,6 +648,7 @@ function get_sigs() {
             ddecho "${TAB}sig@ = ${sig[@]}"
             ddecho "${TAB}#sig = ${#sig[@]}"
         fi
+        dtab
     else
         export sig=''
     fi
