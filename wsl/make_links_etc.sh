@@ -4,7 +4,8 @@
 start_time=$(date +%s%N)
 
 # load bash utilities
-fpretty="${HOME}/config/.bashrc_pretty"
+config_dir="${HOME}/config"
+fpretty="${config_dir}/.bashrc_pretty"
 if [ -e "$fpretty" ]; then
     source "$fpretty"
     set_traps
@@ -20,7 +21,6 @@ print_source
 
 # set target and link directories
 sys_name=$(basename "$src_dir_phys")
-config_dir="${HOME}/config"
 target_dir="${config_dir}/${sys_name}"
 link_dir=/etc
 
@@ -38,6 +38,6 @@ for my_link in wsl.conf; do
     fi
     link=${link_dir}/${my_link}
     # make link
-    do_link "$target" "$link"
+    sudo bash -c "source ${fpretty}; do_link ""$target"" ""$link"""
 done
 cbar "Done Linking Repo Files"
