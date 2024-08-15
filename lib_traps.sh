@@ -836,6 +836,7 @@ function unset_traps() {
 
     do_clear
     check_traps_clear
+    dtab
     return $?
 }
 
