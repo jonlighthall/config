@@ -24,8 +24,18 @@ libDEBUG=1
 
 function tl() {
     local -i do_print=1
-    if [ $do_print = 1 ]; then 
-        echo -e "${TAB}${GRF}${BASH_SOURCE[1]##*/}${GRS}:${GRL}${BASH_LINENO[0]}${GRS}: ${GRH}${FUNCNAME[1]}()${RESET}"
+    if [ $do_print = 1 ]; then
+        echo -en "${TAB}${GRF}${BASH_SOURCE[1]##*/}${GRS}:${GRL}${BASH_LINENO[0]}${RESET}"
+        if [[ ${#FUNCNAME[@]} -gt 0 ]]; then
+            this_func=${FUNCNAME[1]}
+            if [[ "${this_func}" == "main" ]] || [[ "${this_func}" == "source" ]]; then
+                echo
+            else
+                echo -e "${GRS}: ${GRH}${this_func}()${RESET}"
+            fi
+        else
+            echo
+        fi
     else
         return 0
     fi
