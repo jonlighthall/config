@@ -22,6 +22,15 @@ export   FALSE='\x1B[1;31mfalse\x1B[0m' #
 libDEBUG=1
 #unset libDEBUG
 
+function tl() {
+    local -i do_print=1
+    if [ $do_print = 1 ]; then 
+        echo -e "${TAB}${GRF}${BASH_SOURCE[1]##*/}${GRS}:${GRL}${BASH_LINENO[0]}${GRS}: ${GRH}${FUNCNAME[1]}()${RESET}"
+    else
+        return 0
+    fi
+}
+
 function set_fcol() {
     local -i N=9
 
