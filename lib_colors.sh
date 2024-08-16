@@ -440,12 +440,10 @@ function append_ls_colors() {
     # missing
     # get orphan color code
     or_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^or/!d' | sed 's/^.*=//')
-    if [ -z ${or_col:+dummy} ]; then
-        or_col="40;31;01"
-    fi
-    # invert and blink
     mi_col="05;07;${or_col}"
-#   mi_col="05;48;5;232;38;5;15"
+
+#    mi_col="05;48;5;232;38;5;15"
+    
     LS_COLORS+="mi=${mi_col}:"
     [ "${VB}" = true ] && decho "done"
 }
