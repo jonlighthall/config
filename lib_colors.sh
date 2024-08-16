@@ -433,8 +433,15 @@ function append_ls_colors() {
     mh_col="07;${ln_col}"
     #LS_COLORS+="mh=44;38;5;15:"
     LS_COLORS+="mh=${mh_col}:"
+
     # missing
-    LS_COLORS+="mi=05;48;5;232;38;5;15:"
+    # get orphan color code
+    or_col=$(declare -p LS_COLORS | sed 's/^[^"]*"//;s/"$//' | sed '$ s/:/\n/g' | sed '/^or/!d' | sed 's/^.*=//')
+    mi_col="05;07;${or_col}"
+
+#    mi_col="05;48;5;232;38;5;15"
+    
+    LS_COLORS+="mi=${mi_col}:"
     [ "${VB}" = true ] && decho "done"
 }
 
