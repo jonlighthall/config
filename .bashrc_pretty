@@ -94,7 +94,7 @@ function load_libs() {
             else
                 export TAB=
                 echo -ne "${fTAB:=   }"
-                echo -e "${BOLD}TAB is ${NULL}z"
+                echo -e "${BOLD}TAB is ${NULL}"
             fi
         fi
         # reset DEBUG
