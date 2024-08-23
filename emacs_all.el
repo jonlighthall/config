@@ -17,7 +17,7 @@
 
 ;; Set line width for fortran and other
 (set 'fcols 72)
-(set 'ncols 97)
+(set 'ncols 80)
 
 ;; Tab settings
 ;; MATLAB tab size
