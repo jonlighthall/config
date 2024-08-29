@@ -7,7 +7,7 @@ function git_get_user() {
 
 function git_print_user() {
     git_get_user
-    local TAB="     "
+    export TAB="     "
     echo "current author name:"
     echo "${TAB}${get_name}"
     echo
@@ -28,8 +28,8 @@ function git_set_user() {
             echo "names match"
         fi
     else
-        echo "names do not match"
-        echo "setting git user name..." 
+        echo -e "${TAB}\x1B[1;31mnames do not match\x1B[0m"
+        echo "${TAB}setting git user name..." 
         git config user.name "${set_name}"
         do_update=true
     fi
@@ -39,13 +39,14 @@ function git_set_user() {
             echo "emails match"
         fi
     else
-        echo "emails do not match"
-        echo "setting git user email..."
+        echo -e "${TAB}\x1B[1;31memails do not match\x1B[0m"
+        echo "${TAB}setting git user email..."
         git config user.email "${set_email}"
         do_update=true
     fi
 
     if ${do_update}; then
+        echo
         git_print_user
     fi
 }
