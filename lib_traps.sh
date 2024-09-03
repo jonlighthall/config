@@ -1,16 +1,16 @@
 #!/bin/bash -eu
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # TRAPS LIBRARY
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 #
 # ~/config/lib_traps.sh
 #
-# PURPOSE: define fuctions to set and unset traps, and setting and reseting shell
-#   options. Includes functions for printing timestamps and return values.
+# PURPOSE: define fuctions to set and unset traps, and setting and reseting
+#   shell options. Includes functions for printing timestamps and return values.
 #
 # Mar 2024 JCL
 #
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # simple fuction to return an error
 function s() {
@@ -37,9 +37,9 @@ function bye() {
     return 1
 }
 
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Functions for set and reset shell options
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 function set_shell() {
     echo $-
@@ -168,9 +168,9 @@ function safe_shell() {
     clear_traps
 }
 
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Functions for print EXIT, RETURN, and INT (non-ERR) status
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # print source name, elapsed time, and timestamp
 function print_time() {
@@ -280,7 +280,8 @@ function print_return() {
     # trap 'print_return $?' RETURN
 
     # set local debug value
-    local -i DEBUG=${DEBUG:-0} # substitute default value if DEBUG is unset or null
+    local -i DEBUG=${DEBUG:-0} # substitute default value if DEBUG is unset or
+                               # null
 
     # print summary
     start_new_line
@@ -293,7 +294,8 @@ function print_return() {
         ddecho "${TAB}$-"
         # set shell options
         ddecho -n "${TAB}setting shell options... "
-        # trace RETURN and DEBUG traps (subshells inherit RETURN and DEBUG traps from shell)
+        # trace RETURN and DEBUG traps (subshells inherit RETURN and DEBUG traps
+        # from shell)
         #set -T
         ddecho "done"
         ddecho "${TAB}$-"
@@ -331,9 +333,9 @@ function print_int() {
     #	break
 }
 
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Print ERR trace
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 function print_error() {
     # expected arguments are $LINENO $? $BASH_COMMAND
@@ -547,9 +549,9 @@ function print_error() {
 
 }
 
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Functions to set and unset traps
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 function test_traps() {
     set -u
@@ -613,7 +615,8 @@ function check_traps_set() {
         # use argument to manually set DEBUG
         local -i DEBUG=$1
     else
-        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset
+                                   # or null
     fi
     # print summary
     ddecho -n "${TAB}on ${FUNCNAME[1]} return, "
@@ -660,7 +663,8 @@ check_traps_clear() {
         # use argument to manually set DEBUG
         local -i DEBUG=$1
     else
-        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset
+                                   # or null
     fi
     
     # print summary
@@ -699,7 +703,8 @@ function set_traps() {
         # use argument to manually set DEBUG
         local -i DEBUG=$1
     else
-        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset
+                                   # or null
     fi
 
     [ $DEBUG -gt 0 ] && start_new_line
@@ -793,7 +798,8 @@ function unset_traps() {
         # use argument to manually set DEBUG
         local -i DEBUG=$1
     else
-        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset
+                                   # or null
     fi
 
     [ $DEBUG -gt 0 ] && start_new_line
@@ -848,7 +854,8 @@ function reset_traps() {
         # use argument to manually set DEBUG
         local -i DEBUG=$1
     else
-        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset
+                                   # or null
     fi
 
     [ $DEBUG -gt 0 ] && start_new_line
@@ -891,7 +898,8 @@ function clear_traps() {
         # use argument to manually set DEBUG
         local -i DEBUG=$1
     else
-        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset or null
+        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset
+                                   # or null
     fi
 
     [ $DEBUG -gt 0 ] && start_new_line
@@ -932,8 +940,8 @@ function enable_exit_on_fail() {
     trap 'echo "${TAB}${BASH_SOURCE[0]##*/}: line $LINENO: trapping ERR $BASH_COMMAND"; safe_shell; return 0 2>/dev/null' ERR
 }
 
-# Rrovide a way to cleanly exit on errors, whether the file is sourced or executed, that does not
-# cause the shell to exit.
+# Provide a way to cleanly exit on errors, whether the file is sourced or
+# executed, that does not cause the shell to exit.
 function exit_on_fail() {
     enable_exit_on_fail
     echo -e "${TAB}${YELLOW}\x1b[7m${BASH_SOURCE[1]##*/} failed\x1b[0m"
