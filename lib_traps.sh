@@ -15,8 +15,8 @@
 # simple fuction to return an error
 function s() {
     local -i RETVAL=1
-    echo "returing $RETVAL..."
-    echo "enter 'exit' to restart"
+    echo "${TAB}returing $RETVAL..."
+    echo -e "${TAB}${GREEN}> ${RESET}enter 'exit' to restart"
     return 1
 }
 
