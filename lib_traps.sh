@@ -345,7 +345,7 @@ function print_error() {
     # substitute default value if DEBUG is unset or null
     local -i DEBUG=${DEBUG:-3}
     # set manually
-    DEBUG=0
+    DEBUG=1
 
     # set function debug
     local -i funcDEBUG=$DEBUG
@@ -359,17 +359,26 @@ function print_error() {
 
     # check if in Git Bash terminal (and not in repsoitory)
     if [ -n "$(command -v __git_ps1)" ]; then
+        # in Git Bash terminal
+        # check if (not) in repository
         if [ $ERR_RETVAL -eq 128 ]; then
-            echo -e " ${PSBR}null${RESET}"
+            # not in repository
+            echo -en " ${PSBR}null${RESET}"
+            decho -en " in Git Bash, not in repo"
             return
         else
+            # in repository
+            # check if error is trivial
             if [[ $ERR_CMD =~ '$exit' ]]; then
+                # trivial error, append to prompt
                 echo -en " ${RED}E${RESET}"
+                decho -en " trivial error"
                 return
             else
-                echo "LINENO = $ERR_LINENO"
-                echo "RETVAL = $ERR_RETVAL"
-                echo "   CMD = $ERR_CMD"
+                decho "${TAB}non-trivial error"
+                echo "${TAB}LINENO = $ERR_LINENO"
+                echo "${TAB}RETVAL = $ERR_RETVAL"
+                echo "${TAB}   CMD = $ERR_CMD"
             fi
         fi
         set +e
