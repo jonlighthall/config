@@ -23,22 +23,32 @@ libDEBUG=1
 #unset libDEBUG
 
 function tl() {
+    # re-worked "this line"
+
+    # turn printing on or off
     local -i do_print=1
+
     if [ $do_print = 1 ]; then
+        # print grep-like file and line number
         echo -en "${TAB}${GRF}${BASH_SOURCE[1]##*/}${GRS}:${GRL}${BASH_LINENO[0]}${RESET}"
+        # check if caller is function
         if [[ ${#FUNCNAME[@]} -gt 0 ]]; then
             this_func=${FUNCNAME[1]}
+            # check if caller is CLI, print function name if applicable
             if [[ "${this_func}" == "main" ]] || [[ "${this_func}" == "source" ]]; then
-                echo
+                : #echo
             else
-                echo -e "${GRS}: ${GRH}${this_func}()${RESET}"
+                echo -en "${GRS}: ${GRH}${this_func}()${RESET}"
             fi
+        fi
+        # print argument, if present
+        if [[ ! -z "$@" ]]; then
+            echo -e " ${INVERT}$@${RESET}"
         else
             echo
         fi
-    else
-        return 0
     fi
+    return 0
 }
 
 function set_fcol() {
