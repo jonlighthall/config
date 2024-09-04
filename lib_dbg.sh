@@ -77,7 +77,7 @@ function in_line() {
 
 function lec_mes () {
     if [ $N_BASH -gt 1 ]; then
-        echo -en "line $BASH_LINENO "
+        echo -en "line ${BASH_LINENO[1]} "
     fi
     echo -en "called on line ${GRL}"
 }
@@ -449,7 +449,7 @@ function lecho() {
     fi
     # manual
     DEBUG=0
-    DEBUG=${libDEBUG:-0}
+    #DEBUG=${libDEBUG:-0}
 
     set_fcol
     start_new_line
@@ -457,10 +457,11 @@ function lecho() {
     dddecho -e "${TAB}${INVERT}${FUNCNAME}${fcol}"
     set -u
 
+    declare -i hr_wid=15
     if [ ${DEBUG:-0} -gt 0 ] || [ ! -z "$@" ] ; then
         local -i tab_wid=${#TAB}
         local -i term_wid=${COLUMNS:-72}
-        declare -i hr_wid=$(($term_wid - (2 * $tab_wid)))
+        hr_wid=$(($term_wid - (2 * $tab_wid)))
         hline $hr_wid
         trap 'echo -ne "${fcol}";hline $hr_wid;DEBUG=$oldDEBUG;echo -en "$RESET";trap -- RETURN' RETURN
     fi
@@ -517,7 +518,7 @@ function lecho() {
     ddecho "${TAB}source is ${sour_fil} in ${sour_dir}"
     dtab
 
-    decho "${TAB}there are ${N_BASHo} entries in the ${func} call stack"
+    decho "${TAB}there are ${N_BASHo} entries in the ${FUNCNAME[$N_off]} call stack"
     itab
     local -i pare_lev=$(($N_BASHo - 1 + ${N_off}))
     decho "${TAB}parent level = $pare_lev"
@@ -568,7 +569,7 @@ function lecho() {
         ddecho "${TAB}BASH_LINENO refers to function"
         # get the line in the file where the function is called
         # add the line where to the function is defined within the file and the line within the function
-        local -i call_line=$(($line_func_def + $func_line)) # -1 ?
+        local -i call_line=$(($line_func_def + $func_line -1 ))
         # print file line
         in_line "$@"
         echo -en "${FUNCNAME}() $(lec_mes)${call_line}${fcol} "
@@ -578,7 +579,7 @@ function lecho() {
         ddecho -n "${TAB}$(lec_mes)${func_line} "
         ddecho "in function ${func}()"
         dtab
-        echo -e "${RESET}"
+        echo -en "${RESET}"
     fi
 
     itab
@@ -605,14 +606,18 @@ function plecho() {
 
     # set local debug level
     local -i DEBUG=${DEBUG:-1}
-    # DEBUG=2
-    DEBUG=${libDEBUG:-0}
-    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    DEBUG=0
+    #    DEBUG=${libDEBUG:-0}
+
+    set_fcol
+    start_new_line
+    echo -ne "${fcol}"
+    dddecho -e "${TAB}${INVERT}${FUNCNAME}${fcol}"
     set -u
 
     if [ ${DEBUG:-0} -gt 0 ] || [ ! -z "$@" ] ; then
         hline
-        trap 'hline;trap -- RETURN' RETURN
+        trap 'echo -ne "${fcol}";hline;echo -en "$RESET";trap -- RETURN' RETURN
     fi
     if [ ${DEBUG:-0} -gt 0 ]; then
         print_stack
@@ -627,7 +632,7 @@ function plecho() {
 
     if [ $N_BASH -eq 1 ]; then
         in_line "$@"
-        echo -e "${FUNCNAME}() $(lec_mes)${BASH_LINENO}${RESET} from ${BASH##*/}"
+        echo -e "${FUNCNAME}() $(lec_mes)${BASH_LINENO}${fcol} from ${BASH##*/}"
         ddecho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
         return 0
     else
@@ -649,24 +654,32 @@ function plecho() {
             ddecho "${TAB}N_BASH = ${N_BASH}"
         fi
         ddecho "${TAB}there are ${N_BASH} entries in the (parent) call stack"
+        ddecho "${TAB}   FUNCNAME stack = ${FUNCNAME[@]}"
+        ddecho "${TAB}BASH_SOURCE stack = ${BASH_SOURCE[@]##*/}"
+        ddecho "${TAB}BASH_LINENO stack = ${BASH_LINENO[@]}"
     fi
 
     # get the file of the calling function
-    local sour=${BASH_SOURCE[((1-$N_off))]}
+    local sour=${BASH_SOURCE[(($N_off))]}
     local sour_dir=$(dirname "${sour}")
     local sour_fil=$(basename "${sour}")
     ddecho "${TAB}source is ${sour}"
-    ddecho "${TAB}source is ${sour_fil} in ${sour_dir}"
-
-    # get the line of of the calling function
-    local -i func_line=${BASH_LINENO[0]}
+    ddecho "${TAB}source is ${sour_fil} in ${sour_dir}"    
 
     ddecho "${TAB}${FUNCNAME}"
     ddecho "${TAB}FUNCNAME stack = ${FUNCNAME[@]}"
     ddecho "${TAB}N_BASH = ${N_BASH}"
-    local -i func_lev=$(($N_BASH - 1 + ${N_off}))
-    ddecho "${TAB}function level = $func_lev"
-    ddecho "${TAB}function : ${FUNCNAME[$func_lev]}"
+    itab
+    local -i func_lev=1
+    if [ $N_BASH -gt 1 ]; then
+        func_lev=$(($N_BASH + ${N_off}))
+    fi
+    decho "${TAB}function level = $func_lev"
+    decho "${TAB}function : ${FUNCNAME[$func_lev]}"
+    dtab
+
+    # get the line of of the calling function
+    local -i func_line=${BASH_LINENO[0]}
 
     # BASH_SOURCE counts from zero; get the bottom of the stack
     local bottom=${FUNCNAME[${func_lev}]##*/}
@@ -682,11 +695,11 @@ function plecho() {
         ddecho "${TAB}N_BASH = ${N_BASH}"
         ddecho "${TAB}function level = $func_lev"
         in_line "$@"
-        echo -e "${FUNCNAME[(($func_lev-1))]}() $(lec_mes)${BASH_LINENO[(($func_lev-1))]}${RESET} in file ${YELLOW}${BASH_SOURCE[$func_lev]##*/}${RESET}"
+        echo -e "${FUNCNAME[(($func_lev-1))]}() $(lec_mes)${BASH_LINENO[(($func_lev-1))]}${fcol} in file ${YELLOW}${BASH_SOURCE[$func_lev]##*/}${RESET}"
         itab
         ((--func_lev))
         ddecho -e "${TAB}${BASH_SOURCE[$func_lev]##*/}${RESET} called by ${SHELL##*/}"
-        ddecho -e "${TAB}${FUNCNAME[(($func_lev-1))]}() $(lec_mes)${BASH_LINENO[(($func_lev-1))]}${RESET} in file ${YELLOW}${BASH_SOURCE[$func_lev]##*/}${RESET}"
+        ddecho -e "${TAB}${FUNCNAME[(($func_lev-1))]}() $(lec_mes)${BASH_LINENO[(($func_lev-1))]}${fcol} in file ${YELLOW}${BASH_SOURCE[$func_lev]##*/}${RESET}"
 
         decho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
         dtab
@@ -702,30 +715,31 @@ function plecho() {
         local -i call_line=$func_line
         # print file line
         in_line "$@"
-        echo -en "${FUNCNAME}() $(lec_mes)${call_line}${RESET} "
-        echo -e "in file ${RESET}${YELLOW}${sour_fil}${RESET}"
+        echo -en "${FUNCNAME}() $(lec_mes)${call_line}${fcol} "
+        echo -e "in file ${fcol}${YELLOW}${sour_fil}${fcol}"
     else
         ddecho "${TAB}BASH_LINENO refers to function"
         # get the line in the file where the function is called
         # add the line where to the function is defined within the file and the line within the function
-        local -i call_line=$(($line_func_def -1 + $func_line))
+        local -i call_line=$(($line_func_def + $func_line -1 ))
         # print file line
         in_line "$@"
-        echo -n "${FUNCNAME}() $(lec_mes)${call_line} "
-        echo -e "in file ${YELLOW}${sour_fil}${RESET}"
+        echo -en "${FUNCNAME}() $(lec_mes)${call_line}${fcol} "
+        echo -e "in file ${YELLOW}${sour_fil}${fcol}"
         itab
         # print function line
         ddecho -n "${TAB}$(lec_mes)${func_line} "
         ddecho "in function ${func}()"
         dtab
+        echo -en "${RESET}"
     fi
 
     itab
     # print definition line
-    decho -n "${TAB}function ${func}() "
-    decho -ne "defined on line ${GRL}${line_func_def}${RESET} "
-    decho -e "in file ${YELLOW}${sour_fil}${RESET}"
-    decho -e "${TAB}file ${YELLOW}${sour_fil}${RESET} located in ${DIR}${sour_dir}${RESET}"
+    ddecho -n "${TAB}function ${func}() "
+    ddecho -ne "defined on line ${GRL}${line_func_def}${fcol} "
+    ddecho -e "in file ${YELLOW}${sour_fil}${fcol}"
+    ddecho -e "${TAB}file ${YELLOW}${sour_fil}${fcol} located in ${DIR}${sour_dir}${fcol}"
     ddecho "${TAB}exiting ${FUNCNAME}() on line $((${line_def}+${LINENO}-1))..."
 
     dtab
