@@ -285,8 +285,8 @@ function print_return() {
     # trap 'print_return $?' RETURN
 
     # set local debug value
-    local -i DEBUG=${DEBUG:-0} # substitute default value if DEBUG is unset or
-    #                                # null
+    # substitute default value if DEBUG is unset or null
+    local -i DEBUG=${DEBUG:-0} 
 
     # print summary
     start_new_line
@@ -431,10 +431,11 @@ function print_error() {
         ddecho "${TAB}FUNCNAME[$N_BOTTOM] = ${FUNCNAME[$N_BOTTOM]}"
         decho "${TAB}BASH_SOURCE[$N_BOTTOM] = ${BASH_SOURCE[$N_BOTTOM]}"
 
+        ddecho -n "${TAB}bottom of stack is... "
         if [[ ${BASH_SOURCE[${N_BOTTOM}]} == "bash" ]]; then
-            ddecho "${TAB}bottom of stack is bash"
+            ddecho "bash"
         else
-            ddecho "${TAB}bottom of stack is NOT bash"
+            ddecho "NOT bash"
         fi
         dtab
 
@@ -494,12 +495,12 @@ function print_error() {
                             ddecho -n "${TAB}line ${ERR_LINENO} in ${BASH_SOURCE[$parent]}: "
                             ddecho sed -n "${ERR_LINENO}p" "${BASH_SOURCE[$parent]}"
                             ddecho
-                            decho "${TAB}"$(sed -n "${ERR_LINENO}p" "${BASH_SOURCE[$parent]}" | sed "s/^\s*//")
+                            decho "${TAB}"$(sed -n "${ERR_LINENO}p" "${BASH_SOURCE[$parent]}")
                             # save offending line
                             ERR_LINE=$(sed -n "${ERR_LINENO}p" "${BASH_SOURCE[$parent]}" | sed "s/^\s*//")
                         fi
                     else
-                        ddecho "EMPTY"
+                        ddecho "${TAB}${BASH_SOURCE[$parent]} is EMPTY"
                         ERR_LINE="EMPTY"
                     fi
                 fi
@@ -534,16 +535,7 @@ function print_error() {
         else
             tl "no, n bot not zero: BASH_SOURCE[parent] = ${BASH_SOURCE[${parent}]}"
             if [[ ${BASH_SOURCE[${parent}]} =~ ".bashrc" ]]; then
-                echo "yes, parent is bashrc:"
-                local -i LN_ERR_LINE
-                export ERR_LINE
-                echo ${ERR_LINE} | wc -l
-                LN_ERR_LINE= $(echo ${ERR_LINE} | wc -l )
-                echo "length of ERR_LINE is: " ${LN_ERR_LINE}
-                echo "ERR_LINE = ${ERR_LINE}" | head -n 5
-                if [[ $LN_ERR_LINE -gt 1 ]]; then
-                    exit 1
-                fi
+                echo "parent is bashrc: ${ERR_LINE}"
                 ERR_LINENO=$(grep -n "${ERR_LINE}" ${BASH_SOURCE[${parent}]} | sed 's/:.*//')
                 tl
             fi
@@ -672,8 +664,8 @@ function check_traps_set() {
         # use argument to manually set DEBUG
         local -i DEBUG=$1
     else
-        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset
-                                   # or null
+        # substitute default value if DEBUG is unset or null
+        local -i DEBUG=${DEBUG:-2} 
     fi
     # print summary
     ddecho -n "${TAB}on ${FUNCNAME[1]} return, "
@@ -722,10 +714,10 @@ check_traps_clear() {
         # use argument to manually set DEBUG
         local -i DEBUG=$1
     else
-        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset
-                                   # or null
+        # substitute default value if DEBUG is unset or null
+        local -i DEBUG=${DEBUG:-2}
     fi
-    
+
     # print summary
     if [ ${#FUNCNAME[@]} -gt 1 ]; then
         ddecho -n "${TAB}on ${FUNCNAME[1]} return, "
@@ -767,8 +759,8 @@ function set_traps() {
         # use argument to manually set DEBUG
         local -i DEBUG=$1
     else
-        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset
-                                   # or null
+        # substitute default value if DEBUG is unset or null
+        local -i DEBUG=${DEBUG:-2} 
     fi
 
     [ $DEBUG -gt 0 ] && start_new_line
@@ -862,8 +854,8 @@ function unset_traps() {
         # use argument to manually set DEBUG
         local -i DEBUG=$1
     else
-        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset
-                                   # or null
+        # substitute default value if DEBUG is unset or null
+        local -i DEBUG=${DEBUG:-2} 
     fi
 
     [ $DEBUG -gt 0 ] && start_new_line
@@ -921,8 +913,8 @@ function reset_traps() {
         # use argument to manually set DEBUG
         local -i DEBUG=$1
     else
-        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset
-                                   # or null
+        # substitute default value if DEBUG is unset or null
+        local -i DEBUG=${DEBUG:-2} 
     fi
 
     [ $DEBUG -gt 0 ] && start_new_line
@@ -965,8 +957,8 @@ function clear_traps() {
         # use argument to manually set DEBUG
         local -i DEBUG=$1
     else
-        local -i DEBUG=${DEBUG:-2} # substitute default value if DEBUG is unset
-                                   # or null
+        # substitute default value if DEBUG is unset or null
+        local -i DEBUG=${DEBUG:-2} 
     fi
 
     [ $DEBUG -gt 0 ] && start_new_line
