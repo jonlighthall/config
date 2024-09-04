@@ -116,9 +116,11 @@ function find_func_line() {
     #   DECLARE - print function definition
     #   HEAD    - get declaration line
     #   SED     - remove whitespace
-    local pat="$(declare -f ${func} | head -1 | sed 's/ /[ ]*/;s/[ ]*$//;s/)/&[ \\n\\r{]*$/')"
-    decho "${TAB}base pattern: $pat" >&2
+    local pat="$(declare -f ${func} | head -1 | sed 's/ /[ ]*/;s/[ ]*$//;s/)/&[ ]*#*.*[ \\n\\r{]*$/')"
+    decho "${TAB}matching pattern..." >&2
     itab
+    decho "${TAB}base pattern: $pat" >&2
+
 
     # get source file
     local src=$2
@@ -126,9 +128,9 @@ function find_func_line() {
 
     # print matching line
     if [ $DEBUG -gt 0 ]; then
-        grep -n "${pat}" "${src}" --color=always | sed "s/^/${TAB}/" >&2
+        grep -n "${pat}" "${src}" --color=always | sed "s/^/${TAB}grep: /" >&2
     fi
-    #    dtab
+    dtab
 
     # reset shell options
     if [[ "$-" == *e* ]]; then
@@ -168,7 +170,7 @@ function find_func_line() {
     decho "${TAB}matching line:" >&2
     itab
     if [ $DEBUG -gt 0 ]; then
-        grep -n "${epat}" "${src}" --color=always | sed "s/^/${TAB}/" >&2
+        grep -n "${epat}" "${src}" --color=always | sed "s/^/${TAB}grep: /" >&2
     fi
     if [ $(grep -n "${epat}" "${src}" | wc -l) -eq 1 ]; then
         decho -e "${TAB}${GOOD}OK${RESET} pattern unique" >&2
@@ -265,6 +267,7 @@ function get_caller_def() {
     unset caller_func_line
     unset get_file_line
 
+    declare -ig this_def
     declare -ig line_def
     declare -ig caller_func_line
     declare -ig get_file_line
@@ -321,7 +324,9 @@ function get_caller_def() {
             line_def=-1
             get_file_line=-1
         else
-            line_def=$(find_func_line "${caller_func}" "${caller_source}");
+            fecho "func: ${caller_func}"
+            fecho "file: ${caller_source}"
+            line_def=$(find_func_line "${caller_func}" "${caller_source}")
             # get line in calling function source file
             get_file_line=$((${line_def}+${caller_func_line}))
         fi
@@ -343,7 +348,7 @@ function this_line() {
     # set local debug level
     local -i DEBUG=${DEBUG:-0}
     # manual
-    DEBUG=1
+    DEBUG=3
     #DEBUG=${libDEBUG:-0}
 
     local -i funcDEBUG=0
