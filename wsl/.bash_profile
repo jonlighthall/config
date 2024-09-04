@@ -106,7 +106,7 @@ vecho -e "${TAB}applying ${SYS_NAME} settings on ${PSHOST}${HOST_NAME}${RESET}"
 # save login timestamp to history
 hist_file=${HOME}/.bash_history
 hist_file_can=$(readlink -f "${hist_file}")
-vecho -en "${TAB}appending login timestamp to ${YELLOW}${hist_file_can}${RESET}... "
+vecho -en "${TAB}appending login timestamp to ${YELLOW}${hist_file_can##*/}${RESET}... "
 if [ -f $hist_file ]; then
     echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from ${HOST_NAME}" >>$hist_file
     RETVAL=$?
