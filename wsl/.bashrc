@@ -94,9 +94,8 @@ else
     vecho "${TAB}loading X11..."
     LIST_RC+=("${config_dir}/wsl/.bashrc_X11")
 fi
-tl
 dtab
-tl
+
 # optional list
 declare -ax LIST_OPT
 LIST_OPT=( "$HOME/.bash_local" "root_v5.34.36/bin/thisroot.sh" )
