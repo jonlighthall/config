@@ -519,29 +519,19 @@ function print_error() {
     # decrement TAB by fTAB
     TAB=${TAB%$eTAB}
     echo -n "${ERR_PRINT}"
-    tl
+
     # print grep-like line match
-    tl "BASH_SOURCE[N_BOT] = ${BASH_SOURCE[${N_BOTTOM}]}"
     if [[ ${BASH_SOURCE[${N_BOTTOM}]} == "bash" ]]; then
-        tl "yes, bottom is bash"
-        echo -ne "a ${GRF}${FUNCNAME[N_BOTTOM]}${RESET}${GRS}:${RESET} "
-        tl
+        echo -ne "${GRF}${FUNCNAME[N_BOTTOM]}${RESET}${GRS}:${RESET} "
     else
-        tl "N_BOTTOM = ${N_BOTTOM}"
         if [ ${N_BOTTOM} -eq 0 ]; then
-            tl "yes, n bot is zero"
             echo -ne "${GRF}${SHELL##*/}${RESET}${GRS}:${RESET}${GRL}${ERR_LINENO}${RESET}${GRS}:${RESET}"
-            tl
         else
-            tl "no, n bot not zero: BASH_SOURCE[parent] = ${BASH_SOURCE[${parent}]}"
             if [[ ${BASH_SOURCE[${parent}]} =~ ".bashrc" ]]; then
                 echo "parent is bashrc: ${ERR_LINE}"
                 ERR_LINENO=$(grep -n "${ERR_LINE}" ${BASH_SOURCE[${parent}]} | sed 's/:.*//')
-                tl
             fi
-            tl
             echo -ne "${GRF}${BASH_SOURCE[${parent}]##*/}${RESET}${GRS}:${RESET}${GRL}${ERR_LINENO}${RESET}${GRS}:${RESET}"
-            tl
         fi
     fi
 
@@ -679,7 +669,6 @@ function check_traps_set() {
 }
 
 function get_sigs() {
-    tl
     if [ ! -z "$(trap -p)" ]; then
         if [ ${DEBUG} -gt 1 ]; then
             print_traps
@@ -693,6 +682,7 @@ function get_sigs() {
             itab
             decho $(trap -p) | sed "s/ \(trap -- \)/\n\1/g" |  sed 's/.* //' | tr  '\n' ' ' | sed "s/^/${TAB}/"
             ddecho
+            dtab
 
         fi
         export sig="$(echo $(trap -p) | sed "s/ \(trap -- \)/\n\1/g" |  sed 's/.* //' | tr  '\n' ' ')"
@@ -701,11 +691,9 @@ function get_sigs() {
             ddecho "${TAB}sig@ = ${sig[@]}"
             ddecho "${TAB}#sig = ${#sig[@]}"
         fi
-        dtab
     else
         export sig=''
     fi
-    tl
 }
 
 check_traps_clear() {
@@ -735,10 +723,8 @@ check_traps_clear() {
 }
 
 do_clear() {
-    tl
     local -a sig
     get_sigs
-    tl
     if [ ! -z "${sig}" ]; then
         ddecho "${TAB}sig = ${sig}"
         # clear traps
@@ -749,7 +735,6 @@ do_clear() {
         done
         dtab
     fi
-    tl
 }
 
 # set ERR and EXIT traps
@@ -860,11 +845,8 @@ function unset_traps() {
 
     [ $DEBUG -gt 0 ] && start_new_line
     TAB=${TAB=''}
-    tl "before caller"
     get_caller
-    tl "after caller"
     decho -e "${TAB}${CYAN}\E[7mun-set traps\E[27m $- ($caller_func)${RESET}"
-    itab
 
     dddecho "${TAB}$-"
     # set shell options
@@ -877,7 +859,6 @@ function unset_traps() {
     set +e
     dddecho "done"
     dddecho "${TAB}$-"
-    tl
     dddecho "${TAB}the current traps are set"
     if [ -z "$(trap -p)" ]; then
         dddecho -e "${TAB}${fTAB}none"
@@ -897,11 +878,10 @@ function unset_traps() {
             dtab
         fi
     fi
-    tl before clear
+
     do_clear
-    tl after clear, before check
     check_traps_clear
-    tl after check
+    dtab
     return $?
 }
 
