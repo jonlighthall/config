@@ -38,6 +38,6 @@ for my_link in wsl.conf; do
     fi
     link=${link_dir}/${my_link}
     # make link
-    sudo bash -c "source ${fpretty}; do_link ""$target"" ""$link"""
+    do_link "$target" "$link"
 done
 cbar "Done Linking Repo Files"
