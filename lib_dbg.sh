@@ -328,7 +328,7 @@ function get_caller_def() {
             fecho "file: ${caller_source}"
             line_def=$(find_func_line "${caller_func}" "${caller_source}")
             # get line in calling function source file
-            get_file_line=$((${line_def}+${caller_func_line}))
+            get_file_line=$((${line_def}+${caller_func_line}-1))
         fi
     else
         caller_func_line=0
