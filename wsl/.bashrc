@@ -94,8 +94,9 @@ else
     vecho "${TAB}loading X11..."
     LIST_RC+=("${config_dir}/wsl/.bashrc_X11")
 fi
+tl
 dtab
-
+tl
 # optional list
 declare -ax LIST_OPT
 LIST_OPT=( "$HOME/.bash_local" "root_v5.34.36/bin/thisroot.sh" )
@@ -111,7 +112,9 @@ done
 
 # (un)set traps and shell options before loading command files
 set +e
-unset_traps
+tl "before unset"
+unset_traps 0
+tl "after unset"
 
 # source list of files
 for FILE_RC in ${LIST_RC[@]}; do
