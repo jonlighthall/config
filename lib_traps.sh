@@ -20,6 +20,11 @@ function s() {
     return 1
 }
 
+function snest() {
+    set_traps
+    s
+}
+
 # fuction to test returning an error
 function bye() {
     # print function name
@@ -281,7 +286,7 @@ function print_return() {
 
     # set local debug value
     local -i DEBUG=${DEBUG:-0} # substitute default value if DEBUG is unset or
-                               # null
+    #                                # null
 
     # print summary
     start_new_line
@@ -345,7 +350,7 @@ function print_error() {
     # substitute default value if DEBUG is unset or null
     local -i DEBUG=${DEBUG:-3}
     # set manually
-    DEBUG=1
+    DEBUG=0
 
     # set function debug
     local -i funcDEBUG=$DEBUG
@@ -441,10 +446,31 @@ function print_error() {
         local -i parent=0
         if [ $N_BASH -gt 0 ]; then
             parent=1
+
+            # print parent function
+            decho "${TAB}BASH_SOURCE[$parent] = ${BASH_SOURCE[$parent]}"
+            decho "${TAB}   FUNCNAME[$parent] = ${FUNCNAME[$parent]}"
+            decho "${TAB}BASH_LINENO[$parent] = ${BASH_LINENO[$parent]}"
+
+            # check if parent is command-not-found
+            if [[ "${FUNCNAME[${parent}]}" =~ ^command.* ]];then
+                dtab
+                ddecho "${TAB}${RED}command not found${RESET}, incrementing parent..."
+                itab
+                ERR_LINENO=${BASH_LINENO[$parent]}
+                parent=2
+                # print real parent
+                ddecho "${TAB}BASH_SOURCE[$parent] = ${BASH_SOURCE[$parent]}"
+                ddecho "${TAB}   FUNCNAME[$parent] = ${FUNCNAME[$parent]}"
+                ddecho "${TAB}BASH_LINENO[$parent] = ${BASH_LINENO[$parent]}"
+                ddecho "${TAB}offending line = ${ERR_LINENO}"
+            else
+                ddecho "${TAB}command found"
+            fi
         fi
 
         # check if error came from shell
-        if [[ ${BASH_SOURCE[${N_BOTTOM}]} == "bash" ]];then # || \
+        if [[ ${BASH_SOURCE[${N_BOTTOM}]} == "^bash"* ]];then
             ddecho "${TAB}error did not come from a file, it came from ${SHELL##*/}"
             local ERR_LINE=$ERR_CMD
         else
@@ -454,24 +480,26 @@ function print_error() {
             if [ -f "${BASH_SOURCE[$parent]}" ]; then
                 ddecho "${TAB}BASH_SOURCE[$parent] is a file"
                 # check that value is not empty
+                ddecho -n "${TAB}${BASH_SOURCE[$parent]} is... "
                 if [ ! -z "${BASH_SOURCE[$parent]}" ]; then
-                    ddecho "${TAB}BASH_SOURCE[$parent] is not empty"
+                    ddecho "not empty"
                     if [ $N_FUNC -gt 1 ] ; then
                         # print source
                         ddecho "${TAB}BASH_SOURCE[$parent] = ${BASH_SOURCE[$parent]}"
                         if [[ ! ${BASH_SOURCE[${parent}]} =~ ".bashrc" ]]; then
+                            ddecho "${TAB}parent is NOT .bashrc"
                             # print line number
                             ddecho "${TAB}ERR_LINE = ${ERR_LINENO}"
                             # print summary
                             ddecho -n "${TAB}line ${ERR_LINENO} in ${BASH_SOURCE[$parent]}: "
                             ddecho sed -n "${ERR_LINENO}p" "${BASH_SOURCE[$parent]}"
                             ddecho
-                            decho "${TAB}"$(sed -n "${ERR_LINENO}p" "${BASH_SOURCE[$parent]}")
+                            decho "${TAB}"$(sed -n "${ERR_LINENO}p" "${BASH_SOURCE[$parent]}" | sed "s/^\s*//")
                             # save offending line
                             ERR_LINE=$(sed -n "${ERR_LINENO}p" "${BASH_SOURCE[$parent]}" | sed "s/^\s*//")
                         fi
                     else
-                        ddecho "${TAB}${BASH_SOURCE[$parent]} is EMPTY"
+                        ddecho "EMPTY"
                         ERR_LINE="EMPTY"
                     fi
                 fi
@@ -490,18 +518,38 @@ function print_error() {
     # decrement TAB by fTAB
     TAB=${TAB%$eTAB}
     echo -n "${ERR_PRINT}"
-
+    tl
     # print grep-like line match
+    tl "BASH_SOURCE[N_BOT] = ${BASH_SOURCE[${N_BOTTOM}]}"
     if [[ ${BASH_SOURCE[${N_BOTTOM}]} == "bash" ]]; then
-        echo -ne " ${GRF}${FUNCNAME[N_BOTTOM]}${RESET}${GRS}:${RESET} "
+        tl "yes, bottom is bash"
+        echo -ne "a ${GRF}${FUNCNAME[N_BOTTOM]}${RESET}${GRS}:${RESET} "
+        tl
     else
+        tl "N_BOTTOM = ${N_BOTTOM}"
         if [ ${N_BOTTOM} -eq 0 ]; then
-            echo -ne " ${GRF}${SHELL##*/}${RESET}${GRS}:${RESET}${GRL}${ERR_LINENO}${RESET}${GRS}:${RESET}"
+            tl "yes, n bot is zero"
+            echo -ne "${GRF}${SHELL##*/}${RESET}${GRS}:${RESET}${GRL}${ERR_LINENO}${RESET}${GRS}:${RESET}"
+            tl
         else
+            tl "no, n bot not zero: BASH_SOURCE[parent] = ${BASH_SOURCE[${parent}]}"
             if [[ ${BASH_SOURCE[${parent}]} =~ ".bashrc" ]]; then
+                echo "yes, parent is bashrc:"
+                local -i LN_ERR_LINE
+                export ERR_LINE
+                echo ${ERR_LINE} | wc -l
+                LN_ERR_LINE= $(echo ${ERR_LINE} | wc -l )
+                echo "length of ERR_LINE is: " ${LN_ERR_LINE}
+                echo "ERR_LINE = ${ERR_LINE}" | head -n 5
+                if [[ $LN_ERR_LINE -gt 1 ]]; then
+                    exit 1
+                fi
                 ERR_LINENO=$(grep -n "${ERR_LINE}" ${BASH_SOURCE[${parent}]} | sed 's/:.*//')
+                tl
             fi
-            echo -ne " ${GRF}${BASH_SOURCE[${parent}]##*/}${RESET}${GRS}:${RESET}${GRL}${ERR_LINENO}${RESET}${GRS}:${RESET}"
+            tl
+            echo -ne "${GRF}${BASH_SOURCE[${parent}]##*/}${RESET}${GRS}:${RESET}${GRL}${ERR_LINENO}${RESET}${GRS}:${RESET}"
+            tl
         fi
     fi
 
@@ -527,7 +575,7 @@ function print_error() {
     # if the error line and the error command do not mach, print error command
     if [[ "$ERR_CMD" != "$ERR_LINE" ]]; then
         echo -ne "\E[${etab}C${YELLOW} cmd${GRS}:${RESET}"
-        echo "${ERR_CMD}"
+        echo "${ERR_CMD}" | sed "s/command-not-found/${RED}&${RESET}/"
     fi
 
     if [[ ! ${BASH_SOURCE[${N_BOTTOM}]} =~ "bash" ]]; then
@@ -639,6 +687,7 @@ function check_traps_set() {
 }
 
 function get_sigs() {
+    tl
     if [ ! -z "$(trap -p)" ]; then
         if [ ${DEBUG} -gt 1 ]; then
             print_traps
@@ -664,6 +713,7 @@ function get_sigs() {
     else
         export sig=''
     fi
+    tl
 }
 
 check_traps_clear() {
@@ -693,16 +743,21 @@ check_traps_clear() {
 }
 
 do_clear() {
+    tl
     local -a sig
     get_sigs
+    tl
     if [ ! -z "${sig}" ]; then
         ddecho "${TAB}sig = ${sig}"
         # clear traps
+        itab
         for itrap in ${sig[@]}; do
             ddecho "${TAB}unsetting trap $itrap..."
             trap - $itrap
         done
+        dtab
     fi
+    tl
 }
 
 # set ERR and EXIT traps
@@ -813,7 +868,9 @@ function unset_traps() {
 
     [ $DEBUG -gt 0 ] && start_new_line
     TAB=${TAB=''}
+    tl "before caller"
     get_caller
+    tl "after caller"
     decho -e "${TAB}${CYAN}\E[7mun-set traps\E[27m $- ($caller_func)${RESET}"
     itab
 
@@ -828,7 +885,7 @@ function unset_traps() {
     set +e
     dddecho "done"
     dddecho "${TAB}$-"
-
+    tl
     dddecho "${TAB}the current traps are set"
     if [ -z "$(trap -p)" ]; then
         dddecho -e "${TAB}${fTAB}none"
@@ -848,10 +905,11 @@ function unset_traps() {
             dtab
         fi
     fi
-
+    tl before clear
     do_clear
+    tl after clear, before check
     check_traps_clear
-    dtab
+    tl after check
     return $?
 }
 
@@ -869,7 +927,7 @@ function reset_traps() {
 
     [ $DEBUG -gt 0 ] && start_new_line
     TAB=${TAB=''}
-    get_caller    
+    get_caller
     decho -e "${TAB}${GREEN}\E[7mreset traps\E[27m  $- ($caller_func)${RESET}"
     itab
 
