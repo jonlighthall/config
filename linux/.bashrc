@@ -16,10 +16,14 @@
 
 # check if running interactively
 if [[ "$-" == *i* ]];then
-    TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
-    echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
+    if [ -z ${fTAB:+dummy} ]; then
+        TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
+    else
+        itab
+    fi    
     # print source
     if [ ${DEBUG:-0} -gt 0 ]; then
+        echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
         echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
     fi
 else

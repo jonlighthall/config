@@ -16,12 +16,13 @@
 # the variable fTAB is used for setting, incrementing, and decrementing the TAB variable.
 # initially defined as the "in-file" or "in-function" tab to force additional indentation.
 function set_ftab() {
+    # set alternate tabbing here
+    #guide_tabs
     # if fTAB is unset or null, then assign default value
     export fTAB=${fTAB:='   '}
 }
 
 function guide_tabs() {
-    ctab
     export fTAB='|--'
 }
 

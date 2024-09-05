@@ -14,20 +14,31 @@ TAB=${TAB=''}
 
 # add read-only variable to check if this file has already been loaded
 # if the argument '-f' is used, force loading the file
+# check for argument
 if [[ "$@" == "-f" ]];then
+    # force re-load
+    
+    # assign print command
     cmd=decho
+    # check if print command is valid
     if ! command -v $cmd &>/dev/null; then
         cmd=echo
     fi
+    # print message
     $cmd "${TAB}reloading ${BASH_SOURCE##*/}"
 else
+    # not forced
+    # check if var is defined
     if [ ! -z ${FPRETTY_LOADED+dummy} ]; then
+        # check if cbar is defined
         if [ ! -z "$(declare -f print_pretty_cbar)" ]; then
             decho "${TAB}"$(print_pretty "${BASH_SOURCE##*/} already loaded")
             return 0
         fi
     fi
+    # otherwise continue loading
 fi
+
 
 # set debug level
 declare -i DEBUG=${DEBUG:=0} # assign default value if DEBUG is unset or null
@@ -140,6 +151,7 @@ function load_libs() {
             echo "${fname} not found"
         fi
     done
+    
     fname="${HOME}/utils/bash/git/lib_git.sh"
     if [ -e "${fname}" ]; then
         if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then

@@ -17,7 +17,11 @@
 
 # check if running interactively
 if [[ "$-" == *i* ]];then
-    TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
+    if [ -z ${fTAB:+dummy} ]; then
+        TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
+    else
+        itab
+    fi
     echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
 else
     echo "${TAB-}${BASH_SOURCE##*/}: non-interactive shell" >&2
@@ -103,7 +107,16 @@ falias="${config_dir}/.bash_aliases"
 if [ -f $falias ]; then
     vecho "${TAB}loading ${falias}..."
     source $falias
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]; then
+        vecho -e "${TAB}$falias ${GOOD}OK${RESET}"
+    else
+        echo -e "${TAB}$falias ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+    fi
+else
+    echo -e "${TAB}$falias ${UL}not found${RESET}"
 fi
+
 
 # Path additions
 # ---------------
@@ -118,7 +131,7 @@ if [ ! -z ${appPATH} ]; then
     for path in $appPATH; do
         if [[ ":$PATH" != *":${path}"* ]]; then
             if [ -d "${path}" ]; then
-                vecho -n "${TAB} appending ${path} to PATH... "
+                vecho -n "${TAB}appending ${path} to PATH... "
                 export PATH=$PATH:$path
                 vecho "done"
             else
