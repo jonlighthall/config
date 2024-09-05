@@ -111,9 +111,7 @@ done
 
 # (un)set traps and shell options before loading command files
 set +e
-tl "before unset"
 unset_traps 0
-tl "after unset"
 
 # source list of files
 for FILE_RC in ${LIST_RC[@]}; do
