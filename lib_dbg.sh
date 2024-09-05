@@ -30,9 +30,16 @@ function tl() {
 
     if [ $do_print = 1 ]; then
         # print grep-like file and line number
-        echo -en "${TAB}${GRF}${BASH_SOURCE[1]##*/}${GRS}:${GRL}${BASH_LINENO[0]}${RESET}"
+        print_stack
+        echo -en "${TAB}${GRF}"
+        if [[ ${#FUNCNAME[@]} -gt 1 ]]; then
+            echo -en "${BASH_SOURCE[1]##*/}"
+        else
+            echo -en "${SHELL##*/}"
+        fi
+        echo -en "${GRS}:${GRL}${BASH_LINENO[0]}${RESET}"
         # check if caller is function
-        if [[ ${#FUNCNAME[@]} -gt 0 ]]; then
+        if [[ ${#FUNCNAME[@]} -gt 1 ]]; then
             this_func=${FUNCNAME[1]}
             # check if caller is CLI, print function name if applicable
             if [[ "${this_func}" == "main" ]] || [[ "${this_func}" == "source" ]]; then
