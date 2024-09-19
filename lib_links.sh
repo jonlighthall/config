@@ -361,7 +361,7 @@ function do_link() {
     hline 72
 
     # check if we're in an MSYS terminal
-    if [ -z "$MSYSTEM" ]; then
+    if [ -z "${MSYSTEM:+dummy}" ]; then
 	      # Non-MSYS prompt: use ln
         echo -e "${TAB}${GRH}making link... "
         # check if target file is authorized_keys
