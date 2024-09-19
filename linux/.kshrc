@@ -12,5 +12,5 @@
 # ------------------------------------------------------------------------------
 
 # prompt settings
-export PS1="$(id -un)@$(hostname) $PWD
+export PS1="$(date "+%l:%M") $(id -un)@$(hostname) $PWD
 $ "
