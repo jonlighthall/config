@@ -20,6 +20,9 @@
 #
 # -----------------------------------------------------------------------------------------------
 
+# MSYS terminal: to link or not to link
+do_junction=false
+
 function check_arg1() {
     ddecho -n "$FUNCNAME: number of arguments = $# "
     # check number of arguments
