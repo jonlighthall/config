@@ -55,24 +55,68 @@ for FILE in $LIST_OPT; do
 done
 
 # source list of files
-for fname in $LIST; do
-    vecho "${TAB}loading $fname..."
-    if [ -f $fname ]; then
-        source $fname
+for FILE_RC in $LIST; do
+    vecho "${TAB}loading $FILE_RC..."
+    if [ -f $FILE_RC ]; then
+        source $FILE_RC
         RETVAL=$?
         if [ $RETVAL -eq 0 ]; then
-            vecho -e "${TAB}$fname ${GOOD}OK${RESET}"
+            vecho -e "${TAB}$FILE_RC ${GOOD}OK${RESET}"
         else
-            echo -e "${TAB}$fname ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+            echo -e "${TAB}$FILE_RC ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
         fi
     else
-        echo -e "${TAB}$fname ${UL}not found${RESET}"
+        echo -e "${TAB}$FILE_RC ${UL}not found${RESET}"
     fi
 done
 
-unset LIST
+# Path additions
+# ---------------
+if [ "${VB}" = true ]; then
+    echo "${TAB}Path additions..."
+    itab
+fi
 
+# list paths to append to PATH
+appPATH=""
+if [ ! -z ${appPATH} ]; then
+    for path in $appPATH; do
+        if [[ ":$PATH" != *":${path}"* ]]; then
+            if [ -d "${path}" ]; then
+                vecho -n "${TAB} appending ${path} to PATH... "
+                export PATH=$PATH:$path
+                vecho "done"
+            else
+                echo -e "${TAB}${path} ${UL}not found${RESET}"
+            fi
+        else
+            vecho "${TAB}${path} already in PATH"
+        fi
+    done
+fi
+
+# list paths to prepend to PATH
+#prePATH="c/Users/jlighthall/Downloads\emacs-27.1-x86_64\bin"
+prePATH="${HOME}/Downloads/emacs-27.1-x86_64/bin"
+if [ ! -z "${prePATH}" ]; then
+    for path in $prePATH; do
+        if [[ ":$PATH" != *":${path}"* ]]; then
+            if [ -d "${path}" ]; then
+                vecho -n "${TAB}prepending ${path} to PATH... "
+                export PATH=$path:$PATH
+                vecho "done"
+            else
+                echo -e "${TAB}${path} ${UL}not found${RESET}"
+            fi
+        else
+            vecho "${TAB}${path} already in PATH"
+        fi
+    done
+fi
+
+# deallocate variables
+unset LIST
 if [ "${VB}" = true ]; then
     # reset tab
-    dtab
+    dtab 2
 fi
