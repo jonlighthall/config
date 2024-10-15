@@ -74,7 +74,7 @@ function check_target() {
     [ -d "${target}" ] && type="directory ${DIR}"
 
     # check if target exists
-    echo -en "target ${type}${target}${RESET}... "
+    echo -en "target ${type}${target##*/}${RESET}... "
     export elin=0
     if [ -e "${target_canon}" ]; then
         echo -e "${GOOD}exists${RESET}"
@@ -125,7 +125,7 @@ function check_link_dir() {
 function print_OK() {
     #echo; return
     echo -en "\E[${elin}F\E[0J"
-    echo -e "${TAB}target ${type}${target}${RESET}... ${GOOD}OK${RESET}"
+    echo -e "${TAB}target ${type}${target##*/}${RESET}... ${GOOD}OK${RESET}"
 }
 
 function print_exclude() {
@@ -311,7 +311,8 @@ function do_link() {
                 echo -n "symlink: "
             fi
             #list link name (should point to target)
-            ls -lhG --color=always "${link_name}" | tr -s ' ' | cut -d' ' -f 8-
+            ls -lhG --color=always "${link_name}" | tr -s ' ' | cut -d' ' -f 8- | cut -c 1-"$(tput cols)"
+            echo -en ${RESET}
             ((++elin))
             echo -n "${TAB}skipping..."
             ((++elin))
