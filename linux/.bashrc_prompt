@@ -143,6 +143,10 @@ else
     }
 fi
 
+function PS_date() {
+    date +"%H:%M" -d '+6 hour +49 second'
+}
+
 # define prompt
 #export PS1='\[\e[1;32m\]\u@\h\[\e[0m\]:\[\e[1;34m\]\w\[\e[0m\]\$' # default, [user@host]:dir
 #export PS1='\[\e[0;32m\]\$\[\e[0m\] ' # stark, prompt only
@@ -154,7 +158,7 @@ fi
 #export PS1='\[\e[0;37m\]\A\[\e[1;32m\] \u@\[\e[1;35m\]\h\[\e[1;34m\] \w$(git_branch)\[\e[32m\]\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host
 # export PS1='\[\e[0;37m\]\A\[\e[0;32m\] \u@\[\e[1;34m\]\h\[\e[0;33m\] \w$(git_branch)\[\e[0;32m\]\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
 #export PS1='\[\e[0;37m\]\A\[\e[0;32m\] \u@\[\e[1;34m\]\h$(screen_pid)$(tmux_ses)\[\e[0;33m\] \w$(git_branch)\[\e[0;32m\]\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color
-export PS1='\[\e[0;37m\]\A\[\e[0;32m\] \u@\[\e[1;34m\]\h$(screen_pid)$(tmux_ses)\[\e[0;33m\] \w$(git_branch)$(sh_lvl)\[\e[0;32m\]\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color, shlvl
+export PS1='\[\e[0;37m\]$(PS_date)\[\e[0;32m\] \u@\[\e[1;34m\]\h$(screen_pid)$(tmux_ses)\[\e[0;33m\] \w$(git_branch)$(sh_lvl)\[\e[0;32m\]\n$\[\e[0m\] ' # time before, new line, no brackets, highlight host, git bash color, shlvl
 
 # Macros
 alias naut='nautilus --no-desktop --browser ./ &'
