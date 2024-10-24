@@ -873,7 +873,7 @@ function idb() {
 
 function ddb() {
     set -u
-    funcDEBUG=1
+    funcDEBUG=0
 
     # check if DEBUG is unset
     if [ -z ${DEBUG+dummy} ]; then
@@ -929,7 +929,7 @@ function ddb() {
         # increment DEBUG by N
         fecho "decrementing DEBUG by $N"
         for ((i = 1; i <= $N; i++)); do
-            ((--DEBUG))
+            ((DEBUG--))
         done
     fi
     export DEBUG

@@ -85,6 +85,15 @@ if [ "${VB}" = true ]; then
     itab
 fi
 
+vecho -n "${TAB}Checking shell... "
+if [ -n "$BASH_VERSION" ]; then
+    # Bash-specific commands
+    echo "${SHELL##*/} $BASH_VERSION"
+else
+    echo "NOT bash"
+    return
+fi
+
 vecho -n "${TAB}Checking Git... "
 if  command -v git &>/dev/null; then
     if [ -z $(git_branch) ]; then

@@ -20,6 +20,9 @@
 #
 # -----------------------------------------------------------------------------------------------
 
+# MSYS terminal: to link or not to link
+do_junction=false
+
 function check_arg1() {
     ddecho -n "$FUNCNAME: number of arguments = $# "
     # check number of arguments
@@ -71,7 +74,7 @@ function check_target() {
     [ -d "${target}" ] && type="directory ${DIR}"
 
     # check if target exists
-    echo -en "target ${type}${target}${RESET}... "
+    echo -en "target ${type}${target##*/}${RESET}... "
     export elin=0
     if [ -e "${target_canon}" ]; then
         echo -e "${GOOD}exists${RESET}"
@@ -122,7 +125,22 @@ function check_link_dir() {
 function print_OK() {
     #echo; return
     echo -en "\E[${elin}F\E[0J"
-    echo -e "${TAB}target ${type}${target}${RESET}... ${GOOD}OK${RESET}"
+    echo -e "${TAB}target ${type}${target##*/}${RESET}... ${GOOD}OK${RESET}"
+}
+
+function print_stat() {   
+    if [ $# -lt 1 ]; then
+        echo -e "${GRAY}UNKNOWN${RESET}"
+        return 1
+    fi
+
+    local -i RETVAL_in=$1
+
+    if [ $RETVAL_in -eq 0 ]; then
+        echo -e "${GOOD}OK${RESET}"
+    else
+        echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL_in${RESET}"
+    fi
 }
 
 function print_exclude() {
@@ -207,12 +225,7 @@ function do_link() {
             echo -e "${BAD}FAIL${RESET}"
             echo -en "${TAB}${GRH}changing permissions${RESET} to ${permOK}... "
             chmod ${permOK} ${target_dir}
-            local RETVAL=$?
-            if [ $RETVAL -eq 0 ]; then
-                echo -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
-            else
-                echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
-            fi
+            print_stat $?
         else
             echo -e "${GOOD}OK${RESET}"
         fi
@@ -248,12 +261,7 @@ function do_link() {
                 echo -e "${BAD}FAIL${RESET}"
                 echo -en "${TAB}${GRH}changing permissions${RESET} to ${permOK}... "
                 chmod ${permOK} ${target_canon}
-                local RETVAL=$?
-                if [ $RETVAL -eq 0 ]; then
-                    echo -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
-                else
-                    echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
-                fi
+                print_stat $?
             else
                 echo -e "${GOOD}OK${RESET}"
                 dtab
@@ -308,7 +316,8 @@ function do_link() {
                 echo -n "symlink: "
             fi
             #list link name (should point to target)
-            ls -lhG --color=always "${link_name}" | tr -s ' ' | cut -d' ' -f 8-
+            ls -lhG --color=always "${link_name}" | tr -s ' ' | cut -d' ' -f 8- | cut -c 1-"$(tput cols)"
+            echo -en ${RESET}
             ((++elin))
             echo -n "${TAB}skipping..."
             ((++elin))
@@ -361,7 +370,7 @@ function do_link() {
     hline 72
 
     # check if we're in an MSYS terminal
-    if [ -z "$MSYSTEM" ]; then
+    if [ -z "${MSYSTEM:+dummy}" ]; then
 	      # Non-MSYS prompt: use ln
         echo -e "${TAB}${GRH}making link... "
         # check if target file is authorized_keys
@@ -391,7 +400,7 @@ function do_link() {
 
         # replace WSL path with CMD path
         ln_path=$(echo ${link_name} | sed "s,^${wsl_dir},," | sed 's,/,\\,g' )
-        
+
         decho "${TAB}PATH: $ln_path"
 
         # define CMD link name
@@ -404,8 +413,8 @@ function do_link() {
         decho "${TAB}TARGET : ${target}"
         target_path=$(echo ${target} | sed "s,${wsl_dir},," | sed 's,/,\\,g')
         cmd_target=$(echo ${cmd_dir}${target_path})
-        echo "${TAB}target: ${cmd_target}"    
-        
+        echo "${TAB}target: ${cmd_target}"
+
         # define arguments
         args=$(echo ${cmd_link_name} ${cmd_target})
         decho "${TAB}ARGS: $args"
@@ -462,12 +471,7 @@ function do_link_exe() {
     if [[ ${perm} -le ${permOK} ]] || [[ ! (-f "${target}" && -x "${target}") ]]; then
         echo -en "${TAB}${GRH}adding permissions${RESET} to ${permOK}... "
         chmod +${permOK} "${target}" || chmod u+rx "${target}"
-        local RETVAL=$?
-        if [ $RETVAL -eq 0 ]; then
-            echo -e "${GOOD}OK${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
-        else
-            echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
-        fi
+        print_stat $?
     else
         echo -e "${TAB}permissions ${GOOD}OK${RESET}"
     fi

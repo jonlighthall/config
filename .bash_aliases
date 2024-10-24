@@ -87,6 +87,8 @@ alias lsd='ls -d */'
 alias du0='duf --max-depth=0'
 alias du1='duf --max-depth=1'
 alias du2='duf --max-depth=2'
+
+# disk usage, formatted
 function duf {
     du -k "$@" | sort -n |
 	      while read size fname; do
@@ -141,6 +143,7 @@ if [ "${VB}" = true ]; then
     dtab
 fi
 
+# open Emacs in No-window mode and eDiff arguments (E-N-D)
 function end() {
     check_arg2 $@
     echo "inputs are $1 and $2"

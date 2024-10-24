@@ -83,7 +83,7 @@ link_dir=$HOME
 check_link_dir "$link_dir"
 
 # list of files to be linked, unconditionally
-for my_link in .bash_aliases .bash_logout .bash_profile .dircolors .emacs.d .hushlogin .inputrc .rootrc; do
+for my_link in .bash_aliases .bash_logout .bash_profile .dircolors .emacs.d .hushlogin .inputrc .kshrc .rootrc; do
     # define target (source)
     target=${target_dir}/${my_link}
     # define link name (destination)
