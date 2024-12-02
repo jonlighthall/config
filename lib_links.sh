@@ -599,7 +599,6 @@ function do_make_dir() {
         set +e
     fi
     unset_traps
-    itab
 
     # check if target exists
     check_target "$target"
