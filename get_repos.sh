@@ -157,6 +157,7 @@ check_target "${clone_dir}"
 # list of example repos to be cloned
 group_name="example"
 echo -e "cloning \x1b[1;32m${group_name}\x1b[m repos..."
+itab
 for my_repo in cpp fortran hello nrf python; do
 	  # define target (source)
 	  target="${clone_dir}/${my_repo}"
@@ -164,7 +165,7 @@ for my_repo in cpp fortran hello nrf python; do
 	  link_name="${repo_dir}/${my_repo}"
 
 	  # check if target exists
-    echo "checking ${my_repo}"
+    echo "${TAB}checking ${my_repo}..."
     itab
     # check_target will return 1 if target does not exist
     set +e
@@ -185,11 +186,13 @@ for my_repo in cpp fortran hello nrf python; do
     do_link "${link_name}" "${edir}/${my_repo}"
     dtab
 done
+dtab
 echo -e "${BOLD}done cloning ${group_name} repos${RESET}"
 
 # list of utility repos to be cloned
 group_name="utility"
 echo -e "cloning \x1b[1;32m${group_name}\x1b[m repos..."
+itab
 for my_repo in bash fortran_utilities; do
 	  #define target (source)
 	  target=${clone_dir}/${my_repo}
@@ -197,7 +200,7 @@ for my_repo in bash fortran_utilities; do
 	  link_name="${repo_dir}/${my_repo}"
 
 	  # check if target exists
-    echo "checking ${my_repo}"
+    echo "${TAB}checking ${my_repo}..."
     itab
     # check_target will return 1 if target does not exist
     set +e
@@ -236,6 +239,7 @@ for my_repo in bash fortran_utilities; do
     do_link "${link_name}" "${udir}/${my_repo}"
     dtab
 done
+dtab
 
 # On Navy systems, Flank Speed OneDrive will not allow syncing of .bat or .ps1 files. Therefore,
 # if it is a Navy host and OneDrive is defined, clone the repositories into an offline
@@ -265,6 +269,7 @@ check_target "${clone_dir}"
 
 # List of Win32 repos to be cloned
 echo -e "cloning \x1b[1;32mWin32 ${group_name}\x1b[m repos..."
+itab
 for my_repo in batch powershell; do
 	  #define target (source)
 	  target=${clone_dir}/${my_repo}
@@ -272,7 +277,7 @@ for my_repo in batch powershell; do
 	  link_name=${repo_dir}/${my_repo}
 
     # check if target exists
-    echo "checking ${my_repo}"
+    echo "${TAB}checking ${my_repo}"
     itab
 	  check_target ${target}
     RETVAL=$?
@@ -302,14 +307,18 @@ for my_repo in batch powershell; do
 
 	  # begin linking...
     echo "${TAB}linking $my_repo..."
+    itab
     do_link "${target}" "${link_name}"
-    do_link "${link_name}" "${udir}/${my_repo}"	
+    do_link "${link_name}" "${udir}/${my_repo}"
+    dtab
 done
+dtab
 echo -e "${BOLD}done cloning ${group_name} repos${RESET}"
 
 # list of other repos to be cloned
 group_name="matlab"
 echo -e "cloning \x1b[1;32m${group_name}\x1b[m repos..."
+itab
 for my_repo in matlab; do
 	  matlab_dir=${HOME}/onedrive/Documents/MATLAB
 	  echo -n "${TAB}${matlab_dir}..."
@@ -345,11 +354,13 @@ for my_repo in matlab; do
     do_link "${target}" "${link_name}"
     dtab
 done
+dtab
 echo -e "${BOLD}done cloning ${group_name} repos${RESET}"
 
 # list of private repos to be cloned
 group_name="private"
 echo -e "cloning \x1b[1;32m${group_name}\x1b[m repos..."
+itab
 if [[ ! "$(hostname -f)" == *".mil" ]]; then
     itab
 	  cd ${config_dir}
@@ -374,7 +385,7 @@ if [[ ! "$(hostname -f)" == *".mil" ]]; then
 			      echo -e "${TAB}dirctory \e[33m$PWD$my_repo\e[0m already exits"
 		    fi
 	  done
-	  dtab
+	  dtab 2
 	  echo -e "${BOLD}done cloning ${group_name} repos${RESET}"
 else
     itab
