@@ -43,11 +43,12 @@ alias x='exit'
 
 # diff
 alias d='diffy -s'
-alias diffy='diff --color=auto --suppress-common-lines -yiEZbwB --exclude=.git'
+alias diffy='diff --color=always --suppress-common-lines -yiEZbwB --exclude=.git'
 
 # find
 alias fb='ff | perl -lne "print if not -T"' # find binary
 alias fd='find -L ./ -not -path "*/.git/*" -type d' # find directory
+alias fe='ff -empty'
 alias ff='find -L ./ -not -path "*/.git*/*" -type f' # find file
 alias ffi='ff -iname'
 alias fl='find -L ./ \( -type l -o -xtype l \) -exec ls --color -l {} \;' # find link
