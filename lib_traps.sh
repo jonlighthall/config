@@ -286,7 +286,7 @@ function print_return() {
 
     # set local debug value
     # substitute default value if DEBUG is unset or null
-    local -i DEBUG=${DEBUG:-0} 
+    local -i DEBUG=${DEBUG:-0}
 
     # print summary
     start_new_line
@@ -656,7 +656,7 @@ function check_traps_set() {
         local -i DEBUG=$1
     else
         # substitute default value if DEBUG is unset or null
-        local -i DEBUG=${DEBUG:-2} 
+        local -i DEBUG=${DEBUG:-2}
     fi
     # print summary
     ddecho -n "${TAB}on ${FUNCNAME[1]} return, "
@@ -746,7 +746,7 @@ function set_traps() {
         local -i DEBUG=$1
     else
         # substitute default value if DEBUG is unset or null
-        local -i DEBUG=${DEBUG:-2} 
+        local -i DEBUG=${DEBUG:-2}
     fi
 
     [ $DEBUG -gt 0 ] && start_new_line
@@ -841,7 +841,7 @@ function unset_traps() {
         local -i DEBUG=$1
     else
         # substitute default value if DEBUG is unset or null
-        local -i DEBUG=${DEBUG:-2} 
+        local -i DEBUG=${DEBUG:-2}
     fi
 
     [ $DEBUG -gt 0 ] && start_new_line
@@ -894,7 +894,7 @@ function reset_traps() {
         local -i DEBUG=$1
     else
         # substitute default value if DEBUG is unset or null
-        local -i DEBUG=${DEBUG:-2} 
+        local -i DEBUG=${DEBUG:-2}
     fi
 
     [ $DEBUG -gt 0 ] && start_new_line
@@ -938,7 +938,7 @@ function clear_traps() {
         local -i DEBUG=$1
     else
         # substitute default value if DEBUG is unset or null
-        local -i DEBUG=${DEBUG:-2} 
+        local -i DEBUG=${DEBUG:-2}
     fi
 
     [ $DEBUG -gt 0 ] && start_new_line
