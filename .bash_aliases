@@ -41,6 +41,8 @@ alias up='source update_repos'
 alias vpn='source ${HOME}/config/.bash_aliases_vpn'
 alias x='exit'
 
+alias check_ssh='ssh -o ConnectTimeout=3 -o ConnectionAttempts=1 -T git@github.com'
+
 # diff
 alias d='diffy -s'
 alias diffy='diff --color=always --suppress-common-lines -yiEZbwB --exclude=.git'
