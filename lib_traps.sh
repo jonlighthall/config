@@ -381,9 +381,6 @@ function print_error() {
                 return
             else
                 decho "${TAB}non-trivial error"
-                echo "${TAB}LINENO = $ERR_LINENO"
-                echo "${TAB}RETVAL = $ERR_RETVAL"
-                echo "${TAB}   CMD = $ERR_CMD"
             fi
         fi
         set +e
@@ -410,6 +407,10 @@ function print_error() {
     TAB+=$eTAB
 
     # print arguments
+    echo "${TAB}LINENO = $ERR_LINENO"
+    echo "${TAB}RETVAL = $ERR_RETVAL"
+    echo "${TAB}   CMD = $ERR_CMD"
+
     fecho "LINENO = $ERR_LINENO"
     fecho "RETVAL = $ERR_RETVAL"
     fecho "   CMD = $ERR_CMD"
