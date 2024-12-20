@@ -420,7 +420,7 @@ function do_link() {
         decho "${TAB}ARGS: $args"
 
         # make link in CMD
-        echo -n "${TAB}"
+        echo -n "${TAB}JUNCTION: "
         cmd.exe /c "mklink /J ${args}"
         RETVAL=$?
     fi
