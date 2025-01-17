@@ -48,10 +48,12 @@ alias d='diffy -s'
 alias diffy='diff --color=always --suppress-common-lines -yiEZbwB --exclude=.git'
 
 # find
+alias f='find -L ./ -not -path "*/.git*/*"' # find, ignoring .git
 alias fb='ff | perl -lne "print if not -T"' # find binary
-alias fd='find -L ./ -not -path "*/.git/*" -type d' # find directory
-alias fe='ff -empty'
-alias ff='find -L ./ -not -path "*/.git*/*" -type f' # find file
+alias fd='f -type d' # find directory
+alias fe='f -empty'  # find empty
+alias fed='f -empty -print -delete' # find and delete empty
+alias ff='f -type f' # find file
 alias ffi='ff -iname'
 alias fl='find -L ./ \( -type l -o -xtype l \) -exec ls --color -l {} \;' # find link
 
