@@ -1,14 +1,14 @@
 #!/bin/bash -eu
-# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #
 # ~/config/.bashrc_pretty
 #
-# Purpose: define and load advanced functions for interactive shell sessions, including
-#   "pretty-print" formatting
+# Purpose: define and load advanced functions for interactive shell sessions,
+#   including "pretty-print" formatting
 #
 # Apr 2023 JCL
 #
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 TAB=${TAB=''}
 
@@ -139,8 +139,8 @@ function load_libs() {
                        dbg \
                        test
     do
-        # use the canonical (physical) source directory for reference; this is important if sourcing
-        # this file directly from shell
+        # use the canonical (physical) source directory for reference; this is
+        # important if sourcing this file directly from shell
         fname="${src_dir_phys}/lib_${library}.sh"
         if [ -e "${fname}" ]; then
             if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then

@@ -129,17 +129,20 @@ else
 	  exit
 fi
 
-# Define the directory into which the repos will be cloned. The "clone" directory name defaults
-# to the "repo" directory, defined above as ~/repos. This is the default for non-Windows
-# systems. On WSL systems, repos should be cloned to the "online" directory within OneDrive and
-# then linked to the local "repo" directory. The "online" directory, typicall ~/sync, should
-# already exist. If needed, an "offline" directory is also defined for cloning repos outside of
-# both WSL and OneDrive.
+# Define the directory into which the repos will be cloned. The "clone"
+# directory name defaults to the "repo" directory, defined above as
+# ~/repos. This is the default for non-Windows systems. On WSL systems, repos
+# should be cloned to the "online" directory within OneDrive and then linked to
+# the local "repo" directory. The "online" directory, typicall ~/sync, should
+# already exist. If needed, an "offline" directory is also defined for cloning
+# repos outside of both WSL and OneDrive.
 
-# All of the "online" and "offline" repos should be linked to in the local "repo" dir.
+# All of the "online" and "offline" repos should be linked to in the local
+# "repo" dir.
 
-# Links should be created in the group directories, e.g., examps and utils, that point to the
-# cloned repos, contianed or linked to in the local "repo" directory.
+# Links should be created in the group directories, e.g., examps and utils, that
+# point to the cloned repos, contianed or linked to in the local "repo"
+# directory.
 
 # default cloning destination
 clone_dir=${repo_dir}
@@ -232,18 +235,21 @@ for my_repo in bash fortran_utilities; do
 	  # begin linking...
     echo "${TAB}linking $my_repo..."
     itab
-    # First link from the clone directory to the repo directory. For non-Windows systems, these
-    # directories will be the same and the do_link command will have no effect.
+    # First link from the clone directory to the repo directory. For non-Windows
+    # systems, these directories will be the same and the do_link command will
+    # have no effect.
     do_link "${target}" "${link_name}"
-    # The link from the repo directory to the group directory, in this case "utils".
+    # The link from the repo directory to the group directory, in this case
+    # "utils".
     do_link "${link_name}" "${udir}/${my_repo}"
     dtab
 done
 dtab
 
-# On Navy systems, Flank Speed OneDrive will not allow syncing of .bat or .ps1 files. Therefore,
-# if it is a Navy host and OneDrive is defined, clone the repositories into an offline
-# directory. For onedrive conflicts, there should be an offline (un-synced) repo dir.
+# On Navy systems, Flank Speed OneDrive will not allow syncing of .bat or .ps1
+# files. Therefore, if it is a Navy host and OneDrive is defined, clone the
+# repositories into an offline directory. For onedrive conflicts, there should
+# be an offline (un-synced) repo dir.
 
 # check if host is Navy
 echo "${TAB}checking host... "
@@ -253,7 +259,8 @@ if [[ "$(hostname -f)" == *".mil" ]]; then
     # check if WSL is defined
     if command -v wsl.exe >/dev/null; then
 	      echo "${TAB}WSL defined."
-        # It is assumed that OneDrive is defined if the following directory exists
+        # It is assumed that OneDrive is defined if the following directory
+        # exists
         if [ -e "${online_dir}" ]; then
             echo "${TAB}OneDrive is defined."
             echo "Redefining cloning destination..."

@@ -1,7 +1,7 @@
 #!/bin/bash -eu
-# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # EXECUTION CALL STACK LIBRARY
-# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #
 # ~/config/lib_stack.sh
 #
@@ -9,7 +9,7 @@
 #
 # May 2024 JCL
 #
-# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 function get_run_type() {
     local -i DEBUG=0
@@ -73,7 +73,8 @@ function print_source() {
 
     # conditionally add stack level prefix
     if [ ${DEBUG:-0} -gt 1 ]; then
-        # since print_source is itself part of the stack, remove the top of the stack
+        # since print_source is itself part of the stack, remove the top of the
+        # stack
         ((N_BASH--))
         local prefix="\x1b[7;38;5;132m${N_BASH}"
         if [[ "$-" == *i* ]]; then
@@ -330,8 +331,8 @@ function print_stack_devel() {
         echo "${TAB}FUNCNAME[$((N_FUNC-2))]=${FUNCNAME[$((N_FUNC-2))]}"
     fi
 
-    # print_stack() should only be called from other functions, so the length of FUNCNAME should
-    # always be 2 or greater. Start with color 0
+    # print_stack() should only be called from other functions, so the length of
+    # FUNCNAME should always be 2 or greater. Start with color 0
     local -ir IDX=$(( N_FUNC - 2 ))
 
     # set color

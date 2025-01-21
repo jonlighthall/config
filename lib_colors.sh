@@ -1,12 +1,12 @@
 #!/bin/bash -eu
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # COLORS LIBRARY
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 #
 # ~/config/lib_colors.sh
 #
-# Purpose: define custom SGR (Select Graphic Rendition) parameters and functions for coloring
-#   text.
+# Purpose: define custom SGR (Select Graphic Rendition) parameters and functions
+#   for coloring text.
 #
 # Dependencies:
 #   lib_traps
@@ -15,14 +15,14 @@
 #
 # Mar 2024 JCL
 #
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # clear all formatting
 export   RESET='\x1B[0m'    # reset
 
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Text mode variables
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # define graphics mode accents
 export  NORMAL='\x1B[21;22;23;24;25;27;28;29m' # normal
@@ -59,9 +59,9 @@ export    BF='\x1B[1m'  # bold face
 export    IT='\x1B[3m'  # italics
 export UNDERLINE='\x1B[4m'  # underline
 
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Standard colors
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # define monochrome colors
 export    GRAY='\x1B[90m'
@@ -107,9 +107,9 @@ function print_rcolors() {
     echo -en "\x1B[m"
 }
 
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Context colors
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # define highlight colors
 export     BAD="${RED}"    # red
@@ -141,13 +141,13 @@ export     GRS='\x1B[0;36m' # cyan        : se : separator
 export EK='\x1B[38;5;214m'  # orange      : keyword
 export EF='\x1B[38;5;50m'   # cyan        : function name
 
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # List Directory (ls) colors
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 function load_colors() {
     export VB=${VB=false}
-    
+
     [ "${VB}" = true ] && decho -n "${TAB}loading colors... "
     [ $DEBUG -gt 0 ] && vecho
     itab
@@ -450,9 +450,9 @@ function append_ls_colors() {
     [ "${VB}" = true ] && decho "done"
 }
 
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # DEBUG colors
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # subtle colors for readability
 # hue=(N*30), saturation=33%, lightness=52%; sorted by hue
@@ -648,13 +648,14 @@ function dbg2idx() {
         return 0
     fi
 
-    # since DEBUG=0 does not print and DEBUG=1 corresponds to starting color, or array index 0,
-    # the input value decremented by one
+    # since DEBUG=0 does not print and DEBUG=1 corresponds to starting color, or
+    # array index 0, the input value decremented by one
     local -i offset=1
-    # however, (now) idx=0 corresponds to no color or gray printing, so the offset is zero and
-    # (now) idx=DEBUG
+    # however, (now) idx=0 corresponds to no color or gray printing, so the
+    # offset is zero and (now) idx=DEBUG
     offset=0
-    # if the index is negative (for some reason), continue from the previous color
+    # if the index is negative (for some reason), continue from the previous
+    # color
     if [ $dbg_in -lt 0 ]; then
         offset=1
     fi
@@ -752,9 +753,9 @@ function unset_color() {
     echo -ne "\e[0m"
 }
 
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Demo Functions for .bashrc_pretty
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # requires lib_tabs, lib_cond_echo
 function print_pretty() {

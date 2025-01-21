@@ -1,7 +1,7 @@
 #!/bin/bash -u
-# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # LINKS LIBRARY
-# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #
 # ~/config/lib_links.sh
 #
@@ -18,7 +18,7 @@
 #
 # Mar 2024 JCL
 #
-# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # MSYS terminal: to link or not to link
 do_junction=false
@@ -85,8 +85,8 @@ function check_target() {
     fi
 }
 
-# This function is used to check destination link directories that must exist like ${HOME} or
-# /etc. If the directory does not exist, return with error.
+# This function is used to check destination link directories that must exist
+# like ${HOME} or /etc. If the directory does not exist, return with error.
 function check_link_dir() {
     check_arg1 $@
     local funcDEBUG=${DEBUG:-0}
@@ -386,7 +386,8 @@ function do_link() {
             RETVAL=$?
         fi
     else
-        # MSYS promt: use CMD to create "junction"; otherwise ln just copies the target
+        # MSYS promt: use CMD to create "junction"; otherwise ln just copies the
+        # target
         echo -e "${TAB}${GRH}MSYS terminal: ${MAGENTA}$MSYSTEM${GRH}"
 
         # define directories
@@ -404,8 +405,8 @@ function do_link() {
         decho "${TAB}PATH: $ln_path"
 
         # define CMD link name
-        # for some reason the user directory $cmd_dir changes value when envoked from sed; must
-        # concatonate variables without using sed
+        # for some reason the user directory $cmd_dir changes value when envoked
+        # from sed; must concatonate variables without using sed
         cmd_link_name=$(echo ${cmd_dir}${ln_path})
         echo "${TAB}link name: $cmd_link_name"
 
@@ -467,7 +468,8 @@ function do_link_exe() {
     ((++elin))
     local perm=$(stat -c "%a" "${target}")
     echo ${perm}
-    # the target files will have the required permissions added to the existing permissions
+    # the target files will have the required permissions added to the existing
+    # permissions
     if [[ ${perm} -le ${permOK} ]] || [[ ! (-f "${target}" && -x "${target}") ]]; then
         echo -en "${TAB}${GRH}adding permissions${RESET} to ${permOK}... "
         chmod +${permOK} "${target}" || chmod u+rx "${target}"
@@ -592,8 +594,8 @@ function do_make_dir() {
     # define target (source)
     local target="$@"
 
-    # Since the specified directory may not exist, a return code of 1 from check_target is
-    # valid. Disable exit-on-error and turn off traps.
+    # Since the specified directory may not exist, a return code of 1 from
+    # check_target is valid. Disable exit-on-error and turn off traps.
     if [[ "$-" == *e* ]]; then
         old_opts=$(echo "$-")
         set +e
@@ -627,8 +629,8 @@ function do_make_dir() {
 }
 
 function do_make_link() {
-    # DESCRIPTION - check if target directory exists and link to it. If the target directory does
-    # not exist, create it.
+    # DESCRIPTION - check if target directory exists and link to it. If the
+    #   target directory does not exist, create it.
     #
     # DEPENDENCIES
     #   check_target

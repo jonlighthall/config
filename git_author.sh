@@ -17,7 +17,8 @@ function git_print_user() {
     echo "${TAB}${get_email}"    
 }
 
-# Function to set the Git user name and email if they do not match the desired values
+# Function to set the Git user name and email if they do not match the desired
+# values
 function git_set_user() {
     local set_name="Jon Lighthall"
     local set_email="jon.lighthall@gmail.com"

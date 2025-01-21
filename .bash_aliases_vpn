@@ -1,17 +1,17 @@
 #!/bin/bash -eu
-# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # SYSTEM-INDEPENDENT BASH ALIASES
-# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # ~/config/.bash_aliases
 #
 # Purpose: Define aliases and function for interactive UNIX-like shells.
 #
-# Usage: Intended to be used with WSL when vEthernet (WSL (Hyper-V firewall)) connections are
-#   blocked by Cisco VPN
+# Usage: Intended to be used with WSL when vEthernet (WSL (Hyper-V firewall))
+#   connections are blocked by Cisco VPN
 #
 # Jul 2024 JCL
 #
-# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # check if VB is unset or null
 if [ -z ${VB:+dummy} ]; then

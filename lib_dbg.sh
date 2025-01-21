@@ -1,16 +1,17 @@
 #!/bin/bash -u
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # DEBUG LIBRARY
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 #
 # ~/config/lib_dbg.sh
 #
-# PURPOSE: the function "line echo" or lecho() prints the line from which the function is
-#   called. This is designed to be used in place of commands like echo "here", etc.
+# PURPOSE: the function "line echo" or lecho() prints the line from which the
+#   function is called. This is designed to be used in place of commands like
+#   echo "here", etc.
 #
 # May 2024 JCL
 #
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # define variable status keywords
 export   UNSET='\x1B[1;33munset\x1B[0m' # unbound variable
@@ -89,9 +90,9 @@ function lec_mes () {
     echo -en "called on line ${GRL}"
 }
 
-# This function print the result to STDOUT. All outher output is printed to STDERR. To use the
-# function, redirect function call output to /dev/null. To view degugging information, do no
-# redirect function all output.
+# This function print the result to STDOUT. All outher output is printed to
+# STDERR. To use the function, redirect function call output to /dev/null. To
+# view degugging information, do no redirect function all output.
 function find_func_line() {
 
     # set local debug level
@@ -127,7 +128,6 @@ function find_func_line() {
     decho "${TAB}matching pattern..." >&2
     itab
     decho "${TAB}base pattern: $pat" >&2
-
 
     # get source file
     local src=$2
@@ -196,8 +196,9 @@ function find_func_line() {
     decho "${TAB}output: $lin" >&2
     dtab
 
-    # The function line number counts from the open bracket, not the function name declaration
-    # line. If the two are not on the same line, increment the line counter.
+    # The function line number counts from the open bracket, not the function
+    # name declaration line. If the two are not on the same line, increment the
+    # line counter.
     lin_txt=$(sed -n "${lin}p" "${src}")
     if [[ ! "${lin_txt}" =~ .*"{" ]]; then
         ((++lin))
@@ -235,8 +236,9 @@ function get_caller() {
     fecho " N_FUNC = $fN_FUNC"
     local -i this_lev=$((lev-1))
 
-    # define stack level for "this" function; actually the calling function (default) or the
-    # function one level below the target stack level (argument)
+    # define stack level for "this" function; actually the calling function
+    # (default) or the function one level below the target stack level
+    # (argument)
     if [ ${fN_FUNC} -ge 1 ]; then
         # get function
         this_func=${FUNCNAME[this_lev]}
@@ -297,8 +299,9 @@ function get_caller_def() {
     fecho " N_FUNC = $fN_FUNC"
     local -i this_lev=$((lev-1))
 
-    # define stack level for "this" function; actually the calling function (default) or the
-    # function one level below the target stack level (argument)
+    # define stack level for "this" function; actually the calling function
+    # (default) or the function one level below the target stack level
+    # (argument)
     if [ ${fN_FUNC} -ge 1 ]; then
         # get function
         this_func=${FUNCNAME[this_lev]}
@@ -429,7 +432,8 @@ function this_line() {
         # print argument
         start_new_line
         in_line "$@"
-        # print the line number where THIS function was called in the PARENT function
+        # print the line number where THIS function was called in the PARENT
+        # function
         [ $DEBUG -gt 0 ] && echo -n "${caller_func}() "
         echo -en "${fcol}on line $get_file_line in ${caller_file} "
         ddecho -n "defined on line $line_def"
@@ -575,7 +579,8 @@ function lecho() {
     else
         ddecho "${TAB}BASH_LINENO refers to function"
         # get the line in the file where the function is called
-        # add the line where to the function is defined within the file and the line within the function
+        # add the line where to the function is defined within the file and the
+        # line within the function
         local -i call_line=$(($line_func_def + $func_line -1 ))
         # print file line
         in_line "$@"
@@ -671,7 +676,7 @@ function plecho() {
     local sour_dir=$(dirname "${sour}")
     local sour_fil=$(basename "${sour}")
     ddecho "${TAB}source is ${sour}"
-    ddecho "${TAB}source is ${sour_fil} in ${sour_dir}"    
+    ddecho "${TAB}source is ${sour_fil} in ${sour_dir}"
 
     ddecho "${TAB}${FUNCNAME}"
     ddecho "${TAB}FUNCNAME stack = ${FUNCNAME[@]}"
@@ -727,7 +732,8 @@ function plecho() {
     else
         ddecho "${TAB}BASH_LINENO refers to function"
         # get the line in the file where the function is called
-        # add the line where to the function is defined within the file and the line within the function
+        # add the line where to the function is defined within the file and the
+        # line within the function
         local -i call_line=$(($line_func_def + $func_line -1 ))
         # print file line
         in_line "$@"
@@ -949,8 +955,8 @@ function print_() {
     local -i DEBUG=0
     DEBUG=${libDEBUG:-0}
 
-    # this function modifies the value of TAB, so save the value if it is included in the
-    # arguments
+    # this function modifies the value of TAB, so save the value if it is
+    # included in the arguments
     if [[ "$@" =~ "TAB" ]]; then
         decho -e "${TAB-}${YELLOW}argument contain TAB${RESET}"
         # check if TAB is set

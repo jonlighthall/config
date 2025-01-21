@@ -1,19 +1,20 @@
 #!/bin/bash -eu
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # SYSTEM-INDEPENDENT INTERACTIVE SHELL SETTINGS
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 #
 # ~/config/.bashrc_common
 #
-# Purpose: Load system-independent interactive shell settings for UNIX-like systems. Intended to
-#   be universally compatible with WSL, Debian derivatives (Ubuntu), Red Hat-based distros
-#   (Centos, Rock Linux), MinGW (MSYS, GitBash), Cygwin, PGI Bash, etc.
+# Purpose: Load system-independent interactive shell settings for UNIX-like
+#   systems. Intended to be universally compatible with WSL, Debian derivatives
+#   (Ubuntu), Red Hat-based distros (Centos, Rock Linux), MinGW (MSYS, GitBash),
+#   Cygwin, PGI Bash, etc.
 #
 # Note: this file must use UNIX line endings (LF)!
 #
 # Jan 2021 JCL
 #
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # check if running interactively
 if [[ "$-" == *i* ]];then

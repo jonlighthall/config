@@ -1,20 +1,21 @@
-# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # TABS LIBRARY
-# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #
 # ~/config/lib_tabs.sh
 #
-# PURPOSE: Define functions for making and controling indentation (tabs). Two variables are
-# defined: TAB and fTAB. TAB is used to store the current level of indentation. fTAB defines the
-# indentation increment (tab).
+# PURPOSE: Define functions for making and controling indentation (tabs). Two
+#   variables are defined: TAB and fTAB. TAB is used to store the current level
+#   of indentation. fTAB defines the indentation increment (tab).
 #
 # Mar 2024 JCL
 #
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # define tab
-# the variable fTAB is used for setting, incrementing, and decrementing the TAB variable.
-# initially defined as the "in-file" or "in-function" tab to force additional indentation.
+# the variable fTAB is used for setting, incrementing, and decrementing the TAB
+# variable.  initially defined as the "in-file" or "in-function" tab to force
+# additional indentation.
 function set_ftab() {
     # set alternate tabbing here
     #guide_tabs

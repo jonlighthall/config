@@ -1,7 +1,7 @@
 #!/bin/bash -u
-# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # FORMAT LIBRARY
-# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #
 # ~/config/lib_fmt.sh
 #
@@ -9,7 +9,7 @@
 #
 # Mar 2024 JCL
 #
-# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 function get_curpos() {
     # Turn in-function debugging on/off.
@@ -204,9 +204,9 @@ function strip_pretty() {
     output=$(echo -e "$@" | sed "s/$(echo -e "\E")[^m]*m//g")
 }
 
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Functions to colorize and indent command output
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # format command output
 # handling is included for a variety of commands
@@ -301,7 +301,8 @@ function define_cr() {
     local -i x1c
     get_curpos x1c
     decho -n "$x1c"
-    # set the "carriage return" value for the first non-empty line of the command ouput
+    # set the "carriage return" value for the first non-empty line of the
+    # command ouput
     export cr=
     if [ $x1c -gt 1 ]; then
         # if the cursor is not at the start of a line, start a new line

@@ -1,12 +1,13 @@
 #!/bin/bash -eu
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 #
 # ~/config/wsl/make_links.sh
 #
-# Purpose: create links for WSL installation. In addition to calling make_links_external and
-#    make_links_etc, this script creates links to files that are contained within this repo. The
-#    script make_links_external creates links to files and directories outside of the
-#    repository. The script make_links_etc creates links in the /etc directory, which requires
+# Purpose: create links for WSL installation. In addition to calling
+#    make_links_external and make_links_etc, this script creates links to files
+#    that are contained within this repo. The script make_links_external creates
+#    links to files and directories outside of the repository. The script
+#    make_links_etc creates links in the /etc directory, which requires
 #    elevation.
 #
 # Dependances:
@@ -18,7 +19,7 @@
 #
 #  JCL Jul 2018
 #
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # get starting time in nanoseconds
 start_time=$(date +%s%N)
@@ -41,14 +42,14 @@ if ! (return 0 2>/dev/null); then
 fi
 
 # it is assumed that the fisrt command to be run after cloning the parent
-# repository is make_links.sh (this file)
+#   repository is make_links.sh (this file)
 
 # save and print starting directory
 start_dir=$PWD
 echo "${TAB}starting directory = ${start_dir}"
 
-# In case the make_links files in ~/config/<sys_name> are linked to ~/config/ and called by
-# update_repos, make sure to switch to the target directory
+# In case the make_links files in ~/config/<sys_name> are linked to ~/config/
+#   and called by update_repos, make sure to switch to the target directory
 cd $src_dir_phys
 
 # make links to external files and directories

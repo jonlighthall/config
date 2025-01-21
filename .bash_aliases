@@ -1,17 +1,18 @@
 #!/bin/bash -eu
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # SYSTEM-INDEPENDENT BASH ALIASES
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # ~/config/.bash_aliases
 #
 # Purpose: Define aliases and function for interactive UNIX-like shells.
 #
-# Usage: Intended to be universally compatible with WSL, Debian derivatives (Ubuntu), Red
-#   Hat-based distros (Centos, Rock Linux), MinGW (MSYS, GitBash), Cygwin, PGI Bash, etc.
+# Usage: Intended to be universally compatible with WSL, Debian derivatives
+#   (Ubuntu), Red Hat-based distros (Centos, Rock Linux), MinGW (MSYS, GitBash),
+#   Cygwin, PGI Bash, etc.
 #
 # Aug 2023 JCL
 #
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # check if VB is unset or null
 if [ -z ${VB:+dummy} ]; then
@@ -117,7 +118,8 @@ function gitl {
     fi
 }
 
-# print number of files in the current directory, or specify a directory with an optional argument
+# print number of files in the current directory, or specify a directory with an
+#   optional argument
 function nf {
     if [ $# -eq 0 ]; then
 	      dir_list=$PWD
@@ -261,7 +263,8 @@ function atop() {
 
     echo
     echo -e "\033[4mLast $NP log-ins by ${USER} on ${HOST_NAME}:\x1b[0m"
-    # print full user and domain neames, full login and logout times and dates, and hostname
+    # print full user and domain neames, full login and logout times and dates,
+    #   and hostname
     last -wFa | \grep ${U_NAME:0:8} | head -n $NP
     echo
     set +u

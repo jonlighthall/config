@@ -1,7 +1,7 @@
 #!/bin/bash -eu
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # CONDITIONAL ECHOS LIBRARY
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 #
 # ~/config/lib_colors.sh
 #
@@ -9,12 +9,13 @@
 #
 # Mar 2024 JCL
 #
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # Name:
 #   VECHO - "verbose bash" echo
 # Description:
-#   Arguments are passed to ECHO based on the value of VB in the calling function.
+#   Arguments are passed to ECHO based on the value of VB in the calling
+#   function.
 # Purpose:
 #   Turn verbose printing on/off in the .bashrc logon scripts
 # Globals:
@@ -32,7 +33,8 @@ vecho() {
 # Name:
 #   FECHO - function echo
 # Description:
-#   Arguments are passed to ECHO based on the value of funcDEBUG in the calling function.
+#   Arguments are passed to ECHO based on the value of funcDEBUG in the calling
+#   function.
 #
 #   NB: only define funcDEBUG as a local variable within FUNCTIONS
 #
@@ -51,8 +53,8 @@ function fecho() {
             # get size of function stack
             local -ir N_FUNC=${#FUNCNAME[@]}
 
-            # fecho() should only be called from other functions, so the length of FUNCNAME
-            # should always be 2 or greater. Start with color 0
+            # fecho() should only be called from other functions, so the length
+            # of FUNCNAME should always be 2 or greater. Start with color 0
             local -ir idx=$(( N_FUNC - 2 ))
 
             # set color
@@ -88,9 +90,9 @@ function fecho() {
     return 0
 }
 
-# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # define debug echos
-# -----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # generic debug message handler
 # the debugging functions should be named as follows
