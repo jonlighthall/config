@@ -44,7 +44,18 @@ if [ -e $fpretty ]; then
     source $fpretty
 fi
 
-# check if VB is true
+# set sort order
+if [ -z ${LC_COLLATE:+dummy} ]; then
+    export LC_COLLATE=C
+fi
+declare -i old_libDEBUG
+old_libDEBUG=libDEBUG
+libDEBUG=0
+print_ LC_COLLATE
+libDEBUG=old_libDEBUG
+unset old_libDEBUG
+
+# check if VB is true (in other cases, also check if VB is unset or null)
 if [ "${VB}" = true ]; then
     print_ribbon
     print_source
@@ -117,7 +128,6 @@ if [ -f $falias ]; then
 else
     echo -e "${TAB}$falias ${UL}not found${RESET}"
 fi
-
 
 # Path additions
 # ---------------
