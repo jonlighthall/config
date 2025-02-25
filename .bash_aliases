@@ -86,7 +86,7 @@ alias lS='ls -ltS'
 alias la='ls -la'
 alias lh='ls -ld .?*' # list hidden only
 alias ls='ls -l --color'
-alias lt='ls -ltr' # sort by time
+alias lt='ls -ltr --time-style=long-iso' # sort by time
 alias lsd='ls -d */'
 
 # Functions
