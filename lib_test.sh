@@ -45,9 +45,10 @@ function tplecho() {
 
 # test cursor position
 function ind() {
+    local -i DEBUG=2
+    local -i funcDEBUG=0
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-    local -i DEBUG=1
-    local -i funcDEBUG=1
+    decho "BASH_LINENO = ${BASH_LINENO[@]}"
 
     local -i x1=0
     local -i y1=0
@@ -57,15 +58,14 @@ function ind() {
     echo -n "indented: "
     # pass variable names, not values
     get_curpos x1 y1
-    echo "x = $x1"
-    echo "y = $y1"
-    echo "BASH_LINENO = ${BASH_LINENO[@]}"
+    # print values at x-position of cursor
+    echo -e "\x1b[${x1}Gx = $x1"
+    echo -e "\x1b[${x1}Gy = $y1"
 
     echo "not indented: "
     get_curpos x2 y2
     echo "x = $x2"
     echo "y = $y2"
-    echo "BASH_LINENO = ${BASH_LINENO[@]}"
 
     if [ $x1 = $x2 ]; then
         echo "x-position did not change"
