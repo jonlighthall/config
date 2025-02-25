@@ -1,16 +1,17 @@
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # LINUX KERNEL PROMPT SETTINGS
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 #
 # ~/config/linux/.bashrc_prompt
 #
-# Purpose: Define prompt and path settings for interactive shells on linux kernel systems
+# Purpose: Define prompt and path settings for interactive shells on linux
+#   kernel systems
 #
 # Note: this file must use unix line endings (LF)!
 #
 # Aug 2023 JCL
 #
-# -----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # check if running interactively
 if [[ "$-" == *i* ]];then
@@ -137,7 +138,7 @@ else
 fi
 
 # define prompt
-#export PS1='\[\e[1;32m\]\u@\h\[\e[0m\]:\[\e[1;34m\]\w\[\e[0m\]\$' # default, [user@host]:dir 
+#export PS1='\[\e[1;32m\]\u@\h\[\e[0m\]:\[\e[1;34m\]\w\[\e[0m\]\$' # default, [user@host]:dir
 #export PS1='\[\e[0;32m\]\$\[\e[0m\] ' # stark, prompt only
 #export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\W$(git_branch)\e[1;32m]$\[\e[0m\] ' # user, host, base dir, branch
 #export PS1='\[\e[1;32m\][\u@\h \[\e[34m\]\w$(git_branch)\e[1;32m]\n$\[\e[0m\] ' # full dir, prompt on new line
