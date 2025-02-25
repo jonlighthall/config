@@ -14,20 +14,11 @@
 function get_curpos() {
     # Turn in-function debugging on/off.
     local -i DEBUG=${DEBUG:-0}
-    DEBUG=0
     local -i funcDEBUG=0
+    # manual
+    #DEBUG=3
 
-    # print function name
-    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-
-    local CURPOS
-    itab
-    local -i THRESHOLD=2
-    if [ $DEBUG -gt $THRESHOLD ]; then
-        ddecho -n "${TAB}cursor text: '"
-    fi
-
-    # check if output is being redirected
+    # first check if output is being redirected
     if [ ! -t 1 ] ; then
         # stdout isn't a terminal
         fecho "${FUNCNAME}: output is NOT terminal" >&2
@@ -47,22 +38,38 @@ function get_curpos() {
         dtab
         return 0
     fi
-
+    # must get position before any prints
+    local CURPOS
     # get the cursor position
     echo -en "\E[6n"
-    # print response
+    local -i THRESHOLD=2
     if [ $DEBUG -gt $THRESHOLD ]; then
+        # print response
+        # the cursor position end in 'R'
+        # set delimiter to 'R'
         read -dR CURPOS
-        ddecho  "'"
     else
+        # silence response
+        # add '-s'
         read -sdR CURPOS
     fi
+    # print function name
+    dddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
 
 	  # parse the cursor position
 	  local -r pair=${CURPOS#*[}
           #}# dummy bracket for emacs indenting
 	  local -ir cursor_x_position=${pair#*;}
 	  local -ir cursor_y_position=${pair%;*}
+
+    # print response
+    itab
+
+    if [ $DEBUG -gt $THRESHOLD ]; then
+        ddecho -n "${TAB}cursor text: '"
+        echo -n "^[[${pair}R"
+        ddecho "'"
+    fi
 
 	  # print the cursor position
 	  fecho -e "cursor position: x=$cursor_x_position y=$cursor_y_position"
