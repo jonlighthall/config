@@ -594,18 +594,25 @@ function print_error() {
 # ------------------------------------------------------------------------------
 
 function test_traps() {
+    echo "${TAB}${FUNCNAME}: setting shell options..."
     set -u
+    echo "${TAB}${FUNCNAME}: trapping return..."
     trap 'print_return $?; trap - RETURN' RETURN
     # set debug level for testing trap programs
     local -i localDEBUG=3
+    get_run_type ${localDEBUG}
+    echo "${TAB}${FUNCNAME}: print_traps..."
     print_traps ${localDEBUG}
+    echo "${TAB}${FUNCNAME}: set_traps..."
     set_traps ${localDEBUG}
     # check error trapping
     echo "${TAB}checking ERR trap..."
     itab
     check_traps_clear ${localDEBUG}
 
+    echo "${TAB}${FUNCNAME}: unset_traps..."
     unset_traps ${localDEBUG}
+    echo "${TAB}${FUNCNAME}: reset_traps..."
     reset_traps ${localDEBUG}
     echo "traps: "
     trap -p
@@ -708,12 +715,14 @@ check_traps_clear() {
     fi
 
     # print summary
+    decho "${TAB}${FUNCNAME}: print_traps..."
     if [ ${#FUNCNAME[@]} -gt 1 ]; then
         ddecho -n "${TAB}on ${FUNCNAME[1]} return, "
     fi
     print_traps
 
     # check status
+    decho "${TAB}${FUNCNAME}: checking traps are empty..."
     if [ ! -z "$(trap -p)" ]; then
         echo -e "${TAB}${BAD}traps not cleared${RESET}"
         dtab
@@ -773,6 +782,7 @@ function set_traps() {
 }
 
 # set EXIT trap
+# safely terminate process
 function set_exit() {
     # set local debug value
     if [ $# -eq 1 ]; then
@@ -786,13 +796,20 @@ function set_exit() {
     #DEBUG=1
 
     [ $DEBUG -gt 0 ] && start_new_line
-    decho -e "${TAB}${ORANGE}\E[7mset exit${RESET}"
+    if [[ "${RUN_TYPE}" =~ "sourcing" ]]; then
+        decho -e "${TAB}${ORANGE}\E[7mset return${RESET}"
+    else
+        decho -e "${TAB}${ORANGE}\E[7mset exit${RESET}"
+    fi
     itab
 
     get_run_type
 
-    # set shell options
+    # get shell options
+    local -xr old_opts=$-
     decho "${TAB}$-"
+
+    # set shell options
     decho -n "${TAB}setting shell options... "
     if [[ "$-" == *u* ]]; then
         set +u
@@ -802,30 +819,42 @@ function set_exit() {
     do_clear
 
     if [[ "${RUN_TYPE}" =~ "sourcing" ]]; then
-        decho "sourced"
-
+        decho -n "SOURCED script... "
         # DO NOT trace RETURN and DEBUG traps
         # (subshells WILL NOT inherit RETURN and DEBUG traps from shell)
         set +T
         decho "done"
+        if [[ "$-" == "${old_opts}" ]]; then
+            ddecho "${TAB}no change: $-"
+        else
+            ddecho "${TAB}before: ${old_opts}"
+            ddecho "${TAB} after: $-"
+        fi
         decho "${TAB}$-"
 
         dddecho -n "${TAB}setting traps... "
         trap 'print_return $?; trap - RETURN' RETURN
         dddecho "done"
+        ddecho "${FUNCNAME}: returning..."
         dtab
         return 0
     else
-        decho "not sourced"
-
+        decho -n "EXECUTED script... "
         # trace ERR (subshells inherit ERR trap from shell)
         set -E
         decho "done"
+        if [[ "$-" == "${old_opts}" ]]; then
+            ddecho "${TAB}no change: $-"
+        else
+            ddecho "${TAB}before: ${old_opts}"
+            ddecho "${TAB} after: $-"
+        fi
         decho "${TAB}$-"
 
         decho -n "${TAB}setting traps... "
         trap 'print_exit $?; trap - EXIT' EXIT
         decho "done"
+        ddecho "${FUNCNAME}: exiting..."
         dtab
         exit 0
     fi
