@@ -12,7 +12,16 @@
 # -----------------------------------------------------------------------------
 
 function get_run_type() {
-    local -i DEBUG=0
+    # set local debug value
+    if [ $# -eq 1 ]; then
+        # use argument to manually set DEBUG
+        local -i DEBUG=$1
+    else
+        # substitute default value if DEBUG is unset or null
+        local -i DEBUG=${DEBUG:-2}
+    fi
+    # manual
+    #local -i DEBUG=0
 
     local -i N_BOTTOM=$((${#FUNCNAME[@]} - 1))
 
