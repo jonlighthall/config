@@ -812,16 +812,22 @@ function print_pretty_status() {
     fi
     local -i lev
     if [ -z ${FPRETTY_LOADED+dummy} ]; then
+        # add read-only variable to check if this file has already been loaded
         declare -grx FPRETTY_LOADED=true
         lev=1
         vecho "${TAB}${BASH_SOURCE[lev]##*/} loaded"
     else
+        # variable is defined
+
+        # define print-to-screen command
         local cmd
         cmd=decho
+        # see if decho is defined
         if ! command -v $cmd &>/dev/null; then
             cmd=echo
         fi
 
+        # print status
         if [ $N_BASH -gt 1 ]; then
             lev=1
             $cmd "${TAB}"$(print_pretty "${BASH_SOURCE[lev]##*/} reloaded")
