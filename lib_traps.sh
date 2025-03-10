@@ -795,6 +795,8 @@ function set_exit() {
     # manual
     #DEBUG=1
 
+    get_run_type
+    
     [ $DEBUG -gt 0 ] && start_new_line
     if [[ "${RUN_TYPE}" =~ "sourcing" ]]; then
         decho -e "${TAB}${ORANGE}\E[7mset return${RESET}"
@@ -802,8 +804,6 @@ function set_exit() {
         decho -e "${TAB}${ORANGE}\E[7mset exit${RESET}"
     fi
     itab
-
-    get_run_type
 
     # get shell options
     local -xr old_opts=$-
