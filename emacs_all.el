@@ -277,8 +277,8 @@
 ;; set no-window (terminal) colors
 (when (not window-system)
   ;;(setq frame-background-mode 'light)
-  (add-to-list 'default-frame-alist '(foreground-color . "#000")) ; black
-  (add-to-list 'default-frame-alist '(background-color . "#FFF")) ; white
+  ;;(add-to-list 'default-frame-alist '(foreground-color . "#000")) ; black
+  ;;(add-to-list 'default-frame-alist '(background-color . "#FFF")) ; white
 
   (custom-set-faces
    ;; Your init file should contain only one such instance.
