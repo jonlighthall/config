@@ -537,7 +537,7 @@ function print_error() {
     fi
 
     # get the cursor position
-    local -i x_pos
+    local -i x_pos=0
     get_curpos x_pos
     # define indent
     ((--x_pos))
@@ -641,7 +641,7 @@ function print_traps() {
         [ ${#BASH_SOURCE[@]} -eq 1 ] && DEBUG=2
     fi
     # print summary
-    local -i xpos
+    local -i xpos=0
     get_curpos xpos
     [ $xpos -eq 1 ] && ddecho -n "${TAB}"
     ddecho "the following traps are set"

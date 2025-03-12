@@ -50,10 +50,11 @@ function ind() {
     ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     decho "BASH_LINENO = ${BASH_LINENO[@]}"
 
+    # declare and initialize cursor variables (valid cursor positions start at 1)
     local -i x1=0
     local -i y1=0
     local -i x2=0
-    local -i y1=0
+    local -i y2=0
 
     echo -n "indented: "
     # pass variable names, not values

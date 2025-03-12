@@ -61,7 +61,7 @@ function check_target() {
         fecho " path: ${target_canon}"
     fi
 
-    local -i x_pos
+    local -i x_pos=0
     get_curpos x_pos
     if [ ${x_pos} -eq 1 ]; then
         echo -n "${TAB}"
@@ -99,7 +99,7 @@ function check_link_dir() {
         fecho " path: ${target_canon}"
     fi
 
-    local -i x_pos
+    local -i x_pos=0
     get_curpos x_pos
     if [ ${x_pos} -eq 1 ]; then
         echo -n "${TAB}"

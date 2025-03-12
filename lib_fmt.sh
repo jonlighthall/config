@@ -38,6 +38,13 @@ function get_curpos() {
         dtab
         return 0
     fi
+    # check if running on HPC
+    if command -v sbatch &>/dev/null; then
+        fecho -e "${ORANGE}\E[7mHPC${RESET}" >&2
+        ddecho ${TAB}${FUNCNAME[@]}
+        dtab
+        return 0
+    fi
     # must get position before any prints
     local CURPOS
     # get the cursor position
@@ -112,7 +119,7 @@ function start_new_line() {
         local -i funcDEBUG=0
     fi
     # get the cursor position
-    local -i x
+    local -i x=0
     itab
     get_curpos x
 
@@ -305,7 +312,7 @@ function extract_color() {
 }
 
 function define_cr() {
-    local -i x1c
+    local -i x1c=0
     get_curpos x1c
     decho -n "$x1c"
     # set the "carriage return" value for the first non-empty line of the
