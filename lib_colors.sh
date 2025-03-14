@@ -497,69 +497,69 @@ function print_colors() {
 
     # get length of array
     local -ir N_cols=${#dcolor[@]}
-        echo "${TAB}$N_cols in array ${!dcolor@}"
+    echo "${TAB}$N_cols in array ${!dcolor@}"
     # declare array index variable
-        local -i i
+    local -i i
     # print array elements
-        itab
-        for ((i=0;i<$N_cols;i++));do
-            echo -e "${TAB}${dcolor[$i]}$i"
-        done
-        dtab
+    itab
+    for ((i=0;i<$N_cols;i++));do
+        echo -e "${TAB}${dcolor[$i]}$i"
+    done
+    dtab
     # reset color
-        echo -en "\x1B[m"
+    echo -en "\x1B[m"
 
     # reset shell options
-        local -i DEBUG=${DEBUG:-1}
-        reset_shell ${old_opts} u
-    }
+    local -i DEBUG=${DEBUG:-1}
+    reset_shell ${old_opts} u
+}
 
 # print dcolor array in debug order
 # requires lib_traps, lib_fmt
-    function print_dcolors() {
-        ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-        decho "${TAB}printing contents of ${!dcolor@} in DEBUG order..."
-        local -i DEBUG=${DEBUG:-2}
+function print_dcolors() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    decho "${TAB}printing contents of ${!dcolor@} in DEBUG order..."
+    local -i DEBUG=${DEBUG:-2}
     # add shell options if not already set
-        old_opts=$(echo "$-")
-        set -u
+    old_opts=$(echo "$-")
+    set -u
 
     # get length of array
-        local -ir N_cols=${#dcolor[@]}
-            echo "${TAB}$N_cols in array ${!dcolor@}"
+    local -ir N_cols=${#dcolor[@]}
+    echo "${TAB}$N_cols in array ${!dcolor@}"
     # calculate maximum array index
-            local -ir N_max=$((N_cols-1))
-            echo "${TAB}$N_max max index of array ${!dcolor@}"
+    local -ir N_max=$((N_cols-1))
+    echo "${TAB}$N_max max index of array ${!dcolor@}"
     #---------------------------------------------------------------
     # set starting color (using array indices 0-11, specified above)
-            local -ir start=7
+    local -ir start=7
     # set increment direction
-            local -ir direction=-1
+    local -ir direction=-1
     #---------------------------------------------------------------
-            echo -e "${TAB}staring with index ${dcolor[$start]}${start}\x1B[m\n"
-            if [ $direction -gt 0 ]; then
-                echo "${TAB}incrementing array indices"
-            elif [ $direction -lt 0 ]; then
-                echo "${TAB}decrementing array indices"
-            else
-                echo "${TAB}something else..."
-            fi
+    echo -e "${TAB}staring with index ${dcolor[$start]}${start}\x1B[m\n"
+    if [ $direction -gt 0 ]; then
+        echo "${TAB}incrementing array indices"
+    elif [ $direction -lt 0 ]; then
+        echo "${TAB}decrementing array indices"
+    else
+        echo "${TAB}something else..."
+    fi
     # declare array index variable
-            local -i idx
-            (
-                echo "order:index:color"
-                for ((i=0;i<$N_cols;i++));do
+    local -i idx
+    (
+        echo "order:index:color"
+        for ((i=0;i<$N_cols;i++));do
             #define array index
-                    idx=$(( (${N_max} + $direction * ($i) + $start + 1 ) % ${N_cols} ))
-                    printf '%2d:%2d:' $i $idx
+            idx=$(( (${N_max} + $direction * ($i) + $start + 1 ) % ${N_cols} ))
+            printf '%2d:%2d:' $i $idx
 
-                    printf "${dcolor[$idx]}%2d\x1B[m\n" $idx
-                done
-            ) | column -t -s: | sed "s/^/${TAB}/"
+            printf "${dcolor[$idx]}%2d\x1B[m\n" $idx
+        done
+    ) | column -t -s: | sed "s/^/${TAB}/"
 
     # reset shell options
-            reset_shell ${old_opts} u
-        }
+    reset_shell ${old_opts} u
+}
 
 #--------------------------------------
 # define settings for dbg2idx
@@ -574,31 +574,33 @@ function print_colors() {
 # Dependencies:
 #   lib_cond_echo
 #--------------------------------------
-        function set_dbg2idx() {
+function set_dbg2idx() {
     # turn in-function debugging on/off
-            local -i funcDEBUG=0
-
+    local -i funcDEBUG=0
     # get length of array
-            N_cols=${#dcolor[@]}
-                fecho "$N_cols elements in array ${!dcolor@}"
+    if [ -z ${dcolor+dummy} ]; then
+        source  ~/config/lib_colors.sh
+    fi
+    N_cols=${#dcolor[@]}
+    fecho "$N_cols elements in array ${!dcolor@}"
     # calculate maximum array index
-                N_max=$((N_cols-1))
-                fecho "$N_max max index of array ${!dcolor@}"
+    N_max=$((N_cols-1))
+    fecho "$N_max max index of array ${!dcolor@}"
     #---------------------------------------------------------------
     # set starting color (using array indices 0-11, specified above)
-                start=7
+    start=7
     # set increment direction
-                direction=-1
+    direction=-1
     #---------------------------------------------------------------
-                fecho -e "staring with index ${dcolor[$start]}${start}\x1B[m"
-                if [ $direction -gt 0 ]; then
-                    fecho "incrementing array induces"
-                elif [ $direction -lt 0 ]; then
-                    fecho "decrementing array indices"
-                else
-                    fecho "something else..."
-                fi
-            }
+    fecho -e "staring with index ${dcolor[$start]}${start}\x1B[m"
+    if [ $direction -gt 0 ]; then
+        fecho "incrementing array induces"
+    elif [ $direction -lt 0 ]; then
+        fecho "decrementing array indices"
+    else
+        fecho "something else..."
+    fi
+}
 
 #--------------------------------------
 # convert DEBUG value to color array index
@@ -611,260 +613,263 @@ function print_colors() {
 # Dependencies:
 #   lib_cond_echo
 #--------------------------------------
-            function dbg2idx() {
-                if [ $# -lt 2 ]; then
-                        (
-                            echo -e "${DIM}$FUNCNAME${NORMAL}: 2 inputs required"
-                            echo -e "${DIM}$FUNCNAME${NORMAL}: $# inputs received"
-                            echo -e "${DIM}$FUNCNAME${NORMAL}: Please provide an input value and and output variable as:"
-                            echo -e "${DIM}$FUNCNAME${NORMAL}: ${FUNCNAME} INDEX VARIABLE"
-                        ) >&2
-                        return 1
-                fi
+function dbg2idx() {
+    if [ $# -lt 2 ]; then
+        (
+            echo -e "${DIM}$FUNCNAME${NORMAL}: 2 inputs required"
+            echo -e "${DIM}$FUNCNAME${NORMAL}: $# inputs received"
+            echo -e "${DIM}$FUNCNAME${NORMAL}: Please provide an input value and and output variable as:"
+            echo -e "${DIM}$FUNCNAME${NORMAL}: ${FUNCNAME} INDEX VARIABLE"
+        ) >&2
+        return 1
+    fi
 
     # turn in-function debugging on/off
-                local -i funcDEBUG=0
+    local -i funcDEBUG=0
 
     # get input DEBUG value
-                fecho " arg 1 : $1"
-                local -ir dbg_in=$1
-                fecho "dbg_in = $dbg_in"
+    fecho " arg 1 : $1"
+    local -ir dbg_in=$1
+    fecho "dbg_in = $dbg_in"
 
     # get output variable
 
-                fecho " arg 2 : $2"
-                local var_out=$2
+    fecho " arg 2 : $2"
+    local var_out=$2
 
     # check if VAR is unset
-                if [ -z "${!var_out+dummy}" ]; then
-                    fecho  -e "${TAB}${FUNCNAME[1]} arg 1 in : ${var_out} ${!var_out-$UNSET}"
-                else
+    if [ -z "${!var_out+dummy}" ]; then
+        fecho  -e "${TAB}${FUNCNAME[1]} arg 1 in : ${var_out} ${!var_out-$UNSET}"
+    else
         # check if VAR is NULL
-                    if [ -z "${!var_out:+dummy}" ]; then
-                        fecho  -e "${TAB}${FUNCNAME[1]} arg 1 in : ${var_out} ${!var_out:-$NULL}"
-                    else
-                        fecho "$var_out = ${!var_out}"
-                    fi
-                fi
+        if [ -z "${!var_out:+dummy}" ]; then
+            fecho  -e "${TAB}${FUNCNAME[1]} arg 1 in : ${var_out} ${!var_out:-$NULL}"
+        else
+            fecho "$var_out = ${!var_out}"
+        fi
+    fi
 
     # define parameters
-                local -i N_cols
-                local -i N_max
-                local -i start
-                local -i direction
+    local -i N_cols
+    local -i N_max
+    local -i start
+    local -i direction
 
     # load parameters
-                set_dbg2idx
+    set_dbg2idx
 
     # using an index value of 0 indicates turning off coloring
     # the color at the end of the array will be loaded
-                if [ $dbg_in -eq 0 ]; then
-                    var_out=$N_max
-                    return 0
-                fi
+    if [ $dbg_in -eq 0 ]; then
+        var_out=$N_max
+        return 0
+    fi
 
     # since DEBUG=0 does not print and DEBUG=1 corresponds to starting color, or array index 0,
     # the input value decremented by one
-                local -i offset=1
+    local -i offset=1
     # however, (now) idx=0 corresponds to no color or gray printing, so the offset is zero and
     # (now) idx=DEBUG
-                offset=0
+    offset=0
     # if the index is negative (for some reason), continue from the previous color
-                if [ $dbg_in -lt 0 ]; then
-                    offset=1
-                fi
+    if [ $dbg_in -lt 0 ]; then
+        offset=1
+    fi
 
     # specify the number of colors to skip at the end of the array
-                local -ir N_mod=$((N_cols-1))
+    local -ir N_mod=$((N_cols-1))
 
     # calculate the corresponding "debug" index, modulo number of colors
-                local -i dbg_idx=$(( ( $dbg_in + ${offset} ) % ${N_mod} ))
-                fecho "dbg_idx = $dbg_idx"
+    local -i dbg_idx=$(( ( $dbg_in + ${offset} ) % ${N_mod} ))
+    fecho "dbg_idx = $dbg_idx"
 
     #define array index, based on values defined in set_dbg2idx
-                local -i idx_out
-                idx_out=$(( ( ${N_max} + $direction * ($dbg_idx) + $start + 1 ) % ${N_cols} ))
-                fecho "$var_out = $idx_out"
-                eval ${var_out}=$idx_out
+    local -i idx_out
+    idx_out=$(( ( ${N_max} + $direction * ($dbg_idx) + $start + 1 ) % ${N_cols} ))
+    fecho "$var_out = $idx_out"
+    eval ${var_out}=$idx_out
 
     # print result
-                fecho -e "${dcolor[$idx]}\x1B[7m${dbg_in}\x1B[m"
+    if [ -z ${dcolor+dummy} ]; then
+        source  ~/config/lib_colors.sh
+    fi
+    fecho -e "${dcolor[$idx]}\x1B[7m${dbg_in}\x1B[m"
 
-                return 0
-                    }
+    return 0
+}
 
 # print dcolor array in debug order
 # requires lib_cond_echo
-                    function print_fcolors() {
-                        ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-                        local -i DEBUG=${DEBUG:-1}
-                        decho "${TAB}printing contents of ${!dcolor@} in DBG2IDX order..."
+function print_fcolors() {
+    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+    local -i DEBUG=${DEBUG:-1}
+    decho "${TAB}printing contents of ${!dcolor@} in DBG2IDX order..."
 
     # get length of array
-                        local -ir N_cols=${#dcolor[@]}
-                            local -i idx
-                            (
-                                echo "order@index@color"
+    local -ir N_cols=${#dcolor[@]}
+        local -i idx
+        (
+            echo "order@index@color"
         # loop over valid non-zero values of debug
-                                for ((i=0;i<=$N_cols-1;i++));do
+            for ((i=0;i<=$N_cols-1;i++));do
             #define array index
-                                    dbg2idx $i idx
+                dbg2idx $i idx
             # print indices
-                                    printf '%2d@%2d@' $i $idx
+                printf '%2d@%2d@' $i $idx
             # print color
-                                    printf "${dcolor[$idx]}%2d\x1B[m\n" $idx
-                                done
-                            ) | column -t -s@ | sed "s/^/${TAB}/"
-                        }
+                printf "${dcolor[$idx]}%2d\x1B[m\n" $idx
+            done
+        ) | column -t -s@ | sed "s/^/${TAB}/"
+    }
 
 # set DEBUG color
-                        function set_dcolor() {
+    function set_dcolor() {
     # get value of DEBUG
     # if unset or NULL, substitute default
-                            local -i DEBUG=${DEBUG-0}
+        local -i DEBUG=${DEBUG-0}
 
-                            set_color $DEBUG
-                        }
+        set_color $DEBUG
+    }
 
 # set BASH color
-                        function set_bcolor() {
+    function set_bcolor() {
     # get length of call stack
-                            local -i N_BASH=${#BASH_SOURCE}
+        local -i N_BASH=${#BASH_SOURCE}
 
-                                set_color $N_BASH
-                            }
+            set_color $N_BASH
+        }
 
-                            function set_color() {
+        function set_color() {
     # default color
-                                local -i N=3
+            local -i N=3
 
     # use argument to manually set color
-                                if [ $# -eq 1 ]; then
-                                        N=$1
-                                fi
+            if [ $# -eq 1 ]; then
+                    N=$1
+            fi
 
     # get color index
-                                local -i idx
-                                dbg2idx $N idx
+            local -i idx
+            dbg2idx $N idx
     # set color
-                                echo -ne "${dcolor[$idx]}"
-                                    }
+            echo -ne "${dcolor[$idx]}"
+                }
 
-                                    function test_set_color() {
-                                        ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-                                        local -i DEBUG=${DEBUG:-1}
-                                        decho "${TAB}printing contents of ${!dcolor@} in DBG2IDX order..."
+                function test_set_color() {
+                    ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+                    local -i DEBUG=${DEBUG:-1}
+                    decho "${TAB}printing contents of ${!dcolor@} in DBG2IDX order..."
 
     # get length of array
-                                        local -ir N_cols=${#dcolor[@]}
+                    local -ir N_cols=${#dcolor[@]}
 
     # loop over valid non-zero values of debug
-                                            for ((i=-${N_cols};i<=$N_cols;i++));do
-                                                set_color $i
-                                                printf '%3d: %s\n' $i $FUNCNAME
-                                                unset_color
-                                            done
-                                        }
+                        for ((i=-${N_cols};i<=$N_cols;i++));do
+                            set_color $i
+                            printf '%3d: %s\n' $i $FUNCNAME
+                            unset_color
+                        done
+                    }
 
-                                        function unset_color() {
-                                            echo -ne "\e[0m"
-                                        }
+                    function unset_color() {
+                        echo -ne "\e[0m"
+                    }
 
 # ------------------------------------------------------------------------------
 # Demo Functions for .bashrc_pretty
 # ------------------------------------------------------------------------------
 
 # requires lib_tabs, lib_cond_echo
-                                        function print_pretty() {
+                    function print_pretty() {
     # set default debug level
-                                            local -i DEBUG=${DEBUG:-1}
-                                            ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+                        local -i DEBUG=${DEBUG:-1}
+                        ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     # define message
-                                            if [ $# -eq 0 ]; then
-                                                    local msg="pretty-print enabled"
-                                            else
-                                                local msg="$@"
-                                                DEBUG=0
-                                            fi
+                        if [ $# -eq 0 ]; then
+                                local msg="pretty-print enabled"
+                        else
+                            local msg="$@"
+                            DEBUG=0
+                        fi
     # determine message length
-                                            decho -n "${TAB}'$msg' "
-                                            local -i ln=${#msg}
-                                                decho "is $ln long"
+                        decho -n "${TAB}'$msg' "
+                        local -i ln=${#msg}
+                            decho "is $ln long"
 
     # define loop variables
-                                                local -i idx
-                                                local let
-                                                local -i pos=0
-                                                decho -n "${TAB}"
+                            local -i idx
+                            local let
+                            local -i pos=0
+                            decho -n "${TAB}"
     # loop over message
-                                                for ((i=0;i<$ln;i++));do
-                                                    let="${msg:$i:1}"
+                            for ((i=0;i<$ln;i++));do
+                                let="${msg:$i:1}"
 
-                                                    if [[ "$let" == " " ]]; then
-                                                        :
-                                                    else
-                                                        ((++pos))
-                                                    fi
-                                                    dbg2idx $pos idx
+                                if [[ "$let" == " " ]]; then
+                                    :
+                                else
+                                    ((++pos))
+                                fi
+                                dbg2idx $pos idx
         # set color
-                                                    echo -en "${dcolor[$idx]}$let"
-                                                done
-                                                echo -e "$RESET"
+                                echo -en "${dcolor[$idx]}$let"
+                            done
+                            echo -e "$RESET"
 
-                                            }
+                        }
 
-                                            function print_pretty_cbar() {
-                                                ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
-                                                local -i DEBUG=0
-                                                cbar $(print_pretty)
-                                            }
+                        function print_pretty_cbar() {
+                            ddecho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+                            local -i DEBUG=0
+                            cbar $(print_pretty)
+                        }
 
-                                            function print_pretty_status() {
-                                                if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
-                                                    print_pretty_cbar
-                                                fi
+                        function print_pretty_status() {
+                            if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
+                                print_pretty_cbar
+                            fi
 
-                                                if [ -z ${FPRETTY_LOADED+dummy} ]; then
-                                                    declare -rx FPRETTY_LOADED=true
-                                                    vecho "${TAB}${BASH_SOURCE##*/} loaded"
-                                                else
-                                                    local -i N_BASH=${#BASH_SOURCE[@]}
-                                                        local cmd
-                                                        local -i lev
-                                                        if [ $N_BASH -eq 2 ]; then
-                                                            cmd=echo
-                                                            lev=1
-                                                        else
-                                                            cmd=decho
-                                                            lev=0
-                                                        fi
-                                                        $cmd "${TAB}"$(print_pretty "${BASH_SOURCE[lev]##*/} reloaded")
-                                                fi
-                                                    }
+                            if [ -z ${FPRETTY_LOADED+dummy} ]; then
+                                declare -rx FPRETTY_LOADED=true
+                                vecho "${TAB}${BASH_SOURCE##*/} loaded"
+                            else
+                                local -i N_BASH=${#BASH_SOURCE[@]}
+                                    local cmd
+                                    local -i lev
+                                    if [ $N_BASH -eq 2 ]; then
+                                        cmd=echo
+                                        lev=1
+                                    else
+                                        cmd=decho
+                                        lev=0
+                                    fi
+                                    $cmd "${TAB}"$(print_pretty "${BASH_SOURCE[lev]##*/} reloaded")
+                            fi
+                                }
 
-                                                    function test_lib_colors() {
-                                                        local -i DEBUG=2
-                                                        decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
+                                function test_lib_colors() {
+                                    local -i DEBUG=2
+                                    decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
 
-                                                        for func in test_normal \
-                                                            define_ls_colors \
-                                                            print_dircolors \
-                                                            print_ls_colors \
-                                                            print_ls_colors_ext \
-                                                            print_rcolors \
-                                                            print_colors \
-                                                            print_dcolors \
-                                                            print_fcolors \
-                                                            print_pretty \
-                                                            print_pretty_cbar \
+                                    for func in test_normal \
+                                        define_ls_colors \
+                                        print_dircolors \
+                                        print_ls_colors \
+                                        print_ls_colors_ext \
+                                        print_rcolors \
+                                        print_colors \
+                                        print_dcolors \
+                                        print_fcolors \
+                                        print_pretty \
+                                        print_pretty_cbar \
 
-                                                        do
-                                                            echo
-                                                            $func
-                                                        done
+                                    do
+                                        echo
+                                        $func
+                                    done
 
-                                                    }
+                                }
 
-                                                    if [ ${DEBUG:-0} -gt 2 ]; then
-                                                        test_lib_colors
-                                                    fi
+                                if [ ${DEBUG:-0} -gt 2 ]; then
+                                    test_lib_colors
+                                fi
