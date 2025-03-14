@@ -188,14 +188,17 @@ function print_stack() {
     unset N_LINE
 
     # get length of function stack
-    local -i N_FUNC=${#FUNCNAME[@]}
-    local -i N_BASH=${#BASH_SOURCE[@]}
-    local -i N_LINE=${#BASH_LINENO[@]}
+    export N_FUNC=${#FUNCNAME[@]}
+    export N_BASH=${#BASH_SOURCE[@]}
+    export N_LINE=${#BASH_LINENO[@]}
 
     # get color index
     local -i idx
     dbg2idx $N_BASH idx
     # set color
+    if [ -z ${dcolor+dummy} ]; then
+        source  ~/config/lib_colors.sh
+    fi
     echo -ne "${dcolor[idx]}"
 
     # print length of stack
@@ -250,7 +253,7 @@ function print_stack() {
     echo "${TAB}call stack:"
     local -i i
     itab
-
+    echo "${TAB}index,index,function,directory,source,line no"
     (
         for ((i = 0; i < $N_STACK ; i++)); do
             if [ $i == 0 ]; then
@@ -273,7 +276,7 @@ function print_stack() {
                 echo -e "${dcolor[idx]}"
             fi
         done
-    ) | column -t -s: -N "index,index,function,directory,source,line no" -R1 | sed "s/^/${TAB}/"
+    ) | column -t -s: | sed "s/^/${TAB}/"
 
     dtab
     # unset color
@@ -427,7 +430,7 @@ function print_invo() {
 
     echo "caller:"
     caller
-
+    "${TAB}index,line,subroutine,filename"
     (
         itab
         for ((i = 0; i < (($N_FUNC + 1 )); i++)); do
@@ -435,7 +438,7 @@ function print_invo() {
             caller $i
         done
         dtab
-    ) | column -t -s "\t" -N "index,line,subroutine,filename" -R1
+    ) | column -t -s "\t" 
 
     local -i N_BOTTOM=$(($N_FUNC - 1))
     echo "N_BOTTOM = $N_BOTTOM"

@@ -177,9 +177,9 @@ function print_stack() {
     local -i DEBUG=9
     start_new_line
     # get length of function stack
-    declare -i  N_FUNC
-    declare -i  N_BASH
-    declare -i  N_LINE
+    declare -ix  N_FUNC
+    declare -ix  N_BASH
+    declare -ix  N_LINE
 
     export N_FUNC=${#FUNCNAME[@]}
     export N_BASH=${#BASH_SOURCE[@]}
@@ -246,7 +246,7 @@ function print_stack() {
             for ((i = 0; i < $N_FUNC ; i++)); do
                 echo "$i:${FUNCNAME[i]}:${BASH_FNAME[i]}:${BASH_LINENO[i]}"
             done
-        ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
+        ) | column -t -s: "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
         echo
 
         # set color
@@ -256,7 +256,7 @@ function print_stack() {
             for ((i = 0; i < $N_FUNC ; i++)); do
                 echo "$i:${FUNCNAME[i]}:${BASH_SOURCE[i]}:${BASH_LINENO[i]}"
             done
-        ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
+        ) | column -t -s: "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
         echo
 
         # set color
@@ -266,7 +266,7 @@ function print_stack() {
             for ((i = 0; i < $N_FUNC ; i++)); do
                 echo "$i:${FUNCNAME[i]}:${BASH_LINK[i]}:${BASH_LINENO[i]}"
             done
-        ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
+        ) | column -t -s: "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
         echo
 
         # set color
@@ -280,7 +280,7 @@ function print_stack() {
                     echo -e "${dcolor[idx]}"
                 fi
             done
-        ) | column -t -s: -N "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
+        ) | column -t -s: "index,function,source,line no" -R1 | sed "s/^/${TAB}/"
         echo
     fi
     
@@ -300,7 +300,7 @@ function print_stack() {
                 echo -e "${dcolor[idx]}"
             fi
         done
-    ) | column -t -s: -N "index,function,directory,source,line no" -R1 | sed "s/^/${TAB}/" 
+    ) | column -t -s: "index,function,directory,source,line no" -R1 | sed "s/^/${TAB}/" 
 
     dtab
     # unset color
@@ -339,7 +339,7 @@ function print_invo() {
             caller $i
         done
         dtab
-    ) | column -t -s "\t" -N "index,line,subroutine,filename" -R1
+    ) | column -t -s "\t" "index,line,subroutine,filename" -R1
 
     local -i N_BOTTOM=$(($N_FUNC - 1))
     echo "N_BOTTOM = $N_BOTTOM"
