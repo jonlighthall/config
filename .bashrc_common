@@ -49,10 +49,10 @@ if [ -z ${LC_COLLATE:+dummy} ]; then
     export LC_COLLATE=C
 fi
 declare -i old_libDEBUG
-old_libDEBUG=libDEBUG
+old_libDEBUG=${libDEBUG}
 libDEBUG=0
 print_ LC_COLLATE
-libDEBUG=old_libDEBUG
+libDEBUG=${old_libDEBUG}
 unset old_libDEBUG
 
 # check if VB is true (in other cases, also check if VB is unset or null)
