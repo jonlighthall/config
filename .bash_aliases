@@ -269,3 +269,7 @@ function atop() {
     echo
     set +u
 }
+
+function td() {
+    touch $(date +'_%Y-%m-%d-t%H:%M:%S.%3N')
+}
