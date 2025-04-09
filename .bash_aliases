@@ -273,12 +273,16 @@ function atop() {
 function td() {
     local touch_time
     local -i RETVAL
-    touch_time=$(date +'_%Y-%m-%d-t%H:%M:%S.%3N')
-    echo -en "creating empty file named ${YELLOW}${touch_time}${RESET}..."
+    touch_time=$(date +'empty_%Y-%m-%d-t%H:%M:%S.%3N')
+    echo -en "creating empty file named ${ARG}${touch_time}${RESET}... "
     touch ${touch_time}
     RETVAL=$?
     if [[ $RETVAL == 0 ]]; then
         echo -e "${GOOD}OK${RESET}"
+        echo -e "empty files in ${YELLOW}${PWD}${RESET}:"
+        itab
+        find . -maxdepth 1 -empty | sort -n | sed "s/^/${TAB}/" | sed "s/^.*${touch_time}/${ARG}&${RESET}/"
+        dtab
     else
         echo -e "${BAD}FAIL${RESET}"
         exit ${RETVAL}
