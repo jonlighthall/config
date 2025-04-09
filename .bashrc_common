@@ -63,6 +63,10 @@ fi
 
 # Command History
 # -----------------
+# set file name
+hist_file=${hist_file:=${HOME}/.bash_history}
+
+if [ -e $hist_file ]; then
 # history length (commands to save)
 export HISTFILESIZE=
 export HISTSIZE=
@@ -76,6 +80,10 @@ shopt -s histappend
 PROMPT_COMMAND="history -a;${PROMPT_COMMAND-}"
 # Timestamp history
 HISTTIMEFORMAT="%F %T "
+else
+    unset HISTFILE
+    echo -e "${BAD}${hist_file} NOT FOUND{RESET}"
+fi
 
 # Editors
 # --------

@@ -7,7 +7,7 @@
 # Purpose: Define prompt and path settings for interactive shells on linux
 #   kernel systems
 #
-# Note: this file must use unix line endings (LF)!
+# Note: this file must use UNIX line endings (LF)!
 #
 # Aug 2023 JCL
 #
@@ -51,7 +51,7 @@ git_branch() {
 	      git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \x1B[0;36m(\1\x1B[0;36m)\x1B[0m/'
 	      # 2>/dev/null redirects stderr to null
 	      # sed -e '/^[^*]/d' deletes any lines not starting with *
-	      # sed -e 's/* \(.*\)/ (\1)/' replaces the first instance of '* ' and add parethesis
+	      # sed -e 's/* \(.*\)/ (\1)/' replaces the first instance of '* ' and add parenthesis
     fi
 }
 
@@ -199,12 +199,19 @@ fi
 # Test ls color
 if $do_test_color; then
     vecho -e "${TAB}Testing color ls alias... \c"
-    timeout -s 9 1s \ls -ld --color=auto ./* &>/dev/null
+    timeout -s 9 1s \ls -lda --color=auto ./* &>/dev/null
     RETVAL=$?
     if [[ $RETVAL -eq 137 ]]; then
-	      echo -e "${TAB}ls --color=auto ${BAD}FAIL${RESET}  ${GRAY}RETVAL=$RETVAL${RESET}"
+	      echo -e "${TAB}ls --color=auto ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+        # redefine ls
 	      unalias ls
+        alias ls='ls -l color=never'
 	      echo -e "${TAB}--color=auto removed from ls alias"
+        # find the culprit
+        echo -e "${TAB}looking for offending entry..."        
+        for item in $(\ls -a); do
+            timeout -s 9 1s \ls -lda --color ${item} 1>/dev/null || echo "FAIL ${item}"
+        done        
     else
 	      vecho -en "${GOOD}OK${RESET}"
         if [[ $RETVAL -eq 0 ]]; then
@@ -212,6 +219,12 @@ if $do_test_color; then
         else
             vecho -e " ${GRAY}RETVAL=$RETVAL${RESET}"
         fi
+        # list broken links
+        itab
+        for item in $(\ls -a); do
+            timeout -s 9 1s [ -e ${item} ] 1>/dev/null || \ls --color -dla ${item} | awk '{print $9" "$10" "$11}' | sed "s/^/${TAB}/"
+        done
+        dtab        
     fi
 fi
 

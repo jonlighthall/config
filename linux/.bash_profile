@@ -97,10 +97,13 @@ HOST_NAME=$(hostname -s)
 vecho -e "${TAB}applying ${SYS_NAME} settings on ${PSHOST}${HOST_NAME}${RESET}"
 
 # save login timestamp to history
-hist_file=${HOME}/.bash_history
-hist_file_can=$(readlink -f "${hist_file}")
-vecho -en "${TAB}appending login timestamp to ${YELLOW}${hist_file_can}${RESET}... "
-if [ -f $hist_file ]; then
+export hist_file=${HOME}/.bash_history
+itab
+vecho -en "${TAB}checking ${YELLOW}${hist_file}${RESET}... "
+if [ -e $hist_file ]; then
+    vecho -e "${GOOD}OK${RESET}"
+    hist_file_can=$(readlink -f "${hist_file##*/}")
+    vecho -en "${TAB}appending login timestamp to ${YELLOW}${hist_file_can}${RESET}... "
     echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from ${HOST_NAME}" >>$hist_file
     RETVAL=$?
     if [ $RETVAL -eq 0 ]; then
@@ -114,12 +117,12 @@ if [ -f $hist_file ]; then
     fi
 else
     if [ "${VB}" = true ]; then
-        echo "${BAD}NOT FOUND{RESET}"
+        echo -e "${BAD}NOT FOUND{RESET}"
     else
         echo "$hist_file not found"
     fi
 fi
-
+dtab
 # load system-dependent interactive shell settings
 fname=${config_dir}/${SYS_NAME}/.bashrc
 vecho -e "${TAB}loading $fname... ${RESET}"
