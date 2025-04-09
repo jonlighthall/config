@@ -82,12 +82,12 @@ alias hgt='history | grep "^[0-9 ]\{0,6\}  [0-9\-]\{10\} " | grep'
 alias hl="\cat ~/.bash_history | sed '/^#[0-9]\{10\}/d' | awk '{print length, \$0}' | sort -n | uniq -c | sort -n -r | sed 's/^\([ \t]*[0-9]*\) [0-9]* \(.*$\)/\1 \2/' | head -n 20"
 
 # list
-alias lS='ls -ltS'
-alias la='ls -la'
+alias lS='ls -ltS' # list by size
+alias la='ls -la' # list all
 alias lh='ls -ld .?*' # list hidden only
 alias ls='ls -l --color'
-alias lt='ls -ltr --time-style=long-iso' # sort by time
-alias lsd='ls -d */'
+alias lt='ls -ltr --time-style=long-iso' # list by time
+alias lsd='ls -d */' # list directories
 
 alias mv='mv -bv' # make a backup of each existing destination file, verbose
 
