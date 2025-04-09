@@ -198,19 +198,25 @@ fi
 
 # Test ls color
 if $do_test_color; then
-    vecho -e "${TAB}Testing color ls alias... \c"
-    timeout -s 9 1s \ls -lda --color=auto ./* &>/dev/null
+    vecho -en "${TAB}Testing color ls alias... "
+    timeout -s 9 1s \ls -la --color=always &>/dev/null
     RETVAL=$?
+    if [[ $RETVAL -eq 0 ]]; then
+        echo -e "${GOOD}OK${RESET}"
+    else
+        echo -e "${BAD}FAIL${RESET}"
+    fi
+    itab    
     if [[ $RETVAL -eq 137 ]]; then
 	      echo -e "${TAB}ls --color=auto ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
         # redefine ls
 	      unalias ls
-        alias ls='ls -l color=never'
+        alias ls='\ls -l --color=never'
 	      echo -e "${TAB}--color=auto removed from ls alias"
         # find the culprit
         echo -e "${TAB}looking for offending entry..."        
         for item in $(\ls -a); do
-            timeout -s 9 1s \ls -lda --color ${item} 1>/dev/null || echo "FAIL ${item}"
+            timeout -s 9 1s \ls -lda --color ${item} 1>/dev/null || echo -e "${TAB}${BAD}FAIL ${item}${RESET}"
         done        
     else
 	      vecho -en "${GOOD}OK${RESET}"
@@ -226,6 +232,7 @@ if $do_test_color; then
         done
         dtab        
     fi
+    dtab
 fi
 
 # Path additions
