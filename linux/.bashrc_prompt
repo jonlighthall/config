@@ -199,7 +199,7 @@ fi
 # Test ls color
 if $do_test_color; then
     vecho -en "${TAB}Testing color ls alias... "
-    timeout -s 9 1s \ls -la --color=always &>/dev/null
+    timeout -s 9 0.5s \ls -la --color=always &>/dev/null
     RETVAL=$?
     if [[ $RETVAL -eq 0 ]]; then
         echo -e "${GOOD}OK${RESET}"
