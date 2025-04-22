@@ -204,7 +204,7 @@ if $do_test_color; then
     if [[ $RETVAL -eq 0 ]]; then
         echo -e "${GOOD}OK${RESET}"
     else
-        echo -e "${BAD}FAIL${RESET}"
+        echo -e "${BAD}FAIL ${GRAY}RETVAL=$RETVAL${RESET}"
     fi
     itab    
     if [[ $RETVAL -eq 137 ]]; then
