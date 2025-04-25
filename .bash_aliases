@@ -89,6 +89,10 @@ alias ls='ls -l --color'
 alias lt='ls -ltr --time-style=long-iso' # sort by time
 alias lsd='ls -d */'
 
+alias mv='mv -bv' # make a backup of each existing destination file, verbose
+
+alias rm='rm -dv' # remove empty directories, verbose
+
 # Functions
 alias du0='duf --max-depth=0'
 alias du1='duf --max-depth=1'
