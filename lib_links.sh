@@ -609,13 +609,12 @@ function do_make_dir() {
     # if target does not exist, make the directory
     if [ $RETVAL = 1 ]; then
         itab
-        echo -en "${TAB}${GRH}"
+        echo -en "${GRH}"
         hline 72
         echo -e "${TAB}${GRH}making directory... "
         echo -n "${TAB}"
         mkdir -pv "${target}"
         RETVAL=$?
-        echo -ne "${TAB}"
         hline 72
         dtab
     fi
