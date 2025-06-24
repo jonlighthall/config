@@ -80,7 +80,7 @@ function check_target() {
         echo -e "${GOOD}exists${RESET}"
         return 0
     else
-        echo -e "${BAD}does not exist${RESET}"
+        echo -e "${GRH}does not exist${RESET}"
         return 1
     fi
 }
