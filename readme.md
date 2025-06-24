@@ -4,19 +4,32 @@ User configuration files for [Windows](windows), [macOS](apple), and [Linux](lin
 Settings specific to Windows Subsystem for Linux are found in [wsl](wsl).
 Settings specific to Cygwin, MinGW, and Git Bash are found in [cygwin](cygwin).
 
-## Cloning *this* repository
+## Prerequisites
+
+### SSH keys
+
+A password-protected SSH key is required when cloning via SSH.
+
+The contents of `.ssh` from a working server will first need to be copied to the new server with the command
+`scp -rp ~/.ssh user@server:~/`
+
+
+### Git
+
 Install git with one of the following commands.
 > Ubuntu:
 
         sudo apt install git -y
 
 
-> Oracle: 
+> Oracle:
 ```
     sudo dnf install git -y
 ```
 
-Clone the reposity with one of the following commands.
+## Cloning *this* repository
+
+Clone the repository with one of the following commands.
 
 > HTTPS:
 ```
@@ -30,16 +43,16 @@ Clone the reposity with one of the following commands.
 
 ## Cloning other repositories
 
-To clone the default list of repsoitories, execute the following command.
+To clone the default list of repositories, execute the following command.
 
-```git
+```bash
 cd config
 ./get_repos.sh
 ```
 
 ## Linking
 
-Alternatively, to apply the settings of a given user configureation after this repsoitory cloning, execute the
+Alternatively, to apply the settings of a given user configuration after this repository cloning, execute the
 following command. The `make_links.sh` script will be run in the specified directory.
 
 ```git
@@ -54,4 +67,5 @@ The following OS options have associated `make_links.sh` scripts: \
 [`wsl`](wsl)
 
 ## Sensitive data
+
 [`private`](private) - see <https://github.com/jonlighthall/config_private> \
