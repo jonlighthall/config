@@ -20,6 +20,7 @@ function set_ftab() {
     # set alternate tabbing here
     #guide_tabs
     # if fTAB is unset or null, then assign default value
+    # ...................123
     export fTAB=${fTAB:='   '}
 }
 
