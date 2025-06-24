@@ -216,19 +216,13 @@ if $do_test_color; then
         # find the culprit
         echo -e "${TAB}looking for offending entry..."        
         for item in $(\ls -a); do
-            timeout -s 9 1s \ls -lda --color ${item} 1>/dev/null || echo -e "${TAB}${BAD}FAIL ${item}${RESET}"
+            timeout -s 9 1s \ls -lda --color "${item}" 1>/dev/null || echo -e "${TAB}${BAD}FAIL ${item}${RESET}"
         done        
     else
-	      vecho -en "${GOOD}OK${RESET}"
-        if [[ $RETVAL -eq 0 ]]; then
-       	    vecho
-        else
-            vecho -e " ${GRAY}RETVAL=$RETVAL${RESET}"
-        fi
         # list broken links
         itab
         for item in $(\ls -a); do
-            timeout -s 9 1s [ -e ${item} ] 1>/dev/null || \ls --color -dla ${item} | awk '{print $9" "$10" "$11}' | sed "s/^/${TAB}/"
+            timeout -s 9 1s [ -e "${item}" ] 1>/dev/null #|| \ls --color -dla "${item}" | awk '{print $9" "$10" "$11}' | sed "s/^/${TAB}/"
         done
         dtab        
     fi
