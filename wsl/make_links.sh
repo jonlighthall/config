@@ -74,15 +74,16 @@ for prog in make_links_external.sh; do
 done
 
 # make links to files and directories within repo
-cbar "Start Linking Repo Files"
+
 set -e
 
 # set target and link directories
 sys_name=$(basename "$src_dir_phys")
 target_dir="${config_dir}/${sys_name}"
 link_dir=$HOME
-check_link_dir "$link_dir"
+check_link_dir "${link_dir}"
 
+cbar "Start Linking Repo Files"
 # list of files to be linked, unconditionally
 for my_link in .bash_aliases .bash_logout .bash_profile .dircolors .emacs.d .hushlogin .inputrc .kshrc .rootrc; do
     # define target (source)
