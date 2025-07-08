@@ -24,7 +24,7 @@ bar "upgrade and fix missing..."
 
 # install packages
 bar "install packages..."
-for PACK in git; do
+for PACK in emacs git hostname; do
     echo "installing ${PACK}..."
     sudo ${PACK_MAN} install ${OPT} ${PACK}
 done
