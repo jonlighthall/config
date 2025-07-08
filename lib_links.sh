@@ -304,7 +304,7 @@ function do_link() {
 
     # begin linking...
     itab
-    echo -en "${TAB}link name ${VALID}${link_name}${RESET}... "
+    echo -n "${TAB}link name ${link_name}... "
     ((++elin))
 
     # first, check for existing copy
@@ -368,9 +368,10 @@ function do_link() {
                     mv -v "${link_name}" "${link_copy}"
                 fi
             else
-                # issue warning
+                # check if the link exists and the link directory is writable
                 if [ -L "${link_name}" ] && [ -w "${link_dir}" ] && [ ! -w "${link_name}" ]; then
                     echo -en "${GRH}is not writeable${RESET} and "
+                    # get link modification date
                     if [ -e "${link_name}" ]; then
                         echo "will be backed up..."
                         local mdate=$(date -r "${link_name}" +'%Y-%m-%d-t%H%M')
@@ -378,11 +379,12 @@ function do_link() {
                         echo "is a broken link..."
                         local mdate=$(stat -c '%y' "${link_name}" | sed 's/\(^[0-9-]*\) \([0-9:]*\)\..*$/\1-t\2/' | sed 's/://g')
                     fi
-                    # backup/rename existing file
+                    # backup/rename existing link
                     echo -en "${TAB}"
                     local link_copy="${link_name}_${mdate}"
                     mv -v "${link_name}" "${link_copy}"
                 else
+                    # issue warning
                     echo -en "${BAD}cannot be written to"
                     if [ "$EUID" -ne 0 ]; then
                         echo -e "\n${TAB}${BAD}This command must be run as root!${RESET}"
