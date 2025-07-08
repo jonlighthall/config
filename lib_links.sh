@@ -304,7 +304,7 @@ function do_link() {
 
     # begin linking...
     itab
-    echo -n "${TAB}link name ${link_name}... "
+    echo -en "${TAB}link name ${VALID}${link_name}${RESET}... "
     ((++elin))
 
     # first, check for existing copy
@@ -370,9 +370,7 @@ function do_link() {
             else
                 # issue warning
                 if [ -L "${link_name}" ] && [ -w "${link_dir}" ] && [ ! -w "${link_name}" ]; then
-                    echo -e "${TAB}${link_name} is link... "
-                    echo -e "${TAB}${link_dir} is writable... "
-                    echo -e "${TAB}${GRH}cannot write to ${link_name}${RESET}... "
+                    echo -en "${GRH}is not writeable${RESET} and "
                     if [ -e "${link_name}" ]; then
                         echo "will be backed up..."
                         local mdate=$(date -r "${link_name}" +'%Y-%m-%d-t%H%M')
