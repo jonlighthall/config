@@ -6,23 +6,19 @@ Settings specific to Cygwin, MinGW, and Git Bash are found in [cygwin](cygwin).
 
 ## Prerequisites
 
-### SSH keys
+### Connectivity (WSL)
 
-A password-protected SSH key is required when cloning via SSH.
-
-The contents of `.ssh` from a working server will first need to be copied to the new server with the command
-`scp -rp ~/.ssh user@server:~/`
-
+Install wsl-vpnkit as necessary: https://github.com/sakai135/wsl-vpnkit
 
 ### Git
 
 Install git with one of the following commands.
-> Ubuntu:
+> Debian (Ubuntu):
 
         sudo apt install git -y
 
 
-> Oracle:
+> Red Hat (Oracle, Rocky Linux):
 ```
     sudo dnf install git -y
 ```
@@ -40,6 +36,14 @@ Clone the repository with one of the following commands.
 ```
     git clone git@github.com:jonlighthall/config.git
 ```
+
+### SSH keys
+
+A password-protected SSH key is required when cloning via SSH.
+
+The contents of `.ssh` from a working server will first need to be copied to the new server with the command
+`scp -rp ~/.ssh user@server:~/`
+
 
 ## Cloning other repositories
 
