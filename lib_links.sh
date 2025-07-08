@@ -369,6 +369,22 @@ function do_link() {
                 fi
             else
                 # issue warning
+                if [ -L "${link_name}" ] && [ ! -w "${link_name}" ]; then
+                    echo -en "${TAB}${GRH}${link_name} is link${RESET}... "
+                    echo -en "${TAB}${GRH}cannot write to ${link_name}${RESET}... "
+                    if [ -e "${link_name}" ]; then
+                        echo "will be backed up..."
+                        local mdate=$(date -r "${link_name}" +'%Y-%m-%d-t%H%M')
+                    else
+                        echo "is a broken link..."
+                        local mdate=$(stat -c '%y' "${link_name}" | sed 's/\(^[0-9-]*\) \([0-9:]*\)\..*$/\1-t\2/' | sed 's/://g')
+                    fi
+                    # backup/rename existing file
+                    echo -en "${TAB}"
+                    local link_copy="${link_name}_${mdate}"
+                    mv -v "${link_name}" "${link_copy}"
+                fi
+
                 echo -en "${BAD}cannot be written to"
                 if [ "$EUID" -ne 0 ]; then
                     echo -e "\n${TAB}${BAD}This command must be run as root!${RESET}"
