@@ -369,9 +369,10 @@ function do_link() {
                 fi
             else
                 # issue warning
-                if [ -L "${link_name}" ] && [ ! -w "${link_name}" ]; then
-                    echo -en "${TAB}${GRH}${link_name} is link${RESET}... "
-                    echo -en "${TAB}${GRH}cannot write to ${link_name}${RESET}... "
+                if [ -L "${link_name}" ] && [ -w "${link_dir}" ] && [ ! -w "${link_name}" ]; then
+                    echo -e "${TAB}${link_name} is link... "
+                    echo -e "${TAB}${link_dir} is writable... "
+                    echo -e "${TAB}${GRH}cannot write to ${link_name}${RESET}... "
                     if [ -e "${link_name}" ]; then
                         echo "will be backed up..."
                         local mdate=$(date -r "${link_name}" +'%Y-%m-%d-t%H%M')
@@ -383,14 +384,14 @@ function do_link() {
                     echo -en "${TAB}"
                     local link_copy="${link_name}_${mdate}"
                     mv -v "${link_name}" "${link_copy}"
+                else
+                    echo -en "${BAD}cannot be written to"
+                    if [ "$EUID" -ne 0 ]; then
+                        echo -e "\n${TAB}${BAD}This command must be run as root!${RESET}"
+                    fi
+                    dtab 2
+                    return 1
                 fi
-
-                echo -en "${BAD}cannot be written to"
-                if [ "$EUID" -ne 0 ]; then
-                    echo -e "\n${TAB}${BAD}This command must be run as root!${RESET}"
-                fi
-                dtab 2
-                return 1
             fi
             #dtab 2
         fi
