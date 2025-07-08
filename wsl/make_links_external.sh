@@ -85,11 +85,11 @@ link_dir_list=( "${link_dir}" )
 echo -e "${TAB}${UL}check directories${RESET}"
 itab
 # test directories
-for dir in "${target_dir_list[@]}"; do 
+for dir in "${target_dir_list[@]}"; do
     check_target $dir
 done
 
-for dir in "${link_dir_list[@]}"; do 
+for dir in "${link_dir_list[@]}"; do
     check_link_dir $dir
 done
 dtab
@@ -178,9 +178,18 @@ dtab
 
 # define host and distro
 if command -v wsl.exe >/dev/null; then
-	  decho "${TAB}WSL defined... "  
+	  decho "${TAB}WSL defined... "
     # get host name
-	  host_name=$(hostname)
+    itab
+    if command -v hostname >/dev/null; then
+        decho -n "${TAB}Debian like: "
+        host_name=$(hostname -s)
+    else
+        decho -en "${TAB}${RED}Red Hat${RESET} like: "
+        host_name=$(cat /etc/hostname)
+    fi
+    decho "host name is ${host_name}"
+    dtab
 
 	  # get distro name
 	  if [ -f /etc/os-release ]; then
@@ -195,8 +204,9 @@ if command -v wsl.exe >/dev/null; then
 
 	  # convert to lower case
 	  distro_name=$(echo "$distro" | tr '[:upper:]' '[:lower:]')
-    
-    #  * ~/repos    
+    # remove spaces
+    distro_name=$(echo "${distro_name}" | sed 's, ,_,g')
+    #  * ~/repos
     #  * ~/sync/repos
     #  * ~/offline/repos
 
@@ -226,12 +236,12 @@ if command -v wsl.exe >/dev/null; then
     homepath_repo="${homepath_distro}/${repo_name}"
 
     make_dir_list+=( "${onedrive_repo}" "${homepath_repo}" "${link_dir}/${repo_name}")
-    
+
     dtab
     # create directories
     echo -e "${TAB}${UL}create repository directories${RESET}"
     itab
-    for dir in "${make_dir_list[@]}"; do 
+    for dir in "${make_dir_list[@]}"; do
         do_make_dir $dir
     done
     dtab
@@ -242,7 +252,7 @@ if command -v wsl.exe >/dev/null; then
     #echo "${TAB}creating links inside Onedrive..."
     echo -n "${TAB}${home_name}: "
     do_link "${onedrive_home}" "${link_dir}/${home_name}"
-    
+
     # online dir
     # -----------
     #define target (source)
@@ -257,7 +267,7 @@ if command -v wsl.exe >/dev/null; then
     # offline dir
     # ------------
     #echo "${TAB}creating link outside of Onedrive..."
-    
+
     # define target (source)
 	  wdir="${homepath_distro}"
     # define link name (destination)
