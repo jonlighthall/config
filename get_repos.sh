@@ -175,19 +175,28 @@ for my_repo in cpp fortran hello nrf python; do
 	  check_target ${target}
     RETVAL=$?
 		itab
-    if [ $RETVAL -ne 0 ]; then 
+    if [ $RETVAL -ne 0 ]; then
 		    echo "${TAB}cloning $my_repo..."
 		    git clone ${github_auth}$my_repo ${target}
         dtab
 	  fi
     dtab 2
-    
+
 	  # begin linking...
     echo "${TAB}linking $my_repo..."
     itab
     do_link "${target}" "${link_name}"
     do_link "${link_name}" "${edir}/${my_repo}"
     dtab
+
+    make_name="${target}/${make_links_name}"
+    if [ -f "${make_name}" ]; then
+        make_dir=$(dirname "${make_name}")
+        pushd ${make_dir}
+        "${make_name}"
+        popd
+    fi
+
 done
 dtab
 echo -e "${BOLD}done cloning ${group_name} repos${RESET}"
@@ -210,12 +219,12 @@ for my_repo in bash fortran_utilities; do
 	  check_target ${target}
     RETVAL=$?
 		itab
-    if [ $RETVAL -ne 0 ]; then 
+    if [ $RETVAL -ne 0 ]; then
 			  echo "${TAB}cloning $my_repo..."
 		    git clone ${github_auth}$my_repo ${target}
         dtab
 
-	      # run make_links after cloning        
+	      # run make_links after cloning
         prog1=${target}/${make_links_name}
         prog2=${target}/bin/${make_links_name}
         echo -ne "${TAB}${make_links_name}... "
@@ -228,7 +237,7 @@ for my_repo in bash fortran_utilities; do
             fi
         else
             echo "not found"
-        fi        
+        fi
 	  fi
     dtab 2
 
@@ -243,6 +252,15 @@ for my_repo in bash fortran_utilities; do
     # "utils".
     do_link "${link_name}" "${udir}/${my_repo}"
     dtab
+
+    make_name="${target}/${make_links_name}"
+    if [ -f "${make_name}" ]; then
+        make_dir=$(dirname "${make_name}")
+        pushd ${make_dir}
+        "${make_name}"
+        popd
+    fi
+
 done
 dtab
 
@@ -295,7 +313,7 @@ for my_repo in batch powershell; do
 		    git clone ${github_auth}$my_repo ${target}
         dtab
 
-        # run make_links after cloning        
+        # run make_links after cloning
         prog1=${target}/${make_links_name}
         prog2=${target}/bin/${make_links_name}
         echo -ne "${TAB}${make_links_name}... "
@@ -308,9 +326,9 @@ for my_repo in batch powershell; do
             fi
         else
             echo "not found"
-        fi  
+        fi
 	  fi
-    dtab 2    
+    dtab 2
 
 	  # begin linking...
     echo "${TAB}linking $my_repo..."
@@ -348,13 +366,13 @@ for my_repo in matlab; do
 	  check_target ${target}
     RETVAL=$?
 		itab
-    if [ $RETVAL -ne 0 ]; then 
+    if [ $RETVAL -ne 0 ]; then
 		    echo "${TAB}cloning $my_repo..."
 		    git clone ${github_auth}$my_repo ${target}
         dtab
 	  fi
     dtab 2
-    
+
 	  # begin linking...
     echo "${TAB}linking $my_repo..."
     itab
