@@ -102,7 +102,7 @@ fi
 SYS_NAME=wsl
 decho "${TAB}checking host name..."
 itab
-if command -v hostname ; then
+if command -v hostname >/dev/null; then
     decho -n "${TAB}Debian like: "
     HOST_NAME=$(hostname -s)
 else
