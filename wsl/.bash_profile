@@ -100,7 +100,17 @@ fi
 
 # system dependencies
 SYS_NAME=wsl
-HOST_NAME=$(hostname -s)
+decho "${TAB}checking host name..."
+itab
+if command -v hostname ; then
+    decho -n "${TAB}Debian like: "
+    HOST_NAME=$(hostname -s)
+else
+    decho -en "${TAB}${RED}Red Hat${RESET} like: "
+    HOST_NAME=$(cat /etc/hostname)
+fi
+decho "host name is ${HOST_NAME}"
+dtab
 vecho -e "${TAB}applying ${SYS_NAME} settings on ${PSHOST}${HOST_NAME}${RESET}"
 
 # save login timestamp to history
@@ -127,13 +137,13 @@ if [ -e $hist_file ]; then
         if [ "${VB}" = true ]; then
             echo "${BAD}NOT WRITABLE{RESET}"
         else
-            echo "$hist_file not writable"            
+            echo "$hist_file not writable"
         fi
     fi
 else
     # not found
     if [ "${VB}" = true ]; then
-        echo "${BAD}NOT FOUND{RESET}"
+        echo -e "${BAD}NOT FOUND{RESET}"
     else
         echo "$hist_file not found"
     fi

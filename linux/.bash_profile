@@ -25,7 +25,15 @@ if [[ "$-" == *i* ]];then
 
     # set tab
     TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
-    echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
+
+    # -------------------------
+    # set debug level if unset
+    export DEBUG=${DEBUG=0}
+    # -------------------------
+
+    if [ ${DEBUG:-0} -gt 0 ]; then
+        echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
+    fi
 else
     echo "${TAB-}${BASH_SOURCE##*/}: non-interactive shell" >&2
     echo -e "${TAB-}\x1B[1;31mWARNING: ${BASH_SOURCE##*/} is intended for interactive shells only\x1B[m" >&2
@@ -42,11 +50,6 @@ else
     echo -e "${TAB-}\x1B[;31mWARNING: ${BASH_SOURCE##*/} is intended for login-shells only\x1B[m" >&2
 fi
 
-# -------------------------
-# set debug level if unset
-export DEBUG=${DEBUG=0}
-# -------------------------
-
 # print source
 if [ ${DEBUG:-0} -gt 0 ]; then
     echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
@@ -62,13 +65,13 @@ if [ ${DEBUG} -gt 0 ]; then
     export VB=true
 fi
 
-config_dir=${HOME}/config
 # load bash utilities
+config_dir=${HOME}/config
 fpretty=${config_dir}/.bashrc_pretty
 if [ -e $fpretty ]; then
     if [ "${VB}" = true ]; then
         # remember, if .bashrc_pretty hasn't been loaded yet, vecho is not defined
-        echo "loading $fpretty..."
+        echo "${TAB-}loading $fpretty..."
     fi
     source $fpretty
     RETVAL=$?
@@ -83,6 +86,7 @@ else
     echo "${TAB}$fname not found"
 fi
 
+# check if VB is true
 if [ "${VB}" = true ]; then
     print_source
     if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
@@ -93,50 +97,72 @@ fi
 
 # system dependencies
 SYS_NAME=linux
-HOST_NAME=$(hostname -s)
+decho "${TAB}checking host name..."
+itab
+if command -v hostname ; then
+    decho -n "${TAB}Debian like: "
+    HOST_NAME=$(hostname -s)
+else
+    decho -en "${TAB}${RED}Red Hat${RESET} like: "
+    HOST_NAME=$(cat /etc/hostname)
+fi
+decho "host name is ${HOST_NAME}"
+dtab
 vecho -e "${TAB}applying ${SYS_NAME} settings on ${PSHOST}${HOST_NAME}${RESET}"
 
 # save login timestamp to history
-export hist_file=${HOME}/.bash_history
-itab
-vecho -en "${TAB}checking ${YELLOW}${hist_file}${RESET}... "
+hist_file=${HOME}/.bash_history
+hist_file_can=$(readlink -f "${hist_file}")
+vecho -en "${TAB}appending login timestamp to ${YELLOW}${hist_file_can##*/}${RESET}... "
+# check if hist_file exists
 if [ -e $hist_file ]; then
-    vecho -e "${GOOD}OK${RESET}"
-    hist_file_can=$(readlink -f "${hist_file##*/}")
-    vecho -en "${TAB}appending login timestamp to ${YELLOW}${hist_file_can}${RESET}... "
-    echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from ${HOST_NAME}" >>$hist_file
-    RETVAL=$?
-    if [ $RETVAL -eq 0 ]; then
-        vecho -e "${GOOD}OK${RESET}"
-    else
-        if [ "${VB}" = true ]; then
-            echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+    # check if hist_file is writable
+    if [ -w $hist_file ]; then
+        echo "#$(date +'%s') LOGIN  $(date +'%a %b %d %Y %R:%S %Z') from ${HOST_NAME}" >>$hist_file
+        RETVAL=$?
+        if [ $RETVAL -eq 0 ]; then
+            vecho -e "${GOOD}OK${RESET}"
         else
-            echo "echo to $hist_file failed"
+            if [ "${VB}" = true ]; then
+                echo -e "${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+            else
+                echo "echo to $hist_file failed"
+            fi
+        fi
+    else
+        # found, not writable
+        if [ "${VB}" = true ]; then
+            echo "${BAD}NOT WRITABLE{RESET}"
+        else
+            echo "$hist_file not writable"
         fi
     fi
 else
+    # not found
     if [ "${VB}" = true ]; then
         echo -e "${BAD}NOT FOUND{RESET}"
     else
         echo "$hist_file not found"
     fi
 fi
-dtab
+
 # load system-dependent interactive shell settings
-fname=${config_dir}/${SYS_NAME}/.bashrc
-vecho -e "${TAB}loading $fname... ${RESET}"
-if [ -f $fname ]; then
-    source $fname
-    RETVAL=$?
-    if [ $RETVAL -eq 0 ]; then
-        vecho -e "${TAB}$fname ${GOOD}OK${RESET}"
+declare -ax LIST_PROF
+LIST_PROF=("${config_dir}/${SYS_NAME}/.bashrc")
+for FILE_PROF in $LIST_PROF; do
+    vecho -e "${TAB}loading $FILE_PROF... ${RESET}"
+    if [ -f $FILE_PROF ]; then
+        source $FILE_PROF
+        RETVAL=$?
+        if [ $RETVAL -eq 0 ]; then
+            vecho -e "${TAB}$FILE_PROF ${GOOD}OK${RESET}"
+        else
+            echo -e "${TAB}$FILE_PROF ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+        fi
     else
-        echo -e "${TAB}$fname ${BAD}FAIL${RESET} ${GRAY}RETVAL=$RETVAL${RESET}"
+        echo "${TAB}$FILE_PROF not found"
     fi
-else
-    echo "${TAB}$fname not found"
-fi
+done
 
 # print runtime duration
 if [ "${VB}" = true ]; then
@@ -155,3 +181,11 @@ utop 3
 
 # print welcome message
 echo "${TAB}Welcome to ${HOST_NAME}"
+
+# deallocate variables
+unset FILE_PROF
+unset LIST_PROF
+unset fpretty
+unset hist_file
+
+return 0
