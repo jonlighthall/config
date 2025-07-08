@@ -14,17 +14,13 @@ fi
 PACK_MAN=dnf
 OPT="-y"
 
-# update
-bar "update..."
-#sudo ${PACK_MAN} update
-
 # upgrade
-bar "upgrade and fix missing..."
-#sudo ${PACK_MAN} upgrade ${OPT}
+bar "refresh and upgrade..."
+sudo ${PACK_MAN} upgrade ${OPT} --refresh --allowerasing --bugfix
 
 # install packages
 bar "install packages..."
-for PACK in emacs git hostname; do
+for PACK in emacs gcc-gfortan git hostname; do
     echo "installing ${PACK}..."
     sudo ${PACK_MAN} install ${OPT} ${PACK}
 done
@@ -32,13 +28,11 @@ done
 # see github.com/jonlighthall/bash for X11 test
 
 # re-check
-bar "upgrade and fix missing..."
-#sudo ${PACK_MAN} upgrade ${OPT}
+bar "refresh and upgrade..."
+sudo ${PACK_MAN} upgrade ${OPT} --allowerasing
 
 # cleanup
-bar "autoremove and purge..."
-#sudo ${PACK_MAN} autoremove --purge -y
-bar "autoclean..."
-#sudo ${PACK_MAN} autoclean
+bar "autoremove..."
+sudo ${PACK_MAN} autoremove ${OPT}
 bar "clean..."
-#sudo ${PACK_MAN} clean
+sudo ${PACK_MAN} clean all -v
