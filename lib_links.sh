@@ -77,7 +77,25 @@ function check_target() {
     echo -en "target ${type}${target##*/}${RESET}... "
     export elin=0
     if [ -e "${target_canon}" ]; then
-        echo -e "${GOOD}exists${RESET}"
+        echo -en "${GOOD}exists${RESET}"
+
+        # check attributes
+        local attrib=""
+        [ -s "${target_canon}" ] || attrib+="${MAGENTA}empty${RESET} "
+        local perms=""
+
+        # Check if target_canon is readable, writable, and executable
+        [ -r "${target_canon}" ] && perms+="read/"
+        [ -w "${target_canon}" ] && perms+="write/"
+        [ -x "${target_canon}" ] && perms+="execute/"
+
+        if [ -n "$perms" ]; then
+            # Print all but the last character in perms (remove trailing space)
+            echo -e " (${attrib}${perms::-1})"
+        else
+            echo -e " ${attrib}${BAD}no read/write/execute permissions${RESET}"
+        fi
+
         return 0
     else
         echo -e "${GRH}does not exist${RESET}"
@@ -128,7 +146,7 @@ function print_OK() {
     echo -e "${TAB}target ${type}${target##*/}${RESET}... ${GOOD}OK${RESET}"
 }
 
-function print_stat() {   
+function print_stat() {
     if [ $# -lt 1 ]; then
         echo -e "${GRAY}UNKNOWN${RESET}"
         return 1
