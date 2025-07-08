@@ -488,10 +488,20 @@ function do_link_exe() {
     echo ${perm}
     # the target files will have the required permissions added to the existing
     # permissions
-    if [[ ${perm} -le ${permOK} ]] || [[ ! (-f "${target}" && -x "${target}") ]]; then
-        echo -en "${TAB}${GRH}adding permissions${RESET} to ${permOK}... "
-        chmod +${permOK} "${target}" || chmod u+rx "${target}"
-        print_stat $?
+    if [[ ${perm} -lt ${permOK} ]] || [[ ! (-f "${target}" && -x "${target}") ]]; then
+        if [[ ${perm} -ge ${permOK} ]] && [[ ! (-f "${target}" && -x "${target}") ]]; then
+            echo -e "${TAB}permissions ${YELLOW}OK${RESET}, but ${GRH}target is not executable${RESET}"
+        fi
+    echo -en "${TAB}${GRH}adding permissions${RESET}... "
+        if [ -w "${target}" ]; then
+            chmod +${permOK} "${target}" || chmod u+rx "${target}"
+            print_stat $?
+        else
+            print_stat 1
+            echo -e "${TAB}${BAD}cannot change permissions: target is not writable${RESET}"
+            dtab 2
+            return 1
+        fi
     else
         echo -e "${TAB}permissions ${GOOD}OK${RESET}"
     fi
