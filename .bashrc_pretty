@@ -39,9 +39,10 @@ else
     # otherwise continue loading
 fi
 
-
-# set debug level
-declare -i DEBUG=${DEBUG:=0} # assign default value if DEBUG is unset or null
+# ---------------------------------
+# set debug level if unset or null
+declare -i DEBUG=${DEBUG:=0}
+# ---------------------------------
 
 # If running interactively, print source
 if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
@@ -153,6 +154,14 @@ function load_libs() {
     done
     
     fname="${HOME}/utils/bash/git/lib_git.sh"
+    if [ -e "${fname}" ]; then
+        if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
+            echo "${TAB}loading $(basename ${fname})"
+        fi
+        source ${fname}
+    fi
+
+    fname="${HOME}/utils/bash/progress_report.sh"
     if [ -e "${fname}" ]; then
         if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
             echo "${TAB}loading $(basename ${fname})"

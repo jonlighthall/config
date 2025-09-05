@@ -26,7 +26,7 @@ function get_run_type() {
     local -i N_BOTTOM=$((${#FUNCNAME[@]} - 1))
 
     ddecho "N_BOTTOM = $N_BOTTOM"
-    decho "FUNCNAME[$N_BOTTOM] = ${FUNCNAME[$N_BOTTOM]}"
+    decho "${TAB}FUNCNAME[$N_BOTTOM] = ${FUNCNAME[$N_BOTTOM]}"
 
     if [[ "${FUNCNAME[$N_BOTTOM]}" =~ "main" ]]; then
         decho "bottom of stack is main"
@@ -35,11 +35,11 @@ function get_run_type() {
         export IS_SOURCED=false
     else
         if [[ "${FUNCNAME[$N_BOTTOM]}" =~ "source" ]]; then
-            decho "bottom of stack is source"
-            decho "root invocation ${BASH_SOURCE[$N_BOTTOM]} is... sourced?"
+            decho "${TAB}bottom of stack is source"
+            decho "${TAB}root invocation ${BASH_SOURCE[$N_BOTTOM]} is... sourced?"
         else
-            decho "bottom of stack is not main: ${FUNCNAME[$N_BOTTOM]}"
-            decho "root invocation ${BASH_SOURCE[$N_BOTTOM]} is a shell function"
+            decho "${TAB}bottom of stack is not main: ${FUNCNAME[$N_BOTTOM]}"
+            decho "${TAB}root invocation ${BASH_SOURCE[$N_BOTTOM]} is a shell function"
         fi
         RUN_TYPE="sourcing"
         export IS_SOURCED=true
