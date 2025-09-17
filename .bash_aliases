@@ -51,10 +51,10 @@ alias diffy='diff --color=always --suppress-common-lines -yiEZbwB --exclude=.git
 # find
 alias f='find -L ./ -not -path "*/.git*/*"' # find, ignoring .git
 alias fb='ff | perl -lne "print if not -T"' # find binary
-alias fd='f -type d' # find directory
-alias fe='f -empty'  # find empty
-alias fed='f -empty -print -delete' # find and delete empty
-alias ff='f -type f' # find file
+alias fd='f -type d'                        # find directory
+alias fe='f -empty'                         # find empty
+alias fed='f -empty -print -delete'         # find and delete empty
+alias ff='f -type f'                        # find file
 alias ffi='ff -iname'
 alias fl='find -L ./ \( -type l -o -xtype l \) -exec ls --color -l {} \;' # find link
 
@@ -82,12 +82,12 @@ alias hgt='history | grep "^[0-9 ]\{0,6\}  [0-9\-]\{10\} " | grep'
 alias hl="\cat ~/.bash_history | sed '/^#[0-9]\{10\}/d' | awk '{print length, \$0}' | sort -n | uniq -c | sort -n -r | sed 's/^\([ \t]*[0-9]*\) [0-9]* \(.*$\)/\1 \2/' | head -n 20"
 
 # list
-alias lS='ls -ltS' # list by size
-alias la='ls -la' # list all
+alias lS='ls -ltS'    # list by size
+alias la='ls -la'     # list all
 alias lh='ls -ld .?*' # list hidden only
 alias ls='ls -l --color'
 alias lt='ls -ltr --time-style=long-iso' # list by time
-alias lsd='ls -d */' # list directories
+alias lsd='ls -d */'                     # list directories
 
 alias mv='mv -bv' # make a backup of each existing destination file, verbose
 
@@ -101,24 +101,23 @@ alias du2='duf --max-depth=2'
 # disk usage, formatted
 function duf {
     du -k "$@" | sort -n |
-	      while read size fname; do
-     	      for unit in k M G T P E Z Y
-	          do
-		            if [ $size -lt 1024 ]; then
-		                echo -e "${size}${unit}B${fname}";
-		                break;
-		            fi;
-		            size=$((size/1024));
-	          done
-	      done
+    while read size fname; do
+        for unit in k M G T P E Z Y; do
+            if [ $size -lt 1024 ]; then
+                echo -e "${size}${unit}B${fname}"
+                break
+            fi
+            size=$((size / 1024))
+        done
+    done
 }
 
 function gitl {
     # alias gitl='git log --follow'
     if [ $# -ne 1 ]; then
-	      git log
+        git log
     else
-	      (git log --follow $@ >/dev/null) && git log --follow $@ || git log $@
+        (git log --follow $@ >/dev/null) && git log --follow $@ || git log $@
     fi
 }
 
@@ -126,27 +125,26 @@ function gitl {
 #   optional argument
 function nf {
     if [ $# -eq 0 ]; then
-	      dir_list=$PWD
+        dir_list=$PWD
     else
-	      dir_list="$@"
+        dir_list="$@"
     fi
-    for dir in $dir_list
-    do
-	      dir=${dir%/}
-	      n1=$(find "${dir}" -maxdepth 1 -type f | wc -l)
-
-	      # calculate length of longest number
-	      n2=$(find "${dir}" -type f | wc -l)
-	      nn=$(echo "(l($n2)/l(10))+1" | bc -l | sed 's/\..*$//')
-	      # account for commas
-	      nc=$((($nn-1)/3))
-	      np=$(($nn + $nc))
-
-	      # print results
-	      printf "%'${np}d files found in ${dir}\n" $n1
-	      if [ $n1 -ne $n2 ]; then
-	          printf "%'${np}d files found in ${dir}/*\n" $n2
-	      fi
+    for dir in $dir_list; do
+        dir=${dir%/}
+        n1=$(find "${dir}" -maxdepth 1 -type f | wc -l)
+        
+        # calculate length of longest number
+        n2=$(find "${dir}" -type f | wc -l)
+        nn=$(echo "(l($n2)/l(10))+1" | bc -l | sed 's/\..*$//')
+        # account for commas
+        nc=$((($nn - 1) / 3))
+        np=$(($nn + $nc))
+        
+        # print results
+        printf "%'${np}d files found in ${dir}\n" $n1
+        if [ $n1 -ne $n2 ]; then
+            printf "%'${np}d files found in ${dir}/*\n" $n2
+        fi
     done
 }
 if [ "${VB}" = true ]; then
@@ -164,9 +162,9 @@ function end() {
     export file2=$(readlink -f $2)
     echo "inputs are $file1 and $file2"
     #return 0
-
+    
     eval "emacs -nw --eval '(ediff-files \"${file1}\" \"${file2}\")'"
-
+    
 }
 
 # show top processes
@@ -180,11 +178,11 @@ function utop() {
         # set manually
         NP=3
     fi
-
+    
     set -u
-
+    
     # set line width to one less than the terminal width
-    local -i line_width=$(( $(tput cols) - 1 ))
+    local -i line_width=$(($(tput cols) - 1))
     # user ID
     local -r U_ID_old=1111499164
     local -r U_ID=$UID
@@ -199,15 +197,16 @@ function utop() {
     U_NAME_trunc+="+"
     decho "${U_NAME_trunc}"
     #echo "${U_NAME_trunc}" | sed "s/${U_NAME_trunc}/${U_NAME}/"
-
+    
     echo -e "\033[4mTop $NP processes by ${USER}:\x1b[0m"
-    (    ps ux --sort=-pcpu \
-             | head -n $((NP+1)) \
-             | sed "s/${U_ID_old}/${U_NAME}/" \
-             | sed "s/${U_ID}/${U_NAME}/" \
-             | awk '{printf "%-10s %5s %5s %5s %4s %5s %6s %s\n",$1,$2,$3,$4,$8,$9,$10,$11}' \
-             | cut -c -$line_width \
-             | sed "s/${U_NAME_trunc}/${U_NAME}/"
+    (
+        ps ux --sort=-pcpu |
+        head -n $((NP + 1)) |
+        sed "s/${U_ID_old}/${U_NAME}/" |
+        sed "s/${U_ID}/${U_NAME}/" |
+        awk '{printf "%-10s %5s %5s %5s %4s %5s %6s %s\n",$1,$2,$3,$4,$8,$9,$10,$11}' |
+        cut -c -$line_width |
+        sed "s/${U_NAME_trunc}/${U_NAME}/"
     ) | column -t
     echo
     set +u
@@ -223,11 +222,11 @@ function atop() {
         # set manually
         NP=3
     fi
-
+    
     set -u
-
+    
     # set line width to one less than the terminal width
-    local -i line_width=$(( $(tput cols) - 1 ))
+    local -i line_width=$(($(tput cols) - 1))
     # user ID
     local -r U_ID_old=1111499164
     local -r U_ID=$UID
@@ -242,29 +241,30 @@ function atop() {
     U_NAME_trunc+="+"
     decho "${U_NAME_trunc}"
     #echo "${U_NAME_trunc}" | sed "s/${U_NAME_trunc}/${U_NAME}/"
-
+    
     echo -e "\033[4mTop $NP processes on ${HOST_NAME}:\x1b[0m"
     (
-        ps aux --sort=-pcpu \
-            | head -n $((NP+1)) \
-            | sed "s/${U_ID}/\x1b\[32m${U_NAME}\x1b\[0m/" \
-            | sed "s/${U_ID_old}/\x1b\[33m${U_NAME}\x1b\[0m/" \
-            | awk '{printf "%-10s %5s %5s %5s %4s %5s %6s %s\n",$1,$2,$3,$4,$8,$9,$10,$11}' \
-            | cut -c -$line_width \
-            | sed "s/${U_NAME_trunc}/${U_NAME}/"
+        ps aux --sort=-pcpu |
+        head -n $((NP + 1)) |
+        sed "s/${U_ID}/\x1b\[32m${U_NAME}\x1b\[0m/" |
+        sed "s/${U_ID_old}/\x1b\[33m${U_NAME}\x1b\[0m/" |
+        awk '{printf "%-10s %5s %5s %5s %4s %5s %6s %s\n",$1,$2,$3,$4,$8,$9,$10,$11}' |
+        cut -c -$line_width |
+        sed "s/${U_NAME_trunc}/${U_NAME}/"
     ) | column -t | sed "s/${U_NAME}/${GREEN}${U_NAME}${RESET}/"
-
+    
     echo
     echo -e "\033[4mTop $NP processes by ${USER}:\x1b[0m"
-    (    ps ux --sort=-pcpu \
-             | head -n $((NP+1)) \
-             | sed "s/${U_ID_old}/${U_NAME}/" \
-             | sed "s/${U_ID}/${U_NAME}/" \
-             | awk '{printf "%-10s %5s %5s %5s %4s %5s %6s %s\n",$1,$2,$3,$4,$8,$9,$10,$11}' \
-             | cut -c -$line_width \
-             | sed "s/${U_NAME_trunc}/${U_NAME}/"
+    (
+        ps ux --sort=-pcpu |
+        head -n $((NP + 1)) |
+        sed "s/${U_ID_old}/${U_NAME}/" |
+        sed "s/${U_ID}/${U_NAME}/" |
+        awk '{printf "%-10s %5s %5s %5s %4s %5s %6s %s\n",$1,$2,$3,$4,$8,$9,$10,$11}' |
+        cut -c -$line_width |
+        sed "s/${U_NAME_trunc}/${U_NAME}/"
     ) | column -t
-
+    
     echo
     echo -e "\033[4mLast $NP log-ins by ${USER} on ${HOST_NAME}:\x1b[0m"
     # print full user and domain neames, full login and logout times and dates,
