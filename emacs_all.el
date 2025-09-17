@@ -18,6 +18,8 @@
 ;; Set line width for fortran and other
 (set 'fcols 72)
 (set 'ncols 80)
+(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+(set-face-foreground 'fill-column-indicator "color-253")
 
 ;; Tab settings
 ;; MATLAB tab size
@@ -294,4 +296,6 @@
           (lambda ()
             'turn-on-auto-fill
             (setq-local whitespace-line-column fcols)
-            (setq-local global-whitespace-mode 1)))
+            (setq-local global-whitespace-mode 1)
+            (setq fortran-line-number-indent 5)
+            (setq fortran-electric-line-number t)))
