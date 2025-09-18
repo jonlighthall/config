@@ -260,14 +260,18 @@ function print_stack() {
             fi
 
             # print stack element
-            echo "$j:$i:${FUNCNAME[i]}:${BASH_DIR[i]}:${BASH_FNAME[i]}:${BASH_LINENO[i]}"
+            local dir="${BASH_DIR[i]}"
+            if [ ${#dir} -gt 50 ]; then dir="...${dir: -47}"; fi
+            echo "$j:$i:${FUNCNAME[i]}:$dir:${BASH_FNAME[i]}:${BASH_LINENO[i]}"
             # check if source is linked
             if [[ "${BASH_SOURCE[$i]}" != "${BASH_CANON[$i]}" ]] && [ $DEBUG -gt 0 ]; then
                 # set color
                 ((idx++))
                 #echo -ne "${dcolor[idx]}"
                 # print link
-                echo -n "$j:$i:${FUNCNAME[i]}:${BASH_CANON_DIR[i]}:${BASH_CANON[i]##*/}:${BASH_LINENO[i]}"
+                local canon_dir="${BASH_CANON_DIR[i]}"
+                if [ ${#canon_dir} -gt 50 ]; then canon_dir="...${canon_dir: -47}"; fi
+                echo -n "$j:$i:${FUNCNAME[i]}:$canon_dir:${BASH_CANON[i]##*/}:${BASH_LINENO[i]}"
                 # reset color
                 ((idx--))
                 echo -e "${dcolor[idx]}"
