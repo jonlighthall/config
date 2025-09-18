@@ -262,7 +262,11 @@ function print_stack() {
             
             # print stack element
             local dir="${BASH_DIR[i]}"
-            if [ ${#dir} -gt $MAX_DIR_LEN ]; then dir="...${dir: -$((MAX_DIR_LEN - 3))}"; fi
+            if [ ${#dir} -gt $MAX_DIR_LEN ]; then
+                local start="${dir:0:$(( (MAX_DIR_LEN - 3) / 2 ))}"
+                local end="${dir: -$(( (MAX_DIR_LEN - 3) / 2 ))}"
+                dir="${start}...${end}"
+            fi
             echo "$j:$i:${FUNCNAME[i]}:$dir:${BASH_FNAME[i]}:${BASH_LINENO[i]}"
             # check if source is linked
             if [[ "${BASH_SOURCE[$i]}" != "${BASH_CANON[$i]}" ]] && [ $DEBUG -gt 0 ]; then
@@ -271,7 +275,11 @@ function print_stack() {
                 #echo -ne "${dcolor[idx]}"
                 # print link
                 local canon_dir="${BASH_CANON_DIR[i]}"
-                if [ ${#canon_dir} -gt $MAX_DIR_LEN ]; then canon_dir="...${canon_dir: -$((MAX_DIR_LEN - 3))}"; fi
+                if [ ${#canon_dir} -gt $MAX_DIR_LEN ]; then
+                    local start="${canon_dir:0:$(( (MAX_DIR_LEN - 3) / 2 ))}"
+                    local end="${canon_dir: -$(( (MAX_DIR_LEN - 3) / 2 ))}"
+                    canon_dir="${start}...${end}"
+                fi
                 echo -n "$j:$i:${FUNCNAME[i]}:$canon_dir:${BASH_CANON[i]##*/}:${BASH_LINENO[i]}"
                 # reset color
                 ((idx--))
