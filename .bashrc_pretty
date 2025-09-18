@@ -45,8 +45,16 @@ declare -i DEBUG=${DEBUG:=0}
 # ---------------------------------
 
 # If running interactively, print source
-if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
-    echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+if [[ "$-" == *i* ]]; then
+    # set tab
+    if [ -n "${TAB:-}" ]; then
+        TAB="${TAB}   "
+    else
+        TAB=${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}
+    fi
+    if [ ${DEBUG:-0} -gt 0 ]; then
+        echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+    fi
 fi
 
 # This function defines and exports:
@@ -65,7 +73,7 @@ function get_source() {
     if [ $N_BASH -lt 1 ]; then
         return 0
     fi
-
+    
     # define function level
     local -i FUNC_LEV
     # check if calling function is print*
@@ -77,7 +85,7 @@ function get_source() {
     else
         FUNC_LEV=1
     fi
-
+    
     # get canonical source name
     src_name=$(readlink -f ${BASH_SOURCE[${FUNC_LEV}]})
     # get short source name
@@ -120,25 +128,25 @@ function load_libs() {
             fi
         fi
     fi
-
+    
     if command -v decho &>/dev/null; then
         # print function name
         decho -e "${TAB}${INVERT}${FUNCNAME}${RESET}"
     fi
-
+    
     # load bash utils
     local fname
     local library
     get_source
     for library in links \
-                       traps\
-                       tabs \
-                       cond_echo \
-                       fmt \
-                       colors \
-                       stack \
-                       dbg \
-                       test
+    traps\
+    tabs \
+    cond_echo \
+    fmt \
+    colors \
+    stack \
+    dbg \
+    test
     do
         # use the canonical (physical) source directory for reference; this is
         # important if sourcing this file directly from shell
@@ -160,7 +168,7 @@ function load_libs() {
         fi
         source ${fname}
     fi
-
+    
     fname="${HOME}/utils/bash/progress_report.sh"
     if [ -e "${fname}" ]; then
         if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
@@ -168,7 +176,7 @@ function load_libs() {
         fi
         source ${fname}
     fi
-
+    
     if [ ! -z ${FPRETTY_LOADED+dummy} ]; then
         if [[ "$-" == *i* ]]; then
             cbar "${BOLD}libraries loaded${NORMAL}" # lib_fmt
