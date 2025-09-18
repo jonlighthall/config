@@ -23,6 +23,7 @@ if [[ "$-" == *i* ]];then
     else
         itab
     fi
+    echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
     echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
 else
     echo "${TAB-}${BASH_SOURCE##*/}: non-interactive shell" >&2
@@ -67,19 +68,19 @@ fi
 hist_file=${hist_file:=${HOME}/.bash_history}
 
 if [ -e $hist_file ]; then
-# history length (commands to save)
-export HISTFILESIZE=
-export HISTSIZE=
-# Don't put duplicate lines in the history
-export HISTCONTROL=ignoredups
-# commands to ignore
-export HISTIGNORE=$'clicker:exit:gita:l[a-zA-Z]:load_libs:s:x'
-# append to the history file, don't overwrite it
-shopt -s histappend
-# append history after every command (real time history)
-PROMPT_COMMAND="history -a;${PROMPT_COMMAND-}"
-# Timestamp history
-HISTTIMEFORMAT="%F %T "
+    # history length (commands to save)
+    export HISTFILESIZE=
+    export HISTSIZE=
+    # Don't put duplicate lines in the history
+    export HISTCONTROL=ignoredups
+    # commands to ignore
+    export HISTIGNORE=$'clicker:exit:gita:l[a-zA-Z]:load_libs:s:x'
+    # append to the history file, don't overwrite it
+    shopt -s histappend
+    # append history after every command (real time history)
+    PROMPT_COMMAND="history -a;${PROMPT_COMMAND-}"
+    # Timestamp history
+    HISTTIMEFORMAT="%F %T "
 else
     unset HISTFILE
     echo -e "${BAD}${hist_file} NOT FOUND{RESET}"

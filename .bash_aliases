@@ -23,6 +23,12 @@ else
         # load bash utilities
         fpretty=${HOME}/config/.bashrc_pretty
         if [ -e $fpretty ]; then
+            if [ -z ${fTAB:+dummy} ]; then
+                TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
+            else
+                itab
+            fi
+            echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
             source $fpretty
             print_ribbon
             if [[ "$-" == *i* ]]; then

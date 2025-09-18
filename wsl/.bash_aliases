@@ -9,7 +9,7 @@
 #   subshells. This is the subshell counterpart to ~/.bash_profile -> ~/config/wsl/.bash_profile
 #   and mimics its non-login behavior.
 #
-# Usage: Executed by bash (in ~/.bashrc) for interactive subshells. 
+# Usage: Executed by bash (in ~/.bashrc) for interactive subshells.
 #
 # Note: this file must use Unix line endings (LF)!
 #
@@ -23,16 +23,24 @@ if [[ "$-" == *i* ]]; then
     declare -i start_time=$(date +%s%N)
     # set "Verbose Bash" for conditional prints
     export VB=false
+    # -------------------------
     # set debug level if unset
-    export DEBUG=${DEBUG=0}  
+    export DEBUG=${DEBUG=0}
+    # -------------------------
+    # set tab
+    if [ -n "${TAB:-}" ]; then
+        TAB="${TAB}   "
+    else
+        TAB=${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}
+    fi
     # print source
     if [ ${DEBUG:-0} -gt 0 ]; then
-        echo -e "${TAB:=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+        echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
     fi
     # set "Verbose Bash" for conditional prints
     export VB=true
     # set debug level if unset
-    export DEBUG=${DEBUG=0}      
+    export DEBUG=${DEBUG=0}
     # clear terminal
     clear -x
     if [ ${DEBUG} -gt 0 ]; then
@@ -46,7 +54,7 @@ fpretty=${config_dir}/.bashrc_pretty
 if [ -e $fpretty ]; then
     if [ "${VB}" = true ]; then
         # remember, if .bashrc_pretty hasn't been loaded yet, vecho is not defined
-        echo "loading $fpretty..."
+        echo "${TAB}loading $fpretty..."
     fi
     source $fpretty
     RETVAL=$?
@@ -62,12 +70,12 @@ if [ -e $fpretty ]; then
 else
     echo "${TAB}$fname not found"
     set +eu
-fi    
+fi
 
 if [ "${VB}" = true ]; then
     print_source
-    echo -e "${TAB}SHLVL = $BROKEN$SHLVL$RESET"
-    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then    
+    echo -e "${TAB}SHLVL = ${BROKEN}${SHLVL}${RESET}"
+    if [[ "$-" == *i* ]] && [ ${DEBUG:-0} -gt 0 ]; then
         print_stack
     fi
     decho -e "${TAB}verbose bash printing is... ${GOOD}$VB${RESET}"
@@ -96,16 +104,17 @@ fi
 # print runtime duration
 if [ "${VB}" = true ]; then
     # reset tab
-    dtab
+    #   dtab
     # print timestamp
     print_done
     # print hidden text to force a new line before clearing screen
     vecho -e "\E[8mhello\E[28m"
 fi
 
+dtab
 # clear terminal
 clear -x
 
 # print welcome message
-echo "${TAB}Welcome to ${HOST_NAME}"
+echo "Welcome to ${HOST_NAME}"
 return 0
