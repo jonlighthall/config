@@ -38,7 +38,7 @@ if [[ "$-" == *i* ]]; then
         echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
     fi
     # set "Verbose Bash" for conditional prints
-    export VB=true
+    #export VB=true
     # set debug level if unset
     export DEBUG=${DEBUG=0}
     # clear terminal
@@ -104,14 +104,13 @@ fi
 # print runtime duration
 if [ "${VB}" = true ]; then
     # reset tab
-    #   dtab
+    dtab
     # print timestamp
     print_done
     # print hidden text to force a new line before clearing screen
     vecho -e "\E[8mhello\E[28m"
 fi
 
-dtab
 # clear terminal
 clear -x
 

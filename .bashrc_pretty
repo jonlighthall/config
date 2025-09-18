@@ -179,7 +179,9 @@ function load_libs() {
     
     if [ ! -z ${FPRETTY_LOADED+dummy} ]; then
         if [[ "$-" == *i* ]]; then
-            cbar "${BOLD}libraries loaded${NORMAL}" # lib_fmt
+            if [ "${VB:-false}" = true ]; then
+                cbar "${BOLD}libraries loaded${NORMAL}" # lib_fmt
+            fi
         fi
         if [ ${DEBUG:-0} -gt 1 ]; then
             lecho # lib_dbg

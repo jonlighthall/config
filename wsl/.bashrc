@@ -22,7 +22,7 @@
 #   system-default ~/.bashrc.
 #
 #   This file is also called by (is?) ~/config/wsl/.bashrc to keep shell and subshell settings
-#   consistient. It should be called directly by ~/.bash_profile -> ~/config/wsl/.bash_profile,
+#   consistent. It should be called directly by ~/.bash_profile -> ~/config/wsl/.bash_profile,
 #   and ~/config/wsl/.bashrc should be deleted.
 #
 # Note: this file must use unix line endings (LF)!
@@ -37,11 +37,11 @@ if [[ "$-" == *i* ]];then
         TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
     else
         itab
-    fi    
+    fi
     # print source
     if [ ${DEBUG:-0} -gt 0 ]; then
-        echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
         echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+        echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
     fi
 else
     echo "${TAB-}${BASH_SOURCE##*/}: non-interactive shell" >&2

@@ -28,7 +28,9 @@ else
             else
                 itab
             fi
-            echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+            if [ ${DEBUG:-0} -gt 0 ]; then
+                echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+            fi
             source $fpretty
             print_ribbon
             if [[ "$-" == *i* ]]; then

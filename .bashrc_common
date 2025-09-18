@@ -23,8 +23,10 @@ if [[ "$-" == *i* ]];then
     else
         itab
     fi
-    echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
-    echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
+    if [ ${DEBUG:-0} -gt 0 ]; then
+        echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
+        echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
+    fi
 else
     echo "${TAB-}${BASH_SOURCE##*/}: non-interactive shell" >&2
     echo -e "${TAB-}\x1B[1;31mWARNING: ${BASH_SOURCE##*/} is intended for interactive shells only\x1B[m" >&2
@@ -52,7 +54,9 @@ fi
 declare -i old_libDEBUG
 old_libDEBUG=${libDEBUG}
 libDEBUG=0
-print_ LC_COLLATE
+if [ "${VB:-false}" = true ]; then
+    print_ LC_COLLATE
+fi
 libDEBUG=${old_libDEBUG}
 unset old_libDEBUG
 
