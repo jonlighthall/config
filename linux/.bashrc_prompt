@@ -215,9 +215,9 @@ if $do_test_color; then
         echo -e "${TAB}--color=auto removed from ls alias"
         # find the culprit
         echo -e "${TAB}looking for offending entry..."
-        for item in $(\ls -a); do
+        while IFS= read -r -d '' item; do
             timeout -s 9 1s \ls -lda --color "${item}" 1>/dev/null || echo -e "${TAB}${BAD}FAIL ${item}${RESET}"
-        done
+        done < <(find . -maxdepth 1 -print0)
     else
         # list broken links
         itab
