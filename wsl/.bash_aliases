@@ -109,11 +109,13 @@ if [ "${VB}" = true ]; then
     print_done
     # print hidden text to force a new line before clearing screen
     vecho -e "\E[8mhello\E[28m"
+else
+    rtab
 fi
 
 # clear terminal
 clear -x
 
 # print welcome message
-echo "Welcome to ${HOST_NAME}"
+echo "${TAB}Welcome to ${HOST_NAME}"
 return 0
