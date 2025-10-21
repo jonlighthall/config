@@ -70,13 +70,14 @@ alias fl='find -L ./ \( -type l -o -xtype l \) -exec ls --color -l {} \;' # find
 alias gitb='git branch -vva --color=always'
 alias gitcp='git cherry-pick'
 alias gitd='git diff --color-moved=blocks --ignore-space-change'
-alias gitf='git fetch --all --verbose'
 alias gitdn='git diff --name-status'
+alias gitf='git fetch --all --verbose'
 alias gitr='git remote -v'
 alias gits='git status'
-alias gitsi='git status --ignored; echo; git branch -vva --color=always;echo; git remote -v; git stash list --date=local'
-alias gitsl='git stash list --date=local'
 alias gitsd='git diff $(git stash list | head -1 | sed "s/.*: \([a-z0-9]\{7\}\).*/\1/") stash'
+alias gitsi='git status --ignored; echo; git branch -vva --color=always;echo; git remote -v; git stash list --date=local' # git status ignored
+alias gitsl='git stash list --date=local'
+alias gitsu='git status -uno'
 
 # grep
 alias grep='grep --color=auto'
