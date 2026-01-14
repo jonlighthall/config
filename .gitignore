@@ -9,6 +9,7 @@
 **/
 
 # known directories
+!.ai/
 !apple/
 !cygwin/
 !git_bash/
