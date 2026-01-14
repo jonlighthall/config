@@ -10,11 +10,34 @@
 2. Read `CONTEXT.md` for project facts and decisions
 3. Ask clarifying questions if the project state is unclear
 
+# Instructions
+
+**Purpose:** Procedures and standing orders for AI agents working on this project.
+
+---
+
+## Quick Start
+
+1. Read this file for procedures
+2. Read `CONTEXT.md` for project facts and decisions
+3. Read the relevant topic's `CONTEXT.md` for specific background
+4. Read the relevant topic's `INSTRUCTIONS.md` for specific procedures
+
 ---
 
 ## Context Maintenance (Standing Order)
 
-When the user provides substantial clarifying information, **integrate it into the appropriate `.ai/` file without being asked**.
+### Why these files exist
+
+The `.ai/` folder exists **primarily for AI agent utility**—to help future AI sessions onboard quickly without re-asking questions the user has already answered. This is not general documentation; it's working memory for AI agents.
+
+**Implications:**
+- Write for an AI audience (your future self, essentially)
+- Optimize for fast comprehension at the start of a new session
+- Include decisions and their rationale, not just outcomes
+- Don't worry about making it "pretty" for humans—clarity and completeness matter more
+
+When the user provides substantial clarifying information, **integrate it into the appropriate `.ai/` file without being asked** (see table below).
 
 ### Where to put new information:
 
@@ -22,6 +45,31 @@ When the user provides substantial clarifying information, **integrate it into t
 |---------------------|-------------|
 | Project-wide decisions, facts, history | `.ai/CONTEXT.md` |
 | Project-wide procedures, standing orders | `.ai/INSTRUCTIONS.md` |
+| Topic-specific history, validation, decisions | `<topic>/CONTEXT.md` |
+| Topic-specific procedures, checklists | `<topic>/INSTRUCTIONS.md` |
+
+### When to create a topic folder:
+
+Topic folders add granularity but also overhead. **Default to project-wide files; split when justified.**
+
+**CREATE a topic folder when:**
+- The topic has its own lifecycle (can be "completed" independently)
+- It has unique decisions or terminology that don't apply elsewhere
+- Multiple AI sessions will focus specifically on this topic
+- Adding to project-wide files would exceed ~100 lines for this topic alone
+- You notice yourself scrolling past large blocks of irrelevant context to find what you need
+
+**DON'T create a topic folder when:**
+- It's a one-off task or short-term work
+- The context fits in a few paragraphs
+- It shares most decisions with the main project
+- You're unsure (start in project-wide files; split later if needed)
+
+**If topic folders already exist:** Use them. Don't consolidate without user direction.
+
+**Single source of truth:** When you create a topic folder, **move** the content—don't copy it. Project-wide files should contain brief pointers to topic files, not duplicated content. If you find duplication, eliminate it.
+
+**When you do create or reorganize:** Just do it and report what changed. Don't ask permission for organizational improvements—they're low-risk and you're the primary beneficiary. Explain your reasoning briefly so the user can object if they disagree, but don't treat obvious housekeeping as requiring approval.
 
 ### When to update:
 
@@ -40,150 +88,122 @@ When the user provides substantial clarifying information, **integrate it into t
 
 Context files exist so future AI sessions don't need to re-ask the same questions. If you receive substantial context and don't document it, the next session will be less effective.
 
+### Handling conflicts:
+
+Topic-specific files may override project-wide decisions, but **conflicts must be explicitly documented**.
+
+**If you notice a conflict:**
+1. Check if the topic file explicitly notes the override (e.g., "Exception: this component uses X despite project-wide guidance")
+2. If the override is documented → follow the topic-specific guidance
+3. If the override is NOT documented → ask the user which applies before proceeding
+
+**When creating an intentional override:** Add a note in the topic file explaining what is being overridden and why.
+
 ### Handling deprecated/superseded information:
 
-When new decisions override old ones:
+When harvesting context from old chats or updating documentation with newer decisions:
+
+**Newer decisions take precedence**, but preserve the evolution if it's instructive:
 
 ```markdown
 ### [Decision Name]
 **Current:** [What we do now]
 
 **Superseded:** Previously we tried [X] but switched because [reason].
+(Chat from YYYY-MM-DD)
 ```
 
-Preserve the old approach if it explains *why* we don't do something (prevents re-asking).
+**When to preserve the old approach:**
+- It explains *why* we don't do something (prevents re-asking)
+- It documents a failed experiment (prevents repeating mistakes)
+- It shows the evolution of thinking
+
+**When to simply delete:**
+- Trivial or obvious corrections
+- Typos/errors with no instructive value
+- Exploratory ideas that were never actually tried
+
+**If chronology is unclear:** Ask the user which version is current before overwriting.
+
+### If you cannot write to these files:
+
+Some AI tools have read-only access. If you receive substantial context but cannot update the `.ai/` files, summarize what should be added and ask the user to update the files manually.
 
 ---
 
 ## General Quality Standards
 
 ### Before Editing:
-1. Verify cross-platform compatibility — this repo spans Windows, macOS, Linux, WSL, Cygwin, MinGW, and Git Bash
-2. Check the environment-specific folder if the change is location-specific
-3. Understand symlink strategy before modifying linking logic
-4. For Emacs Lisp: verify version compatibility (test against documented minimum version)
+1. Verify you have sufficient context
+2. Check terminology against `CONTEXT.md`
+3. Use the author's preferred voice (see `CONTEXT.md`)
+4. Verify cross-platform compatibility — this repo spans Windows, macOS, Linux, WSL, Cygwin, MinGW, and Git Bash
+5. Understand symlink strategy before modifying linking logic
+6. For Emacs Lisp: verify version compatibility (minimum 26.1; guard newer features)
 
 ### After Editing:
-1. Verify the edit works as intended (run scripts if applicable)
-2. Check that you didn't break cross-platform compatibility
-3. Update `CONTEXT.md` if you made decisions that should persist
+1. Verify the edit didn't break anything (compilation, syntax, etc.)
+2. Update the relevant `CONTEXT.md` if you made decisions that should persist
+3. Check for errors introduced and cross-platform impact
 4. Verify symlinks and paths still resolve correctly on the target platform
 
 ### When Uncertain:
-- Ask clarifying questions about which environment(s) the change affects
-- Document assumptions in `CONTEXT.md`
-- Prefer minimal, targeted changes over extensive rewrites
-- Test on multiple platforms if possible (at minimum, document which platform(s) were tested)
+- Ask clarifying questions before making changes
+- Document assumptions in the relevant `CONTEXT.md`
+- Prefer minimal changes over extensive rewrites
+- Test on multiple platforms if possible (or note which platforms were considered)
 
 ---
 
-## This Project: Specific Procedures
+## Changelog Maintenance (Software Projects Only)
 
-### Emacs Configuration
+**Skip this section for document/paper-writing projects.**
 
-**File:** `emacs_all.el` (universal, loaded on all platforms)
+For versioned software, maintain a `CHANGELOG.md` following [Keep a Changelog](https://keepachangelog.com/) format:
 
-**Principles:**
-- Code must be compatible with Emacs 26.1 (minimum tested version)
-- Features introduced in newer versions (27.1+, 28.0+) must be guarded with version checks
-- Use `(when (>= emacs-major-version X) ...)` for version-specific features
-- Keep Lisp style consistent with existing code (defun, hooks, custom-set-variables)
+**When to add an entry:**
+- Affects user-facing behavior (CLI flags, output format, thresholds)
+- Changes classification semantics or comparison logic
+- Adds or removes major capabilities
+- Fixes bugs that affected results
 
-**Version check template:**
-```elisp
-;; display-fill-column-indicator-mode is only available in Emacs 27.1+
-(when (>= emacs-major-version 27)
-  (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
-  (set-face-foreground 'fill-column-indicator "color-253"))
+**When NOT to add an entry:**
+- Internal refactors with no user-visible change
+- Documentation updates
+- Code style/formatting changes
+
+**Categories:** Added, Changed, Fixed, Removed, Deprecated, Security
+
+**Format:**
+```markdown
+## [Unreleased]
+### Fixed
+- Sub-LSB threshold now correctly applies to differences below machine epsilon
 ```
 
-### Shell Scripts
-
-**Files:** `make_links.sh`, `get_repos.sh`, `install_repos.sh`, environment-specific `make_links.sh` in each folder
-
-**Principles:**
-- Must work in Bash (don't assume Zsh or other shells)
-- Environment-specific scripts should be in dedicated folders (e.g., `wsl/make_links.sh`, `windows/make_links.sh`)
-- Symlinks must be created with proper path handling (different on Windows vs. Unix)
-- Library files (`lib_*.sh`) provide common functionality — use them
-
-**Cross-platform path handling:**
-- WSL: Use `$(wslpath -w ...)` for Windows path conversion
-- Cygwin: Similar path conversion needed
-- Native Windows: Use native path separators and command tools
-
-### Bash Configuration
-
-**Files:** `.bashrc*`, `.bash_aliases*`, and variants for specific environments
-
-**Principles:**
-- Global settings go in `.bashrc_common`
-- Environment-specific settings go in `.bashrc_[environment]` or `.bash_aliases_[environment]`
-- Aliases for remote/VPN connections keep the `_remote` or `_vpn` suffix (e.g., `.bash_aliases_anl_remote`)
-- Use utility libraries from `lib_*.sh`
-
-### Linking Strategy
-
-**Principle:** Configuration files are stored in this repository and symlinked to the user's home directory.
-
-**Process:**
-1. Run `make_links.sh` in the appropriate environment folder
-2. Script creates symlinks from `~/.bashrc` → `~/config/.bashrc_[environment]`, etc.
-3. Private configs symlinked from separate `config_private` repository
-
-**When modifying linking logic:**
-- Test that symlinks resolve correctly on target platform
-- Verify that both absolute and relative path resolution work
-- Document any platform-specific path handling
-
-### Repository Integration
-
-This repository depends on other git repositories. See `get_repos.sh` for the cloning procedure.
-
-**Process:**
-1. User clones `config` repository
-2. User runs `./get_repos.sh` to clone dependent repos
-3. `install_repos.sh` orchestrates setup
-
-**Don't assume** other repositories are already present. Check for their existence before using them.
+Move entries from `[Unreleased]` to a versioned section on release.
 
 ---
 
-## Error Handling & Diagnostics
+## This Project
 
-### For Shell Scripts:
+**Scope:** Cross-platform dotfiles/config repository supporting Linux, macOS, Windows (native, WSL, Cygwin, Git Bash, MinGW), plus site-specific overlays.
 
-Use the `lib_*.sh` utilities (already available in this repo):
-- `lib_dbg.sh` — Debug output and error reporting
-- `lib_cond_echo.sh` — Conditional output based on verbosity
-- `lib_traps.sh` — Trap handling for error management
+**Key patterns and files:**
+- Root scripts `make_links.sh`, `get_repos.sh`, `install_repos.sh` orchestrate setup; environment folders contain their own `make_links.sh` variants.
+- Common shell utilities live in `lib_*.sh` (colors, debug, traps, formatting, conditional echoing).
+- Bash configuration variants (`.bashrc_*`, `.bash_aliases_*`) map to specific environments; `_remote`/`_vpn` suffixes are used for connectivity-specific aliases.
+- Emacs configuration is centralized in `emacs_all.el` and loaded everywhere; guard features newer than Emacs 26.1 with version checks.
 
-### For Emacs Lisp:
+**Procedures:**
+- **Linking strategy:** Run the environment's `make_links.sh` to create symlinks from home to repo-managed files. Keep platform path handling correct (WSL `wslpath`, Windows separators, Cygwin conversions). Verify both absolute and relative link resolution.
+- **Repository integration:** After cloning this repo, run `./get_repos.sh` to fetch dependent repos (including `config_private` for sensitive content) and `./install_repos.sh` if present for orchestration. Do not assume other repos exist; check before use.
+- **Shell scripts:** Target Bash; avoid Zsh-specific constructs. Use the provided `lib_*.sh` helpers instead of re-implementing logging or traps. Preserve environment-specific logic instead of collapsing variants.
+- **Bash configuration:** Keep global settings in shared files; place environment-specific additions in the corresponding variant. Preserve naming conventions for remote/VPN aliases.
+- **Emacs Lisp:** Maintain compatibility with Emacs 26.1; wrap newer features (27.1+, 28+) in version guards. Keep style consistent (defun, hooks, custom-set-variables) and comment non-obvious compatibility decisions.
 
-- Add comments explaining non-obvious version checks or compatibility decisions
-- Use `eval-and-compile` if version-specific code needs to run at compile time
-- Test on minimum supported version if possible
+**Diagnostics:**
+- For shell scripts, rely on `lib_dbg.sh`, `lib_cond_echo.sh`, and `lib_traps.sh` for debug, verbosity, and trap handling.
+- For Emacs Lisp, add concise comments when gating features and consider `eval-and-compile` if compile-time behavior matters.
 
----
-
-## When Making Recommendations
-
-If the user asks for suggestions or best practices:
-
-1. **Respect existing patterns.** This repo has established conventions across multiple platforms and decades of configuration management. Don't suggest architectural overhauls.
-
-2. **Stay within scope.** This is a configuration repository, not a general shell scripting framework. Improvements should be pragmatic and localized.
-
-3. **Document trade-offs.** If suggesting a change that affects multiple platforms, explain what works on each platform and what doesn't.
-
-4. **Prioritize compatibility.** New features are fine; breaking existing functionality across any supported environment is not.
-
----
-
-## Changelog Maintenance
-
-**Skip for this project** — the repository is configuration, not versioned software. Use git commit messages to document changes.
-
----
-
-*Last updated: 2026-01-13*
+**Recommendation posture:** Favor incremental changes and compatibility. Avoid proposing architecture overhauls; document trade-offs if suggesting cross-platform-impacting changes.

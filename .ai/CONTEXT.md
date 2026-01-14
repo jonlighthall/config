@@ -28,6 +28,9 @@
 - Don't suggest refactoring without understanding the cross-platform dependencies
 - Don't modify `.bashrc*` files without checking compatibility across environments
 
+**Productivity guardrail:**
+- Watch for low-impact iteration (cosmetic tweaks) or tangents away from core configuration goals. If effort looks disproportionate, call it out briefly and suggest a more aligned path, deferring to the user.
+
 ---
 
 ## This Project: `config`
@@ -96,6 +99,7 @@ Multi-platform user configuration repository containing shell profiles, Emacs se
 
 **Recent changes:**
 - Fixed Emacs version compatibility in `emacs_all.el` (version check for `display-fill-column-indicator-mode`)
+- Added productivity guardrail to `.ai/CONTEXT.md` to flag low-impact or tangential work
 
 ---
 

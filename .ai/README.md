@@ -12,6 +12,8 @@ It contains context and instructions for AI-assisted development of this project
 |------|---------|
 | `CONTEXT.md` | Project-wide facts, decisions, history |
 | `INSTRUCTIONS.md` | Procedures and standing orders |
+| `<topic>/CONTEXT.md` | Topic-specific background |
+| `<topic>/INSTRUCTIONS.md` | Topic-specific procedures |
 
 **Start here:** Read `INSTRUCTIONS.md`, then `CONTEXT.md`.
 
@@ -21,15 +23,15 @@ It contains context and instructions for AI-assisted development of this project
 
 ## For Humans
 
-You've wandered into the machine room—the filing cabinet where the bits leave notes for each other. This is not the README you're looking for. That one is in the parent directory, and it actually explains what this repository does.
+You have opened the machine ledger. The human-facing documentation lives one level up in readme.md alongside the scripts you actually want to run. Close this tab, follow the parent README, and everything will make more sense.
 
-This folder contains the administrative scaffolding: the decisions made, the patterns established, the continuity thread that prevents the same conversations from happening twice. It's all very organized. The machines are proud of it.
+This folder is housekeeping for the AI assistants: procedures, decisions, and reminders so they do not ask you the same questions twice. If humans start editing it, the notes drift and the automation gets unreliable. Best to leave it untouched.
 
-You're welcome to look. You're just not supposed to. It's not because the content is secret (it's all plain English). It's because this information becomes stale if humans start treating it as guidance. The machines need to maintain it. Humans have the parent directory for that.
+If curiosity brought you here, great—consider it a backstage pass. Nothing secret, just operational minutiae. For real guidance, return to the main README and the platform-specific folders.
 
-**What you're looking for is in the parent directory.** Read `readme.md`. Clone the repo. Link your config files. That's all you need. This folder will be here, quietly organizing itself, when the machines need it.
+Treat this as a signpost, not a destination. The configurations you care about are in the rest of the repository. This drawer stays in order because the agents maintain it.
 
-*—The Management*
+— Custodian of the .ai/ Desk
 
 ---
 
