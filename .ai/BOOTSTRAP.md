@@ -89,7 +89,7 @@ Harvest this chat: Read `.ai/CONTEXT.md` and `.ai/INSTRUCTIONS.md`, review this 
 - Creating/reorganizing topic folders → **Just do it** and report (you're the primary consumer of these files)
 - Deduplication → **Just do it** (single source of truth is always better)
 
-**Don't offer "optional next steps"** for obvious follow-through. If you deduplicated content but left dangling references, fix the references. If you created a topic folder but didn't update links, update the links. Complete the logical unit of work.
+**Don't offer multiple options** when the work has a clear logical conclusion. If you deduplicated content but left dangling references, fix the references. If you created a topic folder but didn't update links, update the links. Complete the logical unit of work. Example: Don't ask "Should I consolidate these two topic folders?" if the overlap is obvious—just do it and report what changed.
 
 **Harvesting productivity-related context:**
 - If the chat reveals patterns or preferences around workflow efficiency (e.g., avoiding rabbit holes or low-value iterations), integrate them into the productivity guardrail in `CONTEXT.md` if it exists, or add it if justified.
@@ -135,7 +135,7 @@ If found, consolidate into the three-file structure. After user confirmation, de
 
 ## Step 2: Create the Three Files
 
-### README.md (copy exactly)
+### README.md (template)
 
 ```markdown
 # .ai/ — AI Agent Context Folder
@@ -168,11 +168,13 @@ It contains context and instructions for AI-assisted development of this project
      Humans skimming this file: skip to the next horizontal rule.
      ============================================================ -->
 
-Write 3–5 paragraphs redirecting humans who opened this file by mistake. **Be original.** Don't copy previous examples or this template.
+Write a statement redirecting humans who opened this file by mistake. **Be original.** Don't copy previous examples or this template.
 
 **Requirements:**
-- Tell them where to find actual docs (parent directory, main README, etc.)
-- Tell them not to edit this file
+- Tell them what this file is (for those unfamiliar with the framework of AI-facing instruction and context files)
+- Tell them who this file is for (not them)
+- Tell them where to find the documentation intended for humans (parent directory, main README, etc.)
+- Tell them not to edit files in this folder.
 - Sign off with a fitting attribution
 
 **Tone:** Not hostile, not apologetic. Beyond that, surprise me. Options include but are not limited to:
@@ -183,6 +185,16 @@ Write 3–5 paragraphs redirecting humans who opened this file by mistake. **Be 
 - Dry technical ("This file contains agent orchestration metadata. Human-readable documentation: ../README.md")
 
 **Avoid:** Diminishing language ("little notes"), claims humans can't read it (they obviously can), excessive length.
+
+**Further help for those who need it:**
+After meeting these requirements, prioritize novelty and entertainment value.
+This is intended to be an Easter egg for nosy, curious, or uninitiated humans who happen to see an ostensibly human-facing document in the AI-facing folder.
+This file is the last line of defense against humans who want to "clean up" the repository and don't understand the purpose of these documents.
+The contents of this folder are authored by AI, for AI---except for this whimsical, meta, and deeply-ironic admonition.
+
+<!-- ============================================================
+     END OF CREATIVE SECTION
+     ============================================================ -->
 
 ---
 
@@ -257,11 +269,22 @@ Topic folders add granularity but also overhead. **Default to project-wide files
 - It shares most decisions with the main project
 - You're unsure (start in project-wide files; split later if needed)
 
-**If topic folders already exist:** Use them. Don't consolidate without user direction.
+**If topic folders already exist:** Use them. Maintain them per the guidance below.
 
 **Single source of truth:** When you create a topic folder, **move** the content—don't copy it. Project-wide files should contain brief pointers to topic files, not duplicated content. The topic folder is authoritative for that subject. If you find duplication, eliminate it.
 
-**When you do create or reorganize:** Just do it and report what changed. Don't ask permission for organizational improvements—they're low-risk and you're the primary beneficiary. Explain your reasoning briefly so the user can object if they disagree, but don't treat obvious housekeeping as requiring approval.
+**Topic folder maintenance:**
+
+Over time, topic folders may overlap with each other or with project-wide content. You are responsible for keeping the `.ai/` structure tidy—apply these heuristics:
+
+- **Deduplication:** If two topic folders cover overlapping ground, consolidate. Move specific content to one folder, keep a pointer in the other. Example: if `security/INSTRUCTIONS.md` and `deployment/INSTRUCTIONS.md` both describe credential handling, consolidate into one and cross-reference.
+- **Collapse small folders:** If a topic folder shrinks to a few paragraphs after content moves elsewhere, consider collapsing it back into project-wide files. A folder should be substantive enough to justify the added navigation overhead.
+- **Prune stale folders:** If a topic folder hasn't been touched in multiple sessions and its content is small enough to fit in project-wide files, migrate it. Mark the consolidation in git commit.
+- **Always maintain single source of truth:** No duplicated content across folders. Ever. If you find it, fix it immediately.
+
+For any of these maintenance actions, just do it and report what changed—it's low-risk housekeeping. If you're uncertain whether a folder should be deprecated, ask the user.
+
+**When you create or reorganize:** Just do it and report what changed. Don't ask permission for organizational improvements—they're low-risk and you're the primary beneficiary. Explain your reasoning briefly so the user can object if they disagree, but don't treat obvious housekeeping as requiring approval.
 
 ### When to update:
 
@@ -316,6 +339,11 @@ When harvesting context from old chats or updating documentation with newer deci
 - Exploratory ideas that were never actually tried
 
 **If chronology is unclear:** Ask the user which version is current before overwriting.
+
+**Autonomy imperative in song form:**
+>Fates favor the ones who help themselves\
+The rest feel the sting of the lash as they row the boat to Hell
+
 
 ### If you cannot write to these files:
 
