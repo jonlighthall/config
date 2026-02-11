@@ -719,6 +719,24 @@ I've created the `.ai/` folder. Here's my understanding of this project:
 
 Then integrate corrections into CONTEXT.md.
 
+## Step 5: Review BOOTSTRAP.md Itself (if reading from file)
+
+If you received these instructions as an attached file (not pasted into chat), review this file for issues you encountered during execution. **Do not edit the file.** Report only if you have substantive findings — "everything worked fine" is a valid and preferred outcome.
+
+**Report-worthy:**
+- Instructions that contradicted each other
+- Steps you couldn't follow and had to interpret or skip
+- Assumptions that didn't match this repo (e.g., assumed single-project but was monorepo)
+- Guidance that was ambiguous enough to produce a wrong result
+
+**Not report-worthy:**
+- Prose style preferences
+- Suggestions to reorganize or restructure sections
+- "This could be clearer" without a concrete failure it caused
+- Anything you'd phrase as "consider" or "you might want to"
+
+The threshold is: *did this cause friction during execution, or would it cause friction for a different agent/model executing the same instructions on a different repo?* If no, say nothing. If yes, note it briefly.
+
 ---
 
 **— END OF BOOTSTRAP INSTRUCTIONS —**
