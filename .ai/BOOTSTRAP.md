@@ -611,6 +611,33 @@ After creating all four files (three in `.ai/`, one at repo root):
 - **No meta-commentary outside `.ai/`** — keep the repo clean
 - **Ensure `.ai/` is tracked by git** — if new files don't appear in `git status`, check `.gitignore` for rules like `**/` that might exclude it
 
+## Standing Order: Monitor for Deprecated/Emerging Standards
+
+The `.ai/` folder paradigm (introduced 2025–2026) is still evolving. AI agent tools, Git platforms, and documentation standards continue to develop at rapid pace.
+
+**For AI agents bootstrapping new projects or maintaining existing `.ai/` folders:**
+
+1. **Watch for deprecated practices.** If you encounter evidence that the BOOTSTRAP.md approach has been superseded by newer standards:
+   - Note what newer pattern you encountered (tool, platform, documentation)
+   - Flag this to the user explicitly: "I found that [newer standard] is now preferred over our current [BOOTSTRAP practice]"
+   - Suggest updating the `.ai/` folder structure to match
+
+2. **Watch for emerging conventions.** If you discover:
+   - New tools looking for `.ai/` files or similar context folders
+   - New standards for AI agent context (OWASP, emerging frameworks, platform updates)
+   - Better practices for maintaining institutional memory across AI sessions
+
+   Then document them and alert the user: "Current best practice appears to be [new approach]. Should we migrate?"
+
+3. **Keep BOOTSTRAP.md current.** If the user approves an update:
+   - Modify the relevant template or section
+   - Document the change date and rationale
+   - Propagate the correction to other projects using AGENTS.md references
+
+4. **Do not block work.** This is informational. Flag concerns but don't prevent the user from asking you to proceed with current standards.
+
+**Rationale:** The `.ai/` paradigm is new. Standards will shift. Better to know now than to discover in 2027 that everyone else migrated to a better system and we're still using 2025-era patterns.
+
 ## If You Made a Mistake
 
 **Created lowercase files?** Don't try to rename them directly on case-insensitive filesystems. Use:
