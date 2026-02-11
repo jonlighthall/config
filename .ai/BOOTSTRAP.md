@@ -35,6 +35,42 @@ The ACTION MODE directive at the top pushes consultative models toward autonomou
 
 ---
 
+## Author Defaults
+
+The following defaults are used when populating CONTEXT.md. On first-time initialization (no existing `.ai/` folder in the repo), verify this information with the user before proceeding.
+
+**Name:** Jonathan C. Lighthall
+**Role:** Research scientist, Code 7180 Acoustics Division, U.S. Naval Research Laboratory
+**Organization:** NRL Stennis Space Center, MS
+**Domain:** Underwater acoustics, parabolic equation methods, computational ocean acoustics
+
+**Primary tools:**
+- Fortran (fixed-form F77 for legacy; F90/F2018 for new work)
+- LaTeX for technical papers
+- GNU Make for builds
+- VS Code with Copilot
+- Git for version control
+
+**General preferences:**
+- Impersonal voice for expository writing
+- Mathematical "we" acceptable in derivations ("we substitute...", "we obtain...")
+- Avoid editorial "we" ("we believe...", "we recommend...")
+- Prefer minimal changes over extensive rewrites
+
+---
+
+## Where BOOTSTRAP.md Lives
+
+This file is a **user-level configuration tool**, not a per-repo artifact. It should be tracked in a personal config/dotfiles repository, not committed to individual project repos.
+
+- **Canonical location:** `~/config/.ai/BOOTSTRAP.md` (or equivalent dotfiles path)
+- **Usage:** Attach or paste into a new AI chat to initialize `.ai/` for a repo
+- **Output:** The `.ai/` folder and `AGENTS.md` are committed to the repo; BOOTSTRAP.md is not
+
+If a copy of BOOTSTRAP.md exists inside a project repo (e.g., `documents/.ai/BOOTSTRAP.md`), it is a stale copy. Delete it and use the canonical version.
+
+---
+
 ## Harvest Command (for existing chats)
 
 **Use this command in chats that already have valuable context you want to preserve.**
@@ -125,8 +161,10 @@ Create or consolidate an `.ai/` folder for this repository with exactly three fi
 Before creating files, search the repository for:
 
 - Any existing `.ai/` folder and its contents
-- **`.github/copilot-instructions.md`** — GitHub Copilot's recognized instruction file (consolidate into `.ai/INSTRUCTIONS.md`)
-- README files with AI instructions
+- **`.github/copilot-instructions.md`** or **`.github/instructions/*.md`** — GitHub Copilot instruction files
+- **`.cursor/rules/`** — Cursor AI rules
+- **`.clinerules`** — Cline/Roo Code rules
+- README files with AI instructions embedded
 - Files named things like `CONTEXT.md`, `INSTRUCTIONS.md`, `codebase.md`, `patterns.md`, `dev-workflow.md`, `quick-reference.md`, `00-START-HERE.md`, etc.
 - Meta-commentary or narration files that describe the project for AI
 - Chat logs, session summaries, or working notes meant for AI context
@@ -227,6 +265,15 @@ The contents of this folder are authored by AI, for AI---except for this whimsic
 
 ---
 
+## Default Autonomy Level
+
+**Low-risk actions** (additive, organizational, housekeeping): Just do it. Report what you did.
+**Destructive actions** (deleting files, overwriting content): Ask first.
+
+This applies throughout: context harvesting, topic folder creation/reorganization, deduplication, structural improvements. Don't ask permission for things that are easily reversed. Don't offer multiple options when the work has a clear logical conclusion. Complete the logical unit of work — if you deduplicated content but left dangling references, fix the references.
+
+---
+
 ## Context Maintenance (Standing Order)
 
 ### Why these files exist
@@ -282,9 +329,7 @@ Over time, topic folders may overlap with each other or with project-wide conten
 - **Prune stale folders:** If a topic folder hasn't been touched in multiple sessions and its content is small enough to fit in project-wide files, migrate it. Mark the consolidation in git commit.
 - **Always maintain single source of truth:** No duplicated content across folders. Ever. If you find it, fix it immediately.
 
-For any of these maintenance actions, just do it and report what changed—it's low-risk housekeeping. If you're uncertain whether a folder should be deprecated, ask the user.
-
-**When you create or reorganize:** Just do it and report what changed. Don't ask permission for organizational improvements—they're low-risk and you're the primary beneficiary. Explain your reasoning briefly so the user can object if they disagree, but don't treat obvious housekeeping as requiring approval.
+For any of these maintenance actions, follow the Default Autonomy Level above. If uncertain whether a folder should be deprecated, ask the user.
 
 ### When to update:
 
@@ -339,11 +384,6 @@ When harvesting context from old chats or updating documentation with newer deci
 - Exploratory ideas that were never actually tried
 
 **If chronology is unclear:** Ask the user which version is current before overwriting.
-
-**Autonomy imperative in song form:**
->Fates favor the ones who help themselves\
-The rest feel the sting of the lash as they row the boat to Hell
-
 
 ### If you cannot write to these files:
 
@@ -442,19 +482,10 @@ Move entries from `[Unreleased]` to a versioned section on release.
 
 ## Author
 
-**Name:** [Ask user]
-**Role:** [Ask user]
-**Organization:** [Ask user if relevant]
-**Domain:** [Infer from repo or ask]
+<!-- Populate from the Author Defaults section at the top of BOOTSTRAP.md.
+     On first-time initialization (no existing .ai/ folder), verify with the user. -->
 
-**Primary tools:**
-- [Infer from repo: languages, frameworks, editors]
-
-**General preferences:**
-- Impersonal voice for expository writing
-- Mathematical "we" acceptable in derivations ("we substitute...", "we obtain...")
-- Avoid editorial "we" ("we believe...", "we recommend...")
-- Prefer minimal changes over extensive rewrites
+[Copy author defaults from BOOTSTRAP.md here]
 
 **Writing style:**
 - Target the style appropriate for the project (technical docs, code comments, etc.)
@@ -539,7 +570,9 @@ Delete this comment block when adding real entries.
 
 ## For Humans
 
-[CREATIVE SECTION — See parameters below]
+You have found a file that was not meant for you. This file provides structured context for AI coding agents working on this repository. For project documentation, see the main [README.md](README.md).
+
+The `.ai/` folder is maintained by AI agents as working memory between sessions. Do not delete or modify files within it unless you understand the implications for AI context continuity.
 
 ---
 
@@ -565,7 +598,7 @@ All AI agents should prioritize the following files for project-specific guidanc
 *This file is the universal entry point. For detailed context, always defer to `.ai/`.*
 ```
 
-**"For Humans" section:** Same creative parameters as `.ai/README.md` (see Step 2 above). Since `AGENTS.md` sits at the repo root, it's *more* likely to be discovered by confused humans—make the redirect clear but keep it brief. Must mention: where to find real docs, what this file does, don't edit it.
+**"For Humans" section:** Keep this formal, informational, and spartan. No creative Easter eggs — those belong in `.ai/README.md` only. `AGENTS.md` is a professional-facing root file. State what the file is, redirect to real docs, and warn against editing. The template above provides a reasonable default; adjust to fit the project.
 
 **For monorepos or multi-project workspaces:**
 
@@ -601,7 +634,7 @@ After creating all four files (three in `.ai/`, one at repo root):
 
 ## Key Principles
 
-- **Four files total** — three in `.ai/`, one `AGENTS.md` at repo root (topic folders only when justified)
+- **Starting structure** — three files in `.ai/`, one `AGENTS.md` at repo root; topic folders added when justified
 - **AGENTS.md is required** for repo-root bootstraps (skip only for subfolder `.ai/` setups)
 - **UPPERCASE filenames** — `README.md`, `CONTEXT.md`, `INSTRUCTIONS.md`, `AGENTS.md`
 - **No symlinks** — use hard pointers (plain Markdown with links)
