@@ -264,8 +264,9 @@ The contents of this folder are authored by AI, for AI---except for this whimsic
 
 1. Read this file for procedures
 2. Read `CONTEXT.md` for project facts and decisions
-3. Read the relevant topic's `CONTEXT.md` for specific background
-4. Read the relevant topic's `INSTRUCTIONS.md` for specific procedures
+3. Read `TODO.md` for outstanding, blocked, and recently completed work
+4. Read the relevant topic's `CONTEXT.md` for specific background
+5. Read the relevant topic's `INSTRUCTIONS.md` for specific procedures
 
 ---
 
@@ -445,6 +446,12 @@ Required fields:
 - Keep tasks concrete and actionable; split vague goals into checkable units.
 - Prefer updating existing task IDs over creating duplicates.
 - Keep at most 5-10 **Open/In Progress** items at project level; move overflow into topic folders if needed.
+
+### Review cadence
+
+- Refresh `.ai/TODO.md` at least once per session where task status changes.
+- If no task changes occurred, update `Last Review` at least once every 7 days during active work.
+- If `Last Review` is older than 14 days, explicitly flag task status as stale before relying on it.
 
 ---
 
