@@ -6,10 +6,11 @@
 
 Scan the repo, consolidate any existing meta-content, and create:
 
-**In `.ai/` folder (three files):**
+**In `.ai/` folder (four files):**
 - `README.md` — For AI orientation and human redirection
 - `CONTEXT.md` — Facts, decisions, history
 - `INSTRUCTIONS.md` — Procedures, standing orders
+- `TODO.md` — Persistent task status across sessions
 
 **At repository root (one file):**
 - `AGENTS.md` — Universal entry point for AI tools
@@ -86,6 +87,7 @@ Then review this entire chat and update the .ai/ files to reflect:
 3. **Deprecated information** — if this chat contradicts what's already documented,
    flag it in a "Superseded" or "Deprecated" section rather than deleting
 4. **Work completed** — update the History section if appropriate
+5. **Task status changes** — add/update items in `.ai/TODO.md` (open, done, blocked, or deprecated)
 
 **Just do it.** Don't ask "should I add X?" — if something from this chat is worth preserving, add it. The whole point of harvesting is to capture context without me re-explaining it.
 
@@ -100,7 +102,7 @@ After updating, show me a summary of what changed (not what you're thinking abou
 **Short version** (for chats where `.ai/` already exists):
 
 ```
-Harvest this chat: Read `.ai/CONTEXT.md` and `.ai/INSTRUCTIONS.md`, review this conversation, and update the files with any decisions, facts, or constraints discovered here. Don't ask permission — just update and show me what changed.
+Harvest this chat: Read `.ai/CONTEXT.md`, `.ai/INSTRUCTIONS.md`, and `.ai/TODO.md`, review this conversation, and update the files with any decisions, facts, constraints, and task-status changes discovered here. Don't ask permission — just update and show me what changed.
 ```
 
 **Processing order for multiple chats:**
@@ -142,19 +144,20 @@ Harvest this chat: Read `.ai/CONTEXT.md` and `.ai/INSTRUCTIONS.md`, review this 
 
 ## Task
 
-Create or consolidate an `.ai/` folder for this repository with exactly three files, plus an optional root-level pointer:
+Create or consolidate an `.ai/` folder for this repository with exactly four files, plus an optional root-level pointer:
 
 **In `.ai/` folder:**
 1. **README.md** — Minimal, tells humans to look elsewhere, tells AI where to start
 2. **CONTEXT.md** — Facts, decisions, history (what to know)
 3. **INSTRUCTIONS.md** — Procedures, standing orders (what to do)
+4. **TODO.md** — Open/closed task tracking across sessions
 
 **At repository root:**
-4. **AGENTS.md** — Universal entry point for AI tools (see Step 3 below)
+5. **AGENTS.md** — Universal entry point for AI tools (see Step 3 below)
 
-**All four files are required unless explicitly noted otherwise.**
+**All five files are required unless explicitly noted otherwise.**
 
-**If `.ai/` already exists and is current:** Skip to harvesting. Check if this chat contains any decisions, facts, or constraints not yet documented, and update the files accordingly. Don't ask—just do it and show what changed (or confirm nothing new to add).
+**If `.ai/` already exists and is current:** Skip to harvesting. Check if this chat contains any decisions, facts, constraints, or task-status updates not yet documented, and update the files accordingly. Don't ask—just do it and show what changed (or confirm nothing new to add).
 
 ## Step 1: Scan for Existing Meta-Content
 
@@ -169,9 +172,9 @@ Before creating files, search the repository for:
 - Meta-commentary or narration files that describe the project for AI
 - Chat logs, session summaries, or working notes meant for AI context
 
-If found, consolidate into the three-file structure. After user confirmation, delete the originals. **One source of truth only.**
+If found, consolidate into the four-file structure. After user confirmation, delete the originals. **One source of truth only.**
 
-## Step 2: Create the Three Files
+## Step 2: Create the Four Files
 
 ### README.md (template)
 
@@ -190,10 +193,11 @@ It contains context and instructions for AI-assisted development of this project
 |------|---------|
 | `CONTEXT.md` | Project-wide facts, decisions, history |
 | `INSTRUCTIONS.md` | Procedures and standing orders |
+| `TODO.md` | Persistent task register across sessions |
 | `<topic>/CONTEXT.md` | Topic-specific background |
 | `<topic>/INSTRUCTIONS.md` | Topic-specific procedures |
 
-**Start here:** Read `INSTRUCTIONS.md`, then `CONTEXT.md`.
+**Start here:** Read `INSTRUCTIONS.md`, then `CONTEXT.md`, then `TODO.md`.
 
 **Standing order:** When the user provides substantial context, integrate it into the appropriate file. See `INSTRUCTIONS.md` for details.
 
@@ -294,6 +298,7 @@ When the user provides substantial clarifying information, **integrate it into t
 |---------------------|-------------|
 | Project-wide decisions, facts, history | `.ai/CONTEXT.md` |
 | Project-wide procedures, standing orders | `.ai/INSTRUCTIONS.md` |
+| Open/closed task status and next actions | `.ai/TODO.md` |
 | Topic-specific history, validation, decisions | `<topic>/CONTEXT.md` |
 | Topic-specific procedures, checklists | `<topic>/INSTRUCTIONS.md` |
 
@@ -388,6 +393,58 @@ When harvesting context from old chats or updating documentation with newer deci
 ### If you cannot write to these files:
 
 Some AI tools have read-only access. If you receive substantial context but cannot update the `.ai/` files, summarize what should be added and ask the user to update the files manually.
+
+---
+
+## Task Status Maintenance (Standing Order)
+
+Maintain a persistent task register in `.ai/TODO.md`.
+
+### Why this file exists
+
+Chats are ephemeral; tasking is not. `TODO.md` preserves planned and in-progress work across sessions, crashes, tool updates, and context-window limits.
+
+### Required task lifecycle states
+
+- **Open** — approved work not yet started
+- **In Progress** — currently being worked
+- **Blocked** — cannot proceed until dependency/decision is resolved
+- **Done** — completed and validated
+- **Deprecated** — no longer relevant due to changed decisions/scope
+
+### Required fields per task
+
+- **ID** — stable identifier (e.g., `T-2026-03-001`)
+- **Title** — short action-oriented task name
+- **Status** — one lifecycle state above
+- **Origin** — where it came from (chat date, issue, request)
+- **Last Updated** — ISO date (`YYYY-MM-DD`)
+- **Notes** — brief rationale, blockers, or completion evidence
+
+### Outstanding snapshot (required)
+
+Keep a short summary block at the top of `.ai/TODO.md` so any agent can answer status questions quickly.
+
+Required fields:
+- **Open:** count
+- **In Progress:** count
+- **Blocked:** count
+- **Last Review:** ISO date (`YYYY-MM-DD`)
+- **Top Priorities:** 1-3 task IDs currently most important
+
+### Update rules
+
+- If user asks for work that cannot be completed in the current response, add/update a task.
+- If work is completed, move it to **Done** with brief completion notes.
+- If the task is no longer needed, move it to **Deprecated** and state why.
+- If ambiguous whether to keep or deprecate, ask once; otherwise update directly.
+- Update the snapshot block whenever task states change.
+
+### Priority and scope guidance
+
+- Keep tasks concrete and actionable; split vague goals into checkable units.
+- Prefer updating existing task IDs over creating duplicates.
+- Keep at most 5-10 **Open/In Progress** items at project level; move overflow into topic folders if needed.
 
 ---
 
@@ -551,6 +608,50 @@ Delete this comment block when adding real entries.
 -->
 ```
 
+### TODO.md (template — persistent task register)
+
+```markdown
+# Task Register
+
+**Purpose:** Track open, active, blocked, completed, and deprecated project tasks across AI sessions.
+
+## Outstanding Snapshot
+
+- Open: 0
+- In Progress: 0
+- Blocked: 0
+- Last Review: YYYY-MM-DD
+- Top Priorities: None
+
+---
+
+## Open
+
+<!--
+### T-YYYY-MM-NNN — [Task title]
+- Status: Open
+- Origin: [Chat date / issue / request]
+- Last Updated: YYYY-MM-DD
+- Notes: [What remains and why it matters]
+-->
+
+## In Progress
+
+<!-- same entry format -->
+
+## Blocked
+
+<!-- same entry format; include explicit blocker -->
+
+## Done
+
+<!-- same entry format; include completion evidence (file/PR/validation) -->
+
+## Deprecated
+
+<!-- same entry format; include why it is no longer relevant -->
+```
+
 ## Step 3: Create AGENTS.md at Repository Root
 
 **Why this file exists:**
@@ -583,7 +684,8 @@ All AI agents should prioritize the following files for project-specific guidanc
 
 1. **[.ai/INSTRUCTIONS.md](.ai/INSTRUCTIONS.md)** — Standing orders and productivity guardrails
 2. **[.ai/CONTEXT.md](.ai/CONTEXT.md)** — Project facts, history, and decisions
-3. **[.ai/README.md](.ai/README.md)** — AI orientation
+3. **[.ai/TODO.md](.ai/TODO.md)** — Outstanding, completed, blocked, and deprecated tasks
+4. **[.ai/README.md](.ai/README.md)** — AI orientation
 
 **Directive:** Do not rely solely on the root `README.md`. Always reference the `.ai/` folder for authoritative procedures and constraints.
 
@@ -624,19 +726,20 @@ Navigate to the appropriate `.ai/` folder for project-specific guidance.
 
 ## Step 4: Populate from Scan
 
-After creating all four files (three in `.ai/`, one at repo root):
+After creating all five files (four in `.ai/`, one at repo root):
 
 1. Fill in the Author section by asking the user (or inferring if obvious)
 2. Scan the repo structure and populate the project-specific sections
 3. If consolidating existing files, preserve all useful content
-4. Inform the user: *"Productivity guardrails are enabled by default—AI will gently flag when work appears to be venturing into diminishing returns or scope creep. You can remove or customize this section in CONTEXT.md if you prefer."*
-5. Ask user to review before deleting source files
+4. Initialize `.ai/TODO.md` with current known tasks from chat/repo context
+5. Inform the user: *"Productivity guardrails are enabled by default—AI will gently flag when work appears to be venturing into diminishing returns or scope creep. You can remove or customize this section in CONTEXT.md if you prefer."*
+6. Ask user to review before deleting source files
 
 ## Key Principles
 
-- **Starting structure** — three files in `.ai/`, one `AGENTS.md` at repo root; topic folders added when justified
+- **Starting structure** — four files in `.ai/` (`README.md`, `CONTEXT.md`, `INSTRUCTIONS.md`, `TODO.md`), one `AGENTS.md` at repo root; topic folders added when justified
 - **AGENTS.md is required** for repo-root bootstraps (skip only for subfolder `.ai/` setups)
-- **UPPERCASE filenames** — `README.md`, `CONTEXT.md`, `INSTRUCTIONS.md`, `AGENTS.md`
+- **UPPERCASE filenames** — `README.md`, `CONTEXT.md`, `INSTRUCTIONS.md`, `TODO.md`, `AGENTS.md`
 - **No symlinks** — use hard pointers (plain Markdown with links)
 - **No timestamps** — git tracks history
 - **Conflicts must be explicit** — silent precedence is dangerous
