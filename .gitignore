@@ -10,6 +10,8 @@
 
 # known directories
 !.ai/
+!**/.claude/
+!**/.claude/**/
 !apple/
 !cygwin/
 !git_bash/

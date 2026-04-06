@@ -35,7 +35,7 @@ check_link_dir "$link_dir"
 cbar "Start Linking Repo Files"
 
 # list of files to be linked, unconditionally
-for my_link in .bash_aliases .bash_logout .bash_profile .emacs .inputrc .screenrc .tmux.conf
+for my_link in .bash_aliases .bash_logout .bash_profile .claude .emacs .inputrc .screenrc .tmux.conf
 do
     # define target (source)
     target=${target_dir}/${my_link}

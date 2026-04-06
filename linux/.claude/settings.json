@@ -1,0 +1,11 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "type": "command",
+        "linux": "bash $HOME/.claude/hooks/scripts/protect_git_dirs.sh",
+        "timeout": 15
+      }
+    ]
+  }
+}
