@@ -14,15 +14,15 @@ else
     fi
 fi
 
-# NB: The X11 server must be lauchded first, before setting dispaly; otherwise the xdpyinfo tests
-# will fail
+# NB: The X11 server must be launched first, before setting display; otherwise
+# the xdpyinfo tests will fail
 
 alias xming='/mnt/c/Program\ Files\ \(x86\)/Xming/Xming.exe &>/dev/null :0 -clipboard -multiwindow -silent-dup-error -logverbose 0 &'
 alias vcx='/mnt/c/Program\ Files/VcXsrv/vcxsrv.exe &>/dev/null :0 -ac -clipboard -multiwindow -silent-dup-error &'
 
 # Check if xwin is running
-# -x flag only match processes whose name (or command line if -f is
-# specified) exactly match the pattern.
+# -x flag only match processes whose name (or command line if -f is specified)
+# exactly match the pattern.
 
 PROG="vcxsrv.exe"
 xPID=$(pgrep -x $PROG)
@@ -119,8 +119,6 @@ if ! $xOK; then
         fi
     fi
 fi
-
-
 
 if $xOK; then
     dispOK=false
