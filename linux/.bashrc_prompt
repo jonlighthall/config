@@ -97,7 +97,7 @@ fi
 
 vecho -n "${TAB}Checking Git... "
 if  command -v git &>/dev/null; then
-    if [ -z $(git_branch) ]; then
+    if [ -z "$(git_branch)" ]; then
         vecho "not in repository"
     else
         vecho -e "on\e[0;36m$(git_branch)\e[0m branch"
