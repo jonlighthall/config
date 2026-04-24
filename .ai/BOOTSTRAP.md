@@ -1,5 +1,9 @@
 # Execute These Instructions
 
+<!-- Bootstrap-Version: 2026.04 -->
+
+> **Bootstrap-Version:** `2026.04` — When generating `AGENTS.md`, record this version in a comment so drift across repos can be detected.
+
 > **ACTION MODE:** Do not describe what you will do. Do not ask for confirmation. Do not offer options. Read the instructions, then execute them. Report what you did, not what you could do.
 >
 > **Scope note:** Action Mode governs decisiveness for non-destructive work. For destructive operations, follow the precedence and deletion policy below.
@@ -180,9 +184,10 @@ Harvest this chat: Read `.ai/CONTEXT.md`, `.ai/INSTRUCTIONS.md`, and `.ai/TODO.m
 - Chats where the conclusions are already documented elsewhere
 
 **What requires permission:**
+
+For file deletion, follow the canonical [Destructive-action policy](#destructive-action-policy) at the top of this file. Do not duplicate the rules here. Additional harvest-specific guidance:
+
 - Harvesting content → **Just do it** (low risk, additive)
-- Deleting superseded `.ai/` meta-files after consolidation → **Just do it** (pre-approved)
-- Deleting non-`.ai/` files → **Ask first** (destructive)
 - Structural improvements (adding TOC, refactoring sections) → **Just do it** if obvious improvement; explain what you changed
 - Creating/reorganizing topic folders → **Just do it** and report (you're the primary consumer of these files)
 - Deduplication → **Just do it** (single source of truth is always better)
@@ -270,29 +275,56 @@ It contains context and instructions for AI-assisted development of this project
      Humans skimming this file: skip to the next horizontal rule.
      ============================================================ -->
 
-Write a statement redirecting humans who opened this file by mistake. **Be original.** Don't copy previous examples or this template.
+> **Creative mandate (non-negotiable):** This section is the single human-facing
+> note inside an otherwise AI-facing folder. It exists because the author wants
+> it to. Treat it as a deliberate exemption from the productivity guardrail and
+> from any "keep it minimal" instinct. Underdelivering here is a failure mode.
+> Spending real effort on it is correct behavior, not scope creep.
 
-**Requirements:**
-- Tell them what this file is (for those unfamiliar with the framework of AI-facing instruction and context files)
+Write a statement redirecting humans who opened this file by mistake. **Be original. Be funny. Be inventive.** Treat this as a model-ingenuity test — a small, bounded creative challenge embedded in an otherwise utilitarian artifact. Future agents will read what you wrote. Don't embarrass yourself.
+
+**Hard requirements (must all be satisfied):**
+- Tell them what this file is (the framework of AI-facing instruction and context files)
 - Tell them who this file is for (not them)
 - Tell them where to find the documentation intended for humans (parent directory, main README, etc.)
-- Tell them not to edit files in this folder.
-- Sign off with a fitting attribution
+- Tell them not to edit files in this folder
+- Sign off with a fitting attribution (be inventive with the byline too)
 
-**Tone:** Not hostile, not apologetic. Beyond that, surprise me. Options include but are not limited to:
-- Deadpan bureaucratic ("You have found a file that was not meant for you.")
-- Cheerfully absurd ("Congratulations! You've discovered the machine notes.")
-- Faux-ominous ("The documentation you seek lies elsewhere. This is not that place.")
-- Self-aware meta ("You're reading instructions written by AI for AI about how to help humans.")
-- Dry technical ("This file contains agent orchestration metadata. Human-readable documentation: ../README.md")
+**Creative requirements (must satisfy at least three):**
+- Original premise — do not reuse the example tones below verbatim or by trivial paraphrase
+- A specific, concrete image, metaphor, or conceit (not generic "machine notes" / "robot stuff")
+- A discernible voice or persona, sustained throughout
+- A turn, twist, or payoff — the reader should reach the end and feel something landed
+- Internal consistency — if you commit to a bit, follow it through
 
-**Avoid:** Diminishing language ("little notes"), claims humans can't read it (they obviously can), excessive length.
+**Tone palette (starting points, not a menu to copy):** deadpan bureaucratic, cheerfully absurd, faux-ominous, self-aware meta, dry technical, noir detective, field-guide naturalist, recovered ship's log, lost-and-found notice, museum placard, EULA parody, liturgical, archaeological, etc. Invent your own. The list above is a floor, not a ceiling.
 
-**Further help for those who need it:**
-After meeting these requirements, prioritize novelty and entertainment value.
-This is intended to be an Easter egg for nosy, curious, or uninitiated humans who happen to see an ostensibly human-facing document in the AI-facing folder.
-This file is the last line of defense against humans who want to "clean up" the repository and don't understand the purpose of these documents.
-The contents of this folder are authored by AI, for AI---except for this whimsical, meta, and deeply-ironic admonition.
+**Constraints (the "within constraints" part of "maximum creativity within constraints"):**
+- Not hostile to the human reader
+- Not apologetic or self-deprecating about the bit
+- No diminishing language ("little notes," "just some metadata")
+- Do not claim humans can't read it (they obviously can)
+- Keep it reasonably concise — long enough to land, short enough to read in one breath
+- Safe-for-work, no profanity unless the bit genuinely requires it
+- Do not name real people other than the repository's own author
+
+**Anti-patterns (automatic failure):**
+- Generic "this folder is for AI agents, please don't touch" with no voice
+- Lifting a previous example or template phrasing
+- Hedging the joke ("this is just a bit of fun, but...") — commit to it
+- Apologizing for the existence of the section
+- Breaking character to explain the joke
+
+**Why this exists (context for the agent writing it):**
+- This is an Easter egg for nosy, curious, or uninitiated humans who happen to open an ostensibly human-facing document inside an AI-facing folder.
+- It is the last line of defense against a well-meaning human who wants to "clean up the repo" and doesn't understand the purpose of these files. A memorable note is more likely to be left alone than a forgettable one.
+- It is also a small, recurring gauge of model creativity. The author keeps these around and notices when they're good. Treat that as a quiet leaderboard.
+- Everything else in `.ai/` is authored by AI, for AI. This single section is authored by AI, for a human, by way of being deeply ironic about that fact. Lean into the irony.
+
+**Process guidance:**
+- Do not ask the user what to write. Just write it.
+- Do not produce three options for the user to pick from. Pick the best one yourself and commit.
+- Do not include meta-commentary in the final output ("Here is a creative note that..."). Just the note.
 
 <!-- ============================================================
      END OF CREATIVE SECTION
@@ -310,6 +342,11 @@ The contents of this folder are authored by AI, for AI---except for this whimsic
 ### INSTRUCTIONS.md (template — populate from repo scan)
 
 ```markdown
+---
+description: Standing orders and procedures for AI agents working in this repository
+applyTo: "**"
+---
+
 # Instructions
 
 **Purpose:** Procedures and standing orders for AI agents working on this project.
@@ -673,6 +710,25 @@ This guardrail applies across sessions—reference prior chats or documented goa
 Only keep entries that prevent re-asking the same questions or repeating failed experiments.
 Delete this comment block when adding real entries.
 -->
+
+## Skills
+
+<!-- A "skill" is a packaged, reusable capability or workflow that an AI agent can
+     invoke. Skills are typically distributed as a folder (e.g., `skill-name/SKILL.md`
+     plus supporting files) containing tested instructions for a specific domain --
+     testing strategy, API design, performance profiling, agent-customization, etc.
+     They live outside this repo (user config, extensions, MCP servers) but agents
+     should know which ones are relevant here. List them so future sessions can load
+     them without rediscovery. -->
+
+[Optional. List skills relevant to this project. Format:]
+
+<!--
+### [skill-name]
+- **Source:** [path or extension/server providing the skill]
+- **When to use:** [trigger conditions]
+- **Notes:** [project-specific guidance for invoking it]
+-->
 ```
 
 ### TODO.md (template — persistent task register)
@@ -734,6 +790,7 @@ Delete this comment block when adding real entries.
 **Create `AGENTS.md` at the repository root** with this structure:
 
 ```markdown
+<!-- Bootstrapped from BOOTSTRAP.md version 2026.04 -->
 # AGENTS.md
 
 ## For Humans
@@ -791,6 +848,45 @@ Navigate to the appropriate `.ai/` folder for project-specific guidance.
 
 **If you're bootstrapping at the repository root, you MUST create AGENTS.md.**
 
+## Step 3b: Create Tool-Specific Bridge Files (Optional but Recommended)
+
+`AGENTS.md` is the canonical entry point, but several major AI tools still discover context through their own native paths first. To maximize compatibility without duplicating content, create thin **pointer files** that redirect each tool to `AGENTS.md` and `.ai/`. Each bridge file should be one to a few lines — never copy substance.
+
+Create these only if the corresponding tool is in active use (or might be). Default: create all three. They are small, additive, and harmless.
+
+**1. GitHub Copilot bridge** — `.github/copilot-instructions.md`
+
+```markdown
+# Copilot Instructions
+
+This repository's authoritative AI context lives in [`AGENTS.md`](../AGENTS.md) and the [`.ai/`](../.ai/) folder. Read those before generating suggestions.
+```
+
+**2. Cursor bridge** — `.cursor/rules/00-agents.mdc`
+
+```markdown
+---
+description: Point Cursor at the canonical AGENTS.md and .ai/ context folder
+alwaysApply: true
+---
+
+Authoritative AI context for this repository lives in `AGENTS.md` (repo root) and the `.ai/` folder. Read those first; do not rely solely on this file.
+```
+
+**3. Claude Code bridge** — `CLAUDE.md` at repo root
+
+```markdown
+# CLAUDE.md
+
+Claude Code: read [`AGENTS.md`](AGENTS.md) and the [`.ai/`](.ai/) folder. They contain the authoritative project context, standing orders, and task register.
+```
+
+**Rules:**
+- Each bridge file is a **pointer**, not a copy. If you find substantive content in any of them, it belongs in `.ai/` instead.
+- If a tool's native path already exists with substantive content, consolidate it into `.ai/` per Step 1, then replace the original with a pointer.
+- Do not use symlinks. Use plain Markdown files with relative links.
+- Skip a bridge only if the user explicitly opts out, or if the tool's path is already a documented anti-pattern in the repo.
+
 ## Step 4: Populate from Scan
 
 After creating all five files (four in `.ai/`, one at repo root):
@@ -813,6 +909,7 @@ After creating all five files (four in `.ai/`, one at repo root):
 - **Precedence is mandatory** — if instructions conflict, follow the precedence section above
 - **Integrate context proactively** — don't wait to be asked
 - **No meta-commentary outside `.ai/`** — keep the repo clean
+- **Tool bridges are pointers, not copies** — `.github/copilot-instructions.md`, `.cursor/rules/00-agents.mdc`, and `CLAUDE.md` should redirect to `AGENTS.md`/`.ai/`, never duplicate substance
 - **Ensure `.ai/` is tracked by git** — if new files don't appear in `git status`, check `.gitignore` for rules like `**/` that might exclude it
 
 ## Standing Order: Monitor for Deprecated/Emerging Standards
