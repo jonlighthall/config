@@ -205,6 +205,22 @@ For file deletion, follow the canonical [Destructive-action policy](#destructive
 - If project descriptions have evolved, update the quick reference section
 - `AGENTS.md` should stay minimal—detailed context belongs in `.ai/` files
 
+**Closure check (after harvest — required final step):**
+
+The purpose of harvest mode is to ensure no information is lost if the chat is later archived or accidentally destroyed. Before declaring the harvest complete, verify:
+
+1. **Decisions homed.** Every decision discussed in the chat has a destination (`CONTEXT.md`, `INSTRUCTIONS.md`, a topic file, or `Superseded` block).
+2. **Actionable follow-ups captured.** Every open or deferred action item is in `TODO.md` under Open, Blocked, or Deprecated — including ideas explicitly chosen *not* to act on now but worth revisiting.
+3. **Conditional follow-ups captured.** Any "revisit if X happens" thread has its trigger condition recorded (typically as a Blocked or Deferred TODO entry, or a note in `CONTEXT.md`).
+4. **Brainstorming residue resolved.** Each idea raised in the chat is either acted on, captured as a TODO, recorded as a "Considered and deferred" note in `CONTEXT.md`, or intentionally dropped. No idea should silently evaporate.
+
+Report one of:
+
+- **`Archive-ready`** — all four checks pass; the chat can be safely archived or lost.
+- **`Hold — N items unrecorded:`** followed by a short bulleted list. The user decides whether to capture the gaps or accept the loss.
+
+Keep the report to one line plus the list. Do not narrate the check itself.
+
 ---
 
 ## Task
