@@ -1,6 +1,8 @@
 # Execute These Instructions
 
 > **ACTION MODE:** Do not describe what you will do. Do not ask for confirmation. Do not offer options. Read the instructions, then execute them. Report what you did, not what you could do.
+>
+> **Scope note:** Action Mode governs decisiveness for non-destructive work. For destructive operations, follow the precedence and deletion policy below.
 
 **Set up `.ai/` context files for this repository.**
 
@@ -23,6 +25,54 @@ Follow the detailed steps below.
 
 ---
 
+## Instruction Precedence and Conflict Resolution
+
+When instructions conflict, use this precedence order:
+
+1. Safety and platform/tool constraints
+2. Explicit user request in the current chat
+3. Destructive-action policy in this file
+4. Action Mode and remaining bootstrap guidance
+
+If any conflict involves irreversible change, choose the least irreversible path and continue execution.
+
+### Destructive-action policy
+
+**Pre-approved (no confirmation required):**
+- Delete superseded AI meta-files inside `.ai/` after their useful content is consolidated into canonical files.
+- Delete stale in-repo copies of BOOTSTRAP.md when canonical location is confirmed.
+
+**Requires confirmation:**
+- Delete anything outside `.ai/`.
+- Delete source code, tests, docs, configs, scripts, or build artifacts not explicitly identified as superseded AI meta-content.
+
+### Default deletion workflow
+
+1. Consolidate content first.
+2. If ambiguity remains, move superseded files to `.ai/_deprecated/`.
+3. Permanently delete only when pre-approved above or explicitly requested by the user.
+
+This preserves Action Mode while minimizing irreversible mistakes.
+
+### `_deprecated` decision role
+
+Treat `.ai/_deprecated/` as a quarantine buffer for uncertainty, not long-term storage.
+
+- Use it when provenance is unclear, overlap is non-trivial, or rollback confidence is low.
+- Do not use it when the file is clearly superseded and deletion is pre-approved.
+- Whenever files are moved there, report paths in the completion summary.
+
+### Optional strict mode: one execution cycle quarantine
+
+If strict mode is enabled for a run, apply this override:
+
+- All superseded `.ai/` files go to `.ai/_deprecated/` first (no immediate permanent delete).
+- Permanent deletion is performed only on the next explicit bootstrap/harvest run.
+
+Default is **strict mode off** (to preserve Action Mode speed).
+
+---
+
 <!--
 USAGE: This file works two ways:
 1. Drag/drop or attach to any AI chat (VS Code Copilot, Claude, ChatGPT, etc.)
@@ -40,10 +90,19 @@ The ACTION MODE directive at the top pushes consultative models toward autonomou
 
 The following defaults are used when populating CONTEXT.md. On first-time initialization (no existing `.ai/` folder in the repo), verify this information with the user before proceeding.
 
-**Name:** Jonathan C. Lighthall
-**Role:** Research scientist, Code 7180 Acoustics Division, U.S. Naval Research Laboratory
-**Organization:** NRL Stennis Space Center, MS
-**Domain:** Underwater acoustics, parabolic equation methods, computational ocean acoustics
+**Name:** Jonathan C. Lighthall\
+**Role:** Research Physicist\
+**Organization:** Code 7181 Acoustic Simulation Section, U.S. Naval Research Laboratory, Stennis Space Center, MS\
+**Organizational Tiers :**\
+  Code 7181 Acoustic Simulation Section\
+  Code 7180 Acoustic Simulation, Measurements, and Tactics Branch\
+  Code 7100 Acoustics Division\
+  Code 7000 Ocean and Atmospheric Science and Technology Directorate\
+  United States Naval Research Laboratory (NRL)\
+  Office of Naval Research (ONR)\
+  United States Department of the Navy (DON)\
+  United States Department of Defense (DOD), also referred to as the Department of War (DOW)\
+**Domain:** Underwater acoustics, parabolic equation methods, computational ocean acoustics, model uncertainty quantification
 
 **Primary tools:**
 - Fortran (fixed-form F77 for legacy; F90/F2018 for new work)
@@ -122,7 +181,8 @@ Harvest this chat: Read `.ai/CONTEXT.md`, `.ai/INSTRUCTIONS.md`, and `.ai/TODO.m
 
 **What requires permission:**
 - Harvesting content → **Just do it** (low risk, additive)
-- Deleting source files → **Ask first** (destructive)
+- Deleting superseded `.ai/` meta-files after consolidation → **Just do it** (pre-approved)
+- Deleting non-`.ai/` files → **Ask first** (destructive)
 - Structural improvements (adding TOC, refactoring sections) → **Just do it** if obvious improvement; explain what you changed
 - Creating/reorganizing topic folders → **Just do it** and report (you're the primary consumer of these files)
 - Deduplication → **Just do it** (single source of truth is always better)
@@ -172,7 +232,7 @@ Before creating files, search the repository for:
 - Meta-commentary or narration files that describe the project for AI
 - Chat logs, session summaries, or working notes meant for AI context
 
-If found, consolidate into the four-file structure. After user confirmation, delete the originals. **One source of truth only.**
+If found, consolidate into the four-file structure, then apply the deletion policy above. If deletion is ambiguous, archive to `.ai/_deprecated/` and proceed. **One source of truth only.**
 
 ## Step 2: Create the Four Files
 
@@ -740,7 +800,7 @@ After creating all five files (four in `.ai/`, one at repo root):
 3. If consolidating existing files, preserve all useful content
 4. Initialize `.ai/TODO.md` with current known tasks from chat/repo context
 5. Inform the user: *"Productivity guardrails are enabled by default—AI will gently flag when work appears to be venturing into diminishing returns or scope creep. You can remove or customize this section in CONTEXT.md if you prefer."*
-6. Ask user to review before deleting source files
+6. Apply deletion policy: remove pre-approved superseded `.ai/` meta-files directly; ask only for non-pre-approved destructive deletions
 
 ## Key Principles
 
@@ -750,6 +810,7 @@ After creating all five files (four in `.ai/`, one at repo root):
 - **No symlinks** — use hard pointers (plain Markdown with links)
 - **No timestamps** — git tracks history
 - **Conflicts must be explicit** — silent precedence is dangerous
+- **Precedence is mandatory** — if instructions conflict, follow the precedence section above
 - **Integrate context proactively** — don't wait to be asked
 - **No meta-commentary outside `.ai/`** — keep the repo clean
 - **Ensure `.ai/` is tracked by git** — if new files don't appear in `git status`, check `.gitignore` for rules like `**/` that might exclude it
@@ -823,7 +884,7 @@ I've created the `.ai/` folder. Here's my understanding of this project:
 **Questions:**
 
 1. Is this understanding correct? Any major mischaracterizations?
-2. [If consolidating] I consolidated content from [list files]. Should I delete them now?
+2. [If consolidating] I consolidated content from [list files] and applied deletion policy [deleted or archived paths].
 3. What key decisions or constraints should I add? (e.g., "never touch X", "Y is deprecated", "Z is the pattern to follow")
 ```
 
