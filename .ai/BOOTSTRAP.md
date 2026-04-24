@@ -848,11 +848,11 @@ Navigate to the appropriate `.ai/` folder for project-specific guidance.
 
 **If you're bootstrapping at the repository root, you MUST create AGENTS.md.**
 
-## Step 3b: Create Tool-Specific Bridge Files (Optional but Recommended)
+## Step 3b: Create Tool-Specific Bridge Files
 
 `AGENTS.md` is the canonical entry point, but several major AI tools still discover context through their own native paths first. To maximize compatibility without duplicating content, create thin **pointer files** that redirect each tool to `AGENTS.md` and `.ai/`. Each bridge file should be one to a few lines — never copy substance.
 
-Create these only if the corresponding tool is in active use (or might be). Default: create all three. They are small, additive, and harmless.
+**Create all three by default.** They are small, additive, and harmless. Skip a bridge only if the user explicitly opts out.
 
 **1. GitHub Copilot bridge** — `.github/copilot-instructions.md`
 
