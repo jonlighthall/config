@@ -57,8 +57,12 @@ if [ ${DEBUG:-0} -gt 0 ]; then
     called_by=$(ps -o comm= $PPID)
     echo "${TAB}invoked by ${called_by}"
 fi
+
+# ------------------------------------------
 # set "Verbose Bash" for conditional prints
-export VB=true
+export VB=false
+# ------------------------------------------
+
 # clear terminal
 clear -x
 if [ ${DEBUG} -gt 0 ]; then
@@ -175,6 +179,8 @@ if [ "${VB}" = true ]; then
     print_done
     # print hidden text to force a new line before clearing screen
     vecho -e "\E[8mhello\E[28m"
+else
+    dtab 2
 fi
 
 # clear terminal
