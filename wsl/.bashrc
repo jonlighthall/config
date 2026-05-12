@@ -33,10 +33,12 @@
 
 # check if running interactively
 if [[ "$-" == *i* ]];then
+    added_tab=false
     if [ -z ${fTAB:+dummy} ]; then
         TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
     else
         itab
+        added_tab=true
     fi
     # print source
     if [ ${DEBUG:-0} -gt 0 ]; then
@@ -144,7 +146,9 @@ unset LIST_OPT
 unset LIST_RC
 unset wsl_ver
 
-if [ "${VB}" = true ]; then
-    # reset tab
+# Balance the initial itab call when fTAB was already defined.
+if [ "${added_tab}" = true ]; then
     dtab
 fi
+
+unset added_tab
