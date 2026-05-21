@@ -133,26 +133,29 @@ function gitl {
 # print number of files in the current directory, or specify a directory with an
 #   optional argument
 function nf {
+    local dir
+    local n1
+    local n2
+    local n2_fmt
+    local -i np
+
     if [ $# -eq 0 ]; then
-        dir_list=$PWD
-    else
-        dir_list="$@"
+        set -- "$PWD"
     fi
-    for dir in $dir_list; do
+
+    for dir in "$@"; do
         dir=${dir%/}
         n1=$(find "${dir}" -maxdepth 1 -type f | wc -l)
-        
-        # calculate length of longest number
+
+        # calculate display width of longest number, including grouping commas
         n2=$(find "${dir}" -type f | wc -l)
-        nn=$(echo "(l($n2)/l(10))+1" | bc -l | sed 's/\..*$//')
-        # account for commas
-        nc=$((($nn - 1) / 3))
-        np=$(($nn + $nc))
-        
+        n2_fmt=$(printf "%'d" "$n2")
+        np=${#n2_fmt}
+
         # print results
-        printf "%'${np}d files found in ${dir}\n" $n1
-        if [ $n1 -ne $n2 ]; then
-            printf "%'${np}d files found in ${dir}/*\n" $n2
+        printf "%'${np}d files found in %s\n" "$n1" "$dir"
+        if [ "$n1" -ne "$n2" ]; then
+            printf "%'${np}d files found in %s/*\n" "$n2" "$dir"
         fi
     done
 }
