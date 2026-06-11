@@ -153,6 +153,11 @@ Some AI tools have read-only access. If you receive substantial context but cann
 - Prefer minimal changes over extensive rewrites
 - Test on multiple platforms if possible (or note which platforms were considered)
 
+### Character set and style:
+
+- Do not introduce emojis or decorative Unicode glyphs (e.g., pictograms, reaction icons) into source code, configuration files, documentation, or `.ai/` context. They read as unprofessional and make AI authorship obvious.
+- Prefer plain ASCII punctuation and symbols in text. When richer notation is required (e.g., math), use LaTeX/KaTeX or standard ASCII-friendly conventions rather than relying on arbitrary Unicode characters.
+
 ---
 
 ## Changelog Maintenance (Software Projects Only)

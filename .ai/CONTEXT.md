@@ -96,6 +96,11 @@ Multi-platform user configuration repository containing shell profiles, Emacs se
 - Private configurations are in a separate repository (`config_private`) and symlinked from `private/`
 - Site-specific settings (NRL, Oracle) stored in dedicated folders
 - Aliases for remote VPN connections stored in separate files (`bash_aliases_*`)
+- Site-specific working context (including any API-integration or testing notes
+  for the `nrl/` folder) is kept inside that folder's own scope (`nrl/.ai/*`),
+  not in this parent repo. The `nrl/` folder is an independent, intentionally
+  non-submodule repository and is not present on personal/home machines, so this
+  repo's context must never depend on it.
 
 **Recent changes:**
 - Fixed Emacs version compatibility in `emacs_all.el` (version check for `display-fill-column-indicator-mode`)
