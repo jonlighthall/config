@@ -8,8 +8,10 @@
 - In Progress: 0
 - Blocked: 0
 - Deferred: 2
-- Last Review: 2026-04-24
+- Last Review: 2026-06-11
 - Top Priorities: T-2026-04-001 (gated by truncation/length triggers)
+
+> NRL-specific API/Copilot integration tasks live in `nrl/.ai/TODO.md`.
 
 ---
 
