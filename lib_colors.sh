@@ -160,6 +160,8 @@ function load_colors() {
     else
         [ "${VB}" = true ] && decho "done $FUNCNAME"
     fi
+
+    return 0
 }
 
 function load_dircolors() {
@@ -204,6 +206,8 @@ function load_dircolors() {
         dtab
         [ "${VB}" = true ] && decho "${TAB}directory colors loaded"
     fi
+
+    return 0
 }
 
 function print_dircolors_default() {
@@ -364,6 +368,8 @@ function match_ls_colors() {
     else
         [ "${VB}" = true ] && decho "done"
     fi
+
+    return 0
 }
 
 function match_ls_colors2() {
@@ -448,6 +454,8 @@ function append_ls_colors() {
 #   mi_col="05;48;5;232;38;5;15"
     LS_COLORS+="mi=${mi_col}:"
     [ "${VB}" = true ] && decho "done"
+
+    return 0
 }
 
 # ------------------------------------------------------------------------------
