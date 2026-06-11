@@ -23,7 +23,7 @@ Scan the repo, consolidate any existing meta-content, and create:
 
 **Use UPPERCASE filenames exactly as shown.** This is intentional—it follows the convention for meta-files like README.md, LICENSE, CHANGELOG, etc.
 
-> ⚠️ **AGENTS.md is required** for repo-root bootstraps. Do not skip it unless this is a subfolder setup.
+> **Important:** `AGENTS.md` is required for repo-root bootstraps. Do not skip it unless this is a subfolder setup.
 
 Follow the detailed steps below.
 
@@ -594,10 +594,10 @@ Required fields:
 - If a comparative claim is necessary, cite supporting evidence
 
 **Examples:**
-- ❌ "precisely the scenarios where PE methods are most needed"
-- ✓ "scenarios requiring explicit treatment of density variation"
-- ❌ "offers significant computational advantages"
-- ✓ "offers computational advantages" (or cite performance benchmarks)
+- Avoid: "precisely the scenarios where PE methods are most needed"
+- Prefer: "scenarios requiring explicit treatment of density variation"
+- Avoid: "offers significant computational advantages"
+- Prefer: "offers computational advantages" (or cite performance benchmarks)
 
 ---
 
@@ -992,7 +992,7 @@ I've created the `.ai/` folder. Here's my understanding of this project:
 
 **AGENTS.md:** [Created at repo root / Consolidated into existing / Skipped (subfolder setup — explain why)]
 
-**⚠️ If AGENTS.md is missing and this is a repo-root bootstrap, go back and create it now.**
+**If `AGENTS.md` is missing and this is a repo-root bootstrap, go back and create it now.**
 
 **Questions:**
 
