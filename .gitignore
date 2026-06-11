@@ -4,6 +4,8 @@
 
 # Git
 *.~*~
+.env
+.env.*
 
 # directories
 **/
@@ -12,6 +14,7 @@
 !.ai/
 !**/.claude/
 !**/.claude/**/
+!**/.claude/**
 !apple/
 !cygwin/
 !git_bash/
