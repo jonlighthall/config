@@ -12,6 +12,17 @@
 
 TAB=${TAB=''}
 
+# Preserve the caller's errexit state while bootstrapping this file. Several of
+# the helper libraries intentionally use nonzero statuses in control-flow tests,
+# which can abort strict scripts that source this file.
+fpretty_had_errexit=false
+case $- in
+    *e*)
+        fpretty_had_errexit=true
+        set +e
+        ;;
+esac
+
 # add read-only variable to check if this file has already been loaded
 # if the argument '-f' is used, force loading the file
 # check for argument
