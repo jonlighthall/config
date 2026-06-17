@@ -1,8 +1,8 @@
 # Execute These Instructions
 
-<!-- Bootstrap-Version: 2026.04 -->
+<!-- Bootstrap-Version: 2026.05 -->
 
-> **Bootstrap-Version:** `2026.04` — When generating `AGENTS.md`, record this version in a comment so drift across repos can be detected.
+> **Bootstrap-Version:** `2026.05` — When generating `AGENTS.md`, record this version in a comment so drift across repos can be detected.
 
 > **ACTION MODE:** Do not describe what you will do. Do not ask for confirmation. Do not offer options. Read the instructions, then execute them. Report what you did, not what you could do.
 >
@@ -129,9 +129,54 @@ This file is a **user-level configuration tool**, not a per-repo artifact. It sh
 
 - **Canonical location:** `~/config/.ai/BOOTSTRAP.md` (or equivalent dotfiles path)
 - **Usage:** Attach or paste into a new AI chat to initialize `.ai/` for a repo
-- **Output:** The `.ai/` folder and `AGENTS.md` are committed to the repo; BOOTSTRAP.md is not
+- **Output:** `AGENTS.md` is committed to the repo; BOOTSTRAP.md is not. The `.ai/` folder is committed in private/single-dev repos, but in **shared** repos only `AGENTS.md` is tracked and the `.ai/` set (or `.ai/local/`) stays gitignored — see "Shared vs. Private Repos" below.
+
+### Single source of truth (the bash-library model)
+
+BOOTSTRAP.md follows the same philosophy as the shared bash libraries (`lib_*.sh`)
+in `config/`: there is **exactly one canonical, editable copy per machine**, and
+everything else points to it rather than duplicating it. Just as `.bashrc` and
+every other script source the single `config/lib_*.sh` files, every repo's `.ai/`
+setup derives from the single `config/.ai/BOOTSTRAP.md`.
+
+- **One copy, always available.** The `config` repo is cloned to every machine, so
+  the canonical BOOTSTRAP.md is always present. There is never a second editable
+  copy to drift out of sync.
+- **Therefore it MUST be tracked.** Because it is the single source of truth, it
+  belongs in version control (in `config/.ai/`, which is a private/single-dev repo,
+  so its full `.ai/` set is tracked — see "Shared vs. Private Repos" below). Losing
+  or forking it would break the whole bootstrap chain.
+- **Edits happen in one place.** Improve the canonical file; do not patch downstream
+  copies. Downstream `.ai/` folders in other repos are *outputs* of BOOTSTRAP.md,
+  not places to edit the bootstrap logic itself.
 
 If a copy of BOOTSTRAP.md exists inside a project repo (e.g., `documents/.ai/BOOTSTRAP.md`), it is a stale copy. Delete it and use the canonical version.
+
+---
+
+## Shared vs. Private Repos: What to Track vs. Ignore
+
+The `.ai/` four-file convention assumes a **private, single-developer repo**, where you are the only consumer of the context and there is no reason to separate "universal facts" from "personal reminders." In that case, track everything together in `.ai/` and move on.
+
+For a **shared or multi-developer repo** (anything meant for hand-off, public release, or team collaboration), the split matters. Apply this delineation, which mirrors the three-tier hierarchy the major agent tools already implement (personal instructions > repository instructions > organization instructions):
+
+| Tier | Content | Destination | Tracked? |
+|------|---------|-------------|----------|
+| **Universal repo truths** | Architecture, build/test commands, conventions, validated facts, endpoint maps, "edit shared behavior here, not there" rules | `AGENTS.md` (root) + optionally `.github/copilot-instructions.md` | **Tracked** |
+| **Personal / ephemeral state** | Your `TODO.md`, in-flight version notes ("uncommitted as of…"), machine-specific paths, scratch reminders | Agent's own private memory, **or** a gitignored `.ai/local/` | **Ignored** |
+| **Per-user preferences** | Author voice, "minimal changes," productivity guardrails | The user's editor-level custom instructions (VS Code settings/profile), **not** the repo | Not in repo |
+
+**The litmus test (the `.env` analogy):** Ask "is this fact true for *everyone* who will ever work on this repo, or is it personal to me/this machine right now?" Universal facts are tracked, like `.env.example`. Personal/in-flight state is ignored, like `.env` itself (which carries secrets *and* local paths). If it would be wrong, stale, or useless to a colleague who freshly clones the repo, it must not be tracked.
+
+**Practical rule for shared repos:**
+
+- **Do** keep a tracked `AGENTS.md` at the root (the universal entry point every agent tool reads). This is the one durable, shareable AI-facing file.
+- **Do not** create a tracked four-file `.ai/` folder that duplicates `AGENTS.md` — that creates a single-source-of-truth problem in the exact repo where cleanliness matters most.
+- **If** you need persistent personal working memory in a shared repo, put it in the agent's own memory store, or create a **gitignored** `.ai/local/` (add `/.ai/local/` to `.gitignore`). Never commit it.
+
+**Why this avoids clogging the root:** a shared repo gets exactly *one* tracked AI file (`AGENTS.md`) plus an optional ignored escape hatch — not five. A private repo keeps the full `.ai/` set because the distinction is moot when you are the only reader.
+
+**When in doubt about whether a repo is "shared":** if it has a remote that other people can clone, or it is explicitly intended for hand-off, treat it as shared and apply the split. The cost of leaking a personal TODO into a shared repo is low but real (confusion, stale guidance); the cost of the split in a truly private repo is just a little extra structure.
 
 ---
 
@@ -916,7 +961,7 @@ After creating all five files (four in `.ai/`, one at repo root):
 
 ## Key Principles
 
-- **Starting structure** — four files in `.ai/` (`README.md`, `CONTEXT.md`, `INSTRUCTIONS.md`, `TODO.md`), one `AGENTS.md` at repo root; topic folders added when justified
+- **Starting structure** — four files in `.ai/` (`README.md`, `CONTEXT.md`, `INSTRUCTIONS.md`, `TODO.md`), one `AGENTS.md` at repo root; topic folders added when justified. **This is the private/single-dev default.** For shared or multi-developer repos, see "Shared vs. Private Repos" above: track only `AGENTS.md` (+ optional `.github/copilot-instructions.md`) and keep personal/ephemeral state in agent memory or a gitignored `.ai/local/`.
 - **AGENTS.md is required** for repo-root bootstraps (skip only for subfolder `.ai/` setups)
 - **UPPERCASE filenames** — `README.md`, `CONTEXT.md`, `INSTRUCTIONS.md`, `TODO.md`, `AGENTS.md`
 - **No symlinks** — use hard pointers (plain Markdown with links)
@@ -926,7 +971,7 @@ After creating all five files (four in `.ai/`, one at repo root):
 - **Integrate context proactively** — don't wait to be asked
 - **No meta-commentary outside `.ai/`** — keep the repo clean
 - **Tool bridges are pointers, not copies** — `.github/copilot-instructions.md`, `.cursor/rules/00-agents.mdc`, and `CLAUDE.md` should redirect to `AGENTS.md`/`.ai/`, never duplicate substance
-- **Ensure `.ai/` is tracked by git** — if new files don't appear in `git status`, check `.gitignore` for rules like `**/` that might exclude it
+- **Ensure `.ai/` is tracked by git in private/single-dev repos** — if new files don't appear in `git status`, check `.gitignore` for rules like `**/` that might exclude it. (In *shared* repos the opposite applies: a full `.ai/` is intentionally NOT tracked; only `AGENTS.md` is. See "Shared vs. Private Repos" above.)
 
 ## Standing Order: Monitor for Deprecated/Emerging Standards
 
