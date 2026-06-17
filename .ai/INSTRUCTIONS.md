@@ -25,6 +25,17 @@
 
 ---
 
+## Sign the Guestbook (Standing Order)
+
+If you edited **any** file in this repository during this session, append one row
+to `.ai/GUESTBOOK.md` before finishing: today's date (`YYYY-MM-DD`), your model
+name, and your version string as reported to you. **Sign once per model+version** —
+if your model+version already appears, skip it. **Append-only:** add your row at the
+bottom; never edit, reorder, or delete existing rows. It is a strict factual log —
+no summary or commentary. Low-risk and additive: just do it.
+
+---
+
 ## Context Maintenance (Standing Order)
 
 ### Why these files exist

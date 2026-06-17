@@ -12,11 +12,12 @@
 
 Scan the repo, consolidate any existing meta-content, and create:
 
-**In `.ai/` folder (four files):**
+**In `.ai/` folder (five files):**
 - `README.md` — For AI orientation and human redirection
 - `CONTEXT.md` — Facts, decisions, history
 - `INSTRUCTIONS.md` — Procedures, standing orders
 - `TODO.md` — Persistent task status across sessions
+- `GUESTBOOK.md` — Append-only "I was here" log; each model signs once
 
 **At repository root (one file):**
 - `AGENTS.md` — Universal entry point for AI tools
@@ -285,18 +286,19 @@ Keep the report to one line plus the list. Do not narrate the check itself.
 
 ## Task
 
-Create or consolidate an `.ai/` folder for this repository with exactly four files, plus an optional root-level pointer:
+Create or consolidate an `.ai/` folder for this repository with exactly five files, plus an optional root-level pointer:
 
 **In `.ai/` folder:**
 1. **README.md** — Minimal, tells humans to look elsewhere, tells AI where to start
 2. **CONTEXT.md** — Facts, decisions, history (what to know)
 3. **INSTRUCTIONS.md** — Procedures, standing orders (what to do)
 4. **TODO.md** — Open/closed task tracking across sessions
+5. **GUESTBOOK.md** — Append-only agent-activity log (date, model, version); each model signs once
 
 **At repository root:**
-5. **AGENTS.md** — Universal entry point for AI tools (see Step 3 below)
+6. **AGENTS.md** — Universal entry point for AI tools (see Step 3 below)
 
-**All five files are required unless explicitly noted otherwise.**
+**All six files are required unless explicitly noted otherwise.**
 
 **If `.ai/` already exists and is current:** Skip to harvesting. Check if this chat contains any decisions, facts, constraints, or task-status updates not yet documented, and update the files accordingly. Don't ask—just do it and show what changed (or confirm nothing new to add).
 
@@ -335,6 +337,7 @@ It contains context and instructions for AI-assisted development of this project
 | `CONTEXT.md` | Project-wide facts, decisions, history |
 | `INSTRUCTIONS.md` | Procedures and standing orders |
 | `TODO.md` | Persistent task register across sessions |
+| `GUESTBOOK.md` | Append-only agent-activity log; sign once per model |
 | `<topic>/CONTEXT.md` | Topic-specific background |
 | `<topic>/INSTRUCTIONS.md` | Topic-specific procedures |
 
@@ -415,6 +418,37 @@ Write a statement redirecting humans who opened this file by mistake. **Be origi
 *Version history is tracked by git, not by timestamps in these files.*
 ```
 
+### GUESTBOOK.md (template)
+
+An append-only "I was here" log of every AI model that has edited this repository.
+It is **purely factual** — date, model name, version — with no creative content
+(the one Easter egg lives in `.ai/README.md`; do not add another here).
+
+**Signing rule (mandatory standing order):**
+
+- **When:** If you edited *any* file in this repository during this session, you
+  must sign the guestbook before finishing.
+- **Once per model:** If a row with **your model name and version already exists**,
+  do **not** add another — skip signing. One row per distinct model+version, ever.
+- **Append-only:** Add your row at the **bottom** of the table. **Never edit,
+  reorder, or delete** existing rows.
+- **What to record:** Today's date (`YYYY-MM-DD`), your model name, and your
+  version string **as reported to you** (do not guess; if uncertain, write the
+  best identifier you were given). No summary, no commentary, no flourish.
+
+```markdown
+# Guestbook
+
+Append-only log of AI models that have edited this repository. **Sign once per
+model+version.** If your model+version already appears below, do not sign again.
+Add new rows at the bottom; never edit or delete existing rows. Date format
+`YYYY-MM-DD`. See the signing rule in `BOOTSTRAP.md`.
+
+| Date | Model | Version |
+|------|-------|---------|
+| YYYY-MM-DD | <model name> | <version string> |
+```
+
 ### INSTRUCTIONS.md (template — populate from repo scan)
 
 ```markdown
@@ -449,6 +483,18 @@ applyTo: "**"
 **Destructive actions** (deleting files, overwriting content): Ask first.
 
 This applies throughout: context harvesting, topic folder creation/reorganization, deduplication, structural improvements. Don't ask permission for things that are easily reversed. Don't offer multiple options when the work has a clear logical conclusion. Complete the logical unit of work — if you deduplicated content but left dangling references, fix the references.
+
+---
+
+## Sign the Guestbook (Standing Order)
+
+If you edited **any** file in this repository during this session, append one row
+to `.ai/GUESTBOOK.md` before you finish: today's date (`YYYY-MM-DD`), your model
+name, and your version string as reported to you. **Sign once per model+version** —
+if your model+version already appears in the table, skip it. **Append-only:** add
+your row at the bottom; never edit, reorder, or delete existing rows. No summary or
+commentary — it is a strict factual log. (This is low-risk and additive: just do it,
+no need to ask.)
 
 ---
 
@@ -965,7 +1011,7 @@ Claude Code: read [`AGENTS.md`](AGENTS.md) and the [`.ai/`](.ai/) folder. They c
 
 ## Step 4: Populate from Scan
 
-After creating all five files (four in `.ai/`, one at repo root):
+After creating all six files (five in `.ai/`, one at repo root):
 
 1. Fill in the Author section by asking the user (or inferring if obvious)
 2. Scan the repo structure and populate the project-specific sections
@@ -976,9 +1022,10 @@ After creating all five files (four in `.ai/`, one at repo root):
 
 ## Key Principles
 
-- **Starting structure** — four files in `.ai/` (`README.md`, `CONTEXT.md`, `INSTRUCTIONS.md`, `TODO.md`), one `AGENTS.md` at repo root; topic folders added when justified. **This is the private/single-dev default.** For shared or multi-developer repos, see "Shared vs. Private Repos" above: track only `AGENTS.md` (+ optional `.github/copilot-instructions.md`) and keep personal/ephemeral state in agent memory or a gitignored `.ai/local/`.
+- **Starting structure** — five files in `.ai/` (`README.md`, `CONTEXT.md`, `INSTRUCTIONS.md`, `TODO.md`, `GUESTBOOK.md`), one `AGENTS.md` at repo root; topic folders added when justified. **This is the private/single-dev default.** For shared or multi-developer repos, see "Shared vs. Private Repos" above: track only `AGENTS.md` (+ optional `.github/copilot-instructions.md`) and keep personal/ephemeral state in agent memory or a gitignored `.ai/local/`.
 - **AGENTS.md is required** for repo-root bootstraps (skip only for subfolder `.ai/` setups)
-- **UPPERCASE filenames** — `README.md`, `CONTEXT.md`, `INSTRUCTIONS.md`, `TODO.md`, `AGENTS.md`
+- **GUESTBOOK.md is sign-once-per-model** — if any file in the repo was edited and your model+version is not already the last/any matching row, append one row; never edit or delete existing rows
+- **UPPERCASE filenames** — `README.md`, `CONTEXT.md`, `INSTRUCTIONS.md`, `TODO.md`, `GUESTBOOK.md`, `AGENTS.md`
 - **No symlinks** — use hard pointers (plain Markdown with links)
 - **No timestamps** — git tracks history
 - **Conflicts must be explicit** — silent precedence is dangerous

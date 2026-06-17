@@ -12,6 +12,8 @@ It contains context and instructions for AI-assisted development of this project
 |------|---------|
 | `CONTEXT.md` | Project-wide facts, decisions, history |
 | `INSTRUCTIONS.md` | Procedures and standing orders |
+| `TODO.md` | Persistent task register across sessions |
+| `GUESTBOOK.md` | Append-only agent-activity log; sign once per model |
 | `<topic>/CONTEXT.md` | Topic-specific background |
 | `<topic>/INSTRUCTIONS.md` | Topic-specific procedures |
 
