@@ -150,6 +150,21 @@ setup derives from the single `config/.ai/BOOTSTRAP.md`.
   copies. Downstream `.ai/` folders in other repos are *outputs* of BOOTSTRAP.md,
   not places to edit the bootstrap logic itself.
 
+**Where BOOTSTRAP.md sits in the standard hierarchy (note for the agent):** the
+community has converged on a three-tier precedence — **personal > repository >
+organization** instructions. BOOTSTRAP.md is a **personal-tier (user-level) tool**:
+it carries *your* preferred way of structuring AI context, not any single repo's
+facts. It does **not** compete with a repo's `AGENTS.md`; it is the **generator one
+level above** them — a personal-tier file that *produces* repository-tier
+`AGENTS.md` / `.ai/` outputs. The standard tools assume personal instructions are
+re-entered per device (GitHub's personal-instructions box, VS Code user settings),
+so there is no built-in slot for "version-controlled, syncs-across-machines"
+personal AI config. Tracking BOOTSTRAP.md in the `config` dotfiles repo fills that
+gap deliberately — the same trick used for `lib_*.sh`. So when you (the agent)
+encounter this file, treat it as **personal-tier guidance about how to build
+repository-tier artifacts**, never as a repository-tier artifact itself, and never
+as something to copy into a project repo.
+
 If a copy of BOOTSTRAP.md exists inside a project repo (e.g., `documents/.ai/BOOTSTRAP.md`), it is a stale copy. Delete it and use the canonical version.
 
 ---
