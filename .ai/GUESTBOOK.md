@@ -8,3 +8,4 @@ Add new rows at the bottom; never edit or delete existing rows. Date format
 | Date | Model | Version |
 |------|-------|---------|
 | 2026-06-17 | Claude Opus | 4.8 (Gov) |
+| 2026-06-17 | Claude Sonnet | 4.6 (Gov) |
