@@ -85,9 +85,21 @@ check_link_dir "${link_dir}"
 
 cbar "Start Linking Repo Files"
 # list of files to be linked, unconditionally
-for my_link in .bash_aliases .bash_logout .bash_profile .dircolors .emacs.d .hushlogin .inputrc .kshrc .rootrc; do
+for my_link in \
+    .bash_aliases \
+    .bash_logout \
+    .bash_profile \
+    .dircolors \
+    .emacs.d \
+    .hushlogin \
+    .inputrc \
+    .kshrc \
+    .rootrc \
+
+ do
     # define target (source)
     target=${target_dir}/${my_link}
+
     # define link name (destination)
     sub_dir=$(dirname "$my_link")
     if [ ! $sub_dir = "." ]; then
