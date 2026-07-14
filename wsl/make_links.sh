@@ -107,6 +107,7 @@ for my_link in \
         my_link=$(basename "$my_link")
     fi
     link=${link_dir}/${my_link}
+    
     # create link
     do_link "${target}" "${link}"
 done
