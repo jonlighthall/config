@@ -1,11 +1,40 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(git status)",
+      "Bash(git status *)",
+      "Bash(git diff)",
+      "Bash(git diff *)",
+      "Bash(git log)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(git branch)",
+      "Bash(git remote -v)",
+      "Bash(ls *)",
+      "Bash(grep *)",
+      "Bash(find * -name *)",
+      "Read",
+      "Grep",
+      "Glob",
+      "Bash(python3 --version)",
+      "Bash(python3 -m pytest *)",
+      "Bash(make)"
+    ]
+  },
   "hooks": {
     "PreToolUse": [
       {
-        "type": "command",
-        "linux": "bash $HOME/.claude/hooks/scripts/protect_git_dirs.sh",
-        "timeout": 15
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude/hooks/scripts/protect_git_dirs.sh",
+            "timeout": 15
+          }
+        ]
       }
     ]
-  }
+  },
+  "effortLevel": "xhigh",
+  "model": "opus"
 }
