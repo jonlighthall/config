@@ -12,9 +12,6 @@
 
 # known directories
 !.ai/
-!**/.claude/
-!**/.claude/**/
-!**/.claude/**
 !apple/
 !cygwin/
 !git_bash/
@@ -40,3 +37,10 @@ make_links.sh
 
 #Markdown list
 ls2md.md
+
+# Claude runtime state
+!**/.claude/
+**/.claude/*
+!**/.claude/settings.json
+!**/.claude/hooks/
+!**/.claude/hooks/**

@@ -35,6 +35,5 @@
       }
     ]
   },
-  "effortLevel": "xhigh",
-  "model": "opus"
+  "effortLevel": "max"
 }
