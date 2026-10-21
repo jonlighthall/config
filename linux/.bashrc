@@ -16,7 +16,8 @@
 
 # check if running interactively
 if [[ "$-" == *i* ]];then
-    if [ -z ${fTAB:+dummy} ]; then
+    # fTAB may be inherited from the environment, but itab (a function) is not
+    if [ -z ${fTAB:+dummy} ] || ! declare -F itab &>/dev/null; then
         TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
     else
         itab
