@@ -285,7 +285,7 @@ if [[ ":$PATH" != *":${ADDPATH}"*  ]]; then
         export PATH=$PATH:$ADDPATH
         vecho "done"
     else
-        echo "${TAB}${ADDPATH} not found"
+        vecho "${TAB}${ADDPATH} not found"
     fi
 else
     vecho "${TAB}${ADDPATH} already in PATH"
@@ -300,6 +300,8 @@ unset do_test_color
 unset git_bad
 
 if [ "${VB}" = true ]; then
-    # reset tab
-    dtab 2 # once for path, once for file
+    # reset path tab
+    dtab
 fi
+# reset file tab
+dtab
