@@ -24,6 +24,17 @@
 !oracle/
 !wsl/
 
+# Claude Code: track user config only; everything else in ~/.claude is runtime state (including
+# login credentials, session transcripts, and caches)
+**/.claude/*
+!**/.claude/settings.json
+!**/.claude/CLAUDE.md
+!**/.claude/hooks/
+!**/.claude/agents/
+!**/.claude/commands/
+!**/.claude/skills/
+**/.claude/skills/synced/
+
 # links
 make_links.sh
 
