@@ -1,8 +1,8 @@
 # Execute These Instructions
 
-<!-- Bootstrap-Version: 2026.05 -->
+<!-- Bootstrap-Version: 2026.10.1 -->
 
-> **Bootstrap-Version:** `2026.05` — When generating `AGENTS.md`, record this version in a comment so drift across repos can be detected.
+> **Bootstrap-Version:** `2026.10.1` — When generating `AGENTS.md`, record this version in a comment so drift across repos can be detected. Change history: see "Revision Notes" at the end of this file.
 
 > **ACTION MODE:** Do not describe what you will do. Do not ask for confirmation. Do not offer options. Read the instructions, then execute them. Report what you did, not what you could do.
 >
@@ -18,6 +18,8 @@ Scan the repo, consolidate any existing meta-content, and create:
 - `INSTRUCTIONS.md` — Procedures, standing orders
 - `TODO.md` — Persistent task status across sessions
 - `GUESTBOOK.md` — Append-only "I was here" log; each model signs once
+
+**Optional sixth file (document-centric folders only):** `SOURCES.md` -- source-of-truth map. See "SOURCES.md (optional template)" under Step 2.
 
 **At repository root (one file):**
 - `AGENTS.md` — Universal entry point for AI tools
@@ -93,12 +95,12 @@ The ACTION MODE directive at the top pushes consultative models toward autonomou
 
 ## Author Defaults
 
-The following defaults are used when populating CONTEXT.md. On first-time initialization (no existing `.ai/` folder in the repo), verify this information with the user before proceeding.
+The following defaults populate the Author section of `.ai/CONTEXT.md`. Use them without pausing to ask (Action Mode). On first-time initialization (no existing `.ai/` folder in the repo), list the values used in the post-setup summary, name the file and section where they were recorded (`.ai/CONTEXT.md` -> "Author"), and ask the user to confirm or correct them there. Apply corrections to that repo's `CONTEXT.md`; change the defaults below only if the user asks.
 
 **Name:** Jonathan C. Lighthall\
 **Role:** Research Physicist\
 **Organization:** Code 7181 Acoustic Simulation Section, U.S. Naval Research Laboratory, Stennis Space Center, MS\
-**Organizational Tiers :**\
+**Organizational tiers:**\
   Code 7181 Acoustic Simulation Section\
   Code 7180 Acoustic Simulation, Measurements, and Tactics Branch\
   Code 7100 Acoustics Division\
@@ -107,6 +109,7 @@ The following defaults are used when populating CONTEXT.md. On first-time initia
   Office of Naval Research (ONR)\
   United States Department of the Navy (DON)\
   United States Department of Defense (DOD), also referred to as the Department of War (DOW)\
+**Organizational code:** 7181. NRL codes are hierarchical (7000 directorate / 7100 division / 7180 branch / 7181 section); any level is valid, and the section code is the most specific and preferred when a single code is requested.\
 **Domain:** Underwater acoustics, parabolic equation methods, computational ocean acoustics, model uncertainty quantification
 
 **Primary tools:**
@@ -172,7 +175,7 @@ If a copy of BOOTSTRAP.md exists inside a project repo (e.g., `documents/.ai/BOO
 
 ## Shared vs. Private Repos: What to Track vs. Ignore
 
-The `.ai/` four-file convention assumes a **private, single-developer repo**, where you are the only consumer of the context and there is no reason to separate "universal facts" from "personal reminders." In that case, track everything together in `.ai/` and move on.
+The `.ai/` five-file convention assumes a **private, single-developer repo**, where you are the only consumer of the context and there is no reason to separate "universal facts" from "personal reminders." In that case, track everything together in `.ai/` and move on.
 
 For a **shared or multi-developer repo** (anything meant for hand-off, public release, or team collaboration), the split matters. Apply this delineation, which mirrors the three-tier hierarchy the major agent tools already implement (personal instructions > repository instructions > organization instructions):
 
@@ -187,12 +190,48 @@ For a **shared or multi-developer repo** (anything meant for hand-off, public re
 **Practical rule for shared repos:**
 
 - **Do** keep a tracked `AGENTS.md` at the root (the universal entry point every agent tool reads). This is the one durable, shareable AI-facing file.
-- **Do not** create a tracked four-file `.ai/` folder that duplicates `AGENTS.md` — that creates a single-source-of-truth problem in the exact repo where cleanliness matters most.
+- **Do not** create a tracked five-file `.ai/` folder that duplicates `AGENTS.md` — that creates a single-source-of-truth problem in the exact repo where cleanliness matters most.
 - **If** you need persistent personal working memory in a shared repo, put it in the agent's own memory store, or create a **gitignored** `.ai/local/` (add `/.ai/local/` to `.gitignore`). Never commit it.
 
 **Why this avoids clogging the root:** a shared repo gets exactly *one* tracked AI file (`AGENTS.md`) plus an optional ignored escape hatch — not five. A private repo keeps the full `.ai/` set because the distinction is moot when you are the only reader.
 
 **When in doubt about whether a repo is "shared":** if it has a remote that other people can clone, or it is explicitly intended for hand-off, treat it as shared and apply the split. The cost of leaking a personal TODO into a shared repo is low but real (confusion, stale guidance); the cost of the split in a truly private repo is just a little extra structure.
+
+### Non-git synced folders (Teams / OneDrive / SharePoint)
+
+Some targets are not git repositories at all -- e.g., a Teams-synced folder of
+administrative documents opened directly as a VS Code workspace. The rules above
+assume git; adapt them as follows.
+
+- **Visibility:** sync is all-or-nothing per folder. Everything placed there
+  (including `.ai/`) reaches every teammate who syncs the folder, and there is no
+  `.gitignore` layer. Keep `.ai/` content professional and project-universal; put
+  personal or machine-specific notes in the agent's own memory. Do not "solve"
+  this by moving context files outside the folder they describe.
+- **History:** the sync service's version history is the only rollback. Date
+  decisions and entries (`YYYY-MM-DD`) in `.ai/` files -- the "no timestamps"
+  principle applies only to git-tracked folders -- and replace the git footer in
+  `.ai/README.md` with a line stating that the folder is not under version control.
+- **Root status:** a non-git folder opened directly as a workspace counts as a
+  root for Step 3: create `AGENTS.md` and the bridge files there.
+- **Workspace containers:** a synced top-level workspace that holds several areas
+  (each with its own `.ai/`, or none) gets a root `AGENTS.md` pointer only -- a
+  layout table plus "where to start" per area -- not a full `.ai/` set.
+- **Handling:** if the folder holds controlled material (e.g., CUI), the `.ai/`
+  summaries inherit that handling. Say so in `INSTRUCTIONS.md` and keep the
+  summaries inside the same share.
+- **Cross-folder links:** when related material lives in sibling synced folders
+  (e.g., a project's admin folder and its technical folder), add relative-path
+  pointers in both directions so an agent started in either place finds the other.
+- **Nested git repos:** a synced folder may contain subfolders that are their own
+  git repos (e.g., a manuscript or code repo inside a project folder). The synced
+  folder is the root for this bootstrap; do not create `.ai/` or bridge files
+  inside the nested repos as part of it. Each nested repo is a separate root,
+  bootstrapped on its own terms under the git rules above (including the
+  shared/private split). In the outer `CONTEXT.md`, list nested repos as such and
+  link to their `AGENTS.md` if one exists. The converse also holds: bootstrapping
+  a git repo that sits inside a synced folder does not extend to the folder; at
+  most, add a pointer.
 
 ---
 
@@ -286,7 +325,7 @@ Keep the report to one line plus the list. Do not narrate the check itself.
 
 ## Task
 
-Create or consolidate an `.ai/` folder for this repository with exactly five files, plus an optional root-level pointer:
+Create or consolidate an `.ai/` folder for this repository with the five core files (plus the optional `SOURCES.md` for document-centric folders), and a root-level pointer:
 
 **In `.ai/` folder:**
 1. **README.md** — Minimal, tells humans to look elsewhere, tells AI where to start
@@ -315,9 +354,9 @@ Before creating files, search the repository for:
 - Meta-commentary or narration files that describe the project for AI
 - Chat logs, session summaries, or working notes meant for AI context
 
-If found, consolidate into the four-file structure, then apply the deletion policy above. If deletion is ambiguous, archive to `.ai/_deprecated/` and proceed. **One source of truth only.**
+If found, consolidate into the five-file structure, then apply the deletion policy above. If deletion is ambiguous, archive to `.ai/_deprecated/` and proceed. **One source of truth only.**
 
-## Step 2: Create the Four Files
+## Step 2: Create the Core Files
 
 ### README.md (template)
 
@@ -338,6 +377,7 @@ It contains context and instructions for AI-assisted development of this project
 | `INSTRUCTIONS.md` | Procedures and standing orders |
 | `TODO.md` | Persistent task register across sessions |
 | `GUESTBOOK.md` | Append-only agent-activity log; sign once per model |
+| `SOURCES.md` | (Optional; document-centric folders) Source-of-truth map: where each document lives, which version is canonical |
 | `<topic>/CONTEXT.md` | Topic-specific background |
 | `<topic>/INSTRUCTIONS.md` | Topic-specific procedures |
 
@@ -416,6 +456,7 @@ Write a statement redirecting humans who opened this file by mistake. **Be origi
 ---
 
 *Version history is tracked by git, not by timestamps in these files.*
+<!-- Non-git synced folder: replace the line above with a statement that the folder is not under version control and entries are dated (see "Non-git synced folders"). -->
 ```
 
 ### GUESTBOOK.md (template)
@@ -442,7 +483,7 @@ It is **purely factual** — date, model name, version — with no creative cont
 Append-only log of AI models that have edited this repository. **Sign once per
 model+version.** If your model+version already appears below, do not sign again.
 Add new rows at the bottom; never edit or delete existing rows. Date format
-`YYYY-MM-DD`. See the signing rule in `BOOTSTRAP.md`.
+`YYYY-MM-DD`. The signing rule is in `.ai/INSTRUCTIONS.md`.
 
 | Date | Model | Version |
 |------|-------|---------|
@@ -551,7 +592,7 @@ Over time, topic folders may overlap with each other or with project-wide conten
 
 - **Deduplication:** If two topic folders cover overlapping ground, consolidate. Move specific content to one folder, keep a pointer in the other. Example: if `security/INSTRUCTIONS.md` and `deployment/INSTRUCTIONS.md` both describe credential handling, consolidate into one and cross-reference.
 - **Collapse small folders:** If a topic folder shrinks to a few paragraphs after content moves elsewhere, consider collapsing it back into project-wide files. A folder should be substantive enough to justify the added navigation overhead.
-- **Prune stale folders:** If a topic folder hasn't been touched in multiple sessions and its content is small enough to fit in project-wide files, migrate it. Mark the consolidation in git commit.
+- **Prune stale folders:** If a topic folder hasn't been touched in multiple sessions and its content is small enough to fit in project-wide files, migrate it. Record the consolidation in the commit message (in a non-git folder, as a dated note in `CONTEXT.md`).
 - **Always maintain single source of truth:** No duplicated content across folders. Ever. If you find it, fix it immediately.
 
 For any of these maintenance actions, follow the Default Autonomy Level above. If uncertain whether a folder should be deprecated, ask the user.
@@ -766,7 +807,8 @@ Move entries from `[Unreleased]` to a versioned section on release.
 ## Author
 
 <!-- Populate from the Author Defaults section at the top of BOOTSTRAP.md.
-     On first-time initialization (no existing .ai/ folder), verify with the user. -->
+     Do not pause to verify; on first-time initialization, ask the user to confirm
+     these values in the post-setup summary. -->
 
 [Copy author defaults from BOOTSTRAP.md here]
 
@@ -897,6 +939,28 @@ Delete this comment block when adding real entries.
 <!-- same entry format; include why it is no longer relevant -->
 ```
 
+### SOURCES.md (optional template -- document-centric folders)
+
+Create this sixth file only when the folder is primarily **documents** rather than
+code: proposal/report/administrative folders, document-conversion projects, or any
+folder where the recurring agent question is "which file is the real one?" It
+complements, and never duplicates, `CONTEXT.md`: facts and decisions go in
+`CONTEXT.md`; *locations and canonical versions* go here.
+
+Include:
+- A legend: what "canonical" means here, which text companions (`.md`/`.txt`) exist
+  for Office/PDF originals, and known filename traps (non-ASCII characters, same
+  name with different content, unsuffixed files that are really blank templates).
+- A **type-indexed** section per document type spanning the whole folder,
+  whatever the folder's own layout (e.g., all proposals from all years in one
+  table). This is what makes a year-based or otherwise awkward layout searchable.
+- Pointers to related material outside the folder.
+- A "Fast Retrieval Guide": *If you need X -> open Y.*
+
+Standing order to put in `INSTRUCTIONS.md`: when a new document is added to the
+folder, update `SOURCES.md` in the same session. List `SOURCES.md` in the
+`.ai/README.md` table and in the `AGENTS.md` priority list when it exists.
+
 ## Step 3: Create AGENTS.md at Repository Root
 
 **Why this file exists:**
@@ -912,7 +976,7 @@ Delete this comment block when adding real entries.
 **Create `AGENTS.md` at the repository root** with this structure:
 
 ```markdown
-<!-- Bootstrapped from BOOTSTRAP.md version 2026.04 -->
+<!-- Bootstrapped from BOOTSTRAP.md version YYYY.MM -->
 # AGENTS.md
 
 ## For Humans
@@ -946,7 +1010,9 @@ All AI agents should prioritize the following files for project-specific guidanc
 *This file is the universal entry point. For detailed context, always defer to `.ai/`.*
 ```
 
-**"For Humans" section:** Keep this formal, informational, and spartan. No creative Easter eggs — those belong in `.ai/README.md` only. `AGENTS.md` is a professional-facing root file. State what the file is, redirect to real docs, and warn against editing. The template above provides a reasonable default; adjust to fit the project.
+**Version stamp:** replace `YYYY.MM` in the first line with the `Bootstrap-Version` at the top of this file. When a later run brings an existing `.ai/` set into line with a newer bootstrap, update the stamp.
+
+**"For Humans" section:** Keep this formal, informational, and spartan. No creative Easter eggs — those belong in `.ai/README.md` only. `AGENTS.md` is a professional-facing root file. State what the file is, redirect to real docs, and warn against editing. The template above provides a reasonable default; adjust to fit the project. If the root has no `README.md` (common in document folders), name the folder's actual human-facing documents instead of linking a file that does not exist.
 
 **For monorepos or multi-project workspaces:**
 
@@ -965,7 +1031,7 @@ Navigate to the appropriate `.ai/` folder for project-specific guidance.
 
 **DEFAULT ACTION: Create AGENTS.md.** Only skip if:
 
-- This is a subfolder `.ai/` setup (not at repo root) — e.g., `documents/report/.ai/`
+- This is a subfolder `.ai/` setup (not at repo root) — e.g., `documents/report/.ai/`. A non-git folder opened directly as a workspace is **not** a subfolder setup; see "Non-git synced folders".
 - An `AGENTS.md` already exists at the repo root (consolidate into it instead)
 
 **If you're bootstrapping at the repository root, you MUST create AGENTS.md.**
@@ -1011,9 +1077,9 @@ Claude Code: read [`AGENTS.md`](AGENTS.md) and the [`.ai/`](.ai/) folder. They c
 
 ## Step 4: Populate from Scan
 
-After creating all six files (five in `.ai/`, one at repo root):
+After creating the files (five in `.ai/`, optional `SOURCES.md`, `AGENTS.md` at the root, and the Step 3b bridge files):
 
-1. Fill in the Author section by asking the user (or inferring if obvious)
+1. Fill in the Author section from Author Defaults (do not pause to ask; the user confirms in the post-setup summary)
 2. Scan the repo structure and populate the project-specific sections
 3. If consolidating existing files, preserve all useful content
 4. Initialize `.ai/TODO.md` with current known tasks from chat/repo context
@@ -1022,18 +1088,18 @@ After creating all six files (five in `.ai/`, one at repo root):
 
 ## Key Principles
 
-- **Starting structure** — five files in `.ai/` (`README.md`, `CONTEXT.md`, `INSTRUCTIONS.md`, `TODO.md`, `GUESTBOOK.md`), one `AGENTS.md` at repo root; topic folders added when justified. **This is the private/single-dev default.** For shared or multi-developer repos, see "Shared vs. Private Repos" above: track only `AGENTS.md` (+ optional `.github/copilot-instructions.md`) and keep personal/ephemeral state in agent memory or a gitignored `.ai/local/`.
+- **Starting structure** — five files in `.ai/` (`README.md`, `CONTEXT.md`, `INSTRUCTIONS.md`, `TODO.md`, `GUESTBOOK.md`), one `AGENTS.md` at repo root; topic folders added when justified. Document-centric folders may add `SOURCES.md` (source-of-truth map). **This is the private/single-dev default.** For shared or multi-developer repos, see "Shared vs. Private Repos" above: track only `AGENTS.md` (+ optional `.github/copilot-instructions.md`) and keep personal/ephemeral state in agent memory or a gitignored `.ai/local/`.
 - **AGENTS.md is required** for repo-root bootstraps (skip only for subfolder `.ai/` setups)
-- **GUESTBOOK.md is sign-once-per-model** — if any file in the repo was edited and your model+version is not already the last/any matching row, append one row; never edit or delete existing rows
+- **GUESTBOOK.md is sign-once-per-model** — if any file in the repo was edited and your model+version does not appear in any row, append one row; never edit or delete existing rows
 - **UPPERCASE filenames** — `README.md`, `CONTEXT.md`, `INSTRUCTIONS.md`, `TODO.md`, `GUESTBOOK.md`, `AGENTS.md`
 - **No symlinks** — use hard pointers (plain Markdown with links)
-- **No timestamps** — git tracks history
+- **No timestamps** — git tracks history (git-tracked folders only; in non-git synced folders, date entries -- see "Non-git synced folders")
 - **Conflicts must be explicit** — silent precedence is dangerous
 - **Precedence is mandatory** — if instructions conflict, follow the precedence section above
 - **Integrate context proactively** — don't wait to be asked
 - **No meta-commentary outside `.ai/`** — keep the repo clean
 - **Tool bridges are pointers, not copies** — `.github/copilot-instructions.md`, `.cursor/rules/00-agents.mdc`, and `CLAUDE.md` should redirect to `AGENTS.md`/`.ai/`, never duplicate substance
-- **Ensure `.ai/` is tracked by git in private/single-dev repos** — if new files don't appear in `git status`, check `.gitignore` for rules like `**/` that might exclude it. (In *shared* repos the opposite applies: a full `.ai/` is intentionally NOT tracked; only `AGENTS.md` is. See "Shared vs. Private Repos" above.)
+- **Ensure `.ai/` is tracked by git in private/single-dev repos** — if new files don't appear in `git status`, check `.gitignore` for rules like `**/` that might exclude it. (In *shared* repos the opposite applies: a full `.ai/` is intentionally NOT tracked; only `AGENTS.md` is. See "Shared vs. Private Repos" above.) In non-git synced folders this check does not apply.
 
 ## Standing Order: Monitor for Deprecated/Emerging Standards
 
@@ -1069,7 +1135,9 @@ The `.ai/` folder paradigm (introduced 2025–2026) is still evolving. AI agent 
 git mv context.md temp.md && git mv temp.md CONTEXT.md
 ```
 
-**Files disappeared during rename?** Check for backup files (`*.md~`) and `git status`. Commit before risky operations.
+In a non-git folder, do the same two-step rename through a temporary name with plain `mv` (or the file manager).
+
+**Files disappeared during rename?** Check for backup files (`*.md~`) and `git status` (or the sync service's version history in non-git folders). Commit before risky operations.
 
 **General rule:** When in doubt, commit first. Git is your safety net.
 
@@ -1089,9 +1157,9 @@ I've created the `.ai/` folder. Here's my understanding of this project:
 - [file/folder]: [what it does]
 - [etc.]
 
-**Author context I inferred:**
-- Role: [what you guessed]
-- Domain: [what you guessed]
+**Author details used** (from Author Defaults; recorded in `.ai/CONTEXT.md` -> "Author"; please confirm or correct):
+- Name / role / organization: [values used]
+- Domain: [values used, plus any project-specific additions]
 - Primary tools: [languages, frameworks]
 
 **Decisions/constraints I documented:**
@@ -1112,7 +1180,7 @@ Then integrate corrections into CONTEXT.md.
 
 ## Step 5: Review BOOTSTRAP.md Itself (if reading from file)
 
-If you received these instructions as an attached file (not pasted into chat), review this file for issues you encountered during execution. **Do not edit the file.** Report only if you have substantive findings — "everything worked fine" is a valid and preferred outcome.
+If you received these instructions as an attached file (not pasted into chat), review this file for issues you encountered during execution. **Do not edit the file** unless the user explicitly asks you to; in that case, edit the canonical copy (`~/config/.ai/BOOTSTRAP.md`), bump `Bootstrap-Version`, and add a Revision Notes entry. Otherwise, report only if you have substantive findings — "everything worked fine" is a valid and preferred outcome.
 
 **Report-worthy:**
 - Instructions that contradicted each other
@@ -1127,6 +1195,42 @@ If you received these instructions as an attached file (not pasted into chat), r
 - Anything you'd phrase as "consider" or "you might want to"
 
 The threshold is: *did this cause friction during execution, or would it cause friction for a different agent/model executing the same instructions on a different repo?* If no, say nothing. If yes, note it briefly.
+
+---
+
+## Revision Notes
+
+Version stamps use `YYYY.MM`. A further revision in the same month, after the
+earlier one has already been stamped into any `AGENTS.md`, appends `.N`
+(`2026.10.1`, `2026.10.2`, ...) so drift stays detectable. Record the date and
+rationale of each change here; line-level detail lives in the config repo's git
+history.
+
+- **2026.10.1** (2026-10-22) -- Friction found while bootstrapping a non-git
+  OneDrive travel-admin folder and a sibling project folder containing nested
+  git repos:
+  - Resolved the conflict between Author Defaults ("verify with the user before
+    proceeding") and Action Mode ("do not ask"): populate without pausing, then
+    confirm in the post-setup summary, naming where the values were recorded.
+    Aligned the CONTEXT.md template comment, Step 4, and the summary template.
+  - GUESTBOOK template pointed to `BOOTSTRAP.md`, which by design never exists in
+    a target repo; now points to `.ai/INSTRUCTIONS.md`.
+  - Added "Nested git repos" under "Non-git synced folders."
+  - Smaller fixes: "last/any matching row" ambiguity in Key Principles; AGENTS.md
+    "For Humans" when no root README exists; Step 4 file count now includes
+    `SOURCES.md` and bridges; non-git equivalents for "mark in git commit" and
+    case-only renames; "Organizational tiers" label typo.
+  - Defined the `.N` same-month version suffix (this entry).
+- **2026.10** (2026-10-07) -- Friction found while bootstrapping a non-git,
+  Teams-synced administrative document folder (NSPE/uBand 6.4 admin):
+  - Added "Non-git synced folders" (visibility, dated entries, root status,
+    workspace containers, handling, cross-folder links).
+  - Added the optional `SOURCES.md` template for document-centric folders.
+  - Fixed the AGENTS.md template's hard-coded `2026.04` stamp (now `YYYY.MM` plus
+    an instruction) and stale "four-file" wording (the core set is five files).
+  - Step 5 now permits edits when the user explicitly asks.
+  - Author Defaults: preferred organizational code (section level).
+- **2026.05 and earlier** -- see git history.
 
 ---
 

@@ -105,6 +105,8 @@ Multi-platform user configuration repository containing shell profiles, Emacs se
 **Recent changes:**
 - Fixed Emacs version compatibility in `emacs_all.el` (version check for `display-fill-column-indicator-mode`)
 - Added productivity guardrail to `.ai/CONTEXT.md` to flag low-impact or tangential work
+- BOOTSTRAP.md bumped to 2026.10 (2026-10-07): added "Non-git synced folders" guidance, an optional `SOURCES.md` template for document-centric folders, an AGENTS.md version-stamp placeholder (was hard-coded 2026.04), five-file wording fixes, user-requested-edit carve-out in Step 5, and the preferred NRL org code in Author Defaults. Rationale is recorded in the file's own "Revision Notes" section. Triggered by bootstrapping the non-git NSPE/uBand 6.4 admin folder on Teams.
+- BOOTSTRAP.md bumped to 2026.10.1 (2026-10-22): Author Defaults no longer conflict with Action Mode (populate, then confirm in the post-setup summary); GUESTBOOK template points to `.ai/INSTRUCTIONS.md` instead of BOOTSTRAP.md; new "Nested git repos" guidance for synced folders; `.N` same-month version suffix; minor fixes. Triggered by bootstrapping the 2026-11 travel folder and the LURCRSS project folder (OneDrive).
 
 ---
 

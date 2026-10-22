@@ -8,7 +8,7 @@
 - In Progress: 0
 - Blocked: 0
 - Deferred: 2
-- Last Review: 2026-06-11
+- Last Review: 2026-10-22
 - Top Priorities: T-2026-04-001 (gated by truncation/length triggers)
 
 > NRL-specific API/Copilot integration tasks live in `nrl/.ai/TODO.md`.
@@ -42,6 +42,8 @@
   - Move the four templates (`README.md`, `CONTEXT.md`, `INSTRUCTIONS.md`, `TODO.md`) into `~/config/.ai/templates/` and reference them from `BOOTSTRAP.md` by path.
   - Tradeoff: monolithic BOOTSTRAP.md is portable (drag/drop into any chat, web or local). Multi-file is cleaner but breaks sandboxed/web agents that can't fetch siblings.
   - Defer chosen because: portability beats modularity for current workflow; no measured friction yet; first-time bootstrap is rare relative to harvest.
+  - 2026-10-07 check: BOOTSTRAP.md is 1209 lines after the 2026.10 revision (trigger ~1500); no truncation observed in a full-file read. Remains deferred.
+  - 2026-10-22 check: 1239 lines after the 2026.10.1 revision; full-file read without truncation. Remains deferred.
 
 ### T-2026-04-002 — Reassess modular-templates question after several harvest cycles
 

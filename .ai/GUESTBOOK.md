@@ -9,3 +9,4 @@ Add new rows at the bottom; never edit or delete existing rows. Date format
 |------|-------|---------|
 | 2026-06-17 | Claude Opus | 4.8 (Gov) |
 | 2026-06-17 | Claude Sonnet | 4.6 (Gov) |
+| 2026-10-07 | Claude Opus | 5.5 (claude-opus-5-5) |
