@@ -16,7 +16,7 @@ fi
 
 dispOK=false
 if [ -z $DISPLAY ];then
-    echo "${TAB}DISPLAY not set"
+    vecho "${TAB}DISPLAY not set"
 else
     vecho -n "${TAB}DISPLAY set to $DISPLAY... "
     xdpyinfo -display $DISPLAY &>/dev/null
@@ -58,6 +58,8 @@ if ! $dispOK; then
 
     for ((i=1;i<13;i++))
     do
+	      # stop once a display above was found
+	      [ -n "${DISPLAY}" ] && break
 	      export DISPLAY="localhost:${i}.0"
 	      vecho -n "${TAB}setting DISPLAY to $DISPLAY... "
 	      timeout -s 9 3s xdpyinfo -display $DISPLAY &>/dev/null
@@ -74,7 +76,7 @@ if ! $dispOK; then
     dtab
 
     if [ -z "${DISPLAY}" ]; then
-	      echo -e "${TAB}${BAD}ERROR: ${RESET}DISPLAY not set"
+	      vecho -e "${TAB}${BAD}ERROR: ${RESET}DISPLAY not set"
     else
 	      vecho "${TAB}DISPLAY set to $DISPLAY"
     fi
