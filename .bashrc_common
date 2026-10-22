@@ -150,7 +150,7 @@ if [ "${VB}" = true ]; then
 fi
 
 # list paths to append to PATH
-appPATH="${HOME}/bin"
+appPATH=""
 if [ ! -z ${appPATH} ]; then
     for path in $appPATH; do
         if [[ ":$PATH" != *":${path}"* ]]; then
@@ -168,7 +168,7 @@ if [ ! -z ${appPATH} ]; then
 fi
 
 # list paths to prepend to PATH
-prePATH=""
+prePATH="${HOME}/bin"
 if [ ! -z "${prePATH}" ]; then
     for path in $prePATH; do
         if [[ ":$PATH" != *":${path}"* ]]; then
