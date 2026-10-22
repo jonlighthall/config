@@ -57,8 +57,12 @@ if [ ${DEBUG:-0} -gt 0 ]; then
     called_by=$(ps -o comm= $PPID)
     echo "${TAB}invoked by ${called_by}"
 fi
+
+# ------------------------------------------
 # set "Verbose Bash" for conditional prints
 export VB=true
+# ------------------------------------------
+
 # clear terminal
 clear -x
 if [ ${DEBUG} -gt 0 ]; then
@@ -177,7 +181,7 @@ fi
 # clear terminal
 clear -x
 
-utop 3
+    utop 3
 
 # print welcome message
 echo "${TAB}Welcome to ${HOST_NAME}"
