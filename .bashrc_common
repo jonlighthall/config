@@ -198,6 +198,8 @@ unset prePATH
 unset rep_dir
 
 if [ "${VB}" = true ]; then
-    # reset tab
-    dtab 2 # once for path, once for file
+    # reset path tab
+    dtab
 fi
+# reset file tab
+dtab
