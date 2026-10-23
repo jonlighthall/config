@@ -87,7 +87,7 @@ if [ -e $hist_file ]; then
     HISTTIMEFORMAT="%F %T "
 else
     unset HISTFILE
-    echo -e "${BAD}${hist_file} NOT FOUND{RESET}"
+    echo -e "${BAD}${hist_file} NOT FOUND${RESET}"
 fi
 
 # Editors
