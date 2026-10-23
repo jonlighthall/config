@@ -10,6 +10,9 @@ ln -s ${HOME}/config/linux/.bash_aliases_<local> ${HOME}/.bash_aliases
 The file `.bashrc` is loaded directly by `.bash_profile` but may still need to be linked to the home directory for system use. 
 The `.bash_aliases` files are used for site-specific settings.
 
+## VS Code
+Remote-SSH terminals are non-login shells by default and only read `~/.bashrc`. `make_links.sh` links `vscode_machine_settings.jsonc` to `~/.vscode-server/data/Machine/settings.json` (the Remote settings for the host) so that terminals start as login shells, like ssh and WSL terminals. The directory is created by the VS Code server, so on a new host run `make_links.sh` again after the first Remote-SSH connection.
+
 Use the following commands to create symbolic links in the `/home/lighthall/bin` directory
 ```bash
 ln -s /home/lighthall/Downloads/emacs-24.5/src/emacs /home/lighthall/bin/emacs

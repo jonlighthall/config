@@ -110,6 +110,37 @@ Multi-platform user configuration repository containing shell profiles, Emacs se
 
 ---
 
+## Linux bash startup chain (verified 2026-10-23, Rocky 8.10, bash 4.4, VS Code Remote-SSH)
+
+Goal: identical shell behavior whether a remote Linux host is reached by `ssh -X` from
+WSL (login shell) or through a VS Code Remote-SSH terminal (non-login by default).
+
+- `ssh` login: `/etc/profile` (-> `/etc/profile.d/*`, `/etc/bashrc`) -> `~/.bash_profile`
+  -> `linux/.bash_profile` sources `linux/.bashrc` directly -> greeting at end of profile.
+- VS Code terminal: `bash --init-file .../shellIntegration-bash.sh`. Bash itself reads no
+  rc file; the script sources `~/.bashrc`. If the terminal profile has `-l`, VS Code sets
+  `VSCODE_SHELL_LOGIN=1` and the script sources `/etc/profile` + `~/.bash_profile`
+  instead, but `shopt -q login_shell` is still FALSE (do not use it to detect this case).
+- Hidden run: on server start the VS Code server resolves the extension-host env with
+  `bash -i -l -c` (no tty, `VSCODE_RESOLVING_ENVIRONMENT=1`). This runs `~/.bash_profile`
+  invisibly (LOGIN stamps appear in `.bash_history` with no matching `last` entry), and its
+  exported vars (PATH, VB, DEBUG, TAB, fTAB, LC_COLLATE) are inherited by every VS Code
+  terminal. That is why VS Code terminals report `~/bin already in PATH`.
+- VS Code terminals have no DISPLAY; `linux/.bashrc_X11` borrows an ssh-forwarded display
+  from a concurrent `ssh -X` session. The resolv.conf nameserver probe in that file is a
+  WSL2 idiom (nameserver = Windows host) and is meaningless on Linux servers.
+- RHEL/Rocky 8 default `~/.bashrc` only sources `/etc/bashrc` and prepends
+  `~/.local/bin:~/bin`; `linux/.bashrc` already does both (but appends `~/.local/bin`), so
+  symlinking `~/.bashrc` -> `linux/.bashrc` loses nothing; `linux/make_links.sh` links it.
+- **Decision (2026-10-23):** the difference comes from VS Code, so it is fixed with VS Code
+  configuration. `linux/vscode_machine_settings.jsonc` (linked by `linux/make_links.sh` to
+  `~/.vscode-server/data/Machine/settings.json`) makes the default Linux terminal profile
+  `bash -l`. The bash files treat `VSCODE_SHELL_LOGIN` like a login shell, and
+  `linux/.bash_profile` / `linux/.bashrc_X11` short-circuit when
+  `VSCODE_RESOLVING_ENVIRONMENT` is set. `~/.bashrc` is a link, not a hand-edited stub.
+
+---
+
 ## Superseded Decisions
 
 None documented yet.
