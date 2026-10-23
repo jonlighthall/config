@@ -35,7 +35,7 @@ check_link_dir "$link_dir"
 cbar "Start Linking Repo Files"
 
 # list of files to be linked, unconditionally
-for my_link in .bash_aliases .bash_logout .bash_profile .claude .emacs .inputrc .screenrc .tmux.conf
+for my_link in .bash_aliases .bash_logout .bash_profile .bashrc .claude .emacs .inputrc .screenrc .tmux.conf
 do
     # define target (source)
     target=${target_dir}/${my_link}
@@ -71,6 +71,17 @@ else
         # create link
         do_link "${target}" "${link}"
     done
+fi
+
+# VS Code Remote settings for this host; the directory is created by the VS Code server on the
+# first Remote-SSH connection
+echo -n "${TAB}checking VS Code server... "
+vscode_dir=${link_dir}/.vscode-server/data/Machine
+if [ -d "${vscode_dir}" ]; then
+    echo -e "${GOOD}OK${RESET}"
+    do_link "${target_dir}/vscode_machine_settings.jsonc" "${vscode_dir}/settings.json"
+else
+    echo -e "${GRAY}SKIP${RESET}"
 fi
 
 cbar "Done Linking Repo Files"

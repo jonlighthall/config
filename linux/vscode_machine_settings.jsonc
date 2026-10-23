@@ -1,0 +1,22 @@
+// VS Code Remote settings (Machine scope) for Linux hosts
+//
+// ~/.vscode-server/data/Machine/settings.json -> ~/config/linux/vscode_machine_settings.jsonc
+//
+// Purpose: start Remote-SSH terminals as login shells, like ssh and WSL terminals, so that
+//   /etc/profile and ~/.bash_profile (which loads ~/config/linux/.bashrc) run instead of
+//   ~/.bashrc alone.
+//
+// Note: with shell integration, VS Code replaces -l with --init-file and sets VSCODE_SHELL_LOGIN,
+//   so "shopt -q login_shell" is false in these terminals; the bash files check
+//   VSCODE_SHELL_LOGIN as well.
+//
+{
+    "terminal.integrated.profiles.linux": {
+        "bash": {
+            "path": "bash",
+            "args": ["-l"],
+            "icon": "terminal-bash"
+        }
+    },
+    "terminal.integrated.defaultProfile.linux": "bash"
+}
