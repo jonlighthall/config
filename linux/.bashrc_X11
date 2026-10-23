@@ -1,6 +1,11 @@
-# Set DISPLAY for WSL2
+# Set DISPLAY for Linux
 #
 # Note: this file must use unix line endings (LF)!
+
+# skip when VS Code captures its environment (see .bash_profile); a DISPLAY found here would be
+# inherited by every VS Code terminal and go stale when its SSH session closes
+[ -n "${VSCODE_RESOLVING_ENVIRONMENT:-}" ] && return 0
+
 if [ -z ${VB:+dummy} ]; then
     export VB=false
 else
@@ -35,12 +40,9 @@ if ! $dispOK; then
 	      echo "${TAB}building candidate DISPLAY list..."
 	      itab
     fi
+    # local display (the WSL2 version also tries the /etc/resolv.conf nameserver, which is the
+    # Windows host there but only a DNS server here)
     display_list="localhost "
-    name_list=$(\grep nameserver /etc/resolv.conf | awk '{print $2}')
-    for name in $name_list
-    do
-	      display_list+="$name "
-    done
     for disp in $display_list
     do
 	      export DISPLAY="${disp}:0.0"
@@ -56,7 +58,13 @@ if ! $dispOK; then
 	      fi
     done
 
-    for ((i=1;i<13;i++))
+    # SSH-forwarded displays (ssh -X) of this user's sessions, newest first; sshd numbers them
+    # from 10 up, one per session, and adds a cookie for each to ~/.Xauthority
+    fwd_list=$(xauth list 2>/dev/null | awk -v h="$(hostname)" -F'[ :]' '$1 == h"/unix" {print $2}' | sort -rnu | tr '\n' ' ')
+    if [ -z "${DISPLAY}" ]; then
+	      vecho "${TAB}forwarded displays in ~/.Xauthority: ${fwd_list:-none}"
+    fi
+    for i in $fwd_list
     do
 	      # stop once a display above was found
 	      [ -n "${DISPLAY}" ] && break

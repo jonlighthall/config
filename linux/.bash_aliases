@@ -11,7 +11,7 @@ fi
 
 # check if login shell
 if [ "${VB:-false}" = true ]; then
-    if shopt -q login_shell; then
+    if shopt -q login_shell || [ -n "${VSCODE_SHELL_LOGIN:-}" ]; then
         echo -e "${TAB-}${BASH_SOURCE##*/}: \x1B[32mlogin shell\x1B[m" >&2
     else
         echo -e "${TAB-}${BASH_SOURCE##*/}: \x1B[32mnon-login shell\x1B[m" >&2

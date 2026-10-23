@@ -224,6 +224,41 @@ function utop() {
     set +u
 }
 
+# show top processes from all users (resource hogs)
+function systop() {
+    local -i NP
+    # number of processes to show
+    if [ $# -eq 1 ]; then
+        # use argument
+        NP=$1
+    else
+        # set manually
+        NP=3
+    fi
+
+    # set line width to one less than the terminal width
+    local -i line_width=$(($(tput cols) - 1))
+    # user ID
+    local -r U_ID_old=1111499164
+    local -r U_ID=$UID
+    # user name
+    local -r U_NAME=${USER}
+    local U_NAME_trunc
+    U_NAME_trunc=${U_NAME:0:7}
+    U_NAME_trunc+="+"
+
+    echo -e "\033[4mTop $NP processes on ${HOST_NAME:-$(hostname -s)}:\x1b[0m"
+    (
+        ps aux --sort=-pcpu |
+        head -n $((NP + 1)) |
+        sed "s/${U_ID}/\x1b\[32m${U_NAME}\x1b\[0m/" |
+        sed "s/${U_ID_old}/\x1b\[33m${U_NAME}\x1b\[0m/" |
+        awk '{printf "%-10s %5s %5s %5s %4s %5s %6s %s\n",$1,$2,$3,$4,$8,$9,$10,$11}' |
+        cut -c -$line_width |
+        sed "s/${U_NAME_trunc}/${U_NAME}/"
+    ) | column -t | sed "s/${U_NAME}/${GREEN}${U_NAME}${RESET}/"
+}
+
 function atop() {
     local -i NP
     # number of processes to show
@@ -254,17 +289,8 @@ function atop() {
     decho "${U_NAME_trunc}"
     #echo "${U_NAME_trunc}" | sed "s/${U_NAME_trunc}/${U_NAME}/"
     
-    echo -e "\033[4mTop $NP processes on ${HOST_NAME}:\x1b[0m"
-    (
-        ps aux --sort=-pcpu |
-        head -n $((NP + 1)) |
-        sed "s/${U_ID}/\x1b\[32m${U_NAME}\x1b\[0m/" |
-        sed "s/${U_ID_old}/\x1b\[33m${U_NAME}\x1b\[0m/" |
-        awk '{printf "%-10s %5s %5s %5s %4s %5s %6s %s\n",$1,$2,$3,$4,$8,$9,$10,$11}' |
-        cut -c -$line_width |
-        sed "s/${U_NAME_trunc}/${U_NAME}/"
-    ) | column -t | sed "s/${U_NAME}/${GREEN}${U_NAME}${RESET}/"
-    
+    systop $NP
+
     echo
     echo -e "\033[4mTop $NP processes by ${USER}:\x1b[0m"
     (

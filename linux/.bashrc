@@ -16,6 +16,8 @@
 
 # check if running interactively
 if [[ "$-" == *i* ]];then
+    echo -e "${TAB-}\x1B[7m$(readlink -f ${BASH_SOURCE})\x1B[m" >&2
+
     # fTAB may be inherited from the environment, but itab (a function) is not
     if [ -z ${fTAB:+dummy} ] || ! declare -F itab &>/dev/null; then
         TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
@@ -35,9 +37,10 @@ else
     return
 fi
 
-# check if VB is unset or null
+# check if VB is unset or null (non-login shells skip .bash_profile)
 if [ -z ${VB:+dummy} ]; then
-    export VB=false
+    # set "Verbose Bash" default; keep in sync with .bash_profile
+    export VB=true
 fi
 
 # load bash utilities
@@ -91,6 +94,24 @@ for fname in $LIST; do
 done
 
 unset command_not_found_handle
+
+# print shell status for non-login shells; login shells print it from .bash_profile (VS Code
+# terminals started with -l are not login shells, but set VSCODE_SHELL_LOGIN)
+if ! shopt -q login_shell && [ -z "${VSCODE_SHELL_LOGIN:-}" ]; then
+    if [ "${VB}" != true ]; then
+        echo -e "${BASH_SOURCE##*/}: \x1B[32mnon-login shell\x1B[m"
+    fi
+    # welcome top-level shells (e.g. tmux windows), but not subshells started from bash
+    if [[ "$(ps -o comm= -p $PPID)" != *bash ]]; then
+        clear -x
+        if [ "${VB}" = true ]; then
+            # show resource hogs from all users
+            systop 3
+            echo
+        fi
+        echo "Welcome to $(hostname -s)"
+    fi
+fi
 
 if [ "${VB}" = true ]; then
     # reset tab

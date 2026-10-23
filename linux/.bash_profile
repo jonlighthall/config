@@ -15,6 +15,17 @@
 #
 # -----------------------------------------------------------------------------------------------
 
+# VS Code runs "bash -i -l -c" without a terminal to capture the environment for its extension
+# host; set up the environment quietly and skip the session-start actions (clear, login timestamp,
+# process list, welcome)
+if [ -n "${VSCODE_RESOLVING_ENVIRONMENT:-}" ]; then
+    VB=false
+    source "${HOME}/config/linux/.bashrc" &>/dev/null
+    # keep VB out of the captured environment so that terminals set their own
+    unset VB
+    return 0
+fi
+
 # check if running interactively
 if [[ "$-" == *i* ]];then
     # clear terminal
@@ -42,8 +53,8 @@ else
     return
 fi
 
-# check if login shell
-if shopt -q login_shell; then
+# check if login shell (VS Code terminals started with -l are not, but set VSCODE_SHELL_LOGIN)
+if shopt -q login_shell || [ -n "${VSCODE_SHELL_LOGIN:-}" ]; then
     echo -e "${TAB-}${BASH_SOURCE##*/}: \x1B[32mlogin shell\x1B[m" >&2
 else
     echo "${TAB-}${BASH_SOURCE##*/}: non-login shell" >&2
@@ -87,7 +98,7 @@ if [ -e $fpretty ]; then
     fi
     print_ribbon
 else
-    echo "${TAB}$fname not found"
+    echo "${TAB}$fpretty not found"
 fi
 
 # check if VB is true
@@ -103,7 +114,7 @@ fi
 SYS_NAME=linux
 decho "${TAB}checking host name..."
 itab
-if command -v hostname ; then
+if command -v hostname >/dev/null; then
     decho -n "${TAB}Debian like: "
     HOST_NAME=$(hostname -s)
 else
@@ -136,7 +147,7 @@ if [ -e $hist_file ]; then
     else
         # found, not writable
         if [ "${VB}" = true ]; then
-            echo "${BAD}NOT WRITABLE{RESET}"
+            echo -e "${BAD}NOT WRITABLE${RESET}"
         else
             echo "$hist_file not writable"
         fi
@@ -144,7 +155,7 @@ if [ -e $hist_file ]; then
 else
     # not found
     if [ "${VB}" = true ]; then
-        echo -e "${BAD}NOT FOUND{RESET}"
+        echo -e "${BAD}NOT FOUND${RESET}"
     else
         echo "$hist_file not found"
     fi
@@ -176,12 +187,18 @@ if [ "${VB}" = true ]; then
     print_done
     # print hidden text to force a new line before clearing screen
     vecho -e "\E[8mhello\E[28m"
+else
+    dtab 2
 fi
 
-# clear terminal
+# clear terminal (the verbose log stays in the scrollback)
 clear -x
 
-    utop 3
+if [ "${VB}" = true ]; then
+    # show resource hogs from all users
+    systop 3
+    echo
+fi
 
 # print welcome message
 echo "${TAB}Welcome to ${HOST_NAME}"
