@@ -21,8 +21,10 @@
 if [ -n "${VSCODE_RESOLVING_ENVIRONMENT:-}" ]; then
     VB=false
     source "${HOME}/config/linux/.bashrc" &>/dev/null
-    # keep VB out of the captured environment so that terminals set their own
+    # keep shell-session variables out of the captured environment so that terminals set their
+    # own (FPRETTY_LOADED is read-only, so remove the export attribute instead of unsetting)
     unset VB
+    export -n DEBUG FPRETTY_LOADED TAB fTAB
     return 0
 fi
 
@@ -30,6 +32,8 @@ fi
 if [[ "$-" == *i* ]];then
     # clear terminal
     clear
+
+    echo -e "${TAB-}\x1B[7m$(readlink -f ${BASH_SOURCE})\x1B[m" >&2
 
     # get starting time in nanoseconds
     declare -i start_time=$(date +%s%N)
@@ -39,7 +43,7 @@ if [[ "$-" == *i* ]];then
 
     # -------------------------
     # set debug level if unset
-    export DEBUG=${DEBUG=0}
+    export DEBUG=${DEBUG=1}
     # -------------------------
 
     if [ ${DEBUG:-0} -gt 0 ]; then
@@ -202,6 +206,15 @@ fi
 
 # print welcome message
 echo "${TAB}Welcome to ${HOST_NAME}"
+
+# VS Code shell integration (automatic injection is disabled in the VS Code settings so that
+# terminals are real login shells); load it last, since it installs a DEBUG trap and wraps
+# PROMPT_COMMAND. Outside a VS Code terminal, code prints an error to stdout, hence the -r check
+if [[ "${TERM_PROGRAM:-}" == "vscode" ]]; then
+    vsc_si=$(code --locate-shell-integration-path bash 2>/dev/null)
+    [ -r "${vsc_si}" ] && . "${vsc_si}"
+    unset vsc_si
+fi
 
 # deallocate variables
 unset FILE_PROF

@@ -16,15 +16,24 @@
 
 # check if running interactively
 if [[ "$-" == *i* ]];then
-    echo -e "${TAB-}\x1B[7m$(readlink -f ${BASH_SOURCE})\x1B[m" >&2
-
     # fTAB may be inherited from the environment, but itab (a function) is not
     if [ -z ${fTAB:+dummy} ] || ! declare -F itab &>/dev/null; then
-        TAB=$(for ((i = 1; i < ${#BASH_SOURCE[@]}; i++)); do echo -n "   "; done)
+        echo -e "Tabs not defined, calculating..." >&2
+        # calculate number of leading tabs
+        ntabs=${#BASH_SOURCE[@]}
+        echo -e "Initial ntabs=$ntabs" >&2
+        if [[ "${BASH_SOURCE[-1]}" == */.vscode-server* ]]; then
+            echo -e "BASH_SOURCE[-1] matches .vscode-server, adjusting ntabs..." >&2
+            ntabs=$((ntabs - 1))
+        fi
+        echo -e "ntabs=$ntabs" >&2
+        TAB=$(for ((i = 1; i < ntabs; i++)); do echo -n "   "; done)
+        echo -e "TAB='${TAB-}'" >&2
     else
         itab
-    fi    
+    fi
     # print source
+    echo -e "${TAB-}\x1B[7m$(readlink -f ${BASH_SOURCE})\x1B[m" >&2
     if [ ${DEBUG:-0} -gt 0 ]; then
         echo -e "${TAB}${BASH_SOURCE##*/}: \x1B[32minteractive shell\x1B[m" >&2
         echo -e "${TAB}\E[2m${#BASH_SOURCE[@]}: ${BASH_SOURCE##*/} -> $(readlink -f ${BASH_SOURCE})\E[22m"
@@ -116,4 +125,13 @@ fi
 if [ "${VB}" = true ]; then
     # reset tab
     dtab
+fi
+
+# VS Code shell integration for non-login shells (e.g. bash started in a VS Code terminal); login
+# shells load it at the end of .bash_profile. It installs a DEBUG trap and wraps PROMPT_COMMAND,
+# so it must come last. If VS Code already injected it, the script returns immediately
+if ! shopt -q login_shell && [[ "${TERM_PROGRAM:-}" == "vscode" ]]; then
+    vsc_si=$(code --locate-shell-integration-path bash 2>/dev/null)
+    [ -r "${vsc_si}" ] && . "${vsc_si}"
+    unset vsc_si
 fi

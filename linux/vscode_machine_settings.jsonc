@@ -6,9 +6,9 @@
 //   /etc/profile and ~/.bash_profile (which loads ~/config/linux/.bashrc) run instead of
 //   ~/.bashrc alone.
 //
-// Note: with shell integration, VS Code replaces -l with --init-file and sets VSCODE_SHELL_LOGIN,
-//   so "shopt -q login_shell" is false in these terminals; the bash files check
-//   VSCODE_SHELL_LOGIN as well.
+// Note: automatic shell integration is disabled because it starts bash with --init-file instead
+//   of -l, so the shell is not a real login shell and the init script adds a level to
+//   BASH_SOURCE; linux/.bash_profile and linux/.bashrc load shell integration themselves, last.
 //
 {
     "terminal.integrated.profiles.linux": {
@@ -18,5 +18,18 @@
             "icon": "terminal-bash"
         }
     },
-    "terminal.integrated.defaultProfile.linux": "bash"
+    "terminal.integrated.defaultProfile.linux": "bash",
+    // launch bash directly instead of through VS Code's init script
+    "terminal.integrated.shellIntegration.enabled": false,
+    // start with the environment of an ssh login: SHLVL=1 (the server's chain of shells would
+    // pass SHLVL=4) and none of the shell-session variables that the server captured from
+    // ~/.bash_profile at startup, so that .bash_profile sets them fresh (e.g. its DEBUG default)
+    "terminal.integrated.env.linux": {
+        "SHLVL": null,
+        "DEBUG": null,
+        "VB": null,
+        "TAB": null,
+        "fTAB": null,
+        "FPRETTY_LOADED": null
+    }
 }

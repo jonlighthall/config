@@ -135,9 +135,25 @@ WSL (login shell) or through a VS Code Remote-SSH terminal (non-login by default
 - **Decision (2026-10-23):** the difference comes from VS Code, so it is fixed with VS Code
   configuration. `linux/vscode_machine_settings.jsonc` (linked by `linux/make_links.sh` to
   `~/.vscode-server/data/Machine/settings.json`) makes the default Linux terminal profile
-  `bash -l`. The bash files treat `VSCODE_SHELL_LOGIN` like a login shell, and
-  `linux/.bash_profile` / `linux/.bashrc_X11` short-circuit when
-  `VSCODE_RESOLVING_ENVIRONMENT` is set. `~/.bashrc` is a link, not a hand-edited stub.
+  `bash -l`, disables automatic shell integration (`--init-file` made the shell non-login and
+  added a level to BASH_SOURCE, which shifted all depth-based TAB math), and nulls `SHLVL`
+  (server chain passed 4; `set_tab_shell`/`print_` indent by SHLVL) plus the captured
+  session vars `DEBUG VB TAB fTAB FPRETTY_LOADED` (inherited `DEBUG=0` defeated the
+  `${DEBUG=1}` default). Result: VS Code terminals match ssh logins exactly (user-confirmed).
+  `linux/.bash_profile` and `linux/.bashrc` (non-login only) load shell integration manually,
+  last, via `code --locate-shell-integration-path bash` (needs `VSCODE_IPC_HOOK_CLI`; prints
+  an error to stdout with exit 0 elsewhere, hence the `-r` check; do not source it inside a
+  function, its `declare -A` would become local). `linux/.bash_profile` / `linux/.bashrc_X11`
+  short-circuit when `VSCODE_RESOLVING_ENVIRONMENT` is set; the profile guard un-exports the
+  session vars. `VSCODE_SHELL_LOGIN` checks remain as a fallback for hosts where injection is
+  still on. `~/.bashrc` is a link, not a hand-edited stub.
+- **Gotcha (2026-10-23):** `linux/make_links.sh` also links `~/.claude` -> `linux/.claude`.
+  On a host where `~/.claude` is a real directory it is renamed with a date suffix, which
+  strands Claude Code's credentials, transcripts and memory (and a running session starts
+  writing runtime state into the repo dir, gitignored). On caustic this was reverted and
+  merged back; migrate deliberately (Claude Code closed) or link only the tracked items.
+- `make_links.sh` fails under a non-tty (e.g. an agent's Bash tool) at `tput cols`
+  (`lib_links.sh:337`); run with `TERM=xterm-256color COLUMNS=120`.
 
 ---
 
