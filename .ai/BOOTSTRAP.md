@@ -203,6 +203,9 @@ Some targets are not git repositories at all -- e.g., a Teams-synced folder of
 administrative documents opened directly as a VS Code workspace. The rules above
 assume git; adapt them as follows.
 
+- **Distinguishing Flank Speed folder types:**
+  - `flankspeed` / `US Navy-flankspeed`: Team-shared SharePoint / Teams synced folders. Everything synced reaches teammates. Follow shared folder visibility rules below.
+  - `OneDrive - US Navy-flankspeed`: Personal OneDrive sync folder. Scoped to the individual user. Follow private folder guidelines.
 - **Visibility:** sync is all-or-nothing per folder. Everything placed there
   (including `.ai/`) reaches every teammate who syncs the folder, and there is no
   `.gitignore` layer. Keep `.ai/` content professional and project-universal; put
